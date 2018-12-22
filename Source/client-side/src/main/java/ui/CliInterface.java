@@ -7,6 +7,7 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Predicate;
 
 public class CliInterface implements UserInterface, Runnable {
 
@@ -18,6 +19,8 @@ public class CliInterface implements UserInterface, Runnable {
 
 	private Map<String, CliActionHandler> commands_map;
 
+	private Map<String, List<UIEventHandler>> handlers_map;
+
 	public CliInterface() {
 
 		this.running = false;
@@ -26,10 +29,13 @@ public class CliInterface implements UserInterface, Runnable {
 
 		this.commands_map = new HashMap<String, CliActionHandler>();
 
+		this.handlers_map = new HashMap<String, List<UIEventHandler>>();
+
 		this.populateCommandsMap();
 
 	}
 
+	// Runnable mehod
 	public void run() {
 
 		String user_input = "";
@@ -70,10 +76,18 @@ public class CliInterface implements UserInterface, Runnable {
 						System.out.print("\t");
 
 					System.out.println(word);
+
+					space++;
 				}
 
 				System.out.println(":)");
 
+			}
+		});
+
+		this.commands_map.put("exit", new CliActionHandler() {
+			public void performAction(List<String> arguments) {
+				running = false;
 			}
 		});
 
@@ -85,26 +99,28 @@ public class CliInterface implements UserInterface, Runnable {
 		// split input in to the list of words
 		List<String> words = new ArrayList<String>(Arrays.asList(input.split(" ")));
 
-		// get handler for first word (actual command)
-		CliActionHandler input_handler = this.commands_map.get(words.get(0));
+		// first word is command
+		String command = words.remove(0);
 
-		String command = null;
+		// get handler for first word (actual command)
+		CliActionHandler input_handler = this.commands_map.get(command);
 
 		// if command exists
 		if (input_handler != null) {
 
 			System.out.println("Valid command...");
 
-			command = words.remove(0);
-
 			input_handler.performAction(words);
 
+		} else {
+			System.out.println("Unknown command ...");
 		}
 
 		System.out.println("Command: " + command + " has been processed");
 	}
 
-	public void start() {
+	// UserInterface methods
+	public void startGameLoop() {
 		this.running = true;
 
 		this.game_thread = new Thread(this);
@@ -112,19 +128,64 @@ public class CliInterface implements UserInterface, Runnable {
 		this.game_thread.start();
 	}
 
-	public void stop() {
+	public void stopGameLoop() {
 		if (this.running) {
 			this.running = false;
 			System.out.println("Press enter to stop game loop ...");
-			System.out.println("Game loop should stop now...");
+			System.out.println("Game loop should stop now ...");
 		} else {
 			System.out.println("Game loop is not started yet ...");
 		}
 	}
 
-	public void setClickHandler() {
-		// TODO Auto-generated method stub
+	public void addEventHandler(String event_name, UIEventHandler event_handler) {
 
+		List<UIEventHandler> handlers = this.handlers_map.get(event_name);
+
+		if (handlers != null) {
+
+			handlers.add(event_handler);
+
+		} else {
+
+			handlers = new ArrayList<UIEventHandler>();
+			handlers.add(event_handler);
+
+			this.handlers_map.put(event_name, handlers);
+		}
+
+	}
+
+	public List<UIEventHandler> getEventHandlers(String event_name) {
+		return this.handlers_map.get(event_name);
+	}
+
+	public UIEventHandler getSingleEventHandler(String event_name, String handler_id) {
+
+		List<UIEventHandler> handlers = this.handlers_map.get(event_name);
+
+		for (UIEventHandler handler : handlers) {
+			if (((NamedUIEventHandler) handler).getName().equals(handler_id))
+				return handler;
+		}
+
+		return null;
+
+	}
+
+	public boolean removeEventHandler(String event_name, String handler_id) {
+		List<UIEventHandler> handlers = this.handlers_map.get(event_name);
+
+		int index = 0;
+		for (UIEventHandler handler : handlers) {
+			if (((NamedUIEventHandler) handler).getName().equals(handler_id)) {
+				handlers.remove(index);
+				return true;
+			}
+			index++;
+		}
+
+		return false;
 	}
 
 }
