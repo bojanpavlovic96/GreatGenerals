@@ -33,7 +33,7 @@ public class Pigeon implements Messenger {
 	private Map<String, Channel> channels;
 
 	public Pigeon() {
-		// TODO Auto-generated constructor stub
+
 	}
 
 	public Pigeon(String mq_uri) {
