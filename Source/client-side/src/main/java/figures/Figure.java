@@ -11,4 +11,6 @@ public interface Figure {
 
 	Point getCoordinates();
 
+	void printFigure();
+	
 }

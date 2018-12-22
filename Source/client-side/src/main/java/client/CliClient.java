@@ -1,6 +1,9 @@
 package client;
 
-import board.Board;
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+
+import board.BoardManager;
 import rabbit.api.Messenger;
 import rabbit.api.Pigeon;
 
@@ -8,19 +11,48 @@ public class CliClient {
 
 	private Messenger messenger;
 
-	private Board board;
+	private BoardManager board_manager;
 
-	private String username;
-	private String password;
+	private GameData game_data;
 
-	private String room_id;
-	private String room_name;
-	private String room_key;
+	public CliClient(Messenger messenger, BoardManager board_manager, GameData game_data) {
 
-	public CliClient() {
+		this.messenger = messenger;
+		this.board_manager = board_manager;
+		this.game_data = game_data;
+		
+		this.gameLoop();
+		
+	}
 
-		this.messenger = new Pigeon();
+	private void gameLoop() {
 
+		BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
+
+		String user_input = "";
+
+		try {
+
+			while (!user_input.equals("cancel")) {
+
+				user_input = reader.readLine();
+
+				System.out.println("Processing: " + user_input);
+
+			}
+
+		} catch (Exception e) {
+			System.out.println("Exception in game loop...");
+			System.out.println(e);
+		}
+
+	}
+
+	public static void main(String[] args) {
+		
+		CliClient client=new CliClient(null, null, null);
+		
+		
 	}
 
 }

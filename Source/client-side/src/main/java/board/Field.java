@@ -8,6 +8,8 @@ public interface Field {
 
 	Point getPosition();
 
+	boolean containsFigure();
+
 	Figure getFigure();
 
 	/**
@@ -22,5 +24,8 @@ public interface Field {
 	 *         chaining of the function calls on the same field.
 	 */
 	Field setFigure(Figure new_figure);
+	
+	
+	
 	
 }
