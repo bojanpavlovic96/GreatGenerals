@@ -6,6 +6,8 @@ public interface UserInterface {
 	// more of this
 	// one fore every functinality
 	
+	void start();
 	
+	void stop();
 	
 }
