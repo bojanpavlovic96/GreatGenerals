@@ -11,6 +11,4 @@ public interface Figure extends Cloneable {
 
 	Point getCoordinates();
 
-	void printFigure();
-	
 }
