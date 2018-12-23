@@ -7,7 +7,7 @@ import board.Field;
 import board.Point;
 import rabbit.api.Messenger;
 
-public interface Figure {
+public interface Figure extends Cloneable {
 
 	Point getCoordinates();
 

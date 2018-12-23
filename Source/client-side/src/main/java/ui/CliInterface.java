@@ -160,12 +160,12 @@ public class CliInterface implements UserInterface, Runnable {
 		return this.handlers_map.get(event_name);
 	}
 
-	public UIEventHandler getSingleEventHandler(String event_name, String handler_id) {
+	public UIEventHandler getSingleEventHandler(String event_name, String handler_name) {
 
 		List<UIEventHandler> handlers = this.handlers_map.get(event_name);
 
 		for (UIEventHandler handler : handlers) {
-			if (((NamedUIEventHandler) handler).getName().equals(handler_id))
+			if (((NamedUIEventHandler) handler).getName().equals(handler_name))
 				return handler;
 		}
 
@@ -173,12 +173,12 @@ public class CliInterface implements UserInterface, Runnable {
 
 	}
 
-	public boolean removeEventHandler(String event_name, String handler_id) {
+	public boolean removeEventHandler(String event_name, String handler_name) {
 		List<UIEventHandler> handlers = this.handlers_map.get(event_name);
 
 		int index = 0;
 		for (UIEventHandler handler : handlers) {
-			if (((NamedUIEventHandler) handler).getName().equals(handler_id)) {
+			if (((NamedUIEventHandler) handler).getName().equals(handler_name)) {
 				handlers.remove(index);
 				return true;
 			}

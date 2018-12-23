@@ -4,8 +4,6 @@ import figures.Figure;
 
 public interface Field {
 
-	void printField();
-
 	Point getPosition();
 
 	boolean containsFigure();
@@ -24,8 +22,6 @@ public interface Field {
 	 *         chaining of the function calls on the same field.
 	 */
 	Field setFigure(Figure new_figure);
-	
-	
 	
 	
 }

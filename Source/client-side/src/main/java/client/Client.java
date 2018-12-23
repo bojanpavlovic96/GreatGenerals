@@ -38,8 +38,9 @@ public class Client {
 
 	}
 
+	// used to set all event handlers to the user interface instance
 	private void connectWithUserInterface() {
-		
+
 	}
 
 	public static void main(String[] args) {
@@ -51,7 +52,7 @@ public class Client {
 		UserInterface user_interface = new CliInterface();
 
 		Client client = new Client(messenger, chat_controller, board_manager, game_data, user_interface);
-		
+
 	}
 
 }

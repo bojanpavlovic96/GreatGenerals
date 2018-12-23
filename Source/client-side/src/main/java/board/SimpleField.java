@@ -1,17 +1,17 @@
 package board;
 
 import figures.Figure;
+import ui.Printable;
 
-public class EmptyField implements Field{
+public class SimpleField implements Field,Printable{
 	
 	private Point position;
 	
-	public EmptyField(Point positoin) {
-		position = positoin;
-	}
-
-	public void printField() {
-		
+	private Figure figure;
+	
+	public SimpleField(Point position, Figure figure) {
+		this.position = position;
+		this.figure = figure;
 	}
 
 	public Point getPosition() {
@@ -32,6 +32,11 @@ public class EmptyField implements Field{
 	public Field setFigure(Figure new_figure) {
 		// TODO Auto-generated method stub
 		return null;
+	}
+
+	public boolean containsFigure() {
+		// TODO Auto-generated method stub
+		return false;
 	}
 	
 	

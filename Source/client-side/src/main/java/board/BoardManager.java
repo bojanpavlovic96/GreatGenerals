@@ -4,10 +4,12 @@ import actions.Move;
 
 public interface BoardManager {
 
-	void initializeBoard();
+	boolean isValidMove(Move move);
 
 	BoardManager makeMove(Move move); // if valid make move and return boardManager
 
-	boolean isValidMove(Move move);
+	Board getBoard();
+
+	void setBoard(Board board);
 
 }

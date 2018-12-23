@@ -2,8 +2,8 @@ package chat;
 
 public interface ChatController {
 
-	void sendTo();
-	
-	Message receiveFrom();
-	
+	void sendTo(String user_id);
+
+	Message receiveFrom(String user_id);
+
 }
