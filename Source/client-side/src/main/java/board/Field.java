@@ -22,6 +22,9 @@ public interface Field {
 	 *         chaining of the function calls on the same field.
 	 */
 	Field setFigure(Figure new_figure);
-	
-	
+
+	void setFieldArgs(FieldArgs ars);
+
+	FieldArgs getFieldArgs();
+
 }

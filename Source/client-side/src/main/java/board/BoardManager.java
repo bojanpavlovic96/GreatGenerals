@@ -12,4 +12,8 @@ public interface BoardManager {
 
 	void setFigureCreator(FigureCreator creator);
 
+	void setBoardLoader(BoardLoader board_loader);
+
+	BoardLoader getBoardLoader();
+
 }

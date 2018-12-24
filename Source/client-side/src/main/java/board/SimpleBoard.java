@@ -19,12 +19,23 @@ public class SimpleBoard implements Board, Printable {
 
 	}
 
+	public SimpleBoard(Field[][] fields, int fields_num) {
+		
+		this.fields = fields;
+
+		this.fields_dim = this.fields.length;
+		this.fields_num = fields_num;
+
+	}
+
 	private void initializeBoard() {
 		this.fields = new Field[this.fields_num][this.fields_num];
 
 		for (int i = 0; i < this.fields_num; i++) {
 			for (int j = 0; j < this.fields_num; j++) {
-				this.fields[i][j] = (Field) new SimpleField(new Point(i, j)); // create empty field
+
+				// create empty field
+
 			}
 		}
 	}
