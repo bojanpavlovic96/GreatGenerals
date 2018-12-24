@@ -18,7 +18,7 @@ public interface Field {
 
 	/**
 	 * @param new_figure
-	 * @return this, field on which figure is going to be places. it enables
+	 * @return this, field on which figure is going to be placed. it enables
 	 *         chaining of the function calls on the same field.
 	 */
 	Field setFigure(Figure new_figure);
