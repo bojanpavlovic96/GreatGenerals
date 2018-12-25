@@ -7,7 +7,6 @@
 	<version>0.0.1-SNAPSHOT</version>
 
 	<dependencies>
-
 		<dependency>
 			<groupId>com.rabbitmq</groupId>
 			<artifactId>amqp-client</artifactId>
@@ -21,16 +20,25 @@
 			<version>6.0.6</version>
 		</dependency>
 
+		<!-- https://mvnrepository.com/artifact/org.hibernate/hibernate-core -->
+		<dependency>
+			<groupId>org.hibernate</groupId>
+			<artifactId>hibernate-core</artifactId>
+			<version>5.3.7.Final</version>
+		</dependency>
+
 	</dependencies>
 
+
 	<build>
+
 		<plugins>
 			<plugin>
 				<artifactId>maven-assembly-plugin</artifactId>
 				<configuration>
 					<archive>
 						<manifest>
-							<mainClass>path to main class</mainClass>
+							<mainClass>path to main classs</mainClass>
 						</manifest>
 					</archive>
 					<descriptorRefs>
@@ -46,8 +54,8 @@
 					</execution>
 				</executions>
 			</plugin>
-
 		</plugins>
+
 	</build>
 
 </project>

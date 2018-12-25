@@ -45,7 +45,3 @@ local.properties
 # Annotation Processing
 .apt_generated/
 
-# test Source/test project
-
-Source/test
-

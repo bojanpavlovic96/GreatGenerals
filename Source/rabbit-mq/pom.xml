@@ -28,8 +28,7 @@
 			<version>5.3.7.Final</version>
 		</dependency>
 
-
-
+		
 	</dependencies>
 
 	<build>
@@ -39,7 +38,7 @@
 				<configuration>
 					<archive>
 						<manifest>
-							<mainClass>run.Server</mainClass>
+							<mainClass>tutorial.HibernateTest</mainClass>
 						</manifest>
 					</archive>
 					<descriptorRefs>

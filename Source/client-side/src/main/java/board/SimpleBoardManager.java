@@ -8,6 +8,7 @@ public class SimpleBoardManager implements BoardManager {
 
 	private FigureCreator figure_creator;
 
+
 	public SimpleBoardManager() {
 
 	}

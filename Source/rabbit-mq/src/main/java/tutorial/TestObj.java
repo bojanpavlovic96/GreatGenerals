@@ -2,7 +2,9 @@ package tutorial;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
 @Entity
@@ -10,11 +12,13 @@ import javax.persistence.Table;
 public class TestObj {
 
 	@Id
-	@Column(name = "id")
+	@GeneratedValue
 	private int id;
 
-	@Column(name = "name")
 	private String name;
+
+	@ManyToOne
+	private SecondObject second_ref;
 
 	public String getName() {
 		return name;
@@ -30,6 +34,14 @@ public class TestObj {
 
 	public void setId(int id) {
 		this.id = id;
+	}
+
+	public SecondObject getSecond_ref() {
+		return second_ref;
+	}
+
+	public void setSecond_ref(SecondObject second_ref) {
+		this.second_ref = second_ref;
 	}
 
 }
