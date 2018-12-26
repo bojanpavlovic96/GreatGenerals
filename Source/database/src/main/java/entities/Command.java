@@ -17,12 +17,11 @@ public class Command {
 	private String name;
 
 	public Command() {
-		
+
 	}
-	
-	public Command(String name /*some more arguments*/) {
+
+	public Command(String name /* some more arguments */) {
 		this.setName(name);
-		
 	}
 
 	public long getId() {
@@ -40,7 +39,7 @@ public class Command {
 	public void setName(String name) {
 		this.name = name;
 	}
-	
+
 	// some callback
 	// some mora atributes maybe
 }

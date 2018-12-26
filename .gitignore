@@ -45,3 +45,8 @@ local.properties
 # Annotation Processing
 .apt_generated/
 
+#indelliJ
+.idea/
+out/
+.idea_modules/
+atlassian-ide-plugin.xml
