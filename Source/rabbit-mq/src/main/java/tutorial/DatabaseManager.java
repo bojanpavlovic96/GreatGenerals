@@ -5,6 +5,8 @@ import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
+import org.hibernate.dialect.Dialect;
+
 import com.mysql.cj.api.jdbc.Statement;
 
 public class DatabaseManager {
@@ -20,7 +22,7 @@ public class DatabaseManager {
 			} else {
 				System.out.println("connected");
 			}
-
+			
 			Statement statement = (Statement) connection.createStatement();
 
 			ResultSet result = statement.executeQuery("select * from test_table");

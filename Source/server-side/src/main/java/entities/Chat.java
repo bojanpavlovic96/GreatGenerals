@@ -27,6 +27,6 @@ public class Chat {
 	private Player player2;
 
 	@OneToMany
-	private List<Message> messages;
+	private List<ChatMessage> messages;
 
 }
