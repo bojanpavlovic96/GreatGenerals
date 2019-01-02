@@ -1,5 +1,5 @@
 ## Faza 3: do 11.1.2019.
-
+```
 dodao:
 client-model
 client-view
@@ -13,3 +13,4 @@ client-view
 	
 client-controller
 	krenuo, stao ...
+```
