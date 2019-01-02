@@ -17,7 +17,7 @@ public class DebugMessage extends JPanel {
 	private int border_size = 2;
 
 	public DebugMessage(String text, MessagePriority priority) {
-		
+
 		this.setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
 
 		this.add(new JLabel(LocalDateTime.now().format(this.date_time_format)));
@@ -25,18 +25,17 @@ public class DebugMessage extends JPanel {
 		JLabel message = new JLabel(text);
 
 		Color message_color = null;
-
 		switch (priority) {
 		case DebugMessage:
 			message_color = Color.BLACK;
 			break;
 
 		case Warrning:
-			message_color = Color.yellow;
+			message_color = Color.ORANGE;
 			break;
 
 		case Error:
-			message_color = Color.orange;
+			message_color = Color.BLUE;
 			break;
 
 		case Exception:
@@ -48,7 +47,7 @@ public class DebugMessage extends JPanel {
 
 		this.add(message);
 		this.setBorder(BorderFactory.createLineBorder(Color.blue, this.getBorder_size()));
-		
+
 	}
 
 	public int getBorder_size() {

@@ -1,7 +1,5 @@
 package view;
 
-import java.awt.Color;
-import java.awt.Point;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.event.WindowAdapter;
@@ -12,7 +10,6 @@ import java.util.List;
 import java.util.Map;
 
 import javax.swing.JFrame;
-import javax.swing.JPanel;
 
 public class ClientView extends JFrame implements EventDrivenComponent {
 
@@ -25,9 +22,11 @@ public class ClientView extends JFrame implements EventDrivenComponent {
 	private DebugMessageHandler default_debug_message_handler;
 
 	public ClientView() {
-
-		this.initUI();
 		
+		super();
+
+		this.initMainFrame();
+
 		this.initBoardCanvas();
 		this.setEventListeners();
 
@@ -39,19 +38,27 @@ public class ClientView extends JFrame implements EventDrivenComponent {
 
 	public ClientView(DebugFrame new_debug_frame) {
 
-		this();
+		super();
 
 		this.debug_frame = new_debug_frame;
 
+		// create defaultDegugMessageHandler only when this.debug_frame is not null
 		this.default_debug_message_handler = new DebugMessageHandler() {
 			public void handle(String text, MessagePriority priority) {
 				debug_frame.addMessage(text, priority);
 			}
 		};
 
+		this.initMainFrame();
+
+		// initBoardCanvas uses the default_message_handler so its call must be after
+		// the defMessHandler creation
+		this.initBoardCanvas();
+		this.setEventListeners();
+
 	}
 
-	private void initUI() {
+	private void initMainFrame() {
 
 		this.setSize(1000, 600);
 		this.setLocationRelativeTo(null); // location relative to some other component
@@ -61,7 +68,6 @@ public class ClientView extends JFrame implements EventDrivenComponent {
 		this.setResizable(false);
 
 		this.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE); // exit on close closes all frames
-																// (don't know why)
 
 	}
 

@@ -30,21 +30,17 @@ public class DebugFrame extends JFrame {
 
 		this.setSize(300, 700);
 		this.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE); // exit on close closes all jframes
-																// (don't know why)
-
-		Dimension screen_size = Toolkit.getDefaultToolkit().getScreenSize();
-
-		this.setLocation(screen_size.width / 2 + 550, (int) (screen_size.getHeight() / 2));
-
+		// (don't know why)
 		this.setResizable(false);
 
-		this.main_panel = new JPanel();
+		Dimension screen_size = Toolkit.getDefaultToolkit().getScreenSize();
+		this.setLocation(screen_size.width / 2 + 550, (int) (screen_size.getHeight() / 2));
 
+		this.main_panel = new JPanel();
 		this.main_panel.setLayout(new BoxLayout(main_panel, BoxLayout.Y_AXIS));
 
 		this.scroll = new JScrollPane(this.main_panel); // connect panel with scroll pane (add scroll bar
 														// to the main panel)
-
 		this.scroll.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
 
 		this.add(scroll);
@@ -105,10 +101,10 @@ public class DebugFrame extends JFrame {
 
 		DebugMessage message = new DebugMessage(text, priority);
 
-		Dimension dim = this.getSize();
-		dim.setSize(200, 50);
+		// Dimension dim = this.getSize();
+		// dim.setSize(200, 50);
 		// dim.setSize(dim.getWidth() - 2 * message.getBorder_size(), 50);
-		message.setSize(dim);
+		// message.setSize(dim);
 
 		this.main_panel.add(message);
 
