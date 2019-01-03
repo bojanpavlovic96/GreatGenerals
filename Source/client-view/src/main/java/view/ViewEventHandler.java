@@ -1,7 +1,9 @@
 package view;
 
+import javafx.event.Event;
+
 public interface ViewEventHandler {
 
-	void handle(ViewEventArg arg);
+	void execute(Event arg);
 
 }

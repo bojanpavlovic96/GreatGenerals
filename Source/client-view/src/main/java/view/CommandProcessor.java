@@ -1,11 +1,11 @@
-package fields.draw;
+package view;
 
 import java.util.concurrent.ExecutorService;
 
-import fields.command.CommandQueue;
-import fields.command.QueueEventHandler;
-import fields.command.ViewCommand;
 import javafx.scene.canvas.Canvas;
+import view.command.CommandQueue;
+import view.command.QueueEventHandler;
+import view.command.ViewCommand;
 
 public class CommandProcessor implements QueueEventHandler {
 

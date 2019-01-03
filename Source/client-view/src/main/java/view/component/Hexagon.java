@@ -1,4 +1,4 @@
-package fields.draw;
+package view.component;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -11,6 +11,7 @@ import javafx.scene.image.Image;
 import javafx.scene.paint.Color;
 import javafx.scene.transform.Rotate;
 import javafx.scene.transform.Transform;
+import view.ModelHexagon;
 
 public class Hexagon {
 
@@ -66,7 +67,7 @@ public class Hexagon {
 
 	private void initCornerPoints() {
 
-		this.corner_points = new ArrayList<Point2D>();
+		this.setCorner_points(new ArrayList<Point2D>());
 
 		System.out.println("HexCenter: " + this.hex_center);
 
@@ -81,7 +82,7 @@ public class Hexagon {
 			x = (float) (this.hex_center.getX() - this.side_size * Math.cos(angle));
 			y = (float) (this.hex_center.getY() - this.side_size * Math.sin(angle));
 
-			this.corner_points.add(new Point2D(x, y));
+			this.getCorner_points().add(new Point2D(x, y));
 			System.out.println("Calculated corner: ( " + x + ", " + y + " )");
 
 			// add 60 degree
@@ -107,7 +108,7 @@ public class Hexagon {
 
 		double angle = 30;
 
-		for (Point2D corner : this.corner_points) {
+		for (Point2D corner : this.getCorner_points()) {
 
 			Transform transform = new Rotate(angle, corner.getX(), corner.getY());
 			gc.setTransform(transform.getMxx(), transform.getMyx(), transform.getMxy(), transform.getMyy(),
@@ -135,8 +136,8 @@ public class Hexagon {
 		double[] xs = new double[6];
 		double[] ys = new double[6];
 		for (int i = 0; i < 6; i++) {
-			xs[i] = this.corner_points.get(i).getX();
-			ys[i] = this.corner_points.get(i).getY();
+			xs[i] = this.getCorner_points().get(i).getX();
+			ys[i] = this.getCorner_points().get(i).getY();
 		}
 
 		gc.setFill(Color.BLACK);
@@ -223,6 +224,14 @@ public class Hexagon {
 	// todo implement
 	public Point2D calculateStoragePositionFromReal(Point2D real_position) {
 		return null;
+	}
+
+	public List<Point2D> getCorner_points() {
+		return corner_points;
+	}
+
+	public void setCorner_points(List<Point2D> corner_points) {
+		this.corner_points = corner_points;
 	}
 
 }

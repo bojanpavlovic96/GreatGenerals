@@ -1,4 +1,4 @@
-package fields.command;
+package view.command;
 
 public interface QueueEventHandler {
 

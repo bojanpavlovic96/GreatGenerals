@@ -1,4 +1,4 @@
-package fields.command;
+package view.command;
 
 import javafx.scene.canvas.Canvas;
 

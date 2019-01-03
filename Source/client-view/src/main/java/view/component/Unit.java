@@ -1,4 +1,4 @@
-package fields.draw;
+package view.component;
 
 import javafx.geometry.Point2D;
 import javafx.scene.canvas.GraphicsContext;
@@ -27,8 +27,7 @@ public class Unit {
 
 		gc.save();
 
-		gc.drawImage(image, hex_center.getX() - hex_width / 4 - 2, hex_center.getY() - hex_height / 4, hex_side,
-				hex_side);
+		gc.drawImage(image, hex_center.getX() - hex_side / 2, hex_center.getY() - hex_side / 2, hex_side, hex_side);
 
 		gc.restore();
 

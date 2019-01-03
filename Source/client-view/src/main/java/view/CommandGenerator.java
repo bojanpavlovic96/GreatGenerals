@@ -1,10 +1,14 @@
-package fields.draw;
+package view;
 
-import fields.command.ClearHex;
-import fields.command.CommandQueue;
-import fields.command.HexagonDrawer;
-import fields.command.ViewCommand;
 import javafx.geometry.Point2D;
+import javafx.scene.paint.Color;
+import view.command.ClearHex;
+import view.command.CommandQueue;
+import view.command.FilterSetter;
+import view.command.HexagonDrawer;
+import view.component.Hexagon;
+
+// testing purpose
 
 public class CommandGenerator {
 
@@ -37,6 +41,16 @@ public class CommandGenerator {
 
 		queue.enqueue(new ClearHex(start_hex));
 		queue.enqueue(new HexagonDrawer(start_hex));
+
+		try {
+			Thread.sleep(1000);
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+		queue.enqueue(new FilterSetter(Color.rgb(1, 1, 1), start_hex));
+
 	}
 
 }

@@ -1,4 +1,4 @@
-package fields.command;
+package view.command;
 
 import java.util.LinkedList;
 import java.util.Queue;

@@ -1,6 +1,6 @@
-package fields.command;
+package view.command;
 
-import fields.draw.Hexagon;
+import view.component.Hexagon;
 
 public class ClearHex extends ViewCommand {
 
