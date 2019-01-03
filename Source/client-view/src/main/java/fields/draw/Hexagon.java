@@ -8,6 +8,7 @@ import javafx.geometry.Point2D;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.Image;
+import javafx.scene.paint.Color;
 import javafx.scene.transform.Rotate;
 import javafx.scene.transform.Transform;
 
@@ -126,6 +127,22 @@ public class Hexagon {
 
 	private void drawUnit(GraphicsContext gc) {
 		this.unit.drawUnit(gc, this.hex_center, this.side_size);
+	}
+
+	public void clearHex(GraphicsContext gc) {
+		gc.save();
+
+		double[] xs = new double[6];
+		double[] ys = new double[6];
+		for (int i = 0; i < 6; i++) {
+			xs[i] = this.corner_points.get(i).getX();
+			ys[i] = this.corner_points.get(i).getY();
+		}
+
+		gc.setFill(Color.BLACK);
+		gc.fillPolygon(xs, ys, 6);
+
+		gc.restore();
 	}
 
 	public Hexagon getNextOnX() {

@@ -1,5 +1,6 @@
 package fields.draw;
 
+import fields.command.ClearHex;
 import fields.command.CommandQueue;
 import fields.command.HexagonDrawer;
 import fields.command.ViewCommand;
@@ -27,6 +28,15 @@ public class CommandGenerator {
 		queue.enqueue(new HexagonDrawer(start_hex.getNextOnXY()));
 		queue.enqueue(new HexagonDrawer(start_hex.getPrevOnXY()));
 
+		try {
+			Thread.sleep(1000);
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+		queue.enqueue(new ClearHex(start_hex));
+		queue.enqueue(new HexagonDrawer(start_hex));
 	}
 
 }
