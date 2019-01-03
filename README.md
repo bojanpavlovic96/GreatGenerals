@@ -3,14 +3,18 @@
 dodao:
 client-model
 client-view
-	napravio prozor za prikaz igre (JFrame)
-	launcher klasa pokrece GameFrame i dodeljuje joj debugFrame u kom se prikazuju poruke
-	slovo 'd' prikazuje i sakriva debugFrame
-	trenutno ne radi zbog dodeljivanja handlera za debuFrame, dva konstruktora, nullException-i ...
+	class Launcher - main za pokretanje javafx app; kreiranje DrawingStage-a, Kontrolera i modela i njihovo povezivanje
+	class view.DrawingStage - prozor za prikaz implements EventDrivenComponent, CommandDrivenComponent, ShouldBeShutdown
+	package view.command - sadrzi komande koje ce biti proslednjivane commandQueue-u iz DrawingStage-a
+	package view.components - sadrzi komponente koje ce biti iscrtavane, Hexagon, Terrain, Unit
 	
-	'napravio' interfejs za view (eventDrivenComponent, FieldPainter)
-	drawable ce mozda da implementira Field, ali nisam bas siguran da je potrebo, ne deluje, ipak je potrebno da view zna sta iscrtava, ne moze sve preko interfejsa da ide, a i nema razloga
+	view.CommandGenerator - koriscnjen za testiranje CommandDrivenComponent
+	view.ModelHexaong - predstavlja model podataka iz koga ce biti kreiran heksagon pogodan za iscrtavanje
+	
+	view.CommandProcessor - implements QueueEventHandler, pri svakom dodavanju u queue dok queue nije prazan uzima komande iz queue-a, dodeljuje im odgovarajuci canvas na kome ce se izvrsiti crtanje i poziva njihovu execute metodu.
+	
+	package field.region - zanemariti, sadrzi implementaciju hexagona kao zasebne komponete (javafx region)
 	
 client-controller
-	krenuo, stao ...
+	
 ```
