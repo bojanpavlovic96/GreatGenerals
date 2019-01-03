@@ -12,80 +12,9 @@ public class BoardPanel extends JPanel implements DebugMessageGenerator {
 
 	private DebugMessageHandler message_handler;
 
-	// to remove
-
-	private int x = 300;
-	private int y = 300;
-	private int size = 50;
-
-	private void cubeOperations() {
-
-		this.addMouseListener(new MouseAdapter() {
-
-			@Override
-			public void mousePressed(MouseEvent e) {
-				moveSquare(e.getX(), e.getY());
-			}
-
-		});
-
-		this.addMouseMotionListener(new MouseAdapter() {
-			@Override
-			public void mouseDragged(MouseEvent e) {
-				moveSquare(e.getX(), e.getY());
-			}
-		});
-
-	}
-
-	private void moveSquare(int x, int y) {
-		if (this.x != x || this.y != y) {
-			repaint(this.x, this.y, this.x + size, this.y + size);
-
-			this.x = x;
-			this.y = y;
-			
-			// repaint(this.x, this.y, this.size, this.size);
-		}
-	}
-
-	@Override
-	public void repaint() {
-		this.handleMessage("calling repaint -BorderPnel", MessagePriority.DebugMessage);
-
-		super.repaint();
-	}
-
-	@Override
-	public void paint(Graphics g) {
-		super.paint(g);
-
-		this.handleMessage("paint with color: " + g.getColor(), MessagePriority.DebugMessage);
-
-	}
-
-	@Override
-	protected void paintComponent(Graphics g) {
-		super.paintComponent(g);
-
-		// this.handleMessage("paintComponent with color: " + g.getColor(),
-		// MessagePriority.DebugMessage);
-
-		g.setColor(Color.red);
-		g.fillRect(this.x, this.y, this.size, this.size);
-
-	}
-
-	// to remove
 
 	public BoardPanel() {
 		super();
-
-		// to remove
-
-		this.cubeOperations();
-
-		// to remove
 
 		this.setBackground(Color.gray);
 
