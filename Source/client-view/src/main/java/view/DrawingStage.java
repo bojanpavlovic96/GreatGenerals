@@ -44,6 +44,9 @@ public class DrawingStage extends Stage implements EventDrivenComponent, Command
 
 	private void initStage() {
 
+		this.setX(100);
+		this.setY(100);
+
 		this.setWidth(this.STAGE_WIDTH);
 		this.setHeight(this.STAGE_HEIGHT);
 
@@ -89,14 +92,10 @@ public class DrawingStage extends Stage implements EventDrivenComponent, Command
 		this.addEventHandler(MouseEvent.MOUSE_CLICKED, new EventHandler<MouseEvent>() {
 
 			public void handle(MouseEvent arg) {
-				System.out.println("Handling mouse-click-event ...");
 				List<ViewEventHandler> handlers_list = handlers_map.get("mouse-click-event");
 				if (handlers_list != null) {
 
-					System.out.println("Found handlers ...");
-
 					for (ViewEventHandler handler : handlers_list) {
-						System.out.println("Executing handler - " + ((NamedEventHandler) handler).getName());
 						handler.execute(arg);
 					}
 				}

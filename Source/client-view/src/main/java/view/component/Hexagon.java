@@ -5,17 +5,24 @@ import java.util.List;
 
 import fields.region.HexagonRegion;
 import javafx.geometry.Point2D;
+import javafx.geometry.Point3D;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.Image;
 import javafx.scene.paint.Color;
 import javafx.scene.transform.Rotate;
 import javafx.scene.transform.Transform;
+import model.Field;
 import view.ModelHexagon;
 
-public class Hexagon {
+public class Hexagon implements HexCoordinateConverter {
 
+	// axial representation with to values q, r
+	// pointy top hex
 	private Point2D storage_position;
+
+	// storage_position.x -> q - column
+	// storage_positoin.y -> r - row
 
 	private String BORDER_PATH = "/border.png";
 
@@ -29,21 +36,42 @@ public class Hexagon {
 
 	private List<Point2D> corner_points;
 
-	public Hexagon(ModelHexagon model) {
+	public Hexagon(Field model, double side_size) {
+
+		this.storage_position = model.getStorage_position();
 
 	}
 
-	public Hexagon(Point2D storage_center, Point2D hex_center, double side_size) {
+	public Hexagon(Point2D storage_position, double side_size) {
 
-		this.storage_position = storage_center;
-		this.hex_center = hex_center;
+		// inverted
+		this.storage_position = new Point2D(storage_position.getY(), storage_position.getX());
+		// this.storage_position = storage_position;
 
 		this.side_size = side_size;
-		// calculate hex width and height based on the hex side size (length)
-		this.hex_width = (float) (Math.sqrt(3) * this.side_size);
-		this.hex_height = 2 * this.side_size;
 
-		// invalid
+		this.hex_center = this.calcRealPosition(this.storage_position);
+
+		this.hex_width = this.calcHexWidth(this.side_size);
+		this.hex_height = this.calcHexHeight(this.side_size);
+
+		this.unit = new Unit(100, 100, 100);
+		this.terrain = new Terrain();
+
+		this.initCornerPoints();
+	}
+
+	// for test
+	public Hexagon(Point2D real_position) {
+
+		this.side_size = 50;
+
+		this.hex_width = this.calcHexWidth(this.side_size);
+		this.hex_height = this.calcHexHeight(this.side_size);
+
+		this.storage_position = this.calcStoragePosition(real_position);
+
+		this.hex_center = this.calcRealPosition(this.storage_position);
 
 		this.unit = new Unit(100, 100, 100);
 		this.terrain = new Terrain();
@@ -52,14 +80,20 @@ public class Hexagon {
 
 	}
 
-	public Hexagon(Point2D hex_center, double side_size) {
+	public Hexagon(Point2D storage_center, Point2D hex_center, double side_size) {
 
+		this.storage_position = storage_center;
 		this.hex_center = hex_center;
-
 		this.side_size = side_size;
+
 		// calculate hex width and height based on the hex side size (length)
-		this.hex_width = (float) (Math.sqrt(3) * this.side_size);
-		this.hex_height = 2 * this.side_size;
+		this.hex_width = this.calcHexWidth(this.side_size);
+		this.hex_height = this.calcHexHeight(this.side_size);
+
+		// invalid start
+		this.unit = new Unit(100, 100, 100);
+		this.terrain = new Terrain();
+		// invalid end
 
 		this.initCornerPoints();
 
@@ -83,7 +117,7 @@ public class Hexagon {
 			y = (float) (this.hex_center.getY() - this.side_size * Math.sin(angle));
 
 			this.getCorner_points().add(new Point2D(x, y));
-			System.out.println("Calculated corner: ( " + x + ", " + y + " )");
+			// System.out.println("Calculated corner: ( " + x + ", " + y + " )");
 
 			// add 60 degree
 			angle += Math.PI / 3;
@@ -92,7 +126,117 @@ public class Hexagon {
 
 	}
 
+	private double calcHexWidth(double side_size) {
+		return Math.sqrt(3) * side_size;
+	}
+
+	private double calcHexHeight(double side_size) {
+		return 2 * side_size;
+	}
+
+	public Point3D convertToCube(Point2D axial) {
+
+		// axial.q -> x
+		// axial.r -> y
+
+		double x = axial.getX();
+		double z = axial.getY();
+		double y = -x - z;
+
+		return new Point3D(x, y, z);
+
+	}
+
+	public Point2D convertToAxial(Point3D cube) {
+
+		// axial.q -> x
+		// axial.r -> y
+
+		double x = cube.getX();
+		double y = cube.getZ();
+
+		return new Point2D(x, y);
+
+	}
+
+	public Point2D calcRealPosition(Point2D axial) {
+
+		// work with this setup
+		// x -> y
+		double x = this.side_size * (Math.sqrt(3) * axial.getX() + Math.sqrt(3) / 2 * axial.getY());
+		// y
+		double y = this.side_size * (3.0 / 2 * axial.getY());
+
+		return new Point2D(x, y);
+	}
+
+	/*
+	 * function cube_round(cube): var rx = round(cube.x) var ry = round(cube.y) var
+	 * rz = round(cube.z)
+	 * 
+	 * var x_diff = abs(rx - cube.x) var y_diff = abs(ry - cube.y) var z_diff =
+	 * abs(rz - cube.z)
+	 * 
+	 * if x_diff > y_diff and x_diff > z_diff: rx = -ry-rz else if y_diff > z_diff:
+	 * ry = -rx-rz else: rz = -rx-ry
+	 * 
+	 * return Cube(rx, ry, rz)
+	 */
+
+	private Point3D cube_round(Point3D cube) {
+
+		System.out.println("got in round: " + cube);
+
+		double rx = Math.round(cube.getX());
+		double ry = Math.round(cube.getY());
+		double rz = Math.round(cube.getZ());
+
+		System.out.println("\tround x: " + rx);
+		System.out.println("\tround y: " + ry);
+		System.out.println("\tround z: " + rz);
+
+		double x_diff = Math.abs(rx - cube.getX());
+		double y_diff = Math.abs(ry - cube.getY());
+		double z_diff = Math.abs(rz - cube.getZ());
+
+		if ((x_diff > y_diff) && (x_diff > z_diff)) {
+			rx = -ry - rz;
+		} else if (y_diff > z_diff) {
+			ry = -rx - rz;
+		} else {
+			rz = -rx - ry;
+		}
+
+		System.out.println("After round: " + rx + "<>" + ry + "<>" + rz);
+
+		return new Point3D(rx, ry, rz);
+	}
+
+	public Point2D calcStoragePosition(Point2D point) {
+
+		// Point2D point = new Point2D(ppoint.getX() + this.side_size, ppoint.getY());
+
+		// x - y
+		// /3 /3
+		double x = (Math.sqrt(3.0) / 3 * point.getX() - 1.0 / 3 * point.getY()) / this.side_size;
+		// y
+		double y = (2.0 / 3 * point.getY()) / this.side_size;
+
+		System.out.println("\n--------");
+		System.out.println("click on: " + point);
+		System.out.println("in matrix: " + new Point2D((int) x, (int) y));
+
+		Point2D position = this.convertToAxial(this.cube_round(this.convertToCube(new Point2D(x, y))));
+		System.out.println("Position: " + position);
+
+		System.out.println("--------");
+
+		// return new Point2D(position.getX(), y);
+		return position;
+	}
+
 	public void drawOn(Canvas canvas) {
+
 		GraphicsContext gc = canvas.getGraphicsContext2D();
 
 		this.drawBorders(gc);
@@ -216,16 +360,6 @@ public class Hexagon {
 
 	}
 
-	// todo implement...
-	public Point2D calculatePositionFromStorage(Point2D storage_position) {
-		return null;
-	}
-
-	// todo implement
-	public Point2D calculateStoragePositionFromReal(Point2D real_position) {
-		return null;
-	}
-
 	public List<Point2D> getCorner_points() {
 		return corner_points;
 	}
@@ -233,5 +367,4 @@ public class Hexagon {
 	public void setCorner_points(List<Point2D> corner_points) {
 		this.corner_points = corner_points;
 	}
-
 }

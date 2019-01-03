@@ -1,6 +1,7 @@
 
 import javafx.application.Application;
 import javafx.event.Event;
+import javafx.geometry.Point2D;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.stage.Stage;
@@ -23,12 +24,14 @@ public class Launcher extends Application {
 
 			public void run() {
 
-				CommandGenerator generator = new CommandGenerator(stage.getCommandQueue());
+				final CommandGenerator generator = new CommandGenerator(stage.getCommandQueue());
 
 				stage.addEventHandler("mouse-click-event", new NamedEventHandler("testing-mouse-click-event-handler") {
 
 					public void execute(Event arg) {
-						System.out.println("mouse-click-event: " + (MouseEvent) arg);
+
+						generator.drawHex(new Point2D(((MouseEvent) arg).getX(), ((MouseEvent) arg).getY()));
+
 					}
 				});
 
