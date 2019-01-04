@@ -19,7 +19,7 @@ import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 import view.command.CommandQueue;
 
-public class DrawingStage extends Stage implements EventDrivenComponent, CommandDrivenComponent, ShouldBeShutdown {
+public class DrawingStage extends Stage implements View {
 
 	private int STAGE_WIDTH = 800;
 	private int STAGE_HEIGHT = 500;
@@ -30,7 +30,7 @@ public class DrawingStage extends Stage implements EventDrivenComponent, Command
 
 	private CommandQueue command_queue;
 	private ExecutorService executor;
-	private CommandProcessor command_processor;
+	private ViewCommandProcessor command_processor;
 
 	private Map<String, List<ViewEventHandler>> handlers_map;
 
@@ -42,6 +42,7 @@ public class DrawingStage extends Stage implements EventDrivenComponent, Command
 		this.initEventHandlers();
 	}
 
+	// only stage specific things
 	private void initStage() {
 		// position on screen
 		this.setX(100);
@@ -50,7 +51,7 @@ public class DrawingStage extends Stage implements EventDrivenComponent, Command
 		this.setWidth(this.STAGE_WIDTH);
 		this.setHeight(this.STAGE_HEIGHT);
 
-		// max and min width/height for linux ( resizable(false) is not supported )
+		// max/min width/height set for linux ( resizable(false) is not supported )
 		this.setMaxWidth(this.STAGE_WIDTH);
 		this.setMaxHeight(this.STAGE_HEIGHT);
 
@@ -58,9 +59,10 @@ public class DrawingStage extends Stage implements EventDrivenComponent, Command
 		this.setMinHeight(this.STAGE_HEIGHT);
 
 		this.setResizable(false); // doesn't work on linux
-		this.initStyle(StageStyle.UNDECORATED);
+		this.initStyle(StageStyle.UNDECORATED); // removes title bar
 
 		// create root node and add it to the main scene
+		// Group is just container
 		this.root = new Group();
 		this.main_scene = new Scene(this.root);
 
@@ -68,11 +70,14 @@ public class DrawingStage extends Stage implements EventDrivenComponent, Command
 		this.board_canvas = new Canvas();
 		this.root.getChildren().add(this.board_canvas);
 
+		// set canvas width/height to math stage size
 		this.board_canvas.setWidth(this.STAGE_WIDTH);
 		this.board_canvas.setHeight(this.STAGE_HEIGHT);
 
+		// used for drawing things
 		GraphicsContext gc = this.board_canvas.getGraphicsContext2D();
 
+		// draw gray background
 		gc.setFill(Color.GRAY);
 		gc.fillRect(0, 0, this.STAGE_WIDTH, this.STAGE_HEIGHT);
 
@@ -85,7 +90,7 @@ public class DrawingStage extends Stage implements EventDrivenComponent, Command
 
 		this.executor = Executors.newSingleThreadExecutor();
 
-		this.command_processor = new CommandProcessor(this.executor, this.board_canvas);
+		this.command_processor = new ViewCommandProcessor(this.executor, this.board_canvas);
 
 		this.command_queue = new CommandQueue();
 		this.command_queue.setOnEnqueueEventHandler(this.command_processor);
@@ -139,7 +144,6 @@ public class DrawingStage extends Stage implements EventDrivenComponent, Command
 	}
 
 	// CommandDrivernComponent methods
-
 	public CommandQueue getCommandQueue() {
 		return this.command_queue;
 	}
@@ -149,7 +153,6 @@ public class DrawingStage extends Stage implements EventDrivenComponent, Command
 	}
 
 	// EventDrivenComponent methods
-
 	public void addEventHandler(String event_name, ViewEventHandler event_handler) {
 
 		List<ViewEventHandler> handlers = this.handlers_map.get(event_name);

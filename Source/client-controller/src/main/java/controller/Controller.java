@@ -1,13 +1,16 @@
 package controller;
 
-import view.EventDrivenComponent;
+import model.Model;
+import view.View;
 
-public interface Controller {
+public interface Controller extends CanCommunicate {
 
-	EventDrivenComponent getView();
+	View getView();
 
-	void setView(EventDrivenComponent view);
+	void setView(View view);
 
-	
-	
+	Model getModel();
+
+	void setMode(Model model);
+
 }

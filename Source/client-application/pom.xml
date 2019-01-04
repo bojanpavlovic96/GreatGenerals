@@ -3,10 +3,16 @@
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>great-generals</groupId>
-	<artifactId>client-controller</artifactId>
+	<artifactId>client-application</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 
 	<dependencies>
+
+		<dependency>
+			<groupId>great-generals</groupId>
+			<artifactId>client-model</artifactId>
+			<version>0.0.1-SNAPSHOT</version>
+		</dependency>
 
 		<dependency>
 			<groupId>great-generals</groupId>
@@ -16,7 +22,7 @@
 
 		<dependency>
 			<groupId>great-generals</groupId>
-			<artifactId>communication</artifactId>
+			<artifactId>client-controller</artifactId>
 			<version>0.0.1-SNAPSHOT</version>
 		</dependency>
 
@@ -29,7 +35,7 @@
 				<configuration>
 					<archive>
 						<manifest>
-							<mainClass>tutorial.HibernateTest</mainClass>
+							<mainClass>app.Launcher</mainClass>
 						</manifest>
 					</archive>
 					<descriptorRefs>
@@ -48,6 +54,5 @@
 
 		</plugins>
 	</build>
-
 
 </project>

@@ -12,7 +12,7 @@ public class Terrain {
 
 	}
 
-	public Terrain(model.Terrain model) {
+	public Terrain(model.component.Terrain model) {
 		
 	}
 

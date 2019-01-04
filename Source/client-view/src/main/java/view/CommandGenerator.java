@@ -5,9 +5,9 @@ import java.util.List;
 
 import javafx.geometry.Point2D;
 import javafx.scene.paint.Color;
-import model.Field;
-import model.Terrain;
-import model.Unit;
+import model.component.Field;
+import model.component.Terrain;
+import model.component.Unit;
 import view.command.ClearFieldCommand;
 import view.command.CommandQueue;
 import view.command.SelectFieldCommand;

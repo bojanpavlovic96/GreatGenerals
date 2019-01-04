@@ -12,7 +12,7 @@ public class Unit {
 	private int attack;
 	private int defense;
 	
-	public Unit(model.Unit model) {
+	public Unit(model.component.Unit model) {
 		
 	}
 	

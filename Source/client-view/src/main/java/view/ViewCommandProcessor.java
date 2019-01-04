@@ -7,12 +7,12 @@ import view.command.CommandQueue;
 import view.command.QueueEventHandler;
 import view.command.ViewCommand;
 
-public class CommandProcessor implements QueueEventHandler {
+public class ViewCommandProcessor implements QueueEventHandler {
 
 	private ExecutorService executor = null;
 	private Canvas canvas;
 
-	public CommandProcessor(ExecutorService executor, Canvas canvas) {
+	public ViewCommandProcessor(ExecutorService executor, Canvas canvas) {
 
 		this.executor = executor;
 		this.canvas = canvas;

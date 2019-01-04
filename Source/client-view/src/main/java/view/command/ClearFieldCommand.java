@@ -1,6 +1,6 @@
 package view.command;
 
-import model.Field;
+import model.component.Field;
 import view.component.Hexagon;
 
 public class ClearFieldCommand extends ViewCommand {

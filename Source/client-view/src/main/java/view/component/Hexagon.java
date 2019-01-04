@@ -11,7 +11,7 @@ import javafx.scene.image.Image;
 import javafx.scene.paint.Color;
 import javafx.scene.transform.Rotate;
 import javafx.scene.transform.Transform;
-import model.Field;
+import model.component.Field;
 import view.command.DrawFieldCommand;
 
 public class Hexagon implements HexCoordinateConverter, DrawableHexagon {
