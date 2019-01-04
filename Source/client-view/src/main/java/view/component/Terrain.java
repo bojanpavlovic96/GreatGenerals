@@ -12,6 +12,10 @@ public class Terrain {
 
 	}
 
+	public Terrain(model.Terrain model) {
+		
+	}
+
 	public void drawTerrain(GraphicsContext gc, Point2D hex_center, double hex_side) {
 
 		Image image = new Image(this.ICON_PATH);

@@ -11,13 +11,10 @@ public class Field {
 
 	public Field(Point2D storage_position, Unit unit, Terrain terrain) {
 		super();
+		
 		this.storage_position = storage_position;
 		this.unit = unit;
 		this.terrain = terrain;
-	}
-
-	public void addSomething() {
-
 	}
 
 	public Point2D getStorage_position() {

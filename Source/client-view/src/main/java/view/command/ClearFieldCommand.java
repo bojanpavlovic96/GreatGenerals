@@ -1,12 +1,17 @@
 package view.command;
 
+import model.Field;
 import view.component.Hexagon;
 
-public class ClearHex extends ViewCommand {
+public class ClearFieldCommand extends ViewCommand {
 
 	private Hexagon hex;
-
-	public ClearHex(Hexagon hex) {
+	
+	public ClearFieldCommand(Field field) {
+		
+	}
+	
+	public ClearFieldCommand(Hexagon hex) {
 		this.hex = hex;
 	}
 

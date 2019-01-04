@@ -26,15 +26,6 @@ public class Launcher extends Application {
 
 				final CommandGenerator generator = new CommandGenerator(stage.getCommandQueue());
 
-				stage.addEventHandler("mouse-click-event", new NamedEventHandler("testing-mouse-click-event-handler") {
-
-					public void execute(Event arg) {
-
-						generator.drawHex(new Point2D(((MouseEvent) arg).getX(), ((MouseEvent) arg).getY()));
-
-					}
-				});
-
 				stage.addEventHandler("key-event-char-k", new NamedEventHandler("testing-key-event-handler-char-k") {
 
 					@Override

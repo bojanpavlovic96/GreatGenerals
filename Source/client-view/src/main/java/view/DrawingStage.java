@@ -43,14 +43,21 @@ public class DrawingStage extends Stage implements EventDrivenComponent, Command
 	}
 
 	private void initStage() {
-
+		// position on screen
 		this.setX(100);
 		this.setY(100);
 
 		this.setWidth(this.STAGE_WIDTH);
 		this.setHeight(this.STAGE_HEIGHT);
 
-		this.setResizable(false);
+		// max and min width/height for linux ( resizable(false) is not supported )
+		this.setMaxWidth(this.STAGE_WIDTH);
+		this.setMaxHeight(this.STAGE_HEIGHT);
+
+		this.setMinWidth(this.STAGE_WIDTH);
+		this.setMinHeight(this.STAGE_HEIGHT);
+
+		this.setResizable(false); // doesn't work on linux
 		this.initStyle(StageStyle.UNDECORATED);
 
 		// create root node and add it to the main scene

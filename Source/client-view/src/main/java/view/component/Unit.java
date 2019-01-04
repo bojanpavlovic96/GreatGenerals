@@ -11,7 +11,11 @@ public class Unit {
 	private int health;
 	private int attack;
 	private int defense;
-
+	
+	public Unit(model.Unit model) {
+		
+	}
+	
 	public Unit(int health, int attack, int defense) {
 
 		this.health = health;

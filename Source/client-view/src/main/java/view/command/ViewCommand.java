@@ -2,7 +2,7 @@ package view.command;
 
 import javafx.scene.canvas.Canvas;
 
-public abstract class ViewCommand implements Runnable{
+public abstract class ViewCommand implements Runnable {
 
 	protected Canvas canvas;
 
@@ -13,5 +13,5 @@ public abstract class ViewCommand implements Runnable{
 	public void setCanvas(Canvas canvas) {
 		this.canvas = canvas;
 	}
-	
+
 }
