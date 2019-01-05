@@ -16,7 +16,7 @@ public class UnselectFieldCommand extends ViewCommand {
 	public UnselectFieldCommand(Field model) {
 
 		super();
-		
+
 		Hexagon hex = new Hexagon(model);
 		hex.setBorder_width(DrawFieldCommand.default_border_width);
 		this.hex = hex;

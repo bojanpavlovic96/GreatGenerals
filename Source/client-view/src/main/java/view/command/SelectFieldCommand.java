@@ -3,6 +3,7 @@ package view.command;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
 import model.component.Field;
+import model.component.GameField;
 import view.component.Hexagon;
 
 public class SelectFieldCommand extends ViewCommand {

@@ -8,16 +8,20 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 import javafx.event.EventHandler;
+import javafx.geometry.Point2D;
 import javafx.scene.Group;
 import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.input.KeyEvent;
+import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 import view.command.CommandQueue;
+import view.command.DrawFieldCommand;
+import view.component.Hexagon;
 
 public class DrawingStage extends Stage implements View {
 
@@ -104,11 +108,25 @@ public class DrawingStage extends Stage implements View {
 		this.addEventHandler(MouseEvent.MOUSE_CLICKED, new EventHandler<MouseEvent>() {
 
 			public void handle(MouseEvent arg) {
-				List<ViewEventHandler> handlers_list = handlers_map.get("mouse-click-event");
+
+				Point2D field_position = Hexagon.calcStoragePosition(new Point2D(arg.getX(), arg.getY()),
+						DrawFieldCommand.default_hex_size);
+
+				String event_name = "";
+
+				if (arg.getButton() == MouseButton.PRIMARY) {
+					event_name = "left-mouse-click-event";
+				} else if (arg.getButton() == MouseButton.SECONDARY) {
+					event_name = "right-mouse-click-event";
+				} else {
+					event_name = "mouse-click-event";
+				}
+
+				List<ViewEventHandler> handlers_list = handlers_map.get(event_name);
 				if (handlers_list != null) {
 
 					for (ViewEventHandler handler : handlers_list) {
-						handler.execute(arg);
+						handler.execute(new ViewEvent(arg, field_position));
 					}
 				}
 
@@ -132,7 +150,7 @@ public class DrawingStage extends Stage implements View {
 
 					for (ViewEventHandler handler : handlers) {
 						System.out.println("Executing handler - " + ((NamedEventHandler) handler).getName());
-						handler.execute(event);
+						// handler.execute(event);
 					}
 
 				}

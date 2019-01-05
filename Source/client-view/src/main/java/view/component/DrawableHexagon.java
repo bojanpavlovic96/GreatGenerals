@@ -12,4 +12,6 @@ public interface DrawableHexagon {
 
 	void clearHex(GraphicsContext gc);
 
+	void drawBattle(GraphicsContext gc);
+	
 }

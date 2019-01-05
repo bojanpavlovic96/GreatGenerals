@@ -34,7 +34,6 @@ public class Launcher extends Application {
 				// thread for controller
 
 				communicator = new Messenger();
-
 				model = new DataModel();
 
 				controller = new GameBrain(communicator, view, model);
@@ -48,10 +47,10 @@ public class Launcher extends Application {
 	public void stop() throws Exception {
 		super.stop();
 
-		ShouldBeShutdown up_viw = (ShouldBeShutdown) this.view;
+		ShouldBeShutdown up_view = (ShouldBeShutdown) this.view;
 
-		if (up_viw != null) {
-			up_viw.shutdown();
+		if (up_view != null) {
+			up_view.shutdown();
 		}
 
 	}

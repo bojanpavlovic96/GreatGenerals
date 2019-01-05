@@ -1,5 +1,9 @@
 package model.component;
 
-public class Unit {
+public interface Unit {
+
+	String getUnitId();
+
+	boolean inRange(Field field);
 
 }

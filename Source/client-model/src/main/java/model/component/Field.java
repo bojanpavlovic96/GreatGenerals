@@ -1,44 +1,31 @@
 package model.component;
 
+import java.util.List;
+
 import javafx.geometry.Point2D;
 
-public class Field {
+public interface Field {
 
-	private Point2D storage_position;
+	Point2D getStoragePosition();
 
-	private Unit unit;
-	private Terrain terrain;
+	void setStoragePosition(Point2D storage_position);
 
-	public Field(Point2D storage_position, Unit unit, Terrain terrain) {
-		super();
-		
-		this.storage_position = storage_position;
-		this.unit = unit;
-		this.terrain = terrain;
-	}
+	List<Unit> getUnits();
 
-	public Point2D getStorage_position() {
-		return storage_position;
-	}
+	void setUnits(List<Unit> units);
 
-	public void setStorage_position(Point2D storage_position) {
-		this.storage_position = storage_position;
-	}
+	Unit removeUnit(String unit_id);
 
-	public Unit getUnit() {
-		return unit;
-	}
+	void addUnit(Unit new_unit);
 
-	public void setUnit(Unit unit) {
-		this.unit = unit;
-	}
+	Terrain getTerrain();
 
-	public Terrain getTerrain() {
-		return terrain;
-	}
+	void setTerrain(Terrain terrain);
 
-	public void setTerrain(Terrain terrain) {
-		this.terrain = terrain;
-	}
+	void moveToField(Field second_field);
+
+	boolean isInBattle();
+
+	boolean haveMorePlace();
 
 }

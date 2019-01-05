@@ -3,16 +3,17 @@ package view.component;
 import javafx.geometry.Point2D;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.Image;
+import model.component.Terrain;
 
-public class Terrain {
+public class ViewTerrain {
 
 	private String ICON_PATH = "/mountain.png";
 
-	public Terrain() {
+	public ViewTerrain() {
 
 	}
 
-	public Terrain(model.component.Terrain model) {
+	public ViewTerrain(Terrain model) {
 		
 	}
 

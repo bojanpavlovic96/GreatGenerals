@@ -3,8 +3,9 @@ package view.component;
 import javafx.geometry.Point2D;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.Image;
+import model.component.Unit;
 
-public class Unit {
+public class ViewUnit {
 
 	private String ICON_PATH = "/soldier.png";
 
@@ -12,11 +13,11 @@ public class Unit {
 	private int attack;
 	private int defense;
 	
-	public Unit(model.component.Unit model) {
+	public ViewUnit(Unit model) {
 		
 	}
 	
-	public Unit(int health, int attack, int defense) {
+	public ViewUnit(int health, int attack, int defense) {
 
 		this.health = health;
 		this.attack = attack;
@@ -26,8 +27,6 @@ public class Unit {
 	public void drawUnit(GraphicsContext gc, Point2D hex_center, double hex_side) {
 
 		Image image = new Image(this.ICON_PATH);
-		double hex_width = (float) (Math.sqrt(3) * hex_side);
-		double hex_height = 2 * hex_side;
 
 		gc.save();
 

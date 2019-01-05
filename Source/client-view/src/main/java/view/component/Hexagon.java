@@ -12,9 +12,10 @@ import javafx.scene.paint.Color;
 import javafx.scene.transform.Rotate;
 import javafx.scene.transform.Transform;
 import model.component.Field;
+import model.component.Unit;
 import view.command.DrawFieldCommand;
 
-public class Hexagon implements HexCoordinateConverter, DrawableHexagon {
+public class Hexagon implements DrawableHexagon {
 
 	// axial representation with two values q & r
 	// pointy top hex
@@ -24,9 +25,10 @@ public class Hexagon implements HexCoordinateConverter, DrawableHexagon {
 	private Point2D storage_position;
 
 	private String BORDER_PATH = "/border.png";
+	private String BATTLE_IMG_PATH = "/soldier-salute_16.png";
 
-	private Terrain terrain;
-	private Unit unit;
+	private ViewTerrain terrain;
+	private List<ViewUnit> units;
 
 	private Point2D hex_center;
 
@@ -42,15 +44,19 @@ public class Hexagon implements HexCoordinateConverter, DrawableHexagon {
 
 	public Hexagon(Field model) {
 
-		this.storage_position = model.getStorage_position();
+		this.storage_position = model.getStoragePosition();
 
-		this.terrain = new Terrain(model.getTerrain());
-		this.unit = new Unit(model.getUnit());
+		this.terrain = new ViewTerrain(model.getTerrain());
+
+		this.units = new ArrayList<ViewUnit>();
+		for (Unit model_unit : model.getUnits()) {
+			this.units.add(new ViewUnit(model_unit));
+		}
 
 		this.side_size = DrawFieldCommand.default_hex_size;
 		this.border_width = DrawFieldCommand.default_hex_size;
 
-		this.hex_center = this.calcRealPosition(this.storage_position);
+		this.hex_center = Hexagon.calcRealPosition(this.storage_position, this.side_size);
 
 		this.hex_width = this.calcHexWidth(this.side_size);
 		this.hex_height = this.calcHexHeight(this.side_size);
@@ -64,7 +70,7 @@ public class Hexagon implements HexCoordinateConverter, DrawableHexagon {
 		this(model);
 
 		this.side_size = side_size;
-		this.hex_center = this.calcRealPosition(this.storage_position);
+		this.hex_center = Hexagon.calcRealPosition(this.storage_position, this.side_size);
 
 		this.initCornerPoints();
 	}
@@ -75,7 +81,7 @@ public class Hexagon implements HexCoordinateConverter, DrawableHexagon {
 
 		this.side_size = side_size;
 		this.border_width = border_width;
-		this.hex_center = this.calcRealPosition(this.storage_position);
+		this.hex_center = Hexagon.calcRealPosition(this.storage_position, this.side_size);
 
 		this.initCornerPoints();
 	}
@@ -90,19 +96,22 @@ public class Hexagon implements HexCoordinateConverter, DrawableHexagon {
 		this.side_size = side_size;
 		this.border_width = DrawFieldCommand.default_border_width;
 
-		this.hex_center = this.calcRealPosition(this.storage_position);
+		this.hex_center = Hexagon.calcRealPosition(this.storage_position, this.side_size);
 
 		this.hex_width = this.calcHexWidth(this.side_size);
 		this.hex_height = this.calcHexHeight(this.side_size);
 
-		this.unit = new Unit(100, 100, 100);
-		this.terrain = new Terrain();
+		this.units = new ArrayList<ViewUnit>();
+		this.units.add(new ViewUnit(100, 100, 100));
+
+		this.terrain = new ViewTerrain();
 
 		this.initCornerPoints();
 	}
 
 	// used for getNext
-	public Hexagon(Point2D storage_center, Point2D hex_center, double side_size, Unit unit, Terrain terrain) {
+	public Hexagon(Point2D storage_center, Point2D hex_center, double side_size, List<ViewUnit> units,
+			ViewTerrain terrain) {
 
 		this.storage_position = storage_center;
 		this.hex_center = hex_center;
@@ -113,7 +122,7 @@ public class Hexagon implements HexCoordinateConverter, DrawableHexagon {
 		this.hex_width = this.calcHexWidth(this.side_size);
 		this.hex_height = this.calcHexHeight(this.side_size);
 
-		this.unit = unit;
+		this.units = units;
 		this.terrain = terrain;
 
 		this.initCornerPoints();
@@ -136,7 +145,6 @@ public class Hexagon implements HexCoordinateConverter, DrawableHexagon {
 			y = (float) (this.hex_center.getY() - this.side_size * Math.sin(angle));
 
 			this.getCorner_points().add(new Point2D(x, y));
-			// System.out.println("Calculated corner: ( " + x + ", " + y + " )");
 
 			// add 60 degree
 			angle += Math.PI / 3;
@@ -155,7 +163,7 @@ public class Hexagon implements HexCoordinateConverter, DrawableHexagon {
 
 	// methods for position calculations
 	// HexCoordinateConverter
-	public Point3D convertToCube(Point2D axial) {
+	public static Point3D convertToCube(Point2D axial) {
 
 		// axial.q -> x
 		// axial.r -> y
@@ -168,7 +176,7 @@ public class Hexagon implements HexCoordinateConverter, DrawableHexagon {
 
 	}
 
-	public Point2D convertToAxial(Point3D cube) {
+	public static Point2D convertToAxial(Point3D cube) {
 
 		// axial.q -> x
 		// axial.r -> y
@@ -180,20 +188,18 @@ public class Hexagon implements HexCoordinateConverter, DrawableHexagon {
 
 	}
 
-	public Point2D calcRealPosition(Point2D axial) {
+	public static Point2D calcRealPosition(Point2D axial, double side_size) {
 
 		// work with this setup
 		// x -> y
-		double x = this.side_size * (Math.sqrt(3) * axial.getX() + Math.sqrt(3) / 2 * axial.getY());
+		double x = side_size * (Math.sqrt(3) * axial.getX() + Math.sqrt(3) / 2 * axial.getY());
 		// y
-		double y = this.side_size * (3.0 / 2 * axial.getY());
+		double y = side_size * (3.0 / 2 * axial.getY());
 
 		return new Point2D(x, y);
 	}
 
-	private Point3D cube_round(Point3D cube) {
-
-		System.out.println("got in round: " + cube);
+	private static Point3D cube_round(Point3D cube) {
 
 		double rx = Math.round(cube.getX());
 		double ry = Math.round(cube.getY());
@@ -214,26 +220,16 @@ public class Hexagon implements HexCoordinateConverter, DrawableHexagon {
 		return new Point3D(rx, ry, rz);
 	}
 
-	public Point2D calcStoragePosition(Point2D point) {
-
-		// Point2D point = new Point2D(ppoint.getX() + this.side_size, ppoint.getY());
+	public static Point2D calcStoragePosition(Point2D point, double side_size) {
 
 		// x - y
 		// /3 /3
-		double x = (Math.sqrt(3.0) / 3 * point.getX() - 1.0 / 3 * point.getY()) / this.side_size;
+		double x = (Math.sqrt(3.0) / 3 * point.getX() - 1.0 / 3 * point.getY()) / side_size;
 		// y
-		double y = (2.0 / 3 * point.getY()) / this.side_size;
+		double y = (2.0 / 3 * point.getY()) / side_size;
 
-		System.out.println("\n--------");
-		System.out.println("click on: " + point);
-		System.out.println("in matrix: " + new Point2D((int) x, (int) y));
+		Point2D position = Hexagon.convertToAxial(Hexagon.cube_round(Hexagon.convertToCube(new Point2D(x, y))));
 
-		Point2D position = this.convertToAxial(this.cube_round(this.convertToCube(new Point2D(x, y))));
-		System.out.println("Position: " + position);
-
-		System.out.println("--------");
-
-		// return new Point2D(position.getX(), y);
 		return position;
 	}
 
@@ -261,13 +257,18 @@ public class Hexagon implements HexCoordinateConverter, DrawableHexagon {
 	}
 
 	private void drawTerrain(GraphicsContext gc) {
-
-		this.terrain.drawTerrain(gc, this.hex_center, this.side_size);
+		if (this.terrain != null)
+			this.terrain.drawTerrain(gc, this.hex_center, this.side_size);
 	}
 
 	private void drawUnit(GraphicsContext gc) {
-
-		this.unit.drawUnit(gc, this.hex_center, this.side_size);
+		if (!this.units.isEmpty()) {
+			if (this.units.size() == 1) {
+				this.units.get(0).drawUnit(gc, this.hex_center, this.side_size);
+			} else {
+				this.drawBattle(gc);
+			}
+		}
 	}
 
 	// DrawableHexagon
@@ -316,6 +317,21 @@ public class Hexagon implements HexCoordinateConverter, DrawableHexagon {
 		gc.restore();
 	}
 
+	public void drawBattle(GraphicsContext gc) {
+
+		this.clearHex(gc);
+
+		// draw battle image
+		Image image = new Image(this.BATTLE_IMG_PATH);
+
+		gc.save();
+
+		gc.drawImage(image, hex_center.getX() - this.side_size / 2, hex_center.getY() - this.side_size / 2,
+				this.side_size, this.side_size);
+
+		gc.restore();
+
+	}
 	// get same hex on different position
 
 	public Hexagon getNextOnX() {
@@ -326,7 +342,7 @@ public class Hexagon implements HexCoordinateConverter, DrawableHexagon {
 		int next_cx = (int) (this.hex_center.getX() + 2 * (this.side_size * Math.sin(Math.PI / 3)));
 		int next_cy = (int) this.hex_center.getY();
 
-		return new Hexagon(new Point2D(next_x, next_y), new Point2D(next_cx, next_cy), this.side_size, this.unit,
+		return new Hexagon(new Point2D(next_x, next_y), new Point2D(next_cx, next_cy), this.side_size, this.units,
 				this.terrain);
 
 	}
@@ -339,7 +355,7 @@ public class Hexagon implements HexCoordinateConverter, DrawableHexagon {
 		int next_cx = (int) (this.hex_center.getX() - 2 * (this.side_size * Math.sin(Math.PI / 3)));
 		int next_cy = (int) this.hex_center.getY();
 
-		return new Hexagon(new Point2D(next_x, next_y), new Point2D(next_cx, next_cy), this.side_size, this.unit,
+		return new Hexagon(new Point2D(next_x, next_y), new Point2D(next_cx, next_cy), this.side_size, this.units,
 				this.terrain);
 
 	}
@@ -352,7 +368,7 @@ public class Hexagon implements HexCoordinateConverter, DrawableHexagon {
 		int next_cx = (int) (this.hex_center.getX() + (this.side_size * Math.sin(Math.PI / 3)));
 		int next_cy = (int) (this.hex_center.getY() + this.side_size * 1.5);
 
-		return new Hexagon(new Point2D(next_x, next_y), new Point2D(next_cx, next_cy), this.side_size, this.unit,
+		return new Hexagon(new Point2D(next_x, next_y), new Point2D(next_cx, next_cy), this.side_size, this.units,
 				this.terrain);
 	}
 
@@ -364,7 +380,7 @@ public class Hexagon implements HexCoordinateConverter, DrawableHexagon {
 		int next_cx = (int) (this.hex_center.getX() - (this.side_size * Math.sin(Math.PI / 3)));
 		int next_cy = (int) (this.hex_center.getY() - this.side_size * 1.5);
 
-		return new Hexagon(new Point2D(next_x, next_y), new Point2D(next_cx, next_cy), this.side_size, this.unit,
+		return new Hexagon(new Point2D(next_x, next_y), new Point2D(next_cx, next_cy), this.side_size, this.units,
 				this.terrain);
 	}
 
@@ -376,7 +392,7 @@ public class Hexagon implements HexCoordinateConverter, DrawableHexagon {
 		int next_cx = (int) (this.hex_center.getX() + (this.side_size * Math.sin(Math.PI / 3)));
 		int next_cy = (int) (this.hex_center.getY() - this.side_size * 1.5);
 
-		return new Hexagon(new Point2D(next_x, next_y), new Point2D(next_cx, next_cy), this.side_size, this.unit,
+		return new Hexagon(new Point2D(next_x, next_y), new Point2D(next_cx, next_cy), this.side_size, this.units,
 				this.terrain);
 
 	}
@@ -389,7 +405,7 @@ public class Hexagon implements HexCoordinateConverter, DrawableHexagon {
 		int next_cx = (int) (this.hex_center.getX() - (this.side_size * Math.sin(Math.PI / 3)));
 		int next_cy = (int) (this.hex_center.getY() + this.side_size * 1.5);
 
-		return new Hexagon(new Point2D(next_x, next_y), new Point2D(next_cx, next_cy), this.side_size, this.unit,
+		return new Hexagon(new Point2D(next_x, next_y), new Point2D(next_cx, next_cy), this.side_size, this.units,
 				this.terrain);
 
 	}
