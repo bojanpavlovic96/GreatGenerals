@@ -11,8 +11,11 @@ import javafx.geometry.Point2D;
 import model.Model;
 import model.component.Field;
 import model.component.GameField;
-import model.component.GameUnit;
 import model.component.Terrain;
+import model.component.unit.BasicUnit;
+import model.component.unit.MoveEventHandler;
+import model.path.AStar;
+import model.path.PathFinder;
 import view.View;
 import view.ViewEvent;
 import view.ViewEventHandler;
@@ -34,6 +37,8 @@ public class GameBrain implements Controller {
 
 	private Field selected_field;
 
+	private PathFinder path_finder;
+
 	public GameBrain(Communicator communicator, View view, Model model_arg) {
 
 		super();
@@ -48,21 +53,11 @@ public class GameBrain implements Controller {
 		LoadBoardCommand load_command = new LoadBoardCommand(this.model.getFields());
 		this.view_command_queue.enqueue(load_command);
 
-		// just for test ...
-
-		this.view_command_queue.enqueue(new SelectFieldCommand(this.model.getField(new Point2D(10, 9))));
-
-		try {
-			Thread.sleep(1500);
-		} catch (InterruptedException e) {
-			e.printStackTrace();
-		}
-
-		// test ...
-
 		this.initViewEventHandlers();
 
 		this.initCommunicatorHandlers();
+
+		this.path_finder = new AStar(this.model);
 
 	}
 
@@ -75,35 +70,60 @@ public class GameBrain implements Controller {
 		}
 
 		for (int i = 1; i < 20; i++) {
-			models.add(new GameField(new Point2D(i, 2), new GameUnit(), new Terrain()));
+			Field field = new GameField(new Point2D(i, 2), null, new Terrain());
+			field.addUnit(new BasicUnit(field));
+			field.getUnits().get(0).getMoveType().setOnMoveHandler(new MoveEventHandler() {
+
+				public void execute(Field from, Field to) {
+					MoveCommand move = new MoveCommand(from, to);
+					move.setView_command_queue(view_command_queue);
+					move.run();
+				}
+
+			});
+			models.add(field);
 		}
 
 		for (int i = 1; i < 20; i++) {
-			models.add(new GameField(new Point2D(i, 3), new GameUnit(), new Terrain()));
+			Field field = new GameField(new Point2D(i, 3), null, new Terrain());
+			field.addUnit(new BasicUnit(field));
+			models.add(field);
 		}
 
 		for (int i = 3; i < 18; i++) {
-			models.add(new GameField(new Point2D(i, 4), new GameUnit(), new Terrain()));
+			Field field = new GameField(new Point2D(i, 4), null, new Terrain());
+			field.addUnit(new BasicUnit(field));
+			models.add(field);
 		}
 
 		for (int i = 5; i < 15; i++) {
-			models.add(new GameField(new Point2D(i, 5), new GameUnit(), new Terrain()));
+			Field field = new GameField(new Point2D(i, 5), null, new Terrain());
+			field.addUnit(new BasicUnit(field));
+			models.add(field);
 		}
 
 		for (int i = -2; i < 18; i++) {
-			models.add(new GameField(new Point2D(i, 6), new GameUnit(), new Terrain()));
+			Field field = new GameField(new Point2D(i, 6), null, new Terrain());
+			field.addUnit(new BasicUnit(field));
+			models.add(field);
 		}
 
 		for (int i = -4; i < 19; i++) {
-			models.add(new GameField(new Point2D(i, 7), new GameUnit(), new Terrain()));
+			Field field = new GameField(new Point2D(i, 7), null, new Terrain());
+			field.addUnit(new BasicUnit(field));
+			models.add(field);
 		}
 
 		for (int i = -3; i < 18; i++) {
-			models.add(new GameField(new Point2D(i, 8), new GameUnit(), new Terrain()));
+			Field field = new GameField(new Point2D(i, 8), null, new Terrain());
+			field.addUnit(new BasicUnit(field));
+			models.add(field);
 		}
 
 		for (int i = -3; i < 17; i++) {
-			models.add(new GameField(new Point2D(i, 9), new GameUnit(), new Terrain()));
+			Field field = new GameField(new Point2D(i, 9), null, new Terrain());
+			field.addUnit(new BasicUnit(field));
+			models.add(field);
 		}
 
 		for (int i = -4; i < 17; i++) {
@@ -111,15 +131,21 @@ public class GameBrain implements Controller {
 		}
 
 		for (int i = 5; i < 15; i++) {
-			models.add(new GameField(new Point2D(i, 11), new GameUnit(), new Terrain()));
+			Field field = new GameField(new Point2D(i, 11), null, new Terrain());
+			field.addUnit(new BasicUnit(field));
+			models.add(field);
 		}
 
 		for (int i = 5; i < 15; i++) {
-			models.add(new GameField(new Point2D(i, 12), new GameUnit(), new Terrain()));
+			Field field = new GameField(new Point2D(i, 12), null, new Terrain());
+			field.addUnit(new BasicUnit(field));
+			models.add(field);
 		}
 
 		for (int i = 5; i < 15; i++) {
-			models.add(new GameField(new Point2D(i, 13), new GameUnit(), new Terrain()));
+			Field field = new GameField(new Point2D(i, 13), null, new Terrain());
+			field.addUnit(new BasicUnit(field));
+			models.add(field);
 		}
 
 		this.model.initializeModel(models);
@@ -142,9 +168,20 @@ public class GameBrain implements Controller {
 
 					System.out.println("Select is not null...");
 
-					MoveCommand move = new MoveCommand(selected_field, model.getField(arg.getField_position()));
-					move.setView_command_queue(view_command_queue);
-					move.run();
+					// MoveCommand move = new MoveCommand(selected_field,
+					// model.getField(arg.getField_position()));
+					// move.setView_command_queue(view_command_queue);
+					// move.run();
+
+					Field goal = model.getField(arg.getField_position());
+					List<Field> path = path_finder.findPath(selected_field, goal);
+
+					for (Field field : path) {
+						view_command_queue.enqueue(new SelectFieldCommand(field));
+					}
+
+					selected_field.getUnits().get(0).getMoveType().addToPath(path);
+					selected_field.getUnits().get(0).getMoveType().move();
 
 					selected_field = null;
 
@@ -153,9 +190,10 @@ public class GameBrain implements Controller {
 					System.out.println("Select is null ...");
 
 					selected_field = model.getField(arg.getField_position());
-					
+
 					System.out.println("Selecting ...");
 					SelectFieldCommand select = new SelectFieldCommand(selected_field);
+
 					view_command_queue.enqueue(select);
 
 				}

@@ -3,6 +3,7 @@ package model.component;
 import java.util.List;
 
 import javafx.geometry.Point2D;
+import model.component.unit.Unit;
 
 public interface Field {
 
@@ -26,6 +27,9 @@ public interface Field {
 
 	boolean isInBattle();
 
+	// more place in battle
 	boolean haveMorePlace();
+
+	// moving path
 
 }

@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javafx.geometry.Point2D;
+import model.component.unit.Unit;
 
 public class GameField implements Field {
 
@@ -11,6 +12,8 @@ public class GameField implements Field {
 
 	private List<Unit> units;
 	private Terrain terrain;
+
+	private List<Field> path;
 
 	public GameField(Point2D storage_position, Unit unit, Terrain terrain) {
 		super();
@@ -23,16 +26,8 @@ public class GameField implements Field {
 		this.terrain = terrain;
 	}
 
-	// public GameField(Point2D storage_position, List<Unit> units, Terrain terrain)
-	// {
-	// super();
-	//
-	// this.storage_position = storage_position;
-	// this.units = units;
-	// this.terrain = terrain;
-	// }
-
 	public Point2D getStoragePosition() {
+
 		return storage_position;
 	}
 
@@ -75,6 +70,8 @@ public class GameField implements Field {
 	}
 
 	public void addUnit(Unit new_unit) {
+		if (this.units == null)
+			this.units = new ArrayList<Unit>();
 		this.units.add(new_unit);
 	}
 
@@ -85,6 +82,23 @@ public class GameField implements Field {
 
 	public boolean haveMorePlace() {
 		return this.units.size() < 6;
+	}
+
+	// moving path
+	public void addToPath(Field field) {
+		this.path.add(field);
+	}
+
+	public void addToPath(List<Field> fields) {
+		this.path.addAll(fields);
+	}
+
+	public List<Field> getPath() {
+		return this.path;
+	}
+
+	public void setPath(List<Field> path) {
+		this.path = path;
 	}
 
 }
