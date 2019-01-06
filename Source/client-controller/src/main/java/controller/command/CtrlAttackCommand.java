@@ -4,12 +4,12 @@ import javafx.geometry.Point2D;
 import model.Model;
 import model.component.Field;
 
-public class AttackCommand extends Command {
+public class CtrlAttackCommand extends CtrlCommand {
 
 	private Point2D second_position;
 	private Field second_field; // attacked field
 
-	public AttackCommand(Point2D first_position, Point2D second_position) {
+	public CtrlAttackCommand(Point2D first_position, Point2D second_position) {
 
 		super("attack-comand", first_position);
 		this.second_position = second_position;

@@ -19,11 +19,9 @@ public class LoadBoardCommand extends ViewCommand {
 		DrawFieldCommand draw_hex_comm = null;
 
 		for (Field field : this.fields) {
-
 			draw_hex_comm = new DrawFieldCommand(field);
 			draw_hex_comm.setCanvas(this.canvas);
 			draw_hex_comm.run();
-
 		}
 
 	}

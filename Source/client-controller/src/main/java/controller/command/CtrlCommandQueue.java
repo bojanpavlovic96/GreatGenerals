@@ -3,17 +3,17 @@ package controller.command;
 import java.util.LinkedList;
 import java.util.Queue;
 
-public class UpdateCommandQueue {
+public class CtrlCommandQueue {
 
-	private Queue<Command> queue;
+	private Queue<CtrlCommand> queue;
 
-	private QueueEventHandler onEnqueue = null;
+	private CtrlQueueEventHandler onEnqueue = null;
 
-	public UpdateCommandQueue() {
-		this.queue = new LinkedList<Command>();
+	public CtrlCommandQueue() {
+		this.queue = new LinkedList<CtrlCommand>();
 	}
 
-	public void enqueue(Command new_command) {
+	public void enqueue(CtrlCommand new_command) {
 		this.queue.add(new_command);
 
 		if (this.onEnqueue != null) {
@@ -22,7 +22,7 @@ public class UpdateCommandQueue {
 
 	}
 
-	public Command dequeue() {
+	public CtrlCommand dequeue() {
 		if (!this.queue.isEmpty()) {
 			return this.queue.remove();
 		}
@@ -30,7 +30,7 @@ public class UpdateCommandQueue {
 		return null;
 	}
 
-	public void setOnEnqueueEventHandler(QueueEventHandler handler) {
+	public void setOnEnqueueEventHandler(CtrlQueueEventHandler handler) {
 		this.onEnqueue = handler;
 	}
 

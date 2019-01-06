@@ -6,12 +6,12 @@ import model.component.Field;
 import model.component.GameField;
 import view.command.RedrawFieldCommand;
 
-public class MoveCommand extends Command {
+public class CtrlMoveCommand extends CtrlCommand {
 
 	private Point2D second_position;
 	private Field second_field;
 
-	public MoveCommand(Point2D first_position, Point2D second_position) {
+	public CtrlMoveCommand(Point2D first_position, Point2D second_position) {
 
 		super("move-command", first_position);
 		// sets command name for database storing
@@ -21,7 +21,7 @@ public class MoveCommand extends Command {
 
 	}
 
-	public MoveCommand(Field primary_field, Field second_field) {
+	public CtrlMoveCommand(Field primary_field, Field second_field) {
 		super(primary_field);
 
 		this.second_field = second_field;

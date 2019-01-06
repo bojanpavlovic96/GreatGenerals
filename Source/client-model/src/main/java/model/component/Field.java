@@ -11,13 +11,18 @@ public interface Field {
 
 	void setStoragePosition(Point2D storage_position);
 
-	List<Unit> getUnits();
+	// unit specific
+	Unit getUnit();
 
-	void setUnits(List<Unit> units);
+	void setUnit(Unit units);
 
-	Unit removeUnit(String unit_id);
+	List<Unit> getBattle();
 
-	void addUnit(Unit new_unit);
+	void addToBattle(Unit new_unit);
+
+	Unit removeFromBattle(Unit unit);
+
+	// done with units
 
 	Terrain getTerrain();
 
@@ -29,7 +34,5 @@ public interface Field {
 
 	// more place in battle
 	boolean haveMorePlace();
-
-	// moving path
 
 }

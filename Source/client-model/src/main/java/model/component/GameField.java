@@ -10,20 +10,21 @@ public class GameField implements Field {
 
 	private Point2D storage_position;
 
-	private List<Unit> units;
+	private Unit unit;
 	private Terrain terrain;
 
-	private List<Field> path;
+	private List<Unit> units_in_battle;
+
+	// methods
 
 	public GameField(Point2D storage_position, Unit unit, Terrain terrain) {
 		super();
 
-		this.units = new ArrayList<Unit>();
-
 		this.storage_position = storage_position;
-		if (unit != null)
-			this.units.add(unit);
+		this.unit = unit;
 		this.terrain = terrain;
+
+		this.units_in_battle = new ArrayList<Unit>();
 	}
 
 	public Point2D getStoragePosition() {
@@ -35,12 +36,12 @@ public class GameField implements Field {
 		this.storage_position = storage_position;
 	}
 
-	public List<Unit> getUnits() {
-		return this.units;
+	public Unit getUnit() {
+		return this.unit;
 	}
 
-	public void setUnits(List<Unit> units) {
-		this.units = units;
+	public void setUnit(Unit unit) {
+		this.unit = unit;
 	}
 
 	public Terrain getTerrain() {
@@ -53,52 +54,47 @@ public class GameField implements Field {
 
 	public void moveToField(Field second_field) {
 
-		second_field.setUnits(new ArrayList<Unit>(this.units));
-		this.units.clear();
+		second_field.setUnit(this.unit);
+
+		// update units references to field
+		this.unit.getMoveType().setMy_field(second_field);
+
+		this.unit = null;
 		// for now that's all
 
 	}
 
-	public Unit removeUnit(String unit_id) {
-
-		for (Unit unit : this.units) {
-			if (unit.getUnitId().equals(unit_id))
-				return unit;
-		}
-
-		return null;
-	}
-
-	public void addUnit(Unit new_unit) {
-		if (this.units == null)
-			this.units = new ArrayList<Unit>();
-		this.units.add(new_unit);
-	}
+	// battle specific
 
 	public boolean isInBattle() {
-		return this.units.size() > 1;
-		// if there is more than one unit on the same field ... it's battle
+		return this.units_in_battle.size() > 1;
 	}
 
 	public boolean haveMorePlace() {
-		return this.units.size() < 6;
+		return this.units_in_battle.size() < 6;
 	}
 
-	// moving path
-	public void addToPath(Field field) {
-		this.path.add(field);
+	public List<Unit> getBattle() {
+		return this.units_in_battle;
 	}
 
-	public void addToPath(List<Field> fields) {
-		this.path.addAll(fields);
+	public void addToBattle(Unit new_unit) {
+		this.units_in_battle.add(new_unit);
 	}
 
-	public List<Field> getPath() {
-		return this.path;
-	}
+	public Unit removeFromBattle(Unit unit) {
+		int index = 0;
+		for (Unit b_unit : this.units_in_battle) {
+			if (b_unit.equals(unit)) {
 
-	public void setPath(List<Field> path) {
-		this.path = path;
+				this.units_in_battle.remove(index);
+				return b_unit;
+			}
+
+			index++;
+		}
+
+		return null;
 	}
 
 }

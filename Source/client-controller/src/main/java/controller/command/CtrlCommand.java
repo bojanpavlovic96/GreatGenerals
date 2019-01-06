@@ -5,7 +5,7 @@ import model.Model;
 import model.component.Field;
 import view.command.CommandQueue;
 
-public abstract class Command implements Runnable {
+public abstract class CtrlCommand implements Runnable {
 
 	protected String name;
 
@@ -15,7 +15,7 @@ public abstract class Command implements Runnable {
 	protected Model data_model;
 	protected CommandQueue view_command_queue;
 
-	public Command(String name, Point2D primary_position) {
+	public CtrlCommand(String name, Point2D primary_position) {
 
 		this.name = name;
 
@@ -23,7 +23,7 @@ public abstract class Command implements Runnable {
 
 	}
 
-	public Command(Field primary_field) {
+	public CtrlCommand(Field primary_field) {
 		this.setPrimary_field(primary_field);
 	}
 

@@ -19,6 +19,8 @@ public interface Model {
 
 	void startBattle(Field battle_field);
 
-	List<Field> getNeighbours(Field for_field);
+	List<Field> getFreeNeighbours(Field for_field);
+
+	void setUnit(Point2D position, String unit_name);
 
 }

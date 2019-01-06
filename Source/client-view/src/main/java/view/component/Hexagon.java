@@ -25,10 +25,12 @@ public class Hexagon implements DrawableHexagon {
 	private Point2D storage_position;
 
 	private String BORDER_PATH = "/border.png";
-	private String BATTLE_IMG_PATH = "/soldier-salute_16.png";
+	private String BATTLE_IMG_PATH = "/battle.png";
 
 	private ViewTerrain terrain;
-	private List<ViewUnit> units;
+	private ViewUnit unit;
+
+	private List<ViewUnit> units_in_battle;
 
 	private Point2D hex_center;
 
@@ -48,9 +50,14 @@ public class Hexagon implements DrawableHexagon {
 
 		this.terrain = new ViewTerrain(model.getTerrain());
 
-		this.units = new ArrayList<ViewUnit>();
-		for (Unit model_unit : model.getUnits()) {
-			this.units.add(new ViewUnit(model_unit));
+		if (model.getUnit() != null)
+			this.unit = new ViewUnit(model.getUnit());
+
+		this.units_in_battle = new ArrayList<ViewUnit>();
+		if (model.isInBattle()) {
+			for (Unit model_unit : model.getBattle()) {
+				this.units_in_battle.add(new ViewUnit(model_unit));
+			}
 		}
 
 		this.side_size = DrawFieldCommand.default_hex_size;
@@ -101,17 +108,13 @@ public class Hexagon implements DrawableHexagon {
 		this.hex_width = this.calcHexWidth(this.side_size);
 		this.hex_height = this.calcHexHeight(this.side_size);
 
-		this.units = new ArrayList<ViewUnit>();
-		this.units.add(new ViewUnit(100, 100, 100));
-
 		this.terrain = new ViewTerrain();
 
 		this.initCornerPoints();
 	}
 
 	// used for getNext
-	public Hexagon(Point2D storage_center, Point2D hex_center, double side_size, List<ViewUnit> units,
-			ViewTerrain terrain) {
+	public Hexagon(Point2D storage_center, Point2D hex_center, double side_size, ViewUnit unit, ViewTerrain terrain) {
 
 		this.storage_position = storage_center;
 		this.hex_center = hex_center;
@@ -122,7 +125,7 @@ public class Hexagon implements DrawableHexagon {
 		this.hex_width = this.calcHexWidth(this.side_size);
 		this.hex_height = this.calcHexHeight(this.side_size);
 
-		this.units = units;
+		this.unit = unit;
 		this.terrain = terrain;
 
 		this.initCornerPoints();
@@ -262,13 +265,15 @@ public class Hexagon implements DrawableHexagon {
 	}
 
 	private void drawUnit(GraphicsContext gc) {
-		if (!this.units.isEmpty()) {
-			if (this.units.size() == 1) {
-				this.units.get(0).drawUnit(gc, this.hex_center, this.side_size);
+
+		if (this.unit != null) {
+			if (this.units_in_battle.isEmpty()) {
+				this.unit.drawUnit(gc, this.hex_center, this.side_size);
 			} else {
 				this.drawBattle(gc);
 			}
 		}
+
 	}
 
 	// DrawableHexagon
@@ -342,7 +347,7 @@ public class Hexagon implements DrawableHexagon {
 		int next_cx = (int) (this.hex_center.getX() + 2 * (this.side_size * Math.sin(Math.PI / 3)));
 		int next_cy = (int) this.hex_center.getY();
 
-		return new Hexagon(new Point2D(next_x, next_y), new Point2D(next_cx, next_cy), this.side_size, this.units,
+		return new Hexagon(new Point2D(next_x, next_y), new Point2D(next_cx, next_cy), this.side_size, this.unit,
 				this.terrain);
 
 	}
@@ -355,7 +360,7 @@ public class Hexagon implements DrawableHexagon {
 		int next_cx = (int) (this.hex_center.getX() - 2 * (this.side_size * Math.sin(Math.PI / 3)));
 		int next_cy = (int) this.hex_center.getY();
 
-		return new Hexagon(new Point2D(next_x, next_y), new Point2D(next_cx, next_cy), this.side_size, this.units,
+		return new Hexagon(new Point2D(next_x, next_y), new Point2D(next_cx, next_cy), this.side_size, this.unit,
 				this.terrain);
 
 	}
@@ -368,7 +373,7 @@ public class Hexagon implements DrawableHexagon {
 		int next_cx = (int) (this.hex_center.getX() + (this.side_size * Math.sin(Math.PI / 3)));
 		int next_cy = (int) (this.hex_center.getY() + this.side_size * 1.5);
 
-		return new Hexagon(new Point2D(next_x, next_y), new Point2D(next_cx, next_cy), this.side_size, this.units,
+		return new Hexagon(new Point2D(next_x, next_y), new Point2D(next_cx, next_cy), this.side_size, this.unit,
 				this.terrain);
 	}
 
@@ -380,7 +385,7 @@ public class Hexagon implements DrawableHexagon {
 		int next_cx = (int) (this.hex_center.getX() - (this.side_size * Math.sin(Math.PI / 3)));
 		int next_cy = (int) (this.hex_center.getY() - this.side_size * 1.5);
 
-		return new Hexagon(new Point2D(next_x, next_y), new Point2D(next_cx, next_cy), this.side_size, this.units,
+		return new Hexagon(new Point2D(next_x, next_y), new Point2D(next_cx, next_cy), this.side_size, this.unit,
 				this.terrain);
 	}
 
@@ -392,7 +397,7 @@ public class Hexagon implements DrawableHexagon {
 		int next_cx = (int) (this.hex_center.getX() + (this.side_size * Math.sin(Math.PI / 3)));
 		int next_cy = (int) (this.hex_center.getY() - this.side_size * 1.5);
 
-		return new Hexagon(new Point2D(next_x, next_y), new Point2D(next_cx, next_cy), this.side_size, this.units,
+		return new Hexagon(new Point2D(next_x, next_y), new Point2D(next_cx, next_cy), this.side_size, this.unit,
 				this.terrain);
 
 	}
@@ -405,7 +410,7 @@ public class Hexagon implements DrawableHexagon {
 		int next_cx = (int) (this.hex_center.getX() - (this.side_size * Math.sin(Math.PI / 3)));
 		int next_cy = (int) (this.hex_center.getY() + this.side_size * 1.5);
 
-		return new Hexagon(new Point2D(next_x, next_y), new Point2D(next_cx, next_cy), this.side_size, this.units,
+		return new Hexagon(new Point2D(next_x, next_y), new Point2D(next_cx, next_cy), this.side_size, this.unit,
 				this.terrain);
 
 	}

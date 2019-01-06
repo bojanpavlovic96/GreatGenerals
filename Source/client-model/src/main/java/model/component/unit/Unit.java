@@ -1,11 +1,11 @@
 package model.component.unit;
 
-public interface Unit {
+public interface Unit extends Cloneable {
 
 	String getUnitId();
 
 	String getUnitName();
-
+	
 	boolean canMove();
 
 	MoveType getMoveType();
@@ -14,4 +14,5 @@ public interface Unit {
 
 	boolean haveGroundAttack();
 
+	Unit clone() throws CloneNotSupportedException;
 }

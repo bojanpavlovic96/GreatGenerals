@@ -4,16 +4,38 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Timer;
 
 import javafx.geometry.Point2D;
 import model.component.Field;
+import model.component.unit.BasicUnit;
+import model.component.unit.MoveEventHandler;
+import model.component.unit.Unit;
+import model.component.unit.UnitCreator;
 
 public class DataModel implements Model {
 
 	private Map<Point2D, Field> fields;
 
+	private UnitCreator unit_creator;
+
+	// still test
+	public MoveEventHandler default_move_event_handler;
+
+	private Timer timer;
+
+	// test
+
+	// methods
+
 	public DataModel() {
 		this.fields = new HashMap<Point2D, Field>();
+
+		this.timer = new Timer(true);
+		// true means that timer threads are running as daemons
+
+		this.initUnitCreator();
+
 	}
 
 	public DataModel(List<Field> fields) {
@@ -24,6 +46,18 @@ public class DataModel implements Model {
 			this.fields.put(field.getStoragePosition(), field);
 
 		}
+
+	}
+
+	private void initUnitCreator() {
+		this.unit_creator = new UnitCreator();
+		Unit basic_unit = new BasicUnit(null, this.timer);
+		basic_unit.getMoveType().setOnMoveHandler(this.default_move_event_handler);
+		// on every basic unit generation u need to set field to its unit
+		// movement_controller
+
+		this.unit_creator.addPrototype(basic_unit);
+		// only basic unit for now
 
 	}
 
@@ -57,7 +91,7 @@ public class DataModel implements Model {
 		return new ArrayList<Field>(this.fields.values());
 	}
 
-	public List<Field> getNeighbours(Field for_field) {
+	public List<Field> getFreeNeighbours(Field for_field) {
 
 		List<Field> neighbours = new ArrayList<Field>();
 		Field neighbour = null;
@@ -65,30 +99,39 @@ public class DataModel implements Model {
 
 		// up right
 		neighbour = this.fields.get(new Point2D(position.getX() - 1, position.getY() + 1));
-		if (neighbour != null)
+		if (neighbour != null && !neighbour.isInBattle() && neighbour.getUnit() == null)
 			neighbours.add(neighbour);
 		// right
 		neighbour = this.fields.get(new Point2D(position.getX(), position.getY() + 1));
-		if (neighbour != null)
+		if (neighbour != null && !neighbour.isInBattle() && neighbour.getUnit() == null)
 			neighbours.add(neighbour);
 		// down right
 		neighbour = this.fields.get(new Point2D(position.getX() + 1, position.getY()));
-		if (neighbour != null)
+		if (neighbour != null && !neighbour.isInBattle() && neighbour.getUnit() == null)
 			neighbours.add(neighbour);
 		// down left
 		neighbour = this.fields.get(new Point2D(position.getX() + 1, position.getY() - 1));
-		if (neighbour != null)
+		if (neighbour != null && !neighbour.isInBattle() && neighbour.getUnit() == null)
 			neighbours.add(neighbour);
 		// left
 		neighbour = this.fields.get(new Point2D(position.getX(), position.getY() - 1));
-		if (neighbour != null)
+		if (neighbour != null && !neighbour.isInBattle() && neighbour.getUnit() == null)
 			neighbours.add(neighbour);
 		// // up left
 		neighbour = this.fields.get(new Point2D(position.getX() - 1, position.getY()));
-		if (neighbour != null)
+		if (neighbour != null && !neighbour.isInBattle() && neighbour.getUnit() == null)
 			neighbours.add(neighbour);
 
 		return neighbours;
+	}
+
+	public void setUnit(Point2D position, String unit_name) {
+
+		Field field = this.fields.get(position);
+		Unit unit = this.unit_creator.generateUnit(unit_name, field);
+
+		field.setUnit(unit);
+
 	}
 
 }

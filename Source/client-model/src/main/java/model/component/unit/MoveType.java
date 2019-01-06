@@ -5,13 +5,13 @@ import java.util.List;
 import java.util.Timer;
 
 import model.component.Field;
-import model.component.Terrain;
 
 public abstract class MoveType {
 
 	// fields
 
 	protected Timer timer;
+	protected DefaultMoveTimerTask temp_timer_task;
 
 	protected Field my_field;
 
@@ -23,14 +23,14 @@ public abstract class MoveType {
 
 	// methods
 
-	public MoveType(Field my_field) {
-		this.my_field = my_field;
+	public MoveType(Field my_field, Timer move_timer) {
+		this.setMy_field(my_field);
 		// this.move_delay = speed;
 
 		this.path = new ArrayList<Field>();
-		this.timer = new Timer(true);
-		// true means that the timer thread is going to be daemon
-
+		this.timer = move_timer;
+		// data_model timer
+		
 	}
 
 	public List<Field> getPath() {
@@ -65,8 +65,28 @@ public abstract class MoveType {
 		return this.on_move;
 	}
 
+	public Field getMy_field() {
+		return my_field;
+	}
+
+	public void setMy_field(Field my_field) {
+		this.my_field = my_field;
+	}
+
 	public abstract long calculate_delay();
 
 	public abstract void move();
+
+	public DefaultMoveTimerTask getTemp_timer_task() {
+		return temp_timer_task;
+	}
+
+	public void setTemp_timer_task(DefaultMoveTimerTask temp_timer_task) {
+		this.temp_timer_task = temp_timer_task;
+	}
+
+	public void defaultSchedule() {
+		this.timer.schedule(this.temp_timer_task, this.move_delay);
+	}
 
 }

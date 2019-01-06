@@ -1,5 +1,7 @@
 package model.component.unit;
 
+import java.util.Timer;
+
 import model.component.Field;
 
 public class BasicUnit implements Unit {
@@ -14,9 +16,15 @@ public class BasicUnit implements Unit {
 
 	private UnitAttack ground_attack;
 
-	public BasicUnit(Field my_field) {
+	// methods
 
-		this.movement_type = new BasicMove(my_field);
+	public BasicUnit() {
+		// may be used in clone
+	}
+
+	public BasicUnit(Field my_field, Timer move_timer) {
+
+		this.movement_type = new BasicMove(my_field, move_timer);
 
 	}
 
@@ -42,6 +50,11 @@ public class BasicUnit implements Unit {
 
 	public boolean haveGroundAttack() {
 		return this.ground_attack != null;
+	}
+
+	public Unit clone() throws CloneNotSupportedException {
+		// exception just because... cloneable...
+		return (Unit) super.clone();
 	}
 
 }

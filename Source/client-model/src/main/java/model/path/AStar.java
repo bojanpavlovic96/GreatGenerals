@@ -91,7 +91,7 @@ public class AStar implements PathFinder {
 			openSet.remove(0);
 			closedSet.add(current);
 
-			for (Field neighbour : this.data_model.getNeighbours(current)) { // current is Field should be field
+			for (Field neighbour : this.data_model.getFreeNeighbours(current)) { // current is Field should be field
 
 				if (closedSet.contains(neighbour))
 					continue; // Ignore the neighbor which is already evaluated.
