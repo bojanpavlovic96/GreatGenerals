@@ -3,41 +3,35 @@ package view.command;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
 import model.component.Field;
-import model.component.GameField;
 import view.component.Hexagon;
 
 public class SelectFieldCommand extends ViewCommand {
 
-	private Hexagon hex;
-
 	private Color filter_color;
 
-	private static Color default_select_color = Color.rgb(100, 10, 10, 0.5);
+	private static Color default_filter_color = Color.rgb(100, 10, 10, 0.5);
 
 	public SelectFieldCommand(Field model) {
-		super();
+		super(model);
 
-		this.hex = new Hexagon(model);
-		this.filter_color = SelectFieldCommand.default_select_color;
+		this.filter_color = SelectFieldCommand.default_filter_color;
 	}
 
 	public SelectFieldCommand(Hexagon hex) {
-		super();
+		super(hex);
 
-		this.hex = hex;
-		this.filter_color = SelectFieldCommand.default_select_color;
+		this.filter_color = SelectFieldCommand.default_filter_color;
 	}
 
 	public SelectFieldCommand(Color color, Hexagon hex) {
-		super();
+		super(hex);
 
 		this.filter_color = color;
-		this.hex = hex;
 
 	}
 
 	public void run() {
-		GraphicsContext gc = this.getCanvas().getGraphicsContext2D();
+		GraphicsContext gc = super.view.getMainCanvas().getGraphicsContext2D();
 
 		gc.save();
 

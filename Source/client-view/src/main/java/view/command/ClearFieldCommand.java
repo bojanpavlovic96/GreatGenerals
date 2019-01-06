@@ -1,22 +1,22 @@
 package view.command;
 
-import model.component.GameField;
+import model.component.Field;
 import view.component.Hexagon;
 
 public class ClearFieldCommand extends ViewCommand {
 
-	private Hexagon hex;
-	
-	public ClearFieldCommand(GameField field) {
-		
+	public ClearFieldCommand(Field model) {
+		super(model);
+
 	}
-	
+
 	public ClearFieldCommand(Hexagon hex) {
-		this.hex = hex;
+		super(hex);
+
 	}
 
 	public void run() {
-		this.hex.clearHex(this.canvas.getGraphicsContext2D());
+		this.hex.clearHex(super.view.getMainCanvas().getGraphicsContext2D());
 	}
 
 }

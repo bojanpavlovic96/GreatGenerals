@@ -63,23 +63,13 @@ public class Hexagon implements DrawableHexagon {
 		this.side_size = DrawFieldCommand.default_hex_size;
 		this.border_width = DrawFieldCommand.default_hex_size;
 
-		this.hex_center = Hexagon.calcRealPosition(this.storage_position, this.side_size);
+		this.hex_center = Hexagon.calcRealPosition(this.storage_position, this.getSideSize());
 
-		this.hex_width = this.calcHexWidth(this.side_size);
-		this.hex_height = this.calcHexHeight(this.side_size);
-
-		this.initCornerPoints();
-
-	}
-
-	public Hexagon(Field model, double side_size) {
-
-		this(model);
-
-		this.side_size = side_size;
-		this.hex_center = Hexagon.calcRealPosition(this.storage_position, this.side_size);
+		this.hex_width = this.calcHexWidth(this.getSideSize());
+		this.hex_height = this.calcHexHeight(this.getSideSize());
 
 		this.initCornerPoints();
+
 	}
 
 	public Hexagon(Field model, double side_size, double border_width) {
@@ -88,48 +78,9 @@ public class Hexagon implements DrawableHexagon {
 
 		this.side_size = side_size;
 		this.border_width = border_width;
-		this.hex_center = Hexagon.calcRealPosition(this.storage_position, this.side_size);
+		this.hex_center = Hexagon.calcRealPosition(this.storage_position, this.getSideSize());
 
 		this.initCornerPoints();
-	}
-
-	// may be just for testing ...
-	public Hexagon(Point2D storage_position, double side_size) {
-
-		// inverted
-		this.storage_position = new Point2D(storage_position.getY(), storage_position.getX());
-		// this.storage_position = storage_position;
-
-		this.side_size = side_size;
-		this.border_width = DrawFieldCommand.default_border_width;
-
-		this.hex_center = Hexagon.calcRealPosition(this.storage_position, this.side_size);
-
-		this.hex_width = this.calcHexWidth(this.side_size);
-		this.hex_height = this.calcHexHeight(this.side_size);
-
-		this.terrain = new ViewTerrain();
-
-		this.initCornerPoints();
-	}
-
-	// used for getNext
-	public Hexagon(Point2D storage_center, Point2D hex_center, double side_size, ViewUnit unit, ViewTerrain terrain) {
-
-		this.storage_position = storage_center;
-		this.hex_center = hex_center;
-		this.side_size = side_size;
-		this.border_width = DrawFieldCommand.default_border_width;
-
-		// calculate hex width and height based on the hex side size (length)
-		this.hex_width = this.calcHexWidth(this.side_size);
-		this.hex_height = this.calcHexHeight(this.side_size);
-
-		this.unit = unit;
-		this.terrain = terrain;
-
-		this.initCornerPoints();
-
 	}
 
 	private void initCornerPoints() {
@@ -144,10 +95,10 @@ public class Hexagon implements DrawableHexagon {
 		for (int i = 0; i < 6; i++) {
 
 			// may be + for x an - for y, not sure, but it works with this
-			x = (float) (this.hex_center.getX() - this.side_size * Math.cos(angle));
-			y = (float) (this.hex_center.getY() - this.side_size * Math.sin(angle));
+			x = (float) (this.getHexCenter().getX() - this.getSideSize() * Math.cos(angle));
+			y = (float) (this.getHexCenter().getY() - this.getSideSize() * Math.sin(angle));
 
-			this.getCorner_points().add(new Point2D(x, y));
+			this.corner_points.add(new Point2D(x, y));
 
 			// add 60 degree
 			angle += Math.PI / 3;
@@ -251,7 +202,7 @@ public class Hexagon implements DrawableHexagon {
 			gc.setTransform(transform.getMxx(), transform.getMyx(), transform.getMxy(), transform.getMyy(),
 					transform.getTx(), transform.getTy());
 
-			gc.drawImage(border_img, corner.getX(), corner.getY(), this.side_size, this.border_width);
+			gc.drawImage(border_img, corner.getX(), corner.getY(), this.getSideSize(), this.border_width);
 
 			angle += 60;
 		}
@@ -261,14 +212,14 @@ public class Hexagon implements DrawableHexagon {
 
 	private void drawTerrain(GraphicsContext gc) {
 		if (this.terrain != null)
-			this.terrain.drawTerrain(gc, this.hex_center, this.side_size);
+			this.terrain.drawTerrain(gc, this.getHexCenter(), this.getSideSize());
 	}
 
 	private void drawUnit(GraphicsContext gc) {
 
 		if (this.unit != null) {
 			if (this.units_in_battle.isEmpty()) {
-				this.unit.drawUnit(gc, this.hex_center, this.side_size);
+				this.unit.drawUnit(gc, this.getHexCenter(), this.getSideSize());
 			} else {
 				this.drawBattle(gc);
 			}
@@ -331,109 +282,54 @@ public class Hexagon implements DrawableHexagon {
 
 		gc.save();
 
-		gc.drawImage(image, hex_center.getX() - this.side_size / 2, hex_center.getY() - this.side_size / 2,
-				this.side_size, this.side_size);
+		gc.drawImage(image, getHexCenter().getX() - this.getSideSize() / 2,
+				getHexCenter().getY() - this.getSideSize() / 2, this.getSideSize(), this.getSideSize());
 
 		gc.restore();
 
 	}
-	// get same hex on different position
-
-	public Hexagon getNextOnX() {
-
-		int next_x = (int) this.storage_position.getX();
-		int next_y = (int) (this.storage_position.getY() + 1);
-
-		int next_cx = (int) (this.hex_center.getX() + 2 * (this.side_size * Math.sin(Math.PI / 3)));
-		int next_cy = (int) this.hex_center.getY();
-
-		return new Hexagon(new Point2D(next_x, next_y), new Point2D(next_cx, next_cy), this.side_size, this.unit,
-				this.terrain);
-
-	}
-
-	public Hexagon getPrevtOnX() {
-
-		int next_x = (int) this.storage_position.getX();
-		int next_y = (int) (this.storage_position.getY() - 1);
-
-		int next_cx = (int) (this.hex_center.getX() - 2 * (this.side_size * Math.sin(Math.PI / 3)));
-		int next_cy = (int) this.hex_center.getY();
-
-		return new Hexagon(new Point2D(next_x, next_y), new Point2D(next_cx, next_cy), this.side_size, this.unit,
-				this.terrain);
-
-	}
-
-	public Hexagon getNextOnY() {
-
-		int next_x = (int) (this.storage_position.getX() + 1);
-		int next_y = (int) this.storage_position.getY();
-
-		int next_cx = (int) (this.hex_center.getX() + (this.side_size * Math.sin(Math.PI / 3)));
-		int next_cy = (int) (this.hex_center.getY() + this.side_size * 1.5);
-
-		return new Hexagon(new Point2D(next_x, next_y), new Point2D(next_cx, next_cy), this.side_size, this.unit,
-				this.terrain);
-	}
-
-	public Hexagon getPrevOnY() {
-
-		int next_x = (int) (this.storage_position.getX() - 1);
-		int next_y = (int) this.storage_position.getY();
-
-		int next_cx = (int) (this.hex_center.getX() - (this.side_size * Math.sin(Math.PI / 3)));
-		int next_cy = (int) (this.hex_center.getY() - this.side_size * 1.5);
-
-		return new Hexagon(new Point2D(next_x, next_y), new Point2D(next_cx, next_cy), this.side_size, this.unit,
-				this.terrain);
-	}
-
-	public Hexagon getNextOnXY() {
-
-		int next_x = (int) this.storage_position.getX() + 1;
-		int next_y = (int) (this.storage_position.getY() + 1);
-
-		int next_cx = (int) (this.hex_center.getX() + (this.side_size * Math.sin(Math.PI / 3)));
-		int next_cy = (int) (this.hex_center.getY() - this.side_size * 1.5);
-
-		return new Hexagon(new Point2D(next_x, next_y), new Point2D(next_cx, next_cy), this.side_size, this.unit,
-				this.terrain);
-
-	}
-
-	public Hexagon getPrevOnXY() {
-
-		int next_x = (int) this.storage_position.getX() + 1;
-		int next_y = (int) (this.storage_position.getY() + 1);
-
-		int next_cx = (int) (this.hex_center.getX() - (this.side_size * Math.sin(Math.PI / 3)));
-		int next_cy = (int) (this.hex_center.getY() + this.side_size * 1.5);
-
-		return new Hexagon(new Point2D(next_x, next_y), new Point2D(next_cx, next_cy), this.side_size, this.unit,
-				this.terrain);
-
-	}
-
 	// getters and setters
 
 	public List<Point2D> getCorner_points() {
 		return corner_points;
 	}
 
-	public double getHex_width() {
+	public double getHexWidth() {
 		return hex_width;
 	}
 
-	public double getHex_height() {
+	public double getHexHeight() {
 		return hex_height;
 	}
 
-	public double getBorder_width() {
+	public double getBorderWidth() {
 		return border_width;
 	}
 
-	public void setBorder_width(double border_width) {
+	public void setBorderWidth(double border_width) {
 		this.border_width = border_width;
 	}
+
+	public Point2D getHexCenter() {
+		return hex_center;
+	}
+
+	public void setHexCenter(Point2D hex_center) {
+		this.hex_center = hex_center;
+	}
+
+	public double getSideSize() {
+		return side_size;
+	}
+
+	public void setSideSize(double side_size) {
+		this.side_size = side_size;
+
+		this.hex_width = this.calcHexWidth(this.side_size);
+		this.hex_height = this.calcHexHeight(this.side_size);
+
+		this.initCornerPoints();
+
+	}
+
 }

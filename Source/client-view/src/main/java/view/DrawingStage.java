@@ -19,9 +19,12 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
+
 import view.command.CommandQueue;
 import view.command.DrawFieldCommand;
 import view.component.Hexagon;
+import view.component.menu.FieldMenu;
+import view.component.menu.OptionMenu;
 
 public class DrawingStage extends Stage implements View {
 
@@ -31,6 +34,8 @@ public class DrawingStage extends Stage implements View {
 	private Group root;
 	private Scene main_scene;
 	private Canvas board_canvas;
+	private Canvas second_canvas;
+	private OptionMenu field_menu;
 
 	private CommandQueue command_queue;
 	private ExecutorService executor;
@@ -72,11 +77,24 @@ public class DrawingStage extends Stage implements View {
 
 		// create canvas and add it to the root node
 		this.board_canvas = new Canvas();
-		this.root.getChildren().add(this.board_canvas);
 
 		// set canvas width/height to math stage size
 		this.board_canvas.setWidth(this.STAGE_WIDTH);
 		this.board_canvas.setHeight(this.STAGE_HEIGHT);
+
+		this.root.getChildren().add(this.board_canvas);
+
+		// second canvas on top of the first one used for animations and field options
+		this.second_canvas = new Canvas();
+
+		this.second_canvas.setWidth(this.STAGE_WIDTH);
+		this.second_canvas.setHeight(this.STAGE_HEIGHT);
+
+		this.root.getChildren().add(this.second_canvas);
+
+		this.field_menu = new FieldMenu();
+		this.field_menu.setVisible(true);
+		this.root.getChildren().add(this.field_menu);
 
 		// used for drawing things
 		GraphicsContext gc = this.board_canvas.getGraphicsContext2D();
@@ -84,6 +102,12 @@ public class DrawingStage extends Stage implements View {
 		// draw gray background
 		gc.setFill(Color.GRAY);
 		gc.fillRect(0, 0, this.STAGE_WIDTH, this.STAGE_HEIGHT);
+
+		GraphicsContext layer = this.second_canvas.getGraphicsContext2D();
+
+		// red color used just as filter
+		layer.setFill(Color.rgb(200, 50, 100, 0.2));
+		layer.fillRect(0, 0, this.STAGE_WIDTH, this.STAGE_HEIGHT);
 
 		this.setScene(this.main_scene);
 	}
@@ -94,9 +118,8 @@ public class DrawingStage extends Stage implements View {
 
 		this.executor = Executors.newSingleThreadExecutor();
 
-		this.command_processor = new ViewCommandProcessor(this.executor, this.board_canvas);
+		this.command_processor = new ViewCommandProcessor(this.executor, this);
 
-		this.command_queue = new CommandQueue();
 		this.command_queue.setOnEnqueueEventHandler(this.command_processor);
 
 	}
@@ -232,6 +255,22 @@ public class DrawingStage extends Stage implements View {
 		// called after application stop
 		this.executor.shutdown();
 
+	}
+
+	public Canvas getMainCanvas() {
+		return this.board_canvas;
+	}
+
+	public Canvas getTopLayerCanvas() {
+		return this.second_canvas;
+	}
+
+	public OptionMenu getFieldMenu() {
+		return this.field_menu;
+	}
+
+	public Group getRootContainer() {
+		return this.root;
 	}
 
 }

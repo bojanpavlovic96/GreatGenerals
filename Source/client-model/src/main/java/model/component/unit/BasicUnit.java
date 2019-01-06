@@ -1,12 +1,8 @@
 package model.component.unit;
 
-import java.util.Timer;
-
-import model.component.Field;
-
 public class BasicUnit implements Unit {
 
-	private static String unit_name = "basic-unit";
+	private String unit_name = "basic-unit";
 
 	private String unit_id;
 
@@ -22,9 +18,13 @@ public class BasicUnit implements Unit {
 		// may be used in clone
 	}
 
-	public BasicUnit(Field my_field, Timer move_timer) {
+	public BasicUnit(String name, MoveType move_ctrl, UnitAttack air_attack_ctrl, UnitAttack ground_attack_ctrl) {
 
-		this.movement_type = new BasicMove(my_field, move_timer);
+		this.unit_name = name;
+
+		this.movement_type = move_ctrl;
+		this.air_attack = air_attack_ctrl;
+		this.ground_attack = ground_attack_ctrl;
 
 	}
 
@@ -33,7 +33,7 @@ public class BasicUnit implements Unit {
 	}
 
 	public String getUnitName() {
-		return BasicUnit.unit_name;
+		return this.unit_name;
 	}
 
 	public boolean canMove() {
@@ -54,7 +54,17 @@ public class BasicUnit implements Unit {
 
 	public Unit clone() throws CloneNotSupportedException {
 		// exception just because... cloneable...
-		return (Unit) super.clone();
+
+		BasicUnit clone = (BasicUnit) super.clone();
+
+		clone.movement_type = this.movement_type.clone();
+		
+		/*
+		 * to do
+		 * same for air and ground attack
+		 */
+		
+		return clone;
 	}
 
 }

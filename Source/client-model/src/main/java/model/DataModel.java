@@ -8,6 +8,7 @@ import java.util.Timer;
 
 import javafx.geometry.Point2D;
 import model.component.Field;
+import model.component.unit.BasicMove;
 import model.component.unit.BasicUnit;
 import model.component.unit.MoveEventHandler;
 import model.component.unit.Unit;
@@ -19,12 +20,10 @@ public class DataModel implements Model {
 
 	private UnitCreator unit_creator;
 
-	// still test
-	public MoveEventHandler default_move_event_handler;
+	// let's say it works
+	private MoveEventHandler default_move_event_handler;
 
 	private Timer timer;
-
-	// test
 
 	// methods
 
@@ -33,6 +32,7 @@ public class DataModel implements Model {
 
 		this.timer = new Timer(true);
 		// true means that timer threads are running as daemons
+		// timer is shared with all units
 
 		this.initUnitCreator();
 
@@ -51,10 +51,7 @@ public class DataModel implements Model {
 
 	private void initUnitCreator() {
 		this.unit_creator = new UnitCreator();
-		Unit basic_unit = new BasicUnit(null, this.timer);
-		basic_unit.getMoveType().setOnMoveHandler(this.default_move_event_handler);
-		// on every basic unit generation u need to set field to its unit
-		// movement_controller
+		Unit basic_unit = new BasicUnit("first-unit", new BasicMove(null, this.timer), null, null);
 
 		this.unit_creator.addPrototype(basic_unit);
 		// only basic unit for now
@@ -128,10 +125,19 @@ public class DataModel implements Model {
 	public void setUnit(Point2D position, String unit_name) {
 
 		Field field = this.fields.get(position);
-		Unit unit = this.unit_creator.generateUnit(unit_name, field);
+		Unit unit = this.unit_creator.generateUnit(unit_name, field,
+				this.default_move_event_handler /* attack handler and ground attack handler */);
 
 		field.setUnit(unit);
 
+	}
+
+	public MoveEventHandler getDefaultMoveEventHandler() {
+		return default_move_event_handler;
+	}
+
+	public void setDefaultMoveEventHandler(MoveEventHandler default_move_event_handler) {
+		this.default_move_event_handler = default_move_event_handler;
 	}
 
 }

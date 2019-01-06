@@ -22,6 +22,7 @@ import view.View;
 import view.ViewEvent;
 import view.ViewEventHandler;
 import view.command.CommandQueue;
+import view.command.DisplayFieldInfoCommand;
 import view.command.LoadBoardCommand;
 import view.command.SelectFieldCommand;
 
@@ -42,6 +43,8 @@ public class GameBrain implements Controller {
 	private Field selected_field;
 
 	private PathFinder path_finder;
+
+	// methods
 
 	public GameBrain(Communicator communicator, View view, Model model_arg) {
 
@@ -83,22 +86,18 @@ public class GameBrain implements Controller {
 
 		this.model.initializeModel(models);
 
-		((DataModel) this.model).default_move_event_handler = new MoveEventHandler() {
+		this.model.setDefaultMoveEventHandler(new MoveEventHandler() {
 
 			public void execute(Field from, Field to) {
 				CtrlMoveCommand move = new CtrlMoveCommand(from, to);
 				move.setView_command_queue(view_command_queue);
 				move.run();
 			}
-		};
 
-		this.model.setUnit(new Point2D(10, 10), "basic-unit");
+		});
 
-	}
-
-	private void initCommunicatorHandlers() {
-
-		// set handlers for message
+		this.model.setUnit(new Point2D(10, 10), "first-unit");
+		this.model.setUnit(new Point2D(5, 5), "first-unit");
 
 	}
 
@@ -110,7 +109,7 @@ public class GameBrain implements Controller {
 
 				if (selected_field != null) {
 
-					System.out.println("Select is not null...");
+					System.out.println("Some action from selected to goal ...");
 
 					// MoveCommand move = new MoveCommand(selected_field,
 					// model.getField(arg.getField_position()));
@@ -131,8 +130,6 @@ public class GameBrain implements Controller {
 
 				} else {
 
-					System.out.println("Select is null ...");
-
 					selected_field = model.getField(arg.getField_position());
 
 					System.out.println("Selecting ...");
@@ -149,9 +146,21 @@ public class GameBrain implements Controller {
 		this.view.addEventHandler("right-mouse-click-event", new ViewEventHandler() {
 
 			public void execute(ViewEvent arg) {
-				System.out.println("Right click on: " + arg.getField_position());
+
+				Field field = model.getField(arg.getField_position());
+
+				DisplayFieldInfoCommand command = new DisplayFieldInfoCommand(field);
+
+				view_command_queue.enqueue(command);
+
 			}
 		});
+	}
+
+	private void initCommunicatorHandlers() {
+
+		// set handlers for message
+
 	}
 
 	public Communicator getCommunicator() {
@@ -174,7 +183,7 @@ public class GameBrain implements Controller {
 		return this.model;
 	}
 
-	public void setMode(Model model) {
+	public void setModel(Model model) {
 		this.model = model;
 	}
 

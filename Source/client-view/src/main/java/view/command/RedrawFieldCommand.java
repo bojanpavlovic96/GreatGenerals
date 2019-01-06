@@ -5,24 +5,26 @@ import view.component.Hexagon;
 
 public class RedrawFieldCommand extends ViewCommand {
 
-	private Hexagon hex;
-
 	public RedrawFieldCommand(Field model) {
-		this.hex = new Hexagon(model, DrawFieldCommand.default_hex_size, DrawFieldCommand.default_border_width);
+		super(model);
 	}
 
 	public RedrawFieldCommand(Field model, double side_size, double border_width) {
-		this.hex = new Hexagon(model, side_size, border_width);
+		super(model);
+
+		super.hex.setBorderWidth(border_width);
+		super.hex.setSideSize(side_size);
+
 	}
 
 	public RedrawFieldCommand(Hexagon hex) {
-		this.hex = hex;
+		super(hex);
 	}
 
 	public void run() {
 
-		this.hex.clearHex(this.canvas.getGraphicsContext2D());
-		this.hex.drawOn(this.canvas);
+		this.hex.clearHex(super.view.getMainCanvas().getGraphicsContext2D());
+		this.hex.drawOn(super.view.getMainCanvas());
 
 	}
 

@@ -10,12 +10,12 @@ import view.command.ViewCommand;
 public class ViewCommandProcessor implements QueueEventHandler {
 
 	private ExecutorService executor = null;
-	private Canvas canvas;
+	private LayeredView view;
 
-	public ViewCommandProcessor(ExecutorService executor, Canvas canvas) {
+	public ViewCommandProcessor(ExecutorService executor, LayeredView view) {
 
 		this.executor = executor;
-		this.canvas = canvas;
+		this.view = view;
 
 	}
 
@@ -24,7 +24,7 @@ public class ViewCommandProcessor implements QueueEventHandler {
 		while (!queue.isEmpty()) {
 
 			ViewCommand command = queue.dequeue();
-			command.setCanvas(canvas);
+			command.setView(this.view);
 
 			this.executor.execute(command);
 

@@ -41,7 +41,7 @@ public class CtrlMoveCommand extends CtrlCommand {
 	@Override
 	public void run() {
 
-		this.primary_field.moveToField(this.second_field);
+		// this.primary_field.moveToField(this.second_field);
 		// moves all necessary data to another field
 
 		this.view_command_queue.enqueue(new RedrawFieldCommand(this.primary_field));

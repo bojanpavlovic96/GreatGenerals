@@ -8,22 +8,25 @@ public class DrawFieldCommand extends ViewCommand {
 	public static double default_hex_size = 20;
 	public static double default_border_width = 5;
 
-	private Hexagon hex;
-
 	public DrawFieldCommand(Field model) {
-		this.hex = new Hexagon(model, DrawFieldCommand.default_hex_size, DrawFieldCommand.default_border_width);
+		super(model);
 	}
 
 	public DrawFieldCommand(Field model, double side_size, double border_width) {
-		this.hex = new Hexagon(model, side_size, border_width);
+		super(model);
+
+		super.hex.setSideSize(side_size);
+		super.hex.setBorderWidth(border_width);
+
 	}
 
 	public DrawFieldCommand(Hexagon hex) {
-		this.hex = hex;
+		super(hex);
+
 	}
 
 	public void run() {
-		this.hex.drawOn(this.canvas);
+		this.hex.drawOn(super.view.getMainCanvas());
 	}
 
 }

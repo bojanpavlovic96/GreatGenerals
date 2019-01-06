@@ -1,5 +1,6 @@
 package model.component.unit;
 
+import java.util.ArrayList;
 import java.util.Timer;
 
 import model.component.Field;
@@ -18,6 +19,7 @@ public class BasicMove extends MoveType {
 
 		super.move_delay = 500;
 		return super.move_delay;
+
 	}
 
 	@Override
@@ -29,6 +31,14 @@ public class BasicMove extends MoveType {
 
 		super.timer.schedule(new DefaultMoveTimerTask(super.my_field), super.move_delay);
 
+	}
+
+	@Override
+	public MoveType clone() throws CloneNotSupportedException {
+		MoveType clone = super.clone();
+		clone.setPath(new ArrayList<Field>());
+
+		return clone;
 	}
 
 }

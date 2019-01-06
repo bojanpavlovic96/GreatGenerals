@@ -15,17 +15,37 @@ public class UnitCreator {
 
 	}
 
-	public Unit generateUnit(String unit_name, Field new_position) {
+	public Unit generateUnit(String unit_name, Field new_position,
+			MoveEventHandler move_handler /* attack handler and arit attack handler */) {
 		for (Unit prototype : this.prototypes) {
+
 			if (prototype.getUnitName().equals(unit_name)) {
+				// prototype with given name exists
+
 				try {
-					prototype.getMoveType().setMy_field(new_position);
-					return prototype.clone();
+
+					Unit clone = prototype.clone();
+					clone.getMoveType().setMy_field(new_position);
+
+					if (clone.canMove()) {
+						clone.getMoveType().setOnMoveHandler(move_handler);
+					}
+					
+					/*
+					 * if clone.can attack set attack handler
+					 * 
+					 * if clone.can air attack set air attack handler
+					 * 
+					 */
+
+					return clone;
+
 				} catch (CloneNotSupportedException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
 			}
+
 		}
 
 		return null;

@@ -6,7 +6,7 @@ import java.util.Timer;
 
 import model.component.Field;
 
-public abstract class MoveType {
+public abstract class MoveType implements Cloneable {
 
 	// fields
 
@@ -30,7 +30,7 @@ public abstract class MoveType {
 		this.path = new ArrayList<Field>();
 		this.timer = move_timer;
 		// data_model timer
-		
+
 	}
 
 	public List<Field> getPath() {
@@ -87,6 +87,10 @@ public abstract class MoveType {
 
 	public void defaultSchedule() {
 		this.timer.schedule(this.temp_timer_task, this.move_delay);
+	}
+
+	public MoveType clone() throws CloneNotSupportedException {
+		return (MoveType) super.clone();
 	}
 
 }

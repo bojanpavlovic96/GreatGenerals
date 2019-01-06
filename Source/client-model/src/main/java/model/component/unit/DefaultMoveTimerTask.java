@@ -30,6 +30,8 @@ public class DefaultMoveTimerTask extends TimerTask {
 
 			Field next_field = path.remove(0);
 
+			this.my_field.moveToField(next_field);
+
 			if (this.on_move != null) {
 				System.out.println("move handler call ...");
 				on_move.execute(this.my_field, next_field);

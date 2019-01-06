@@ -11,6 +11,6 @@ public interface Controller extends CanCommunicate {
 
 	Model getModel();
 
-	void setMode(Model model);
+	void setModel(Model model);
 
 }

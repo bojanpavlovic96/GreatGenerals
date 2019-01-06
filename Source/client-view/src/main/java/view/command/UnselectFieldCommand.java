@@ -5,28 +5,20 @@ import view.component.Hexagon;
 
 public class UnselectFieldCommand extends ViewCommand {
 
-	private Hexagon hex;
-
 	public UnselectFieldCommand(Hexagon hex) {
-		super();
+		super(hex);
 
-		this.hex = hex;
 	}
 
 	public UnselectFieldCommand(Field model) {
-
-		super();
-
-		Hexagon hex = new Hexagon(model);
-		hex.setBorder_width(DrawFieldCommand.default_border_width);
-		this.hex = hex;
+		super(model);
 
 	}
 
 	public void run() {
 
-		this.hex.clearHex(this.canvas.getGraphicsContext2D());
-		this.hex.drawOn(this.canvas);
+		this.hex.clearHex(super.view.getMainCanvas().getGraphicsContext2D());
+		this.hex.drawOn(super.view.getMainCanvas());
 
 	}
 
