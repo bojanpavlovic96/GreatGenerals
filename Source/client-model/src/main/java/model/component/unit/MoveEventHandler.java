@@ -1,6 +1,6 @@
 package model.component.unit;
 
-import model.component.Field;
+import model.component.field.Field;
 
 public interface MoveEventHandler {
 

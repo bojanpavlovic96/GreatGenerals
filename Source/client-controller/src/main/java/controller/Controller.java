@@ -1,9 +1,10 @@
 package controller;
 
 import model.Model;
+import view.ShouldBeShutdown;
 import view.View;
 
-public interface Controller extends CanCommunicate {
+public interface Controller extends CanCommunicate, ShouldBeShutdown{
 
 	View getView();
 

@@ -13,6 +13,7 @@ import javafx.scene.Group;
 import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.control.Button;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
@@ -22,14 +23,17 @@ import javafx.stage.StageStyle;
 
 import view.command.CommandQueue;
 import view.command.DrawFieldCommand;
+import view.command.ViewCommandProcessor;
 import view.component.Hexagon;
 import view.component.menu.FieldMenu;
 import view.component.menu.OptionMenu;
 
 public class DrawingStage extends Stage implements View {
 
-	private int STAGE_WIDTH = 800;
-	private int STAGE_HEIGHT = 500;
+	private double STAGE_WIDTH = 800;
+	private double STAGE_HEIGHT = 500;
+
+	private Color background_color;
 
 	private Group root;
 	private Scene main_scene;
@@ -54,8 +58,8 @@ public class DrawingStage extends Stage implements View {
 	// only stage specific things
 	private void initStage() {
 		// position on screen
-		this.setX(100);
-		this.setY(100);
+		// this.setX(100);
+		// this.setY(100);
 
 		this.setWidth(this.STAGE_WIDTH);
 		this.setHeight(this.STAGE_HEIGHT);
@@ -93,23 +97,36 @@ public class DrawingStage extends Stage implements View {
 		this.root.getChildren().add(this.second_canvas);
 
 		this.field_menu = new FieldMenu();
-		this.field_menu.setVisible(true);
+		this.field_menu.setVisible(false);
+		Button b1 = new Button("button 1");
+		Button b2 = new Button("button 2");
+		Button b3 = new Button("button 3");
+		Button b4 = new Button("button 4");
+		Button b5 = new Button("button 5");
 		this.root.getChildren().add(this.field_menu);
+		this.field_menu.getChildren().add(b1);
+		this.field_menu.getChildren().add(b2);
+		this.field_menu.getChildren().add(b3);
+		// this.field_menu.getChildren().add(b4);
+		// this.field_menu.getChildren().add(b5);
 
 		// used for drawing things
 		GraphicsContext gc = this.board_canvas.getGraphicsContext2D();
 
 		// draw gray background
-		gc.setFill(Color.GRAY);
+		this.background_color = Color.GRAY;
+		gc.setFill(this.background_color);
 		gc.fillRect(0, 0, this.STAGE_WIDTH, this.STAGE_HEIGHT);
 
 		GraphicsContext layer = this.second_canvas.getGraphicsContext2D();
 
 		// red color used just as filter
-		layer.setFill(Color.rgb(200, 50, 100, 0.2));
+		layer.setFill(Color.rgb(255, 255, 255, 0));
 		layer.fillRect(0, 0, this.STAGE_WIDTH, this.STAGE_HEIGHT);
 
 		this.setScene(this.main_scene);
+
+		this.show();
 	}
 
 	private void initCommandQueue() {
@@ -257,6 +274,7 @@ public class DrawingStage extends Stage implements View {
 
 	}
 
+	// layered view methods
 	public Canvas getMainCanvas() {
 		return this.board_canvas;
 	}
@@ -271,6 +289,18 @@ public class DrawingStage extends Stage implements View {
 
 	public Group getRootContainer() {
 		return this.root;
+	}
+
+	public Color getBackgroundColor() {
+		return background_color;
+	}
+
+	public double getStageWidth() {
+		return this.STAGE_WIDTH;
+	}
+
+	public double getStageHeight() {
+		return this.STAGE_HEIGHT;
 	}
 
 }

@@ -3,12 +3,13 @@ package model.component.unit;
 import java.util.ArrayList;
 import java.util.Timer;
 
-import model.component.Field;
+import model.component.field.Field;
+import model.path.PathFinder;
 
 public class BasicMove extends MoveType {
 
-	public BasicMove(Field my_field, Timer move_timer) {
-		super(my_field, move_timer);
+	public BasicMove(Field my_field, PathFinder path_finder, Timer move_timer) {
+		super(my_field, path_finder, move_timer);
 
 		this.move_delay = this.calculate_delay();
 
@@ -17,7 +18,7 @@ public class BasicMove extends MoveType {
 	@Override
 	public long calculate_delay() {
 
-		super.move_delay = 500;
+		super.move_delay = 1000;
 		return super.move_delay;
 
 	}

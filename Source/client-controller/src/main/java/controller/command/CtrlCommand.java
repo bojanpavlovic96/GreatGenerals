@@ -2,7 +2,7 @@ package controller.command;
 
 import javafx.geometry.Point2D;
 import model.Model;
-import model.component.Field;
+import model.component.field.Field;
 import view.command.CommandQueue;
 
 public abstract class CtrlCommand implements Runnable {

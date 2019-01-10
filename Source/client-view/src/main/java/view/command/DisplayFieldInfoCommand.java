@@ -3,7 +3,7 @@ package view.command;
 import javafx.geometry.Point2D;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
-import model.component.Field;
+import model.component.field.Field;
 import view.component.menu.OptionMenu;
 
 public class DisplayFieldInfoCommand extends ViewCommand {
@@ -23,7 +23,7 @@ public class DisplayFieldInfoCommand extends ViewCommand {
 		GraphicsContext gc = super.view.getTopLayerCanvas().getGraphicsContext2D();
 		gc.save();
 
-		gc.setFill(Color.ALICEBLUE);
+		gc.setFill(Color.GRAY);
 
 		Point2D pos = super.hex.getHexCenter();
 
@@ -34,8 +34,13 @@ public class DisplayFieldInfoCommand extends ViewCommand {
 		menu.setPosition(pos);
 		menu.setVisible(true);
 
-		gc.fillRect(pos.getX() + menu.getWidth(), pos.getY(), DisplayFieldInfoCommand.INFO_WIDTH,
-				DisplayFieldInfoCommand.INFO_HEIGHT);
+		double height = 104;
+		if (menu.getHeight() > 104) {
+			height = menu.getHeight();
+		}
+		gc.fillRect(pos.getX() + menu.getWidth(), pos.getY(), DisplayFieldInfoCommand.INFO_WIDTH, height + 1);
+
+		System.out.println("Menu height " + menu.getHeight());
 
 		gc.restore();
 	}

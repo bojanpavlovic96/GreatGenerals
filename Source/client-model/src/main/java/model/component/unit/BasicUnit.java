@@ -1,5 +1,7 @@
 package model.component.unit;
 
+import model.component.field.Field;
+
 public class BasicUnit implements Unit {
 
 	private String unit_name = "basic-unit";
@@ -58,13 +60,21 @@ public class BasicUnit implements Unit {
 		BasicUnit clone = (BasicUnit) super.clone();
 
 		clone.movement_type = this.movement_type.clone();
-		
+
 		/*
-		 * to do
-		 * same for air and ground attack
+		 * to do same for air and ground attack
 		 */
-		
+
 		return clone;
+	}
+
+	public void moveTo(Field next_field) {
+
+		next_field.setUnit(this);
+
+		this.movement_type.getMyField().setUnit(null);
+		this.movement_type.setMyField(next_field);
+
 	}
 
 }

@@ -11,7 +11,7 @@ import java.util.Set;
 
 import javafx.geometry.Point2D;
 import model.Model;
-import model.component.Field;
+import model.component.field.Field;
 
 public class AStar implements PathFinder {
 

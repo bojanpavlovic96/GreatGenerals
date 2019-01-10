@@ -1,6 +1,6 @@
 package view.command;
 
-import model.component.Field;
+import model.component.field.Field;
 import view.component.Hexagon;
 
 public class AttackFieldCommand extends ViewCommand {

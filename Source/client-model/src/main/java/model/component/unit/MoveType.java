@@ -4,7 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Timer;
 
-import model.component.Field;
+import model.component.field.Field;
+import model.path.PathFinder;
 
 public abstract class MoveType implements Cloneable {
 
@@ -12,6 +13,8 @@ public abstract class MoveType implements Cloneable {
 
 	protected Timer timer;
 	protected DefaultMoveTimerTask temp_timer_task;
+
+	protected PathFinder path_finder;
 
 	protected Field my_field;
 
@@ -23,9 +26,11 @@ public abstract class MoveType implements Cloneable {
 
 	// methods
 
-	public MoveType(Field my_field, Timer move_timer) {
-		this.setMy_field(my_field);
+	public MoveType(Field my_field, PathFinder path_finder, Timer move_timer) {
+		this.setMyField(my_field);
 		// this.move_delay = speed;
+
+		this.path_finder = path_finder;
 
 		this.path = new ArrayList<Field>();
 		this.timer = move_timer;
@@ -45,8 +50,19 @@ public abstract class MoveType implements Cloneable {
 		this.path.add(field);
 	}
 
+	public Field getDestination() {
+		if (this.path != null && this.path.size() > 0) {
+			return this.path.get(this.path.size() - 1);
+		}
+		return null;
+	}
+
 	public void addToPath(List<Field> fields) {
 		this.path.addAll(fields);
+	}
+
+	public void calculatePath(Field destination) {
+		this.path = this.path_finder.findPath(this.my_field, destination);
 	}
 
 	public long getDelay() {
@@ -65,17 +81,20 @@ public abstract class MoveType implements Cloneable {
 		return this.on_move;
 	}
 
-	public Field getMy_field() {
+	public Field getMyField() {
 		return my_field;
 	}
 
-	public void setMy_field(Field my_field) {
+	public void setMyField(Field my_field) {
 		this.my_field = my_field;
 	}
 
+	// abstract
 	public abstract long calculate_delay();
 
 	public abstract void move();
+
+	// abstract
 
 	public DefaultMoveTimerTask getTemp_timer_task() {
 		return temp_timer_task;

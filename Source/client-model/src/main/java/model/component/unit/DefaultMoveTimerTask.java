@@ -3,7 +3,7 @@ package model.component.unit;
 import java.util.List;
 import java.util.TimerTask;
 
-import model.component.Field;
+import model.component.field.Field;
 
 public class DefaultMoveTimerTask extends TimerTask {
 
@@ -30,7 +30,15 @@ public class DefaultMoveTimerTask extends TimerTask {
 
 			Field next_field = path.remove(0);
 
-			this.my_field.moveToField(next_field);
+			if (next_field.getUnit() != null) {
+				System.err.println("Reaclculating path..");
+				this.unit.getMoveType().calculatePath(this.unit.getMoveType().getDestination());
+				if (this.unit.getMoveType().getPath() == null)
+					return;
+				next_field = this.unit.getMoveType().getPath().remove(0);
+			}
+
+			this.unit.moveTo(next_field);
 
 			if (this.on_move != null) {
 				System.out.println("move handler call ...");
@@ -45,6 +53,7 @@ public class DefaultMoveTimerTask extends TimerTask {
 
 			} else {
 				this.unit.getMoveType().setTemp_timer_task(null);
+
 			}
 
 		} else {

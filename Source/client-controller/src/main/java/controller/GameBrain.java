@@ -2,25 +2,23 @@ package controller;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.ExecutorService;
 
 import communication.Communicator;
-import controller.command.CtrlMoveCommand;
 import controller.command.CtrlCommandQueue;
+import controller.command.CtrlMoveCommand;
 import javafx.geometry.Point2D;
-import model.DataModel;
 import model.Model;
-import model.component.Field;
-import model.component.GameField;
 import model.component.Terrain;
-import model.component.unit.BasicUnit;
+import model.component.field.Field;
+import model.component.field.GameField;
 import model.component.unit.MoveEventHandler;
-import model.component.unit.Unit;
-import model.path.AStar;
-import model.path.PathFinder;
+import view.ShouldBeShutdown;
 import view.View;
 import view.ViewEvent;
 import view.ViewEventHandler;
+import view.command.ClearTopLayerCommand;
 import view.command.CommandQueue;
 import view.command.DisplayFieldInfoCommand;
 import view.command.LoadBoardCommand;
@@ -41,29 +39,29 @@ public class GameBrain implements Controller {
 	private Model model;
 
 	private Field selected_field;
+	private Field info_displayed;
 
-	private PathFinder path_finder;
+	private Map<Field, Field> paths;
 
 	// methods
 
-	public GameBrain(Communicator communicator, View view, Model model_arg) {
+	public GameBrain(Communicator communicator, View view, Model new_model) {
 
 		super();
 
 		this.communicator = communicator;
 		this.view = view;
-		this.model = model_arg;
+		this.model = new_model;
 		this.initializeModel(); // somehow get list of models
 
+		// part of view initialization
 		this.view_command_queue = this.view.getCommandQueue();
 		LoadBoardCommand load_command = new LoadBoardCommand(this.model.getFields());
 		this.view_command_queue.enqueue(load_command);
 
 		this.initViewEventHandlers();
 
-		this.initCommunicatorHandlers();
-
-		this.path_finder = new AStar(this.model);
+		this.initCommunicator();
 
 	}
 
@@ -89,15 +87,19 @@ public class GameBrain implements Controller {
 		this.model.setDefaultMoveEventHandler(new MoveEventHandler() {
 
 			public void execute(Field from, Field to) {
+
 				CtrlMoveCommand move = new CtrlMoveCommand(from, to);
 				move.setView_command_queue(view_command_queue);
 				move.run();
+
 			}
 
 		});
 
 		this.model.setUnit(new Point2D(10, 10), "first-unit");
 		this.model.setUnit(new Point2D(5, 5), "first-unit");
+		this.model.setUnit(new Point2D(5, 10), "first-unit");
+		this.model.setUnit(new Point2D(4, 7), "first-unit");
 
 	}
 
@@ -108,35 +110,42 @@ public class GameBrain implements Controller {
 			public void execute(ViewEvent arg) {
 
 				if (selected_field != null) {
-
 					System.out.println("Some action from selected to goal ...");
 
-					// MoveCommand move = new MoveCommand(selected_field,
-					// model.getField(arg.getField_position()));
-					// move.setView_command_queue(view_command_queue);
-					// move.run();
-
-					Field goal = model.getField(arg.getField_position());
-					List<Field> path = path_finder.findPath(selected_field, goal);
-
-					for (Field field : path) {
-						view_command_queue.enqueue(new SelectFieldCommand(field));
+					if (info_displayed != null) {
+						ClearTopLayerCommand clear_command = new ClearTopLayerCommand();
+						view_command_queue.enqueue(clear_command);
+						info_displayed = null;
 					}
 
-					selected_field.getUnit().getMoveType().addToPath(path);
-					selected_field.getUnit().getMoveType().move();
+					Field goal = model.getField(arg.getField_position());
+					if (goal.getUnit() == null) {
+						selected_field.getUnit().getMoveType().calculatePath(goal);
 
-					selected_field = null;
+						for (Field field : selected_field.getUnit().getMoveType().getPath()) {
+							view_command_queue.enqueue(new SelectFieldCommand(field));
+						}
 
+						selected_field.getUnit().getMoveType().move();
+
+						selected_field = null;
+					}
 				} else {
-
+					if (info_displayed != null) {
+						ClearTopLayerCommand clear_command = new ClearTopLayerCommand();
+						view_command_queue.enqueue(clear_command);
+						info_displayed = null;
+					}
 					selected_field = model.getField(arg.getField_position());
+					if (selected_field.getUnit() == null) {
+						selected_field = null;
+					} else {
 
-					System.out.println("Selecting ...");
-					SelectFieldCommand select = new SelectFieldCommand(selected_field);
+						System.out.println("Selecting ...");
+						SelectFieldCommand select = new SelectFieldCommand(selected_field);
 
-					view_command_queue.enqueue(select);
-
+						view_command_queue.enqueue(select);
+					}
 				}
 
 			}
@@ -147,7 +156,14 @@ public class GameBrain implements Controller {
 
 			public void execute(ViewEvent arg) {
 
+				if (info_displayed != null) {
+					ClearTopLayerCommand clear_command = new ClearTopLayerCommand();
+					view_command_queue.enqueue(clear_command);
+					info_displayed = null;
+				}
+
 				Field field = model.getField(arg.getField_position());
+				info_displayed = field;
 
 				DisplayFieldInfoCommand command = new DisplayFieldInfoCommand(field);
 
@@ -157,12 +173,13 @@ public class GameBrain implements Controller {
 		});
 	}
 
-	private void initCommunicatorHandlers() {
+	private void initCommunicator() {
 
-		// set handlers for message
+		// this.communicator.
 
 	}
 
+	// getters and setters
 	public Communicator getCommunicator() {
 		return this.communicator;
 	}
@@ -187,95 +204,17 @@ public class GameBrain implements Controller {
 		this.model = model;
 	}
 
-	// private void initializeModel() {
-	//
-	// List<Field> models = new ArrayList<Field>();
-	//
-	// for (int i = 5; i < 15; i++) {
-	// models.add(new GameField(new Point2D(i, 1), null, new Terrain()));
-	// }
-	//
-	// for (int i = 1; i < 20; i++) {
-	// Field field = new GameField(new Point2D(i, 2), null, new Terrain());
-	// field.setUnit(new BasicUnit(field));
-	// field.getUnit().getMoveType().setOnMoveHandler(new MoveEventHandler() {
-	//
-	// public void execute(Field from, Field to) {
-	// CtrlMoveCommand move = new CtrlMoveCommand(from, to);
-	// move.setView_command_queue(view_command_queue);
-	// move.run();
-	// }
-	//
-	// });
-	// models.add(field);
-	// }
-	//
-	// for (int i = 1; i < 20; i++) {
-	// Field field = new GameField(new Point2D(i, 3), null, new Terrain());
-	// field.setUnit(new BasicUnit(field));
-	// models.add(field);
-	// }
-	//
-	// for (int i = 3; i < 18; i++) {
-	// Field field = new GameField(new Point2D(i, 4), null, new Terrain());
-	// field.setUnit(new BasicUnit(field));
-	// models.add(field);
-	// }
-	//
-	// for (int i = 5; i < 15; i++) {
-	// Field field = new GameField(new Point2D(i, 5), null, new Terrain());
-	// field.setUnit(new BasicUnit(field));
-	// models.add(field);
-	// }
-	//
-	// for (int i = -2; i < 18; i++) {
-	// Field field = new GameField(new Point2D(i, 6), null, new Terrain());
-	// field.setUnit(new BasicUnit(field));
-	// models.add(field);
-	// }
-	//
-	// for (int i = -4; i < 19; i++) {
-	// Field field = new GameField(new Point2D(i, 7), null, new Terrain());
-	// field.setUnit(new BasicUnit(field));
-	// models.add(field);
-	// }
-	//
-	// for (int i = -3; i < 18; i++) {
-	// Field field = new GameField(new Point2D(i, 8), null, new Terrain());
-	// field.setUnit(new BasicUnit(field));
-	// models.add(field);
-	// }
-	//
-	// for (int i = -3; i < 17; i++) {
-	// Field field = new GameField(new Point2D(i, 9), null, new Terrain());
-	// field.setUnit(new BasicUnit(field));
-	// models.add(field);
-	// }
-	//
-	// for (int i = -4; i < 17; i++) {
-	// models.add(new GameField(new Point2D(i, 10), null, new Terrain()));
-	// }
-	//
-	// for (int i = 5; i < 15; i++) {
-	// Field field = new GameField(new Point2D(i, 11), null, new Terrain());
-	// field.setUnit(new BasicUnit(field));
-	// models.add(field);
-	// }
-	//
-	// for (int i = 5; i < 15; i++) {
-	// Field field = new GameField(new Point2D(i, 12), null, new Terrain());
-	// field.setUnit(new BasicUnit(field));
-	// models.add(field);
-	// }
-	//
-	// for (int i = 5; i < 15; i++) {
-	// Field field = new GameField(new Point2D(i, 13), null, new Terrain());
-	// field.setUnit(new BasicUnit(field));
-	// models.add(field);
-	// }
-	//
-	// this.model.initializeModel(models);
-	//
-	// }
+	public void shutdown() {
+		if (this.server_update_reader != null) {
+			this.server_update_reader.shutdown();
+		}
+
+		if (this.view != null) {
+			((ShouldBeShutdown) this.view).shutdown();
+		}
+
+		// TODO somehow cancel timer tasks
+		
+	}
 
 }

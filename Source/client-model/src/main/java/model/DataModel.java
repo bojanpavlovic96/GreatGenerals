@@ -7,12 +7,13 @@ import java.util.Map;
 import java.util.Timer;
 
 import javafx.geometry.Point2D;
-import model.component.Field;
+import model.component.field.Field;
 import model.component.unit.BasicMove;
 import model.component.unit.BasicUnit;
 import model.component.unit.MoveEventHandler;
 import model.component.unit.Unit;
 import model.component.unit.UnitCreator;
+import model.path.AStar;
 
 public class DataModel implements Model {
 
@@ -20,7 +21,6 @@ public class DataModel implements Model {
 
 	private UnitCreator unit_creator;
 
-	// let's say it works
 	private MoveEventHandler default_move_event_handler;
 
 	private Timer timer;
@@ -50,8 +50,10 @@ public class DataModel implements Model {
 	}
 
 	private void initUnitCreator() {
+
 		this.unit_creator = new UnitCreator();
-		Unit basic_unit = new BasicUnit("first-unit", new BasicMove(null, this.timer), null, null);
+		Unit basic_unit = new BasicUnit("first-unit", new BasicMove(null, new AStar(this), this.timer), null, null);
+		basic_unit.getMoveType().setOnMoveHandler(this.default_move_event_handler);
 
 		this.unit_creator.addPrototype(basic_unit);
 		// only basic unit for now
@@ -73,11 +75,6 @@ public class DataModel implements Model {
 
 	public void setField(Field new_field) {
 		this.fields.put(new_field.getStoragePosition(), new_field);
-	}
-
-	public void startBattle(Field battle_field) {
-		// TODO Auto-generated method stub
-
 	}
 
 	public boolean isInitialized() {
@@ -127,6 +124,8 @@ public class DataModel implements Model {
 		Field field = this.fields.get(position);
 		Unit unit = this.unit_creator.generateUnit(unit_name, field,
 				this.default_move_event_handler /* attack handler and ground attack handler */);
+		// prototype doesn't have handlers because they are set after creator
+		// initialization
 
 		field.setUnit(unit);
 

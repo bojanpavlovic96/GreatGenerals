@@ -11,7 +11,7 @@ import javafx.scene.image.Image;
 import javafx.scene.paint.Color;
 import javafx.scene.transform.Rotate;
 import javafx.scene.transform.Transform;
-import model.component.Field;
+import model.component.field.Field;
 import model.component.unit.Unit;
 import view.command.DrawFieldCommand;
 
@@ -211,8 +211,8 @@ public class Hexagon implements DrawableHexagon {
 	}
 
 	private void drawTerrain(GraphicsContext gc) {
-		if (this.terrain != null)
-			this.terrain.drawTerrain(gc, this.getHexCenter(), this.getSideSize());
+		// if (this.terrain != null)
+		// this.terrain.drawTerrain(gc, this.getHexCenter(), this.getSideSize());
 	}
 
 	private void drawUnit(GraphicsContext gc) {

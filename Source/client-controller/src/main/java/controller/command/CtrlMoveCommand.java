@@ -2,8 +2,7 @@ package controller.command;
 
 import javafx.geometry.Point2D;
 import model.Model;
-import model.component.Field;
-import model.component.GameField;
+import model.component.field.Field;
 import view.command.RedrawFieldCommand;
 
 public class CtrlMoveCommand extends CtrlCommand {

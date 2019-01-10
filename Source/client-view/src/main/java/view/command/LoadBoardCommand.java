@@ -2,7 +2,7 @@ package view.command;
 
 import java.util.List;
 
-import model.component.Field;
+import model.component.field.Field;
 
 public class LoadBoardCommand extends ViewCommand {
 

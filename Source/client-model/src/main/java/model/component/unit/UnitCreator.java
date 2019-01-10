@@ -3,7 +3,7 @@ package model.component.unit;
 import java.util.ArrayList;
 import java.util.List;
 
-import model.component.Field;
+import model.component.field.Field;
 
 public class UnitCreator {
 
@@ -25,12 +25,12 @@ public class UnitCreator {
 				try {
 
 					Unit clone = prototype.clone();
-					clone.getMoveType().setMy_field(new_position);
+					clone.getMoveType().setMyField(new_position);
 
 					if (clone.canMove()) {
 						clone.getMoveType().setOnMoveHandler(move_handler);
 					}
-					
+
 					/*
 					 * if clone.can attack set attack handler
 					 * 

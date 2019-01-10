@@ -3,7 +3,7 @@ package model;
 import java.util.List;
 
 import javafx.geometry.Point2D;
-import model.component.Field;
+import model.component.field.Field;
 import model.component.unit.MoveEventHandler;
 
 public interface Model {
@@ -17,8 +17,6 @@ public interface Model {
 	Field getField(Point2D storage_position);
 
 	void setField(Field new_field);
-
-	void startBattle(Field battle_field);
 
 	List<Field> getFreeNeighbours(Field for_field);
 
