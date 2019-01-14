@@ -1,0 +1,36 @@
+{
+	"title": "Great generals",
+	"username": "Username",
+	"password": "Password",
+	"login": "Login",
+	"register": "Register",
+	"logout": "Logout",
+	"room-name": "Room name",
+	"room-password": "Room password",
+	"create-room": "Create room",
+	"join-room": "Join room",
+	"players": "Players in room",
+	"messages": 
+	[
+		 {
+			"name": "waiting-for-server",
+			"message": "Waiting for server",
+			"color": "#ffcc66"
+		},
+		 {
+			"name": "connection-established",
+			"message": "Connection established",
+			"color": "#2eb82e"
+		},
+		 {
+			"name": "Server unreachable",
+			"message": "Server unreachable ",
+			"color": "#b30059"
+		},
+		 {
+			"name": "please-wait-for-connection",
+			"message": "Please wait for connection",
+			"color": "#4da6ff"
+		}
+	]
+}

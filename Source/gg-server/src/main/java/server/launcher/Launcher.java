@@ -115,7 +115,7 @@ public class Launcher {
 
 					} else {
 						// join room request
-
+						
 						if (players == null) {
 							// bad state, there is no room
 

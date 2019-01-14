@@ -4,12 +4,10 @@ package app.launcher;
 import java.util.List;
 
 import com.rabbitmq.client.Channel;
-import com.rabbitmq.client.Connection;
-import com.rabbitmq.client.ConnectionFactory;
 
 import app.event.ConnectionReadyEvent;
 import app.event.GameReadyEvent;
-import app.page.InitialPage;
+import app.form.InitialPage;
 import communication.Communicator;
 import controller.Controller;
 import controller.GameBrain;
@@ -24,9 +22,6 @@ import view.ShouldBeShutdown;
 import view.View;
 
 public class Launcher extends Application {
-
-	// lzMIQ5SJvR083poynUF6Rc8T_QPNUJow
-	// amqp://wdvozwsr:lzMIQ5SJvR083poynUF6Rc8T_QPNUJow@raven.rmq.cloudamqp.com/wdvozwsr
 
 	private String password = "lzMIQ5SJvR083poynUF6Rc8T_QPNUJow";
 	private String username = "wdvozwsr";
