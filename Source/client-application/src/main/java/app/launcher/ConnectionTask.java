@@ -12,7 +12,9 @@ import com.rabbitmq.client.ConnectionFactory;
 import app.event.ConnectionReadyEvent;
 import view.ShouldBeShutdown;
 
-public class ConnectionThread implements Runnable, ShouldBeShutdown {
+public class ConnectionTask implements Runnable, ShouldBeShutdown {
+
+	private String connection_id;
 
 	private String connection_uri;
 
@@ -22,10 +24,11 @@ public class ConnectionThread implements Runnable, ShouldBeShutdown {
 
 	private ConnectionReadyEvent on_connection_ready;
 
-	public ConnectionThread(String uri) {
+	public ConnectionTask(String uri) {
 
 		this.connection_uri = uri;
 
+		this.connection_id = Integer.toString((int) Math.random());
 	}
 
 	public void run() {
@@ -116,8 +119,12 @@ public class ConnectionThread implements Runnable, ShouldBeShutdown {
 		return on_connection_ready;
 	}
 
-	public void setOn_connection_ready(ConnectionReadyEvent on_connection_ready) {
+	public void setOnConnectionReady(ConnectionReadyEvent on_connection_ready) {
 		this.on_connection_ready = on_connection_ready;
+	}
+
+	public String getConnectionId() {
+		return this.connection_id;
 	}
 
 }

@@ -95,8 +95,8 @@ public class Hexagon implements DrawableHexagon {
 		for (int i = 0; i < 6; i++) {
 
 			// may be + for x an - for y, not sure, but it works with this
-			x = (float) (this.getHexCenter().getX() - this.getSideSize() * Math.cos(angle));
-			y = (float) (this.getHexCenter().getY() - this.getSideSize() * Math.sin(angle));
+			x = (float) (this.getHexCenter().getX() - (this.getSideSize() - 1) * Math.cos(angle));
+			y = (float) (this.getHexCenter().getY() - (this.getSideSize() - 1) * Math.sin(angle));
 
 			this.corner_points.add(new Point2D(x, y));
 
@@ -196,7 +196,7 @@ public class Hexagon implements DrawableHexagon {
 
 		double angle = 30;
 
-		for (Point2D corner : this.getCorner_points()) {
+		for (Point2D corner : this.getCornerPoints()) {
 
 			Transform transform = new Rotate(angle, corner.getX(), corner.getY());
 			gc.setTransform(transform.getMxx(), transform.getMyx(), transform.getMxy(), transform.getMyy(),
@@ -210,6 +210,50 @@ public class Hexagon implements DrawableHexagon {
 		gc.restore();
 	}
 
+	// TODO remove sleep
+	private void drawLineBorders(GraphicsContext gc) {
+
+		gc.save();
+
+		Point2D prev_point = null;
+
+		gc.setStroke(Color.color(Math.random(), Math.random(), Math.random()));
+
+		// path
+		gc.beginPath();
+
+		for (Point2D corner : this.getCornerPoints()) {
+
+			if (prev_point == null) {
+
+				prev_point = corner;
+				gc.moveTo(corner.getX(), corner.getY());
+
+			} else {
+
+				gc.lineTo(corner.getX(), corner.getY());
+
+				prev_point = corner;
+
+			}
+
+		}
+
+		// path
+		gc.closePath();
+
+		gc.stroke();
+
+		try {
+			Thread.sleep(5);
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
+
+		gc.restore();
+
+	}
+	// TODO uncomment or remove
 	private void drawTerrain(GraphicsContext gc) {
 		// if (this.terrain != null)
 		// this.terrain.drawTerrain(gc, this.getHexCenter(), this.getSideSize());
@@ -233,7 +277,7 @@ public class Hexagon implements DrawableHexagon {
 
 		GraphicsContext gc = canvas.getGraphicsContext2D();
 
-		this.drawBorders(gc);
+		this.drawLineBorders(gc);
 		this.drawTerrain(gc);
 		this.drawUnit(gc);
 
@@ -246,8 +290,8 @@ public class Hexagon implements DrawableHexagon {
 		double[] ys = new double[6];
 
 		for (int i = 0; i < 6; i++) {
-			xs[i] = this.getCorner_points().get(i).getX();
-			ys[i] = this.getCorner_points().get(i).getY();
+			xs[i] = this.getCornerPoints().get(i).getX();
+			ys[i] = this.getCornerPoints().get(i).getY();
 		}
 
 		gc.setFill(color);
@@ -263,8 +307,8 @@ public class Hexagon implements DrawableHexagon {
 		double[] ys = new double[6];
 
 		for (int i = 0; i < 6; i++) {
-			xs[i] = this.getCorner_points().get(i).getX();
-			ys[i] = this.getCorner_points().get(i).getY();
+			xs[i] = this.getCornerPoints().get(i).getX();
+			ys[i] = this.getCornerPoints().get(i).getY();
 		}
 
 		gc.setFill(Color.GRAY);
@@ -290,7 +334,7 @@ public class Hexagon implements DrawableHexagon {
 	}
 	// getters and setters
 
-	public List<Point2D> getCorner_points() {
+	public List<Point2D> getCornerPoints() {
 		return corner_points;
 	}
 

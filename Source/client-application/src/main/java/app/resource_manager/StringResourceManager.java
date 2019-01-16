@@ -1,4 +1,4 @@
-package app.form;
+package app.resource_manager;
 
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
@@ -8,9 +8,14 @@ import java.io.IOException;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import app.form.FormMessage;
+
 public class StringResourceManager {
 
-	private static StringResourceManager instance;
+	static private final String RESOURCE_SUFFIX = "-lang.json";
+	static private final String RESOURCE_PREFIX = "lang/";
+
+	static private StringResourceManager instance;
 
 	private String language;
 
@@ -39,7 +44,10 @@ public class StringResourceManager {
 
 		try {
 
-			String file_name = this.language + "-lang.json";
+			String file_name = StringResourceManager.RESOURCE_PREFIX +
+								this.language +
+								StringResourceManager.RESOURCE_SUFFIX;
+
 			ClassLoader loader = getClass().getClassLoader();
 			FileReader reader = new FileReader(loader.getResource(file_name).getPath());
 			BufferedReader buff_reader = new BufferedReader(reader);

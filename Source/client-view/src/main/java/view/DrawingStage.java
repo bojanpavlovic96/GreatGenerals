@@ -48,7 +48,8 @@ public class DrawingStage extends Stage implements View {
 	private Map<String, List<ViewEventHandler>> handlers_map;
 
 	public DrawingStage() {
-
+		super();
+		
 		this.initStage();
 		this.initCommandQueue();
 

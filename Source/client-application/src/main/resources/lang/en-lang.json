@@ -9,25 +9,25 @@
 	"room-password": "Room password",
 	"create-room": "Create room",
 	"join-room": "Join room",
+	"start-game": "Start game",
 	"players": "Players in room",
-	"messages": 
-	[
-		 {
+	"messages": [
+		{
 			"name": "waiting-for-server",
 			"message": "Waiting for server",
 			"color": "#ffcc66"
 		},
-		 {
+		{
 			"name": "connection-established",
 			"message": "Connection established",
 			"color": "#2eb82e"
 		},
-		 {
-			"name": "Server unreachable",
+		{
+			"name": "server-unreachable",
 			"message": "Server unreachable ",
 			"color": "#b30059"
 		},
-		 {
+		{
 			"name": "please-wait-for-connection",
 			"message": "Please wait for connection",
 			"color": "#4da6ff"

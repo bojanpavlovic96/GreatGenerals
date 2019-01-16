@@ -1,5 +1,6 @@
 package app.form;
 
+import app.resource_manager.StringResourceManager;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
@@ -10,7 +11,7 @@ import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.VBox;
 
-public class UserForm extends VBox {
+public class UserForm extends VBox implements FormMessageProducer {
 
 	StringResourceManager resource_manager;
 
@@ -23,10 +24,13 @@ public class UserForm extends VBox {
 	private Button login_btn;
 	private Button register_btn;
 
-	/*
-	 * fields for handlers
-	 * 
-	 */
+	private UserFormActionHandler on_login;
+	private UserFormActionHandler on_register;
+
+	private FormMessageHandler on_info_message;
+	private FormMessageHandler on_status_message;
+
+	// methods
 
 	public UserForm() {
 
@@ -40,6 +44,8 @@ public class UserForm extends VBox {
 	}
 
 	private void initForm() {
+
+		this.setStyle("-fx-border-color: green;\n" + "-fx-border-width: 3;");
 
 		this.managedProperty().bind(this.visibleProperty());
 
@@ -75,15 +81,26 @@ public class UserForm extends VBox {
 		this.login_btn.setOnAction(new EventHandler<ActionEvent>() {
 
 			public void handle(ActionEvent event) {
-				// check does handler exists and call if it does
-
+				if (on_login != null) {
+					on_login.execute(username_tf.getText(), password_pf.getText());
+				} else {
+					System.out.println("on_login handler is not set ..."
+										+ "\tin UserForm loginBtn action ...");
+				}
 			}
+
 		});
 
 		this.register_btn.setOnAction(new EventHandler<ActionEvent>() {
 
 			public void handle(ActionEvent event) {
-				// same as above
+				if (on_register != null) {
+					on_register.execute(username_tf.getText(), password_pf.getText());
+				} else {
+					System.out.println("on_register handler is not set ..."
+										+ "\tin UserForm registerBtn action ...");
+				}
+
 			}
 		});
 	}
@@ -96,14 +113,33 @@ public class UserForm extends VBox {
 		return this.password_pf.getText();
 	}
 
-	public void setOnLoginHandler() {
-		// TODO Auto-generated method stub
+	// login/register handlers
+
+	public void setOnLoginHandler(UserFormActionHandler handler) {
+		this.on_login = handler;
+	}
+
+	public void setOnRegisterHandler(UserFormActionHandler handler) {
+		on_register = handler;
 
 	}
 
-	public void setOnRegisterHandler() {
-		// TODO Auto-generated method stub
+	// messages handlers
 
+	public void setStatusMessageHandler(FormMessageHandler hanlder) {
+		on_status_message = hanlder;
+	}
+
+	public void setInfoMessageHandler(FormMessageHandler handler) {
+		on_info_message = handler;
+	}
+
+	public FormMessageHandler getStatusMessageHandler() {
+		return this.on_status_message;
+	}
+
+	public FormMessageHandler getInfoMessageHanlder() {
+		return this.on_info_message;
 	}
 
 }

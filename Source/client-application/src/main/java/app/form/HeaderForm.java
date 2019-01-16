@@ -1,5 +1,6 @@
 package app.form;
 
+import app.resource_manager.StringResourceManager;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.Label;
@@ -8,9 +9,10 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Font;
 
-public class HeaderForm extends VBox {
+public class HeaderForm extends VBox implements MessageDisplay {
 
 	// path relative to resources
+	// TODO load path from some configuration file (or something like that) somehow
 	private final String IMG_PATH = "/main_pic.jpg";
 
 	private StringResourceManager string_manager;
@@ -73,32 +75,32 @@ public class HeaderForm extends VBox {
 		return this.status_message.getText();
 	}
 
-	public void setStatusMessage(String status_message) {
-		FormMessage message = this.string_manager.getMessage(status_message);
+	public String getInfoMessage() {
+		return this.info_message.getText();
+	}
+
+	public void showStatusMessage(String status_message_name) {
+		FormMessage message = this.string_manager.getMessage(status_message_name);
 
 		if (message != null) {
 			this.status_message.setText(message.getMessage());
 			this.status_message.setStyle("-fx-backround-color: " + message.getColor());
 		} else {
 			// just passed message with white background
-			this.status_message.setText(status_message);
-			this.status_message.setStyle("-fx-backround-color: #111111;\n");
+			this.status_message.setText(status_message_name);
+			this.status_message.setStyle("-fx-background-color: #111111;\n");
 		}
 	}
 
-	public String getInfoMessage() {
-		return this.info_message.getText();
-	}
-
-	public void setInfoMessage(String info_message) {
-		FormMessage message = this.string_manager.getMessage(info_message);
+	public void showInfoMessage(String info_message_name) {
+		FormMessage message = this.string_manager.getMessage(info_message_name);
 
 		if (message != null) {
 			this.info_message.setText(message.getMessage());
-			this.info_message.setStyle("-fx-backround-color: " + message.getColor());
+			this.info_message.setStyle("-fx-background-color: " + message.getColor());
 		} else {
 			// just passed message with white background
-			this.info_message.setText(info_message);
+			this.info_message.setText(info_message_name);
 			this.info_message.setStyle("-fx-backround-color: #111111");
 		}
 	}

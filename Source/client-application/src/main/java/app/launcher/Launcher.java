@@ -31,12 +31,14 @@ public class Launcher extends Application {
 	private InitialPage first_stage;
 
 	private Thread game_thread;
-	private GameThread game_task;
+	private GameTask game_task;
 
 	private Thread connection_thread;
-	private ConnectionThread connection_task;
+	private ConnectionTask connection_task;
 
 	private Controller controller;
+
+	// methods
 
 	@Override
 	public void start(Stage primaryStage) throws Exception {
@@ -44,8 +46,10 @@ public class Launcher extends Application {
 
 		// take default uri or one provided with the application arguments
 		this.resolveUri();
+		System.out.println("Uri resolved ...");
 
-		this.first_stage = new InitialPage("first_page_queue");
+		// create first page for login
+		this.first_stage = new InitialPage();
 		this.first_stage.setOnGameReady(new GameReadyEvent() {
 
 			public void execute(List<PlayerData> players) {
@@ -56,14 +60,16 @@ public class Launcher extends Application {
 				View view = new DrawingStage();
 				Model model = new DataModel();
 
+				System.out.println("\tmodel, view, communicator created ...");
+
 				controller = new GameBrain(communicator, view, model);
-				game_task = new GameThread(controller);
+				game_task = new GameTask(controller);
 				game_thread = new Thread(game_task);
 
-				System.out.println("Starting game thread ...");
+				System.out.println("\tstarting game thread ...");
 				game_thread.start();
 
-				System.out.println("Hiding first_stage ...");
+				System.out.println("\thiding first_stage ...");
 
 				// hide login page
 				first_stage.hide();
@@ -72,22 +78,25 @@ public class Launcher extends Application {
 
 		});
 		this.first_stage.show();
-
-		this.connection_task = new ConnectionThread(this.uri);
-		this.connection_task.setOn_connection_ready(new ConnectionReadyEvent() {
+		// stage created on application thread
+		
+		System.out.println("Creating connection thread ...");
+		this.connection_task = new ConnectionTask(this.uri);
+		this.connection_task.setOnConnectionReady(new ConnectionReadyEvent() {
 
 			public void execute(Channel channel) {
 
-				first_stage.setChannel(channel);
+				System.out.println("\tconnection ready ...");
 
-				System.out.println("Channel set ...");
-				System.out.println("Launcher->Start");
+				System.out.println("\tfirst stage channel set ...");
+				first_stage.setChannel(channel);
 
 			}
 		});
 
 		this.connection_thread = new Thread(this.connection_task);
 		this.connection_thread.start();
+		System.out.println("Connection thread started ...");
 		// start connection thread
 		// try to connect with MQ server
 
@@ -95,10 +104,11 @@ public class Launcher extends Application {
 
 	private void resolveUri() {
 
+		System.out.println("Resolving uri ...");
 		List<String> args = this.getParameters().getRaw();
 
 		if (args.size() > 1) {
-			System.out.println("uri initialized from arguments ...");
+			System.out.println("\turi initialized from arguments ...");
 			this.uri = args.get(1);
 		}
 
@@ -110,7 +120,9 @@ public class Launcher extends Application {
 
 		System.out.println("Calling application stop ...");
 
+		// close connection on shutdown
 		((ShouldBeShutdown) this.connection_task).shutdown();
+
 		if (this.controller != null) {
 			((ShouldBeShutdown) this.controller).shutdown();
 		}

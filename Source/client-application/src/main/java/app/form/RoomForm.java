@@ -1,9 +1,13 @@
 package app.form;
 
+import java.util.function.Predicate;
+
+import app.resource_manager.StringResourceManager;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
+import javafx.scene.Node;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.PasswordField;
@@ -31,6 +35,8 @@ public class RoomForm extends VBox {
 	private ScrollPane players_scroll_pane;
 	private VBox players_vb;
 
+	private Button start_game_btn;
+
 	/*
 	 * fields for handlers
 	 * 
@@ -49,6 +55,16 @@ public class RoomForm extends VBox {
 
 	private void initForm() {
 
+		// stage specific
+		this.setStyle("-fx-border-color: blue;\n" + "-fx-border-width: 2;");
+
+		// up-right-down-left
+		this.setPadding(new Insets(10, 5, 10, 5));
+
+		this.managedProperty().bind(this.visibleProperty());
+
+		// buttons & inputs specific
+
 		this.logout_btn = new Button(this.resource_manager.getString("logout"));
 
 		this.room_name_lb = new Label(this.resource_manager.getString("room-name"));
@@ -58,19 +74,24 @@ public class RoomForm extends VBox {
 		this.room_password_pf = new PasswordField();
 
 		this.create_room_btn = new Button(this.resource_manager.getString("create-room"));
+
 		this.join_room_btn = new Button(this.resource_manager.getString("join-room"));
 
 		this.players_lb = new Label(this.resource_manager.getString("players"));
 
 		this.players_vb = new VBox();
+		// TODO next line is ignored
 		this.players_vb.setAlignment(Pos.TOP_CENTER);
 		this.players_vb.setPadding(new Insets(5, 0, 0, 10));
 
 		this.players_scroll_pane = new ScrollPane(this.players_vb);
+		// next line actually aligns content horizontally
 		this.players_scroll_pane.setFitToWidth(true);
-		// this line actually aligns content horizontally
+		this.players_scroll_pane.setMaxHeight(70);
 
-		// test labels
+		this.start_game_btn = new Button(this.resource_manager.getString("start-game"));
+
+		// test labels (start)
 
 		Label label1 = new Label("label 1");
 		Label label2 = new Label("label 2");
@@ -86,11 +107,9 @@ public class RoomForm extends VBox {
 		this.players_vb.getChildren().add(label5);
 		this.players_vb.getChildren().add(label6);
 
-		this.players_scroll_pane.setMaxHeight(70);
+		// test labels (end)
 
-		// test
-
-		// add components to container
+		// add components to container in the right order
 
 		this.getChildren().add(this.logout_btn);
 
@@ -107,15 +126,18 @@ public class RoomForm extends VBox {
 
 		this.getChildren().add(this.players_scroll_pane);
 
-		// up-right-down-left
-		this.setPadding(new Insets(10, 5, 10, 5));
+		this.getChildren().add(this.start_game_btn);
 
+		// elements margins (up, right, down, left)
 		VBox.setMargin(this.room_name_tf, new Insets(2, 0, 5, 0));
+
 		VBox.setMargin(this.room_password_pf, new Insets(2, 0, 5, 0));
 
 		VBox.setMargin(this.create_room_btn, new Insets(5, 0, 5, 0));
 
 		VBox.setMargin(this.players_lb, new Insets(10, 0, 0, 0));
+
+		VBox.setMargin(this.start_game_btn, new Insets(10, 0, 0, 5));
 	}
 
 	private void setHandlers() {
@@ -125,6 +147,7 @@ public class RoomForm extends VBox {
 				// check does handler exists and call if it does
 
 			}
+
 		});
 
 		this.join_room_btn.setOnAction(new EventHandler<ActionEvent>() {
@@ -159,12 +182,16 @@ public class RoomForm extends VBox {
 
 	}
 
-	public void addPlayer(String new_user) {
+	public void addPlayer(String new_player) {
 
 	}
 
-	public void removeUser(String user) {
-
+	public void removePlayer(final String player) {
+		this.players_vb.getChildren().removeIf(new Predicate<Node>() {
+			public boolean test(Node single_label) {
+				return ((Label) single_label).getText().equals(player);
+			}
+		});
 	}
 
 }

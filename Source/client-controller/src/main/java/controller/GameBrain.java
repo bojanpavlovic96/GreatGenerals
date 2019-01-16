@@ -9,11 +9,13 @@ import communication.Communicator;
 import controller.command.CtrlCommandQueue;
 import controller.command.CtrlMoveCommand;
 import javafx.geometry.Point2D;
+import model.DataModel;
 import model.Model;
 import model.component.Terrain;
 import model.component.field.Field;
 import model.component.field.GameField;
 import model.component.unit.MoveEventHandler;
+import view.DrawingStage;
 import view.ShouldBeShutdown;
 import view.View;
 import view.ViewEvent;
@@ -66,6 +68,8 @@ public class GameBrain implements Controller {
 	}
 
 	private void initializeModel() {
+
+		// fake initialization
 
 		List<Field> models = new ArrayList<Field>();
 
@@ -214,7 +218,7 @@ public class GameBrain implements Controller {
 		}
 
 		// TODO somehow cancel timer tasks
-		
+
 	}
 
 }
