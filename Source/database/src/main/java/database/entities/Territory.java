@@ -15,7 +15,6 @@ public class Territory {
 	private long id;
 
 	public Territory() {
-		// TODO Auto-generated constructor stub
 	}
 
 	public Territory(long id) {

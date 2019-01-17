@@ -9,10 +9,6 @@ public abstract class NamedEventHandler implements ViewEventHandler {
 	// method from ViewEventHandler interface
 	public abstract void execute(Event arg);
 
-	public NamedEventHandler() {
-		// TODO Auto-generated constructor stub
-	}
-
 	public NamedEventHandler(String name) {
 		super();
 		this.name = name;

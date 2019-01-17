@@ -1,4 +1,5 @@
 {
+	"lang-icon": "/lang/icon/en-icon.png",
 	"title": "Great generals",
 	"username": "Username",
 	"password": "Password",
@@ -11,6 +12,7 @@
 	"join-room": "Join room",
 	"start-game": "Start game",
 	"players": "Players in room",
+	"bottom-text": "version 0.2 ",
 	"messages": [
 		{
 			"name": "waiting-for-server",
@@ -31,6 +33,16 @@
 			"name": "please-wait-for-connection",
 			"message": "Please wait for connection",
 			"color": "#4da6ff"
+		},
+		{
+			"name": "login-request-sent",
+			"message": "Login request sent",
+			"color": "#99ff66"
+		},
+		{
+			"name": "register-request-sent",
+			"message": "Register request sent",
+			"color": "#3399ff"
 		}
 	]
 }

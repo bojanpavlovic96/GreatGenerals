@@ -3,6 +3,7 @@ package app.form;
 import java.util.function.Predicate;
 
 import app.resource_manager.StringResourceManager;
+import javafx.application.Preloader.PreloaderNotification;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
@@ -15,9 +16,9 @@ import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.VBox;
 
-public class RoomForm extends VBox {
+public class RoomForm extends VBox implements FormMessageProducer, HasLabels {
 
-	StringResourceManager resource_manager;
+	private StringResourceManager string_manager;
 
 	private Button logout_btn;
 
@@ -37,6 +38,9 @@ public class RoomForm extends VBox {
 
 	private Button start_game_btn;
 
+	private FormMessageHandler on_status_message;
+	private FormMessageHandler on_info_message;
+
 	/*
 	 * fields for handlers
 	 * 
@@ -44,7 +48,7 @@ public class RoomForm extends VBox {
 
 	public RoomForm() {
 
-		this.resource_manager = StringResourceManager.getInstance();
+		this.string_manager = StringResourceManager.getInstance();
 
 		this.setAlignment(Pos.TOP_CENTER);
 
@@ -65,19 +69,19 @@ public class RoomForm extends VBox {
 
 		// buttons & inputs specific
 
-		this.logout_btn = new Button(this.resource_manager.getString("logout"));
+		this.logout_btn = new Button(this.string_manager.getString("logout"));
 
-		this.room_name_lb = new Label(this.resource_manager.getString("room-name"));
+		this.room_name_lb = new Label(this.string_manager.getString("room-name"));
 		this.room_name_tf = new TextField();
 
-		this.room_password_lb = new Label(this.resource_manager.getString("room-password"));
+		this.room_password_lb = new Label(this.string_manager.getString("room-password"));
 		this.room_password_pf = new PasswordField();
 
-		this.create_room_btn = new Button(this.resource_manager.getString("create-room"));
+		this.create_room_btn = new Button(this.string_manager.getString("create-room"));
 
-		this.join_room_btn = new Button(this.resource_manager.getString("join-room"));
+		this.join_room_btn = new Button(this.string_manager.getString("join-room"));
 
-		this.players_lb = new Label(this.resource_manager.getString("players"));
+		this.players_lb = new Label(this.string_manager.getString("players"));
 
 		this.players_vb = new VBox();
 		// TODO next line is ignored
@@ -89,7 +93,8 @@ public class RoomForm extends VBox {
 		this.players_scroll_pane.setFitToWidth(true);
 		this.players_scroll_pane.setMaxHeight(70);
 
-		this.start_game_btn = new Button(this.resource_manager.getString("start-game"));
+		this.start_game_btn = new Button(this.string_manager.getString("start-game"));
+		this.start_game_btn.managedProperty().bind(this.start_game_btn.visibleProperty());
 
 		// test labels (start)
 
@@ -169,12 +174,10 @@ public class RoomForm extends VBox {
 	}
 
 	public void setOnCreateGroupHandler() {
-		// TODO Auto-generated method stub
 
 	}
 
 	public void setOnJoinGroupHandler() {
-		// TODO Auto-generated method stub
 
 	}
 
@@ -192,6 +195,46 @@ public class RoomForm extends VBox {
 				return ((Label) single_label).getText().equals(player);
 			}
 		});
+	}
+
+	// hasLabels interface
+
+	public void reloadLabels() {
+
+		this.string_manager = StringResourceManager.getInstance();
+
+		this.logout_btn.setText(this.string_manager.getString("logout"));
+
+		this.room_name_lb.setText(this.string_manager.getString("room-name"));
+
+		this.room_password_lb.setText(this.string_manager.getString("room-password"));
+
+		this.create_room_btn.setText(this.string_manager.getString("create-room"));
+
+		this.join_room_btn.setText(this.string_manager.getString("join-room"));
+
+		this.players_lb.setText(this.string_manager.getString("players"));
+
+		this.start_game_btn.setText(this.string_manager.getString("start-game"));
+
+	}
+
+	// FormMessageProducer interface
+
+	public void setStatusMessageHandler(FormMessageHandler handler) {
+		on_status_message = handler;
+	}
+
+	public void setInfoMessageHandler(FormMessageHandler handler) {
+		on_info_message = handler;
+	}
+
+	public FormMessageHandler getStatusMessageHandler() {
+		return this.on_status_message;
+	}
+
+	public FormMessageHandler getInfoMessageHanlder() {
+		return this.on_info_message;
 	}
 
 }

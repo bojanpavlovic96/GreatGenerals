@@ -40,7 +40,6 @@ public class Repository<EntityType> {
 	}
 
 	public Repository() {
-		// TODO Auto-generated constructor stub
 	}
 
 	public Repository(Session session) {

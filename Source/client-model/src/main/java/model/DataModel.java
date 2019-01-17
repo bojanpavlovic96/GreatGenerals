@@ -28,7 +28,6 @@ public class DataModel implements Model {
 	// methods
 
 	public DataModel() {
-		this.fields = new HashMap<Point2D, Field>();
 
 		this.timer = new Timer(true);
 		// true means that timer threads are running as daemons
@@ -41,6 +40,8 @@ public class DataModel implements Model {
 	public DataModel(List<Field> fields) {
 		this();
 
+		this.fields = new HashMap<Point2D, Field>();
+
 		for (Field field : fields) {
 
 			this.fields.put(field.getStoragePosition(), field);
@@ -52,15 +53,20 @@ public class DataModel implements Model {
 	private void initUnitCreator() {
 
 		this.unit_creator = new UnitCreator();
-		Unit basic_unit = new BasicUnit("first-unit", new BasicMove(null, new AStar(this), this.timer), null, null);
+		Unit basic_unit = new BasicUnit("first-unit",
+				new BasicMove(null, new AStar(this), this.timer), null, null);
 		basic_unit.getMoveType().setOnMoveHandler(this.default_move_event_handler);
 
 		this.unit_creator.addPrototype(basic_unit);
 		// only basic unit for now
 
+		// TODO add some more units
+
 	}
 
 	public void initializeModel(List<Field> fields) {
+
+		this.fields = new HashMap<Point2D, Field>();
 
 		for (Field field : fields) {
 
@@ -122,8 +128,10 @@ public class DataModel implements Model {
 	public void setUnit(Point2D position, String unit_name) {
 
 		Field field = this.fields.get(position);
-		Unit unit = this.unit_creator.generateUnit(unit_name, field,
-				this.default_move_event_handler /* attack handler and ground attack handler */);
+		Unit unit = this.unit_creator
+				.generateUnit(	unit_name,
+								field,
+								this.default_move_event_handler /* attack handler and ground attack handler */);
 		// prototype doesn't have handlers because they are set after creator
 		// initialization
 

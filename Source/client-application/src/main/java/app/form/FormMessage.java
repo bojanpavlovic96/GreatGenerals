@@ -8,7 +8,6 @@ public class FormMessage {
 
 	public FormMessage() {
 		super();
-		// TODO Auto-generated constructor stub
 	}
 
 	public FormMessage(String message, String color) {

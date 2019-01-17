@@ -22,8 +22,8 @@ public interface Model {
 
 	void setUnit(Point2D position, String unit_name);
 
-	void setDefaultMoveEventHandler(MoveEventHandler move_handler);
-
 	MoveEventHandler getDefaultMoveEventHandler();
+
+	void setDefaultMoveEventHandler(MoveEventHandler move_handler);
 
 }

@@ -46,7 +46,7 @@ public class Launcher extends Application {
 
 		// take default uri or one provided with the application arguments
 		this.resolveUri();
-		System.out.println("Uri resolved ...");
+		System.out.println("Uri resolved ... @ Launcher.start");
 
 		// create first page for login
 		this.first_stage = new InitialPage();
@@ -54,22 +54,23 @@ public class Launcher extends Application {
 
 			public void execute(List<PlayerData> players) {
 
-				System.out.println("Creting game thread ...");
+				System.out.println("Creting game thread ... @ Launcher.onGameReadyEvent");
 
 				Communicator communicator = new Messenger(connection_task.getChannel());
 				View view = new DrawingStage();
 				Model model = new DataModel();
 
-				System.out.println("\tmodel, view, communicator created ...");
+				System.out
+						.println("\tmodel, view, communicator created ... @ Launcher.onGameReadyEvent");
 
 				controller = new GameBrain(communicator, view, model);
 				game_task = new GameTask(controller);
 				game_thread = new Thread(game_task);
 
-				System.out.println("\tstarting game thread ...");
+				System.out.println("\tstarting game thread ... @ Launcher.onGameReadyEvent");
 				game_thread.start();
 
-				System.out.println("\thiding first_stage ...");
+				System.out.println("\thiding first_stage ... @ Launcher.onGameReadyEvent");
 
 				// hide login page
 				first_stage.hide();
@@ -79,8 +80,8 @@ public class Launcher extends Application {
 		});
 		this.first_stage.show();
 		// stage created on application thread
-		
-		System.out.println("Creating connection thread ...");
+
+		System.out.println("Creating connection thread ... @ Launcher.start");
 		this.connection_task = new ConnectionTask(this.uri);
 		this.connection_task.setOnConnectionReady(new ConnectionReadyEvent() {
 
@@ -88,7 +89,7 @@ public class Launcher extends Application {
 
 				System.out.println("\tconnection ready ...");
 
-				System.out.println("\tfirst stage channel set ...");
+				System.out.println("\tfirst stage channel set call ... @ Launcher.start");
 				first_stage.setChannel(channel);
 
 			}
@@ -104,7 +105,7 @@ public class Launcher extends Application {
 
 	private void resolveUri() {
 
-		System.out.println("Resolving uri ...");
+		System.out.println("Resolving uri ... @ Launcher.resolveUri");
 		List<String> args = this.getParameters().getRaw();
 
 		if (args.size() > 1) {
@@ -118,13 +119,22 @@ public class Launcher extends Application {
 	public void stop() throws Exception {
 		super.stop();
 
-		System.out.println("Calling application stop ...");
+		System.out.println("Calling application stop ... @ Launcher.start");
 
 		// close connection on shutdown
-		((ShouldBeShutdown) this.connection_task).shutdown();
+		if (this.connection_task != null) {
+			System.out.println("Closing connection ... @ Launcher.stop");
+			((ShouldBeShutdown) this.connection_task).shutdown();
+		}
 
 		if (this.controller != null) {
+			System.out.println("Shutting down controller ... @ Launcher.stop");
 			((ShouldBeShutdown) this.controller).shutdown();
+		}
+
+		if (this.first_stage != null) {
+			System.out.println("Shutting down initial page ... @ Launcher.stop");
+			((ShouldBeShutdown) this.first_stage).shutdown();
 		}
 
 	}

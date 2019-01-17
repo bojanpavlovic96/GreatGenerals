@@ -30,7 +30,7 @@ public class Chat {
 	private List<ChatMessage> messages;
 
 	public Chat() {
-		// TODO Auto-generated constructor stub
+
 	}
 
 	public Chat(long id, Player player1, Player player2, List<ChatMessage> messages) {

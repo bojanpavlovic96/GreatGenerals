@@ -33,7 +33,6 @@ public class AttackFieldCommand extends ViewCommand {
 	}
 
 	public void run() {
-		// TODO Auto-generated method stub
 
 	}
 

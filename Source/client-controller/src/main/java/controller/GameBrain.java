@@ -209,7 +209,8 @@ public class GameBrain implements Controller {
 	}
 
 	public void shutdown() {
-		if (this.server_update_reader != null) {
+
+		if (this.server_update_reader != null && !this.server_update_reader.isShutdown()) {
 			this.server_update_reader.shutdown();
 		}
 

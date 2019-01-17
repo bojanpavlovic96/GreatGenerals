@@ -20,7 +20,6 @@ public class FieldMenu extends OptionMenu {
 	}
 
 	public void clearMenu() {
-		// TODO Auto-generated method stub
 
 	}
 

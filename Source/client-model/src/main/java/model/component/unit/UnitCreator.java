@@ -41,7 +41,6 @@ public class UnitCreator {
 					return clone;
 
 				} catch (CloneNotSupportedException e) {
-					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
 			}

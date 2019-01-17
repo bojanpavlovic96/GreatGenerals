@@ -12,15 +12,15 @@ import app.form.FormMessage;
 
 public class StringResourceManager {
 
-	static private final String RESOURCE_SUFFIX = "-lang.json";
 	static private final String RESOURCE_PREFIX = "lang/";
+	static private final String RESOURCE_SUFFIX = "-lang.json";
+
+	// default language
+	static private String language = "en";
 
 	static private StringResourceManager instance;
 
-	private String language;
-
 	private JSONObject resources;
-
 	private JSONArray messages;
 
 	// methods
@@ -34,7 +34,8 @@ public class StringResourceManager {
 
 	private StringResourceManager() {
 
-		this.setLanguage("en");
+		// assume that language is provided somehow (default or with static setLanguage
+		// call )
 
 		this.loadResources();
 
@@ -44,9 +45,9 @@ public class StringResourceManager {
 
 		try {
 
-			String file_name = StringResourceManager.RESOURCE_PREFIX +
-								this.language +
-								StringResourceManager.RESOURCE_SUFFIX;
+			String file_name = StringResourceManager.RESOURCE_PREFIX
+								+ StringResourceManager.language
+								+ StringResourceManager.RESOURCE_SUFFIX;
 
 			ClassLoader loader = getClass().getClassLoader();
 			FileReader reader = new FileReader(loader.getResource(file_name).getPath());
@@ -70,20 +71,22 @@ public class StringResourceManager {
 				this.messages = this.resources.getJSONArray("messages");
 
 			} catch (IOException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 
 		} catch (FileNotFoundException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 
 	}
 
-	public void setLanguage(String language) {
-		this.language = language;
-		this.loadResources();
+	static public void setLanguage(String language) {
+		// change language
+		StringResourceManager.language = language;
+
+		// create new instance with provided language
+		StringResourceManager.instance = new StringResourceManager();
+
 	}
 
 	public String getString(String name) {
@@ -96,7 +99,8 @@ public class StringResourceManager {
 		for (int i = 0; i < messages.length(); i++) {
 			json_message = this.messages.getJSONObject(i);
 			if (json_message.getString("name").equals(message))
-				return new FormMessage(json_message.getString("message"), json_message.getString("color"));
+				return new FormMessage(json_message.getString("message"),
+						json_message.getString("color"));
 		}
 
 		return null;

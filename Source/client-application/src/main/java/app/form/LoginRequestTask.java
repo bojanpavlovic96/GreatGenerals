@@ -10,6 +10,8 @@ public class LoginRequestTask implements Runnable {
 	private String password;
 
 	public LoginRequestTask(Channel channel, String username, String password) {
+		super();
+		
 		this.channel = channel;
 		this.username = username;
 		this.password = password;
@@ -17,7 +19,12 @@ public class LoginRequestTask implements Runnable {
 
 	// TODO implement
 	public void run() {
-
+		// leave debug message
+		System.out.println("Sending login request ... @ LoginRequstTask");
+	
+		// TODO sent login request (this.channel, this.username, this.password)
+		
+		
 	}
 
 }

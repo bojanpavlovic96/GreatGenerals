@@ -39,6 +39,7 @@ public class ConnectionTask implements Runnable, ShouldBeShutdown {
 
 			this.conn_factory.setUri(this.connection_uri);
 
+			System.out.println("Creating connection ... @ ConnectionTask.run");
 			this.connection = this.conn_factory.newConnection();
 
 			if (this.getConnection().isOpen()) {
@@ -65,16 +66,12 @@ public class ConnectionTask implements Runnable, ShouldBeShutdown {
 			}
 
 		} catch (KeyManagementException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} catch (NoSuchAlgorithmException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} catch (URISyntaxException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}
@@ -87,21 +84,19 @@ public class ConnectionTask implements Runnable, ShouldBeShutdown {
 			if (this.getChannel() != null && this.getChannel().isOpen()) {
 				this.getChannel().close();
 
-				System.out.println("Closing channel ...");
+				System.out.println("Closing channel ... @ ConnectionTask.shutdown");
 			}
 
 			// close connection
 			if (this.getConnection() != null && this.getConnection().isOpen()) {
 				this.getConnection().close();
 
-				System.out.println("Closing connection ...");
+				System.out.println("Closing connection ... @ ConnectionTask.shutdown");
 			}
-			System.out.println("Launcher->Stop->ConnectionThread->shutdown");
 
-			// this thread is free in this moment
+			// this thread is free from this moment
 
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 

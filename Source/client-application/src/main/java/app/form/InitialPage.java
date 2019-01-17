@@ -10,6 +10,7 @@ import java.util.concurrent.Executors;
 import com.rabbitmq.client.Channel;
 
 import app.event.GameReadyEvent;
+import app.resource_manager.StringResourceManager;
 import javafx.application.Platform;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
@@ -19,8 +20,10 @@ import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
+import javafx.stage.StageStyle;
+import view.ShouldBeShutdown;
 
-public class InitialPage extends Stage {
+public class InitialPage extends Stage implements ShouldBeShutdown {
 
 	// set with setChannel when connection is established
 	private Channel channel;
@@ -32,9 +35,11 @@ public class InitialPage extends Stage {
 	private VBox main_containter;
 	private Scene main_scene;
 
+	// page forms
 	private HeaderForm header_form;
 	private UserForm user_form;
 	private RoomForm room_form;
+	private BottomForm bottom_form;
 
 	private GameReadyEvent on_game_ready;
 
@@ -56,10 +61,17 @@ public class InitialPage extends Stage {
 
 		this.initRoomForm();
 
-		// hide room form, only user form
-		this.room_form.setVisible(false);
+		this.initBottomForm();
+
+		// hide room form, only user form is visible
+		// this.room_form.setVisible(false);
+
+		this.user_form.setVisible(false);
 
 		this.setScene(this.main_scene);
+
+		this.initChannelHandlers();
+
 	}
 
 	private void initStage() {
@@ -68,6 +80,7 @@ public class InitialPage extends Stage {
 		this.main_scene = new Scene(this.main_containter);
 
 		// TODO commented just for testing, uncomment
+		this.setTitle("Great generals");
 		// next line removes title bar
 		// this.initStyle(StageStyle.UNDECORATED);
 
@@ -96,7 +109,8 @@ public class InitialPage extends Stage {
 	private void initUserForm() {
 		this.user_form = new UserForm();
 
-		// both handlers only call appropriate method from initial page (show info/status message)
+		// both handlers only call appropriate method from initial page (show
+		// info/status message)
 		FormMessageProducer messageProducer = (FormMessageProducer) this.user_form;
 		messageProducer.setInfoMessageHandler(new FormMessageHandler() {
 
@@ -117,16 +131,22 @@ public class InitialPage extends Stage {
 			}
 		});
 
+		// user form button (action (login&register)) handlers
 		this.user_form.setOnLoginHandler(new UserFormActionHandler() {
 
 			public void execute(String username, String password) {
 
 				if (channel != null) {
 
+					System.out.println("Login request submit to executor ... @ InitialPage");
 					executor.submit(new LoginRequestTask(channel, username, password));
 
+					showInfoMessage("login-request-sent");
+
 				} else {
+
 					showInfoMessage("please-wait-for-connection");
+
 				}
 
 			}
@@ -138,7 +158,10 @@ public class InitialPage extends Stage {
 
 				if (channel != null) {
 
+					System.out.println("Register request submit to executor ... @ InitialPage");
 					executor.submit(new RegisterRequestTask(channel, username, password));
+
+					showInfoMessage("register-request-sent");
 
 				} else {
 
@@ -162,7 +185,59 @@ public class InitialPage extends Stage {
 
 	private void initRoomForm() {
 		this.room_form = new RoomForm();
+
 		this.main_containter.getChildren().add(this.room_form);
+	}
+
+	private void initBottomForm() {
+
+		this.bottom_form = new BottomForm();
+
+		this.bottom_form.setLanguageEventHandler(new LanguageEvent() {
+
+			public void execute(String new_language) {
+
+				StringResourceManager.setLanguage(new_language);
+
+				// TODO platform.runLater maybe
+
+				((HasLabels) header_form).reloadLabels();
+				((HasLabels) user_form).reloadLabels();
+				((HasLabels) room_form).reloadLabels();
+				((HasLabels) bottom_form).reloadLabels();
+
+			}
+		});
+
+		this.main_containter.getChildren().add(this.bottom_form);
+
+	}
+
+	// implement
+	private void initChannelHandlers() {
+
+		this.initChannelTask = new Runnable() {
+
+			public void run() {
+
+				// implement onLoginRequest
+				// implement onRegisterRequest
+				// implement onRoomCreatedRequest
+				// implement onRoomJoinRequest
+				// implement onNewPlayerInRoom
+				// implement onGameStart
+
+				// implement
+
+				// implement onDisconnect (maybe)
+
+				System.out
+						.println("Initial page channel configured ... @ InitialPage.executor.initiChannelTask");
+			}
+		};
+
+		this.executor.submit(this.initChannelTask);
+
 	}
 
 	// public methods
@@ -180,6 +255,8 @@ public class InitialPage extends Stage {
 
 			public void run() {
 
+				showStatusMessage("connection-established");
+
 			}
 
 		});
@@ -192,6 +269,13 @@ public class InitialPage extends Stage {
 
 	public void setOnGameReady(GameReadyEvent on_game_ready) {
 		this.on_game_ready = on_game_ready;
+	}
+
+	// should be shutdown
+	public void shutdown() {
+		if (this.executor != null && !this.executor.isShutdown()) {
+			this.executor.shutdown();
+		}
 	}
 
 }

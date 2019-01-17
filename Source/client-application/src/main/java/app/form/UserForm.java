@@ -11,9 +11,9 @@ import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.VBox;
 
-public class UserForm extends VBox implements FormMessageProducer {
+public class UserForm extends VBox implements FormMessageProducer, HasLabels {
 
-	StringResourceManager resource_manager;
+	private StringResourceManager string_manager;
 
 	private Label username_lb;
 	private TextField username_tf;
@@ -34,7 +34,7 @@ public class UserForm extends VBox implements FormMessageProducer {
 
 	public UserForm() {
 
-		this.resource_manager = StringResourceManager.getInstance();
+		this.string_manager = StringResourceManager.getInstance();
 
 		this.setAlignment(Pos.TOP_CENTER);
 
@@ -45,18 +45,19 @@ public class UserForm extends VBox implements FormMessageProducer {
 
 	private void initForm() {
 
-		this.setStyle("-fx-border-color: green;\n" + "-fx-border-width: 3;");
+		// TODO remove, already has to many colors
+		// this.setStyle("-fx-border-color: green;\n" + "-fx-border-width: 3;");
 
 		this.managedProperty().bind(this.visibleProperty());
 
-		this.username_lb = new Label(this.resource_manager.getString("username"));
+		this.username_lb = new Label(this.string_manager.getString("username"));
 		this.username_tf = new TextField();
 
-		this.password_lb = new Label(this.resource_manager.getString("password"));
+		this.password_lb = new Label(this.string_manager.getString("password"));
 		this.password_pf = new PasswordField();
 
-		this.login_btn = new Button(this.resource_manager.getString("login"));
-		this.register_btn = new Button(this.resource_manager.getString("register"));
+		this.login_btn = new Button(this.string_manager.getString("login"));
+		this.register_btn = new Button(this.string_manager.getString("register"));
 
 		this.getChildren().add(this.username_lb);
 		this.getChildren().add(this.username_tf);
@@ -140,6 +141,20 @@ public class UserForm extends VBox implements FormMessageProducer {
 
 	public FormMessageHandler getInfoMessageHanlder() {
 		return this.on_info_message;
+	}
+
+	public void reloadLabels() {
+
+		this.string_manager = StringResourceManager.getInstance();
+
+		this.username_lb.setText(this.string_manager.getString("username"));
+
+		this.password_lb.setText(this.string_manager.getString("password"));
+
+		this.login_btn.setText(this.string_manager.getString("login"));
+
+		this.register_btn.setText(this.string_manager.getString("register"));
+
 	}
 
 }
