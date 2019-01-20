@@ -1,7 +1,5 @@
 package app.form;
 
-import java.awt.Color;
-
 import app.resource_manager.StringResourceManager;
 import javafx.animation.PauseTransition;
 import javafx.event.ActionEvent;
@@ -11,7 +9,6 @@ import javafx.geometry.Pos;
 import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import javafx.scene.layout.Background;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Font;
 import javafx.util.Duration;
@@ -21,7 +18,23 @@ public class HeaderForm extends VBox implements MessageDisplay, HasLabels {
 	// path relative to resources
 	// TODO load path from some configuration file (or something like that) somehow
 	private final String IMG_PATH = "/main_pic.jpg";
-	private final int TITLE_FONT_SIZE = 25;
+	private final int TITLE_FONT_SIZE = 20;
+	private final String TITLE_FONT_NAME = "Tlwg Typewriter Bold";
+
+	private final int MESSAGE_FONT_SIZE = 14;
+	private final String MESSAGE_FONT_NAME = "Tlwg Typewriter Bold Oblique";
+
+	private final String ALPHA_VALUE = "75";
+
+	// Noto Sans CJK TC Black
+	// Un Dotum Bold
+	// Tlwg Typewriter Bold Oblique
+	// Purisa Oblique
+	// Latin Modern Mono 10 Italic
+	// Laksaman
+	// Latin Modern Roman 10 Italic
+	// Norasi Italic
+	// Un Pilgi
 
 	private StringResourceManager string_manager;
 
@@ -37,6 +50,9 @@ public class HeaderForm extends VBox implements MessageDisplay, HasLabels {
 	private ImageView image;
 
 	private Label title;
+
+	private Font title_font;
+	private Font message_font;
 
 	// methods
 
@@ -58,6 +74,9 @@ public class HeaderForm extends VBox implements MessageDisplay, HasLabels {
 
 		});
 
+		this.title_font = new Font(this.TITLE_FONT_NAME, this.TITLE_FONT_SIZE);
+		this.message_font = new Font(this.MESSAGE_FONT_NAME, this.MESSAGE_FONT_SIZE);
+
 		this.initForm();
 	}
 
@@ -68,14 +87,16 @@ public class HeaderForm extends VBox implements MessageDisplay, HasLabels {
 		this.setAlignment(Pos.TOP_CENTER);
 
 		// up-right-down-left
-		this.setPadding(new Insets(5, 5, 5, 0));
+		this.setPadding(new Insets(5, 5, 5, 5));
 
 		FormMessage first_message = this.string_manager.getMessage("waiting-for-server");
 
 		this.status_message = new Label(first_message.getMessage());
 		this.status_message.setStyle("-fx-background-color: " + first_message.getColor());
+		this.status_message.setFont(this.message_font);
 
 		this.info_message = new Label();
+		this.info_message.setFont(this.message_font);
 
 		this.image = new ImageView(new Image(this.IMG_PATH));
 		this.image.setFitWidth(this.image_width);
@@ -83,20 +104,8 @@ public class HeaderForm extends VBox implements MessageDisplay, HasLabels {
 
 		// TODO change title bar font
 		this.title = new Label(this.string_manager.getString("title"));
-		this.title.setFont(new Font("Un Pilgi", this.TITLE_FONT_SIZE));
-		
-		// Noto Sans CJK TC Black
-		// Un Dotum Bold
-		// Tlwg Typewriter Bold Oblique
-		// Purisa Oblique
-		// Latin Modern Mono 10 Italic
-		// Laksaman
-		// Latin Modern Roman 10 Italic
-		// Norasi Italic
-		// Un Pilgi
-		
-		
-		
+		this.title.setFont(this.title_font);
+
 		this.getChildren().add(this.status_message);
 		this.getChildren().add(this.info_message);
 		this.getChildren().add(this.image);
@@ -107,6 +116,8 @@ public class HeaderForm extends VBox implements MessageDisplay, HasLabels {
 		VBox.setMargin(this.image, new Insets(5, 0, 0, 0));
 
 	}
+
+	// MessageDisplay interface
 
 	public String getStatusMessage() {
 		return this.status_message.getText();
@@ -124,11 +135,13 @@ public class HeaderForm extends VBox implements MessageDisplay, HasLabels {
 
 		if (message != null) {
 			this.status_message.setText(message.getMessage());
-			this.status_message.setStyle("-fx-background-color: " + message.getColor());
+			this.status_message
+					.setStyle("-fx-background-color: " + message.getColor() + this.ALPHA_VALUE);
 		} else {
 			// just passed message with white background
 			this.status_message.setText(status_message_name);
-			this.status_message.setStyle("-fx-background-color: #111111;\n");
+			this.status_message
+					.setStyle("-fx-background-color: #111111" + this.ALPHA_VALUE + ";\n");
 		}
 
 	}
@@ -145,17 +158,20 @@ public class HeaderForm extends VBox implements MessageDisplay, HasLabels {
 
 		if (message != null) {
 			this.info_message.setText(message.getMessage());
-			this.info_message.setStyle("-fx-background-color: " + message.getColor());
+			this.info_message
+					.setStyle("-fx-background-color: " + message.getColor() + this.ALPHA_VALUE);
 		} else {
 			// just passed message with white background
 			this.info_message.setText("Unknown: " + info_message_name);
-			this.info_message.setStyle("-fx-background-color: #aacc91");
+			this.info_message.setStyle("-fx-background-color: #aacc91" + this.ALPHA_VALUE);
 		}
 
 		this.info_message_timer.stop();
 		this.info_message_timer.play();
 
 	}
+
+	// HasLabels interface
 
 	public void reloadLabels() {
 

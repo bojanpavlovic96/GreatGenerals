@@ -15,8 +15,22 @@ import javafx.scene.control.PasswordField;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.VBox;
+import javafx.scene.text.Font;
 
 public class RoomForm extends VBox implements FormMessageProducer, HasLabels {
+
+	// Noto Sans CJK TC Black
+	// Un Dotum Bold
+	// Tlwg Typewriter Bold Oblique
+	// Purisa Oblique
+	// Latin Modern Mono 10 Italic
+	// Laksaman
+	// Latin Modern Roman 10 Italic
+	// Norasi Italic
+	// Un Pilgi
+
+	private final String FONT_NAME = "Tlwg Typewriter Bold";
+	private final int FONT_SIZE = 15;
 
 	private StringResourceManager string_manager;
 
@@ -41,10 +55,10 @@ public class RoomForm extends VBox implements FormMessageProducer, HasLabels {
 	private FormMessageHandler on_status_message;
 	private FormMessageHandler on_info_message;
 
-	/*
-	 * fields for handlers
-	 * 
-	 */
+	private Font font;
+
+	private RoomFormActionHandler on_create_room;
+	private RoomFormActionHandler on_join_room;
 
 	public RoomForm() {
 
@@ -59,8 +73,7 @@ public class RoomForm extends VBox implements FormMessageProducer, HasLabels {
 
 	private void initForm() {
 
-		// stage specific
-		this.setStyle("-fx-border-color: blue;\n" + "-fx-border-width: 2;");
+		this.font = new Font(this.FONT_NAME, this.FONT_SIZE);
 
 		// up-right-down-left
 		this.setPadding(new Insets(10, 5, 10, 5));
@@ -70,18 +83,24 @@ public class RoomForm extends VBox implements FormMessageProducer, HasLabels {
 		// buttons & inputs specific
 
 		this.logout_btn = new Button(this.string_manager.getString("logout"));
+		this.logout_btn.setFont(this.font);
 
 		this.room_name_lb = new Label(this.string_manager.getString("room-name"));
+		this.room_name_lb.setFont(this.font);
 		this.room_name_tf = new TextField();
 
 		this.room_password_lb = new Label(this.string_manager.getString("room-password"));
+		this.room_password_lb.setFont(this.font);
 		this.room_password_pf = new PasswordField();
 
 		this.create_room_btn = new Button(this.string_manager.getString("create-room"));
+		this.create_room_btn.setFont(this.font);
 
 		this.join_room_btn = new Button(this.string_manager.getString("join-room"));
+		this.join_room_btn.setFont(this.font);
 
 		this.players_lb = new Label(this.string_manager.getString("players"));
+		this.players_lb.setFont(this.font);
 
 		this.players_vb = new VBox();
 		// TODO next line is ignored
@@ -94,23 +113,16 @@ public class RoomForm extends VBox implements FormMessageProducer, HasLabels {
 		this.players_scroll_pane.setMaxHeight(70);
 
 		this.start_game_btn = new Button(this.string_manager.getString("start-game"));
+		this.start_game_btn.setFont(this.font);
 		this.start_game_btn.managedProperty().bind(this.start_game_btn.visibleProperty());
 
 		// test labels (start)
 
-		Label label1 = new Label("label 1");
-		Label label2 = new Label("label 2");
-		Label label3 = new Label("label 3");
-		Label label4 = new Label("label 4");
-		Label label5 = new Label("label 5");
-		Label label6 = new Label("label 6");
-
-		this.players_vb.getChildren().add(label1);
-		this.players_vb.getChildren().add(label2);
-		this.players_vb.getChildren().add(label3);
-		this.players_vb.getChildren().add(label4);
-		this.players_vb.getChildren().add(label5);
-		this.players_vb.getChildren().add(label6);
+		this.addPlayer("player 1");
+		this.addPlayer("player 2");
+		this.addPlayer("player 3");
+		this.addPlayer("player 4");
+		this.addPlayer("player 5");
 
 		// test labels (end)
 
@@ -133,6 +145,10 @@ public class RoomForm extends VBox implements FormMessageProducer, HasLabels {
 
 		this.getChildren().add(this.start_game_btn);
 
+		// disable starting game
+		// enable it after server response about creating new room
+		this.disableStartingGame();
+
 		// elements margins (up, right, down, left)
 		VBox.setMargin(this.room_name_tf, new Insets(2, 0, 5, 0));
 
@@ -149,7 +165,10 @@ public class RoomForm extends VBox implements FormMessageProducer, HasLabels {
 		this.create_room_btn.setOnAction(new EventHandler<ActionEvent>() {
 
 			public void handle(ActionEvent event) {
-				// check does handler exists and call if it does
+
+				if (on_create_room != null) {
+					on_create_room.execute(getRoomName(), getRoomPassword());
+				}
 
 			}
 
@@ -158,12 +177,17 @@ public class RoomForm extends VBox implements FormMessageProducer, HasLabels {
 		this.join_room_btn.setOnAction(new EventHandler<ActionEvent>() {
 
 			public void handle(ActionEvent event) {
-				// same as above
+
+				if (on_join_room != null) {
+					on_join_room.execute(getRoomName(), getRoomPassword());
+				}
+
 			}
 		});
 	}
 
 	// public methods
+	// TODO wrap in interface maybe
 
 	public String getRoomName() {
 		return this.room_name_tf.getText();
@@ -173,19 +197,11 @@ public class RoomForm extends VBox implements FormMessageProducer, HasLabels {
 		return this.room_password_pf.getText();
 	}
 
-	public void setOnCreateGroupHandler() {
-
-	}
-
-	public void setOnJoinGroupHandler() {
-
-	}
-
-	public void setOnStartGameHandler() {
-
-	}
-
 	public void addPlayer(String new_player) {
+		Label new_label = new Label(new_player);
+		new_label.setFont(this.font);
+
+		this.players_vb.getChildren().add(new_label);
 
 	}
 
@@ -195,6 +211,35 @@ public class RoomForm extends VBox implements FormMessageProducer, HasLabels {
 				return ((Label) single_label).getText().equals(player);
 			}
 		});
+	}
+
+	public void disableStartingGame() {
+		this.start_game_btn.setVisible(false);
+	}
+
+	public void enableStartingGame() {
+		this.start_game_btn.setVisible(true);
+	}
+
+	// action handlers
+	// implement
+
+	public void setOnLogoutHandler() {
+
+	}
+
+	public void setOnCreateGroupHandler(RoomFormActionHandler handler) {
+		this.on_create_room = handler;
+	}
+
+	public void setOnJoinGroupHandler(RoomFormActionHandler handler) {
+		this.on_join_room = handler;
+	}
+
+	// implement
+
+	public void setOnStartGameHandler() {
+
 	}
 
 	// hasLabels interface

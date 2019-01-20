@@ -43,6 +43,16 @@
 			"name": "register-request-sent",
 			"message": "Register request sent",
 			"color": "#3399ff"
+		},
+		{
+			"name": "create-request-sent",
+			"message": "Create request sent",
+			"color": "#3399ff"
+		},
+		{
+			"name": "join-request-sent",
+			"message": "Join request sent",
+			"color": "#3399ff"
 		}
 	]
 }

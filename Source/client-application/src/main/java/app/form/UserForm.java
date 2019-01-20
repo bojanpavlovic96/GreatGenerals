@@ -10,8 +10,22 @@ import javafx.scene.control.Label;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.VBox;
+import javafx.scene.text.Font;
 
 public class UserForm extends VBox implements FormMessageProducer, HasLabels {
+
+	// Noto Sans CJK TC Black
+	// Un Dotum Bold
+	// Tlwg Typewriter Bold Oblique
+	// Purisa Oblique
+	// Latin Modern Mono 10 Italic
+	// Laksaman
+	// Latin Modern Roman 10 Italic
+	// Norasi Italic
+	// Un Pilgi
+
+	private final String FONT_NAME = "Tlwg Typewriter Bold";
+	private final int FONT_SIZE = 15;
 
 	private StringResourceManager string_manager;
 
@@ -30,6 +44,8 @@ public class UserForm extends VBox implements FormMessageProducer, HasLabels {
 	private FormMessageHandler on_info_message;
 	private FormMessageHandler on_status_message;
 
+	private Font font;
+
 	// methods
 
 	public UserForm() {
@@ -45,19 +61,23 @@ public class UserForm extends VBox implements FormMessageProducer, HasLabels {
 
 	private void initForm() {
 
-		// TODO remove, already has to many colors
-		// this.setStyle("-fx-border-color: green;\n" + "-fx-border-width: 3;");
+		this.font = new Font(this.FONT_NAME, this.FONT_SIZE);
 
 		this.managedProperty().bind(this.visibleProperty());
 
 		this.username_lb = new Label(this.string_manager.getString("username"));
+		this.username_lb.setFont(this.font);
 		this.username_tf = new TextField();
 
 		this.password_lb = new Label(this.string_manager.getString("password"));
+		this.password_lb.setFont(this.font);
 		this.password_pf = new PasswordField();
 
 		this.login_btn = new Button(this.string_manager.getString("login"));
+		this.login_btn.setFont(this.font);
+
 		this.register_btn = new Button(this.string_manager.getString("register"));
+		this.register_btn.setFont(this.font);
 
 		this.getChildren().add(this.username_lb);
 		this.getChildren().add(this.username_tf);
@@ -86,7 +106,7 @@ public class UserForm extends VBox implements FormMessageProducer, HasLabels {
 					on_login.execute(username_tf.getText(), password_pf.getText());
 				} else {
 					System.out.println("on_login handler is not set ..."
-										+ "\tin UserForm loginBtn action ...");
+										+ "\t@ UserForm.loginBtnAction ...");
 				}
 			}
 
@@ -99,7 +119,7 @@ public class UserForm extends VBox implements FormMessageProducer, HasLabels {
 					on_register.execute(username_tf.getText(), password_pf.getText());
 				} else {
 					System.out.println("on_register handler is not set ..."
-										+ "\tin UserForm registerBtn action ...");
+										+ "\t@ UserForm.registerBtnAction ...");
 				}
 
 			}
@@ -112,6 +132,14 @@ public class UserForm extends VBox implements FormMessageProducer, HasLabels {
 
 	public String getPassword() {
 		return this.password_pf.getText();
+	}
+
+	public void setUsername(String username) {
+		this.username_tf.setText(username);
+	}
+
+	public void setUserPassword(String password) {
+		this.password_pf.setText(password);
 	}
 
 	// login/register handlers

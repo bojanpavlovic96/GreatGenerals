@@ -14,6 +14,8 @@ import view.ShouldBeShutdown;
 
 public class ConnectionTask implements Runnable, ShouldBeShutdown {
 
+	private boolean connection_established = false;
+
 	private String connection_id;
 
 	private String connection_uri;
@@ -58,6 +60,8 @@ public class ConnectionTask implements Runnable, ShouldBeShutdown {
 
 						System.out.println("Executing on_connection_handler ...");
 						System.out.println("Launcher->ConnectionThread");
+
+						this.connection_established = true;
 
 						this.on_connection_ready.execute(this.channel);
 					}
@@ -120,6 +124,10 @@ public class ConnectionTask implements Runnable, ShouldBeShutdown {
 
 	public String getConnectionId() {
 		return this.connection_id;
+	}
+
+	public boolean isConnected() {
+		return this.connection_established == true;
 	}
 
 }

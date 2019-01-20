@@ -4,7 +4,7 @@ import java.util.List;
 
 import model.PlayerData;
 
-public interface GameReadyEvent {
+public interface GameReadyHandler {
 
 	void execute(List<PlayerData> players);
 

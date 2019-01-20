@@ -5,6 +5,7 @@ import javafx.scene.paint.Color;
 public class PlayerData {
 
 	private String username;
+
 	private Color field_color;
 
 	public PlayerData(String username, Color field_color) {

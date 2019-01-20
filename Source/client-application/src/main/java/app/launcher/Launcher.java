@@ -6,8 +6,10 @@ import java.util.List;
 import com.rabbitmq.client.Channel;
 
 import app.event.ConnectionReadyEvent;
-import app.event.GameReadyEvent;
+import app.event.GameReadyHandler;
+import app.form.InitialController;
 import app.form.InitialPage;
+import app.form.StartForm;
 import communication.Communicator;
 import controller.Controller;
 import controller.GameBrain;
@@ -28,7 +30,10 @@ public class Launcher extends Application {
 	private String hostname = "raven.rmq.cloudamqp.com";
 	private String uri = "amqp://" + username + ":" + password + "@" + hostname + "/" + username;
 
-	private InitialPage first_stage;
+	// TODO delete, deprecated
+	// private StartForm first_stage;
+	// new way
+	private InitialController initial_controller;
 
 	private Thread game_thread;
 	private GameTask game_task;
@@ -40,6 +45,14 @@ public class Launcher extends Application {
 
 	// methods
 
+	// is not on main (UI) thread
+	// constructor -> init() -> start()
+	@Override
+	public void init() throws Exception {
+
+	}
+
+	// running on main (UI) thread
 	@Override
 	public void start(Stage primaryStage) throws Exception {
 		// ignore generated primaryStage
@@ -48,9 +61,8 @@ public class Launcher extends Application {
 		this.resolveUri();
 		System.out.println("Uri resolved ... @ Launcher.start");
 
-		// create first page for login
-		this.first_stage = new InitialPage();
-		this.first_stage.setOnGameReady(new GameReadyEvent() {
+		this.initial_controller = new InitialController(new StartForm());
+		this.initial_controller.setOnGameReadyHandler(new GameReadyHandler() {
 
 			public void execute(List<PlayerData> players) {
 
@@ -59,6 +71,7 @@ public class Launcher extends Application {
 				Communicator communicator = new Messenger(connection_task.getChannel());
 				View view = new DrawingStage();
 				Model model = new DataModel();
+				// TODO new DataModel(players) should be like this
 
 				System.out
 						.println("\tmodel, view, communicator created ... @ Launcher.onGameReadyEvent");
@@ -73,15 +86,15 @@ public class Launcher extends Application {
 				System.out.println("\thiding first_stage ... @ Launcher.onGameReadyEvent");
 
 				// hide login page
-				first_stage.hide();
+				initial_controller.hideInitialPage();
 
 			}
 
 		});
-		this.first_stage.show();
+		this.initial_controller.showInitialPage();
 		// stage created on application thread
 
-		System.out.println("Creating connection thread ... @ Launcher.start");
+		System.out.println("Creating connection thread ... @ Launcher.init");
 		this.connection_task = new ConnectionTask(this.uri);
 		this.connection_task.setOnConnectionReady(new ConnectionReadyEvent() {
 
@@ -89,17 +102,15 @@ public class Launcher extends Application {
 
 				System.out.println("\tconnection ready ...");
 
-				System.out.println("\tfirst stage channel set call ... @ Launcher.start");
-				first_stage.setChannel(channel);
+				System.out.println("\tfirst stage channel set call ... @ Launcher.init");
+				initial_controller.setCommunicationChannel(channel);
 
 			}
 		});
 
 		this.connection_thread = new Thread(this.connection_task);
 		this.connection_thread.start();
-		System.out.println("Connection thread started ...");
-		// start connection thread
-		// try to connect with MQ server
+		System.out.println("Connection thread started ... @ Launcher.init");
 
 	}
 
@@ -132,9 +143,9 @@ public class Launcher extends Application {
 			((ShouldBeShutdown) this.controller).shutdown();
 		}
 
-		if (this.first_stage != null) {
-			System.out.println("Shutting down initial page ... @ Launcher.stop");
-			((ShouldBeShutdown) this.first_stage).shutdown();
+		if (this.initial_controller != null) {
+			System.out.println("Shutting down initial controller ... @ Launcher.stop");
+			((ShouldBeShutdown) this.initial_controller).shutdown();
 		}
 
 	}

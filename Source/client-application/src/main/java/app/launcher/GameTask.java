@@ -12,7 +12,7 @@ public class GameTask implements Runnable, ShouldBeShutdown {
 	}
 
 	public void run() {
-		
+		this.controller.getView().show();
 	}
 
 	public void shutdown() {

@@ -49,11 +49,12 @@ public class DrawingStage extends Stage implements View {
 
 	public DrawingStage() {
 		super();
-		
+
 		this.initStage();
 		this.initCommandQueue();
 
 		this.initEventHandlers();
+
 	}
 
 	// only stage specific things
@@ -127,7 +128,8 @@ public class DrawingStage extends Stage implements View {
 
 		this.setScene(this.main_scene);
 
-		this.show();
+		// TODO should be shown from controller
+		// this.show();
 	}
 
 	private void initCommandQueue() {
@@ -150,8 +152,9 @@ public class DrawingStage extends Stage implements View {
 
 			public void handle(MouseEvent arg) {
 
-				Point2D field_position = Hexagon.calcStoragePosition(new Point2D(arg.getX(), arg.getY()),
-						DrawFieldCommand.default_hex_size);
+				Point2D field_position = Hexagon
+						.calcStoragePosition(	new Point2D(arg.getX(), arg.getY()),
+												DrawFieldCommand.default_hex_size);
 
 				String event_name = "";
 
@@ -190,7 +193,8 @@ public class DrawingStage extends Stage implements View {
 					System.out.println("Found handlers for: key-event-char-" + key);
 
 					for (ViewEventHandler handler : handlers) {
-						System.out.println("Executing handler - " + ((NamedEventHandler) handler).getName());
+						System.out.println("Executing handler - "
+											+ ((NamedEventHandler) handler).getName());
 						// handler.execute(event);
 					}
 

@@ -10,6 +10,8 @@ import javafx.scene.layout.HBox;
 
 public class BottomForm extends HBox implements LanguageSwitcher {
 
+	private final String ALPHA_VALUE = "a2";
+
 	private final double LANG_MARGIN = 5;
 
 	private final String color = "#993300";
@@ -33,8 +35,8 @@ public class BottomForm extends HBox implements LanguageSwitcher {
 	private void initForm() {
 
 		this.setAlignment(Pos.BASELINE_LEFT);
-		this.setPadding(new Insets(2, 2, 2, 2));
-		this.setStyle("-fx-background-color:" + this.color);
+		this.setPadding(new Insets(2, 2, 5, 2));
+		this.setStyle("-fx-background-color:" + this.color + this.ALPHA_VALUE);
 
 		this.text = new Label(this.string_manager.getString("bottom-text"));
 

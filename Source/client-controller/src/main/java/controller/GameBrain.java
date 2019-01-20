@@ -43,8 +43,6 @@ public class GameBrain implements Controller {
 	private Field selected_field;
 	private Field info_displayed;
 
-	private Map<Field, Field> paths;
-
 	// methods
 
 	public GameBrain(Communicator communicator, View view, Model new_model) {
@@ -54,10 +52,14 @@ public class GameBrain implements Controller {
 		this.communicator = communicator;
 		this.view = view;
 		this.model = new_model;
-		this.initializeModel(); // somehow get list of models
 
-		// part of view initialization
+		if (!this.model.isInitialized())
+			this.initializeModel(); // somehow get list of models
+
+		// view initialization
 		this.view_command_queue = this.view.getCommandQueue();
+
+		// load board with fields from model
 		LoadBoardCommand load_command = new LoadBoardCommand(this.model.getFields());
 		this.view_command_queue.enqueue(load_command);
 
@@ -177,13 +179,15 @@ public class GameBrain implements Controller {
 		});
 	}
 
+	// implement
 	private void initCommunicator() {
 
-		// this.communicator.
+		// implement initialize channel with appropriate queues
 
 	}
 
 	// getters and setters
+
 	public Communicator getCommunicator() {
 		return this.communicator;
 	}
