@@ -9,7 +9,7 @@ import com.rabbitmq.client.Channel;
 import com.rabbitmq.client.Connection;
 import com.rabbitmq.client.ConnectionFactory;
 
-import app.event.ConnectionReadyEvent;
+import app.event.ConnectionReadyHandler;
 import view.ShouldBeShutdown;
 
 public class ConnectionTask implements Runnable, ShouldBeShutdown {
@@ -24,7 +24,7 @@ public class ConnectionTask implements Runnable, ShouldBeShutdown {
 	private Connection connection;
 	private Channel channel;
 
-	private ConnectionReadyEvent on_connection_ready;
+	private ConnectionReadyHandler on_connection_ready;
 
 	public ConnectionTask(String uri) {
 
@@ -114,11 +114,11 @@ public class ConnectionTask implements Runnable, ShouldBeShutdown {
 		return channel;
 	}
 
-	public ConnectionReadyEvent getOn_connection_ready() {
+	public ConnectionReadyHandler getOn_connection_ready() {
 		return on_connection_ready;
 	}
 
-	public void setOnConnectionReady(ConnectionReadyEvent on_connection_ready) {
+	public void setOnConnectionReady(ConnectionReadyHandler on_connection_ready) {
 		this.on_connection_ready = on_connection_ready;
 	}
 

@@ -2,6 +2,8 @@ package app.form;
 
 import java.util.function.Predicate;
 
+import app.event.FormMessageHandler;
+import app.event.RoomFormActionHandler;
 import app.resource_manager.StringResourceManager;
 import javafx.application.Preloader.PreloaderNotification;
 import javafx.event.ActionEvent;
@@ -69,6 +71,7 @@ public class RoomForm extends VBox implements FormMessageProducer, HasLabels {
 		this.initForm();
 
 		this.setHandlers();
+
 	}
 
 	private void initForm() {
@@ -110,6 +113,7 @@ public class RoomForm extends VBox implements FormMessageProducer, HasLabels {
 		this.players_scroll_pane = new ScrollPane(this.players_vb);
 		// next line actually aligns content horizontally
 		this.players_scroll_pane.setFitToWidth(true);
+		this.players_scroll_pane.setMinHeight(70);
 		this.players_scroll_pane.setMaxHeight(70);
 
 		this.start_game_btn = new Button(this.string_manager.getString("start-game"));
@@ -118,11 +122,11 @@ public class RoomForm extends VBox implements FormMessageProducer, HasLabels {
 
 		// test labels (start)
 
-		this.addPlayer("player 1");
-		this.addPlayer("player 2");
-		this.addPlayer("player 3");
-		this.addPlayer("player 4");
-		this.addPlayer("player 5");
+		// this.addPlayer("player 1");
+		// this.addPlayer("player 2");
+		// this.addPlayer("player 3");
+		// this.addPlayer("player 4");
+		// this.addPlayer("player 5");
 
 		// test labels (end)
 

@@ -1,5 +1,7 @@
 package app.form;
 
+import app.event.FormMessageHandler;
+
 public interface FormMessageProducer {
 
 	void setStatusMessageHandler(FormMessageHandler hanlder);

@@ -5,7 +5,7 @@ import javafx.stage.Stage;
 import model.DataModel;
 import view.DrawingStage;
 
-public class Launch extends Application {
+public class BoardLauncher extends Application {
 
 	private Controller controller;
 
@@ -13,6 +13,7 @@ public class Launch extends Application {
 	public void start(Stage primaryStage) throws Exception {
 
 		this.controller = new GameBrain(null, new DrawingStage(), new DataModel());
+		this.controller.getView().show();
 
 	}
 

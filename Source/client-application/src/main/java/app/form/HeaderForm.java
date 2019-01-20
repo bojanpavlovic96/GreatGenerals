@@ -17,7 +17,7 @@ public class HeaderForm extends VBox implements MessageDisplay, HasLabels {
 
 	// path relative to resources
 	// TODO load path from some configuration file (or something like that) somehow
-	private final String IMG_PATH = "/main_pic.jpg";
+	private final String IMG_PATH = "/battle_draw.jpg";
 	private final int TITLE_FONT_SIZE = 20;
 	private final String TITLE_FONT_NAME = "Tlwg Typewriter Bold";
 
@@ -98,7 +98,8 @@ public class HeaderForm extends VBox implements MessageDisplay, HasLabels {
 		this.info_message = new Label();
 		this.info_message.setFont(this.message_font);
 
-		this.image = new ImageView(new Image(this.IMG_PATH));
+		this.image = new ImageView(
+				new Image(this.IMG_PATH, this.image_width, this.image_height, false, false));
 		this.image.setFitWidth(this.image_width);
 		this.image.setFitHeight(this.image_height);
 

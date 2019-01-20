@@ -1,0 +1,16 @@
+- allow my move from to (command_name, from_pos, to_pos )
+- enemy move from to (command_name, from_pos, to_pos )
+- reveal enemy field (command_name, field_pos )
+
+- 
+
+select_field -> choose_option -> (move) -> send_move_request
+receive_move_response -> move (in view)
+					 -> set_timer_for_next_move 
+					 		
+					 		-> time_to_move -> send_move_request
+					 		
+response -> create_command (based on name) -> initiEnvironment -> exec
+comm			comm						(set model,view,contrl)
+
+

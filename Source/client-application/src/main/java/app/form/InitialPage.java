@@ -1,5 +1,8 @@
 package app.form;
 
+import app.event.RoomFormActionHandler;
+import app.event.UserFormActionHandler;
+
 public interface InitialPage extends MessageDisplay {
 
 	// TODO appropriate handler for each method

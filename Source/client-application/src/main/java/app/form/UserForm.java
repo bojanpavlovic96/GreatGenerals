@@ -1,5 +1,7 @@
 package app.form;
 
+import app.event.FormMessageHandler;
+import app.event.UserFormActionHandler;
 import app.resource_manager.StringResourceManager;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;

@@ -7,7 +7,7 @@ import view.command.CommandQueue;
 
 public abstract class CtrlCommand implements Runnable {
 
-	protected String name;
+	protected String command_name;
 
 	protected Point2D primary_position;
 	protected Field primary_field;
@@ -17,7 +17,7 @@ public abstract class CtrlCommand implements Runnable {
 
 	public CtrlCommand(String name, Point2D primary_position) {
 
-		this.name = name;
+		this.command_name = name;
 
 		this.primary_position = primary_position;
 
@@ -39,11 +39,11 @@ public abstract class CtrlCommand implements Runnable {
 	}
 
 	public String getName() {
-		return name;
+		return command_name;
 	}
 
 	public void setName(String name) {
-		this.name = name;
+		this.command_name = name;
 	}
 
 	public CommandQueue getView_command_queue() {

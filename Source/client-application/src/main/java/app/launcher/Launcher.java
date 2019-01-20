@@ -5,9 +5,8 @@ import java.util.List;
 
 import com.rabbitmq.client.Channel;
 
-import app.event.ConnectionReadyEvent;
+import app.event.ConnectionReadyHandler;
 import app.event.GameReadyHandler;
-import app.form.InitialController;
 import app.form.InitialPage;
 import app.form.StartForm;
 import communication.Communicator;
@@ -96,7 +95,7 @@ public class Launcher extends Application {
 
 		System.out.println("Creating connection thread ... @ Launcher.init");
 		this.connection_task = new ConnectionTask(this.uri);
-		this.connection_task.setOnConnectionReady(new ConnectionReadyEvent() {
+		this.connection_task.setOnConnectionReady(new ConnectionReadyHandler() {
 
 			public void execute(Channel channel) {
 

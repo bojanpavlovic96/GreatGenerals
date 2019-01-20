@@ -5,6 +5,8 @@ import java.util.Queue;
 
 public class CtrlCommandQueue {
 
+	private boolean running = false;
+
 	private Queue<CtrlCommand> queue;
 
 	private CtrlQueueEventHandler onEnqueue = null;
@@ -14,10 +16,15 @@ public class CtrlCommandQueue {
 	}
 
 	public void enqueue(CtrlCommand new_command) {
+
 		this.queue.add(new_command);
 
-		if (this.onEnqueue != null) {
+		if (!this.running && this.onEnqueue != null) {
+			this.running = true;
+
 			this.onEnqueue.execute(this);
+
+			this.running = false;
 		}
 
 	}

@@ -6,6 +6,8 @@ import view.View;
 
 public interface Controller extends CanCommunicate, ShouldBeShutdown{
 
+	// TODO add get/set communicator
+	
 	View getView();
 
 	void setView(View view);

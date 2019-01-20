@@ -1,5 +1,6 @@
 package app.form;
 
+import app.event.LanguageEvent;
 import app.resource_manager.StringResourceManager;
 import javafx.application.Platform;
 import javafx.geometry.Insets;

@@ -1,15 +1,24 @@
-package app.form;
+package app.launcher;
 
 import java.util.List;
 
 import com.rabbitmq.client.Channel;
 
 import app.event.GameReadyHandler;
+import app.event.RoomFormActionHandler;
+import app.event.UserFormActionHandler;
+import app.form.ConnectionUser;
+import app.form.GameReadyEventProducer;
+import app.form.InitialPage;
+import app.form.MessageDisplay;
+import app.resource_manager.QueueNamingManager;
 import view.ShouldBeShutdown;
 
 public class InitialController implements GameReadyEventProducer, ConnectionUser, ShouldBeShutdown {
 
 	private Channel channel;
+
+	private QueueNamingManager naming_manager;
 
 	private InitialPage initial_page;
 
@@ -31,6 +40,9 @@ public class InitialController implements GameReadyEventProducer, ConnectionUser
 	public InitialController(InitialPage initial_page) {
 
 		this.initial_page = initial_page;
+
+		// get default queue naming manager
+		this.naming_manager = QueueNamingManager.getInstance("default");
 
 		this.showInitialPage();
 
@@ -179,7 +191,9 @@ public class InitialController implements GameReadyEventProducer, ConnectionUser
 		 *  startGame response
 		 *  	show adequate message
 		 *  	call gameReadyHandler
-		 *  
+		 * 	
+		 *  TODO use this.naming_manager for queue naming 
+		 *  TODO fill /resources/config/queue/default-queue-config.json with appropriate queue names
 		 */
 
 	}
