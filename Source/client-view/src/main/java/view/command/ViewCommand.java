@@ -2,12 +2,12 @@ package view.command;
 
 import model.component.field.Field;
 import view.LayeredView;
-import view.component.Hexagon;
+import view.component.HexagonField;
 
 public abstract class ViewCommand implements Runnable {
 
 	protected LayeredView view;
-	protected Hexagon hex;
+	protected HexagonField hex;
 
 	public ViewCommand() {
 
@@ -22,11 +22,12 @@ public abstract class ViewCommand implements Runnable {
 
 	public ViewCommand(Field model) {
 
-		this.hex = new Hexagon(model, DrawFieldCommand.default_hex_size, DrawFieldCommand.default_border_width);
+		this.hex = new HexagonField(model, DrawFieldCommand.default_hex_size,
+				DrawFieldCommand.default_border_width);
 
 	}
 
-	public ViewCommand(Hexagon hex) {
+	public ViewCommand(HexagonField hex) {
 		this.hex = hex;
 	}
 
@@ -42,11 +43,11 @@ public abstract class ViewCommand implements Runnable {
 		return this.view;
 	}
 
-	public Hexagon getHex() {
+	public HexagonField getHex() {
 		return hex;
 	}
 
-	public void setHex(Hexagon hex) {
+	public void setHex(HexagonField hex) {
 		this.hex = hex;
 	}
 

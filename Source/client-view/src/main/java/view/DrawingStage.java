@@ -24,23 +24,26 @@ import javafx.stage.StageStyle;
 import view.command.CommandQueue;
 import view.command.DrawFieldCommand;
 import view.command.ViewCommandProcessor;
-import view.component.Hexagon;
+import view.component.HexagonField;
 import view.component.menu.FieldMenu;
 import view.component.menu.OptionMenu;
 
+// drawing stage (as view) only provides base for "drawing" game
 public class DrawingStage extends Stage implements View {
 
 	private double STAGE_WIDTH = 800;
 	private double STAGE_HEIGHT = 500;
 
-	private Color background_color;
+	private Color background_color = Color.GRAY;
 
 	private Group root;
 	private Scene main_scene;
+
 	private Canvas board_canvas;
-	private Canvas second_canvas;
+	private Canvas second_layer_canvas;
 	private OptionMenu field_menu;
 
+	// connection with controller
 	private CommandQueue command_queue;
 	private ExecutorService executor;
 	private ViewCommandProcessor command_processor;
@@ -91,15 +94,17 @@ public class DrawingStage extends Stage implements View {
 		this.root.getChildren().add(this.board_canvas);
 
 		// second canvas on top of the first one used for animations and field options
-		this.second_canvas = new Canvas();
+		this.second_layer_canvas = new Canvas();
 
-		this.second_canvas.setWidth(this.STAGE_WIDTH);
-		this.second_canvas.setHeight(this.STAGE_HEIGHT);
+		this.second_layer_canvas.setWidth(this.STAGE_WIDTH);
+		this.second_layer_canvas.setHeight(this.STAGE_HEIGHT);
 
-		this.root.getChildren().add(this.second_canvas);
+		this.root.getChildren().add(this.second_layer_canvas);
 
 		this.field_menu = new FieldMenu();
 		this.field_menu.setVisible(false);
+
+		// attention buttons used just for testing
 		Button b1 = new Button("button 1");
 		Button b2 = new Button("button 2");
 		Button b3 = new Button("button 3");
@@ -115,21 +120,13 @@ public class DrawingStage extends Stage implements View {
 		// used for drawing things
 		GraphicsContext gc = this.board_canvas.getGraphicsContext2D();
 
-		// draw gray background
-		this.background_color = Color.GRAY;
+		// paint background with specific color
 		gc.setFill(this.background_color);
 		gc.fillRect(0, 0, this.STAGE_WIDTH, this.STAGE_HEIGHT);
 
-		GraphicsContext layer = this.second_canvas.getGraphicsContext2D();
-
-		// red color used just as filter
-		layer.setFill(Color.rgb(255, 255, 255, 0));
-		layer.fillRect(0, 0, this.STAGE_WIDTH, this.STAGE_HEIGHT);
-
 		this.setScene(this.main_scene);
 
-		// TODO should be shown from controller
-		// this.show();
+		// this.show() is called from controller when controller is ready
 	}
 
 	private void initCommandQueue() {
@@ -152,7 +149,7 @@ public class DrawingStage extends Stage implements View {
 
 			public void handle(MouseEvent arg) {
 
-				Point2D field_position = Hexagon
+				Point2D field_position = HexagonField
 						.calcStoragePosition(	new Point2D(arg.getX(), arg.getY()),
 												DrawFieldCommand.default_hex_size);
 
@@ -193,8 +190,7 @@ public class DrawingStage extends Stage implements View {
 					System.out.println("Found handlers for: key-event-char-" + key);
 
 					for (ViewEventHandler handler : handlers) {
-						System.out.println("Executing handler - "
-											+ ((NamedEventHandler) handler).getName());
+						System.out.println("Executing handler - " + ((NamedEventHandler) handler).getName());
 						// handler.execute(event);
 					}
 
@@ -207,6 +203,7 @@ public class DrawingStage extends Stage implements View {
 	}
 
 	// CommandDrivernComponent methods
+	// command driven component
 	public CommandQueue getCommandQueue() {
 		return this.command_queue;
 	}
@@ -216,6 +213,7 @@ public class DrawingStage extends Stage implements View {
 	}
 
 	// EventDrivenComponent methods
+
 	public void addEventHandler(String event_name, ViewEventHandler event_handler) {
 
 		List<ViewEventHandler> handlers = this.handlers_map.get(event_name);
@@ -234,6 +232,7 @@ public class DrawingStage extends Stage implements View {
 
 	}
 
+	// event driven component interface
 	public List<ViewEventHandler> getEventHandlers(String event_name) {
 		return this.handlers_map.get(event_name);
 	}
@@ -271,7 +270,7 @@ public class DrawingStage extends Stage implements View {
 		return this.handlers_map.remove(event_name);
 	}
 
-	// ShouldBeShutdown methods
+	// should be shoutDown interface
 	public void shutdown() {
 
 		// called after application stop
@@ -280,12 +279,14 @@ public class DrawingStage extends Stage implements View {
 	}
 
 	// layered view methods
+
+	// layered view interface
 	public Canvas getMainCanvas() {
 		return this.board_canvas;
 	}
 
 	public Canvas getTopLayerCanvas() {
-		return this.second_canvas;
+		return this.second_layer_canvas;
 	}
 
 	public OptionMenu getFieldMenu() {
@@ -306,6 +307,14 @@ public class DrawingStage extends Stage implements View {
 
 	public double getStageHeight() {
 		return this.STAGE_HEIGHT;
+	}
+
+	// view interface
+
+	// show() is already implemented in stage
+
+	public String getViewType() {
+		return ResourceManager.getAssetsType();
 	}
 
 }

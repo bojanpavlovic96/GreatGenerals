@@ -1,0 +1,32 @@
+[
+	{
+		"name": "water",
+		"extension": ".png",
+		"range-start": "1",
+		"range-end": "1"
+	},
+	{
+		"name": "snow",
+		"extension": ".png",
+		"range-start": "1",
+		"range-end": "1"
+	},
+	{
+		"name": "pine-forest",
+		"extension": ".png",
+		"range-start": "1",
+		"range-end": "1"
+	},
+	{
+		"name": "mountains",
+		"extension": ".png",
+		"range-start": "1",
+		"range-end": "1"
+	},
+	{
+		"name": "grass",
+		"extension": ".png",
+		"range-start": "1",
+		"range-end": "1"
+	}
+]

@@ -4,6 +4,7 @@ import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.Map;
 
 import org.json.JSONObject;
@@ -28,16 +29,23 @@ public class QueueNamingManager {
 	 */
 	static public QueueNamingManager getInstance(String config_type) {
 
+		// resolve configuration type
 		if (config_type == null)
 			config_type = "default";
 
 		config_type.toLowerCase();
+
+		if (QueueNamingManager.instances == null) {
+			QueueNamingManager.instances = new HashMap<String, QueueNamingManager>();
+		}
 
 		QueueNamingManager manager = QueueNamingManager.instances.get(config_type);
 
 		if (manager == null) {
 
 			manager = new QueueNamingManager(config_type);
+
+			// save configuration in to the hash map for later reuse
 			QueueNamingManager.instances.put(config_type, manager);
 
 		}
@@ -58,9 +66,8 @@ public class QueueNamingManager {
 
 		try {
 
-			String resource_path = QueueNamingManager.RESOURCE_PREFIX +
-									this.resource_type +
-									QueueNamingManager.RESOURCE_SUFFIX;
+			String resource_path = QueueNamingManager.RESOURCE_PREFIX + this.resource_type
+									+ QueueNamingManager.RESOURCE_SUFFIX;
 
 			ClassLoader loader = QueueNamingManager.class.getClassLoader();
 			FileReader reader = new FileReader(loader.getResource(resource_path).getPath());

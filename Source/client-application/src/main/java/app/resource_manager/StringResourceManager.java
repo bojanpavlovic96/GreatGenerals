@@ -44,7 +44,7 @@ public class StringResourceManager {
 	private void loadResources() {
 
 		try {
-			
+
 			String file_name = StringResourceManager.RESOURCE_PREFIX
 								+ StringResourceManager.language
 								+ StringResourceManager.RESOURCE_SUFFIX;

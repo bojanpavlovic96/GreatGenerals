@@ -4,7 +4,7 @@ import model.component.field.Field;
 
 public class BasicUnit implements Unit {
 
-	private String unit_name = "basic-unit";
+	private final String unit_name = "basic-unit";
 
 	private String unit_id;
 
@@ -20,9 +20,7 @@ public class BasicUnit implements Unit {
 		// may be used in clone
 	}
 
-	public BasicUnit(String name, MoveType move_ctrl, UnitAttack air_attack_ctrl, UnitAttack ground_attack_ctrl) {
-
-		this.unit_name = name;
+	public BasicUnit(MoveType move_ctrl, UnitAttack air_attack_ctrl, UnitAttack ground_attack_ctrl) {
 
 		this.movement_type = move_ctrl;
 		this.air_attack = air_attack_ctrl;

@@ -1,7 +1,7 @@
 package view.command;
 
 import model.component.field.Field;
-import view.component.Hexagon;
+import view.component.HexagonField;
 
 public class DrawFieldCommand extends ViewCommand {
 
@@ -20,7 +20,7 @@ public class DrawFieldCommand extends ViewCommand {
 
 	}
 
-	public DrawFieldCommand(Hexagon hex) {
+	public DrawFieldCommand(HexagonField hex) {
 		super(hex);
 
 	}

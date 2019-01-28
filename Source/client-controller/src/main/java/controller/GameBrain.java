@@ -31,6 +31,7 @@ public class GameBrain implements Controller {
 	// used for receiving updates from communicator
 	private Communicator communicator;
 
+	// implement create commands and communication protocol
 	private ExecutorService server_update_reader;
 	private CtrlCommandQueue server_update_queue;
 	// queue of commands
@@ -67,11 +68,12 @@ public class GameBrain implements Controller {
 
 		this.initCommunicator();
 
+		this.view.show();
+
 	}
 
+	// attention fake initialization
 	private void initializeModel() {
-
-		// fake initialization
 
 		List<Field> models = new ArrayList<Field>();
 
@@ -81,7 +83,10 @@ public class GameBrain implements Controller {
 		for (int i = 1; i < 16; i++) {
 
 			for (int j = left; j < right; j++) {
-				models.add(new GameField(new Point2D(j, i), null, new Terrain()));
+				if (i % 2 == 0 && j % 5 == 0)
+					models.add(new GameField(new Point2D(j, i), null, new Terrain("mountains", 1)));
+				else
+					models.add(new GameField(new Point2D(j, i), null, new Terrain("water", 1)));
 			}
 
 			if (left > -3)
@@ -102,10 +107,10 @@ public class GameBrain implements Controller {
 
 		});
 
-		this.model.setUnit(new Point2D(10, 10), "first-unit");
-		this.model.setUnit(new Point2D(5, 5), "first-unit");
-		this.model.setUnit(new Point2D(5, 10), "first-unit");
-		this.model.setUnit(new Point2D(4, 7), "first-unit");
+		this.model.setUnit(new Point2D(10, 10), "basic-unit");
+		this.model.setUnit(new Point2D(5, 5), "basic-unit");
+		this.model.setUnit(new Point2D(5, 10), "basic-unit");
+		this.model.setUnit(new Point2D(4, 7), "basic-unit");
 
 	}
 

@@ -3,7 +3,7 @@ package view.command;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
 import model.component.field.Field;
-import view.component.Hexagon;
+import view.component.HexagonField;
 
 public class SelectFieldCommand extends ViewCommand {
 
@@ -17,13 +17,13 @@ public class SelectFieldCommand extends ViewCommand {
 		this.filter_color = SelectFieldCommand.default_filter_color;
 	}
 
-	public SelectFieldCommand(Hexagon hex) {
+	public SelectFieldCommand(HexagonField hex) {
 		super(hex);
 
 		this.filter_color = SelectFieldCommand.default_filter_color;
 	}
 
-	public SelectFieldCommand(Color color, Hexagon hex) {
+	public SelectFieldCommand(Color color, HexagonField hex) {
 		super(hex);
 
 		this.filter_color = color;
@@ -35,7 +35,7 @@ public class SelectFieldCommand extends ViewCommand {
 
 		gc.save();
 
-		hex.paintHex(gc, this.filter_color);
+		hex.paintField(gc, this.filter_color);
 
 		gc.restore();
 

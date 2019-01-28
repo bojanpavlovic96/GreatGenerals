@@ -13,12 +13,21 @@ public class BoardLauncher extends Application {
 	public void start(Stage primaryStage) throws Exception {
 
 		this.controller = new GameBrain(null, new DrawingStage(), new DataModel());
-		this.controller.getView().show();
+		// this.controller.getView().show();
 
 	}
 
 	// used for testing drawing stage
 	//
+
+	@Override
+	public void stop() throws Exception {
+		super.stop();
+
+		this.controller.shutdown();
+
+	}
+
 	public static void main(String[] args) {
 
 		Application.launch(args);

@@ -17,19 +17,22 @@ import javafx.stage.Stage;
 
 public class StartForm extends Stage implements InitialPage {
 
-	// TODO height may be unused
+	// attention height may be unused
 	private double WIDTH = 200;
-	// TODO hard-coded, find better solution for height
+	// attention hard-coded, find better solution for height
 	private double HEIGHT = 640;
 
 	private VBox main_containter;
 	private Scene main_scene;
 
 	// page forms
-	// messages, title and image
+	
+	// messages, image and title
 	private HeaderForm header_form;
+	
 	// username, password, login, register
 	private UserForm user_form;
+	
 	// logout, roomName, roomPassword, createRoom, joinRoom, startGame,
 	// listOfPlayers
 	private RoomForm room_form;
@@ -50,10 +53,8 @@ public class StartForm extends Stage implements InitialPage {
 
 		this.initBottomForm();
 
-		// hide room form, only user form is visible
-		// this.room_form.setVisible(false);
-
-		// this.user_form.setVisible(false);
+		//		this.room_form.setVisible(false);
+		 this.user_form.setVisible(false);
 
 		this.setScene(this.main_scene);
 

@@ -1,0 +1,14 @@
+[
+	{
+		"name": "cannon",
+		"extension": ".png",
+		"range-start": "1",
+		"range-end": "1"
+	},
+	{
+		"name": "basic-unit",
+		"extension": ".png",
+		"range-start": "1",
+		"range-end": "1"
+	}
+]

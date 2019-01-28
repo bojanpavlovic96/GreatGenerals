@@ -1,7 +1,7 @@
 package view.command;
 
 import model.component.field.Field;
-import view.component.Hexagon;
+import view.component.HexagonField;
 
 public class ClearFieldCommand extends ViewCommand {
 
@@ -10,13 +10,13 @@ public class ClearFieldCommand extends ViewCommand {
 
 	}
 
-	public ClearFieldCommand(Hexagon hex) {
+	public ClearFieldCommand(HexagonField hex) {
 		super(hex);
 
 	}
 
 	public void run() {
-		this.hex.clearHex(super.view.getMainCanvas().getGraphicsContext2D());
+		this.hex.clearField(super.view.getMainCanvas().getGraphicsContext2D());
 	}
 
 }

@@ -13,9 +13,12 @@ import javafx.scene.transform.Rotate;
 import javafx.scene.transform.Transform;
 import model.component.field.Field;
 import model.component.unit.Unit;
+import view.ResourceManager;
 import view.command.DrawFieldCommand;
 
-public class Hexagon implements DrawableHexagon {
+public class HexagonField implements ViewField {
+
+	static private Color BORDER_COLOR = Color.rgb(51, 51, 204);
 
 	// axial representation with two values q & r
 	// pointy top hex
@@ -23,9 +26,6 @@ public class Hexagon implements DrawableHexagon {
 	// storage_position.x -> q - column
 	// storage_positoin.y -> r - row
 	private Point2D storage_position;
-
-	private String BORDER_PATH = "/border.png";
-	private String BATTLE_IMG_PATH = "/battle.png";
 
 	private ViewTerrain terrain;
 	private ViewUnit unit;
@@ -44,7 +44,7 @@ public class Hexagon implements DrawableHexagon {
 
 	// constructors
 
-	public Hexagon(Field model) {
+	public HexagonField(Field model) {
 
 		this.storage_position = model.getStoragePosition();
 
@@ -63,7 +63,7 @@ public class Hexagon implements DrawableHexagon {
 		this.side_size = DrawFieldCommand.default_hex_size;
 		this.border_width = DrawFieldCommand.default_hex_size;
 
-		this.hex_center = Hexagon.calcRealPosition(this.storage_position, this.getSideSize());
+		this.hex_center = HexagonField.calcRealPosition(this.storage_position, this.getSideSize());
 
 		this.hex_width = this.calcHexWidth(this.getSideSize());
 		this.hex_height = this.calcHexHeight(this.getSideSize());
@@ -72,13 +72,13 @@ public class Hexagon implements DrawableHexagon {
 
 	}
 
-	public Hexagon(Field model, double side_size, double border_width) {
+	public HexagonField(Field model, double side_size, double border_width) {
 
 		this(model);
 
 		this.side_size = side_size;
 		this.border_width = border_width;
-		this.hex_center = Hexagon.calcRealPosition(this.storage_position, this.getSideSize());
+		this.hex_center = HexagonField.calcRealPosition(this.storage_position, this.getSideSize());
 
 		this.initCornerPoints();
 	}
@@ -182,54 +182,34 @@ public class Hexagon implements DrawableHexagon {
 		// y
 		double y = (2.0 / 3 * point.getY()) / side_size;
 
-		Point2D position = Hexagon.convertToAxial(Hexagon.cube_round(Hexagon.convertToCube(new Point2D(x, y))));
+		Point2D position = HexagonField
+				.convertToAxial(HexagonField.cube_round(HexagonField.convertToCube(new Point2D(x, y))));
 
 		return position;
 	}
 
 	// drawing methods
 
-	private void drawBorders(GraphicsContext gc) {
-		gc.save();
-
-		Image border_img = new Image(this.BORDER_PATH);
-
-		double angle = 30;
-
-		for (Point2D corner : this.getCornerPoints()) {
-
-			Transform transform = new Rotate(angle, corner.getX(), corner.getY());
-			gc.setTransform(transform.getMxx(), transform.getMyx(), transform.getMxy(), transform.getMyy(),
-					transform.getTx(), transform.getTy());
-
-			gc.drawImage(border_img, corner.getX(), corner.getY(), this.getSideSize(), this.border_width);
-
-			angle += 60;
-		}
-
-		gc.restore();
-	}
-
 	// TODO remove sleep
-	private void drawLineBorders(GraphicsContext gc) {
+	private void drawBorders(GraphicsContext gc) {
 
 		gc.save();
 
-		Point2D prev_point = null;
-
-		gc.setStroke(Color.color(Math.random(), Math.random(), Math.random()));
+		gc.setStroke(HexagonField.BORDER_COLOR);
 
 		// path
 		gc.beginPath();
 
+		Point2D prev_point = null;
 		for (Point2D corner : this.getCornerPoints()) {
 
 			if (prev_point == null) {
-
+				// first point (corner)
 				prev_point = corner;
 				gc.moveTo(corner.getX(), corner.getY());
 
 			} else {
+				// every other point (corner)
 
 				gc.lineTo(corner.getX(), corner.getY());
 
@@ -239,11 +219,15 @@ public class Hexagon implements DrawableHexagon {
 
 		}
 
+		// attention there should be lintTo->firstPoint, but it actually works with this
+		// also ...
+
 		// path
 		gc.closePath();
 
 		gc.stroke();
 
+		// attention should be removed
 		try {
 			Thread.sleep(5);
 		} catch (InterruptedException e) {
@@ -253,10 +237,11 @@ public class Hexagon implements DrawableHexagon {
 		gc.restore();
 
 	}
+
 	// TODO uncomment or remove
 	private void drawTerrain(GraphicsContext gc) {
-		// if (this.terrain != null)
-		// this.terrain.drawTerrain(gc, this.getHexCenter(), this.getSideSize());
+		if (this.terrain != null)
+			this.terrain.drawTerrain(gc, this.getHexCenter(), this.getSideSize());
 	}
 
 	private void drawUnit(GraphicsContext gc) {
@@ -277,13 +262,13 @@ public class Hexagon implements DrawableHexagon {
 
 		GraphicsContext gc = canvas.getGraphicsContext2D();
 
-		this.drawLineBorders(gc);
+		this.drawBorders(gc);
 		this.drawTerrain(gc);
 		this.drawUnit(gc);
 
 	}
 
-	public void paintHex(GraphicsContext gc, Color color) {
+	public void paintField(GraphicsContext gc, Color color) {
 		gc.save();
 
 		double[] xs = new double[6];
@@ -300,7 +285,7 @@ public class Hexagon implements DrawableHexagon {
 		gc.restore();
 	}
 
-	public void clearHex(GraphicsContext gc) {
+	public void clearField(GraphicsContext gc) {
 		gc.save();
 
 		double[] xs = new double[6];
@@ -319,19 +304,23 @@ public class Hexagon implements DrawableHexagon {
 
 	public void drawBattle(GraphicsContext gc) {
 
-		this.clearHex(gc);
+		this.clearField(gc);
 
-		// draw battle image
-		Image image = new Image(this.BATTLE_IMG_PATH);
+		// attention wrong way
+		Image image = ResourceManager.getInstance().getUnit("battle");
 
 		gc.save();
 
-		gc.drawImage(image, getHexCenter().getX() - this.getSideSize() / 2,
-				getHexCenter().getY() - this.getSideSize() / 2, this.getSideSize(), this.getSideSize());
+		gc.drawImage(	image,
+						getHexCenter().getX() - this.getSideSize() / 2,
+						getHexCenter().getY() - this.getSideSize() / 2,
+						this.getSideSize(),
+						this.getSideSize());
 
 		gc.restore();
 
 	}
+
 	// getters and setters
 
 	public List<Point2D> getCornerPoints() {

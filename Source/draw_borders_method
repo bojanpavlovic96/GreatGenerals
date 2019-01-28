@@ -1,0 +1,29 @@
+	private void drawBorders(GraphicsContext gc) {
+		gc.save();
+
+		Image border_img = new Image("");
+
+		double angle = 30;
+
+		for (Point2D corner : this.getCornerPoints()) {
+
+			Transform transform = new Rotate(angle, corner.getX(), corner.getY());
+			gc.setTransform(transform.getMxx(),
+							transform.getMyx(),
+							transform.getMxy(),
+							transform.getMyy(),
+							transform.getTx(),
+							transform.getTy());
+
+			gc.drawImage(	border_img,
+							corner.getX(),
+							corner.getY(),
+							this.getSideSize(),
+							this.border_width);
+
+			angle += 60;
+		}
+
+		gc.restore();
+	}
+

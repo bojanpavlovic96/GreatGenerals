@@ -106,7 +106,7 @@ public class RoomForm extends VBox implements FormMessageProducer, HasLabels {
 		this.players_lb.setFont(this.font);
 
 		this.players_vb = new VBox();
-		// TODO next line is ignored
+		// attention next line is ignored
 		this.players_vb.setAlignment(Pos.TOP_CENTER);
 		this.players_vb.setPadding(new Insets(5, 0, 0, 10));
 

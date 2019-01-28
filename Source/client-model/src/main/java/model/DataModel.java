@@ -27,6 +27,8 @@ public class DataModel implements Model {
 
 	// methods
 
+	// constructors
+
 	public DataModel() {
 
 		this.timer = new Timer(true);
@@ -50,11 +52,13 @@ public class DataModel implements Model {
 
 	}
 
+	// private methods
+
 	private void initUnitCreator() {
 
 		this.unit_creator = new UnitCreator();
-		Unit basic_unit = new BasicUnit("first-unit",
-				new BasicMove(null, new AStar(this), this.timer), null, null);
+
+		Unit basic_unit = new BasicUnit(new BasicMove(null, new AStar(this), this.timer), null, null);
 		basic_unit.getMoveType().setOnMoveHandler(this.default_move_event_handler);
 
 		this.unit_creator.addPrototype(basic_unit);
@@ -63,6 +67,8 @@ public class DataModel implements Model {
 		// TODO add some more units
 
 	}
+
+	// public methods
 
 	public void initializeModel(List<Field> fields) {
 
