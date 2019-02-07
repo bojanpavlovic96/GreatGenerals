@@ -39,12 +39,14 @@ public class ViewUnit {
 
 		gc.save();
 
-		gc.drawImage(	image,
-						hex_center.getX() - hex_side / 2-7,
-						hex_center.getY() - hex_side / 2-5,
-						hex_side + 10,
-						hex_side + 10);
+		double image_width = hex_side * 1.4;
+		double image_height = hex_side * 1.4;
 
+		gc.drawImage(	image,
+						hex_center.getX() - image_width / 2,
+						hex_center.getY() - image_height / 2,
+						image_width,
+						image_height);
 		gc.restore();
 
 	}

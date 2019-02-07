@@ -2,18 +2,24 @@ package view.command;
 
 import model.component.field.Field;
 import view.LayeredView;
-import view.component.HexagonField;
+import view.View;
+import view.component.ViewField;
 
 public abstract class ViewCommand implements Runnable {
 
-	protected LayeredView view;
-	protected HexagonField hex;
+	protected View view;
+
+	protected Field model;
+
+	protected ViewField field;
+
+	// methods
 
 	public ViewCommand() {
 
 	}
 
-	public ViewCommand(LayeredView view, Field model) {
+	public ViewCommand(View view, Field model) {
 		this(model);
 
 		this.view = view;
@@ -22,33 +28,28 @@ public abstract class ViewCommand implements Runnable {
 
 	public ViewCommand(Field model) {
 
-		this.hex = new HexagonField(model, DrawFieldCommand.default_hex_size,
-				DrawFieldCommand.default_border_width);
+		// attention (view) field is initialized in setView (can't convert model to
+		// viewField without view)
+		this.model = model;
 
 	}
 
-	public ViewCommand(HexagonField hex) {
-		this.hex = hex;
-	}
+	// getters and setters
 
-	public ViewCommand(LayeredView view) {
+	public void setView(View view) {
+
 		this.view = view;
-	}
+		if (this.model != null)
+			this.field = this.view.convertToViewField(this.model);
 
-	public void setView(LayeredView view) {
-		this.view = view;
 	}
 
 	public LayeredView getView() {
 		return this.view;
 	}
 
-	public HexagonField getHex() {
-		return hex;
-	}
-
-	public void setHex(HexagonField hex) {
-		this.hex = hex;
+	public ViewField getField() {
+		return field;
 	}
 
 }

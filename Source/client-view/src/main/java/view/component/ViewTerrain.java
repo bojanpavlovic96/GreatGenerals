@@ -18,24 +18,25 @@ public class ViewTerrain {
 
 	}
 
-	public void drawTerrain(GraphicsContext gc, Point2D hex_center, double hex_side) {
+	public void drawTerrain(GraphicsContext gc, Point2D hex_center, double hex_side, double border_width) {
 
 		Image image = ResourceManager.getInstance().getTerrain(this.terrain_name, intensity);
 
 		if (image == null) {
-			// System.out.println("Terrain image is null... " + this.terrain_name);
+			System.out.println("Terrain image is null... " + this.terrain_name
+								+ "\t @ ViewTerrain.drawTerrain");
 		}
 
-		double hex_width = (float) (Math.sqrt(3) * hex_side);
+		double hex_width = (double) (Math.sqrt(3) * hex_side);
 		double hex_height = 2 * hex_side;
 
 		gc.save();
 
 		gc.drawImage(	image,
-						hex_center.getX() - hex_side + 1,
-						hex_center.getY() - hex_side + 1,
-						hex_width - 1,
-						hex_height - 1);
+						hex_center.getX() - hex_width / 2 + border_width,
+						hex_center.getY() - hex_height / 2 + border_width,
+						hex_width - 2 * border_width,
+						hex_height - 2 * border_width);
 
 		gc.restore();
 

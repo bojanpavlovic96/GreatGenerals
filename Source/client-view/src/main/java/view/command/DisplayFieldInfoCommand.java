@@ -25,7 +25,7 @@ public class DisplayFieldInfoCommand extends ViewCommand {
 
 		gc.setFill(Color.GRAY);
 
-		Point2D pos = super.hex.getHexCenter();
+		Point2D pos = super.field.getFieldCenter();
 
 		OptionMenu menu = super.view.getFieldMenu();
 
@@ -39,8 +39,6 @@ public class DisplayFieldInfoCommand extends ViewCommand {
 			height = menu.getHeight();
 		}
 		gc.fillRect(pos.getX() + menu.getWidth(), pos.getY(), DisplayFieldInfoCommand.INFO_WIDTH, height + 1);
-
-		System.out.println("Menu height " + menu.getHeight());
 
 		gc.restore();
 	}

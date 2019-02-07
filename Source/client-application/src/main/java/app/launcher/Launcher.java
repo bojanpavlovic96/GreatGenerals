@@ -21,6 +21,7 @@ import rabbit.Messenger;
 import view.DrawingStage;
 import view.ShouldBeShutdown;
 import view.View;
+import view.component.HexFieldManager;
 
 public class Launcher extends Application {
 
@@ -68,12 +69,11 @@ public class Launcher extends Application {
 				System.out.println("Creting game thread ... @ Launcher.onGameReadyEvent");
 
 				Communicator communicator = new Messenger(connection_task.getChannel());
-				View view = new DrawingStage();
+				View view = new DrawingStage(new HexFieldManager(80, 30, 2));
 				Model model = new DataModel();
 				// TODO new DataModel(players) should be like this
 
-				System.out
-						.println("\tmodel, view, communicator created ... @ Launcher.onGameReadyEvent");
+				System.out.println("\tmodel, view, communicator created ... @ Launcher.onGameReadyEvent");
 
 				controller = new GameBrain(communicator, view, model);
 				game_task = new GameTask(controller);

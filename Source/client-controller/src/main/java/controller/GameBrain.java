@@ -2,20 +2,17 @@ package controller;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 import java.util.concurrent.ExecutorService;
 
 import communication.Communicator;
 import controller.command.CtrlCommandQueue;
 import controller.command.CtrlMoveCommand;
 import javafx.geometry.Point2D;
-import model.DataModel;
 import model.Model;
 import model.component.Terrain;
 import model.component.field.Field;
 import model.component.field.GameField;
 import model.component.unit.MoveEventHandler;
-import view.DrawingStage;
 import view.ShouldBeShutdown;
 import view.View;
 import view.ViewEvent;
@@ -25,6 +22,8 @@ import view.command.CommandQueue;
 import view.command.DisplayFieldInfoCommand;
 import view.command.LoadBoardCommand;
 import view.command.SelectFieldCommand;
+import view.command.ZoomInCommand;
+import view.command.ZoomOutCommand;
 
 public class GameBrain implements Controller {
 
@@ -174,14 +173,40 @@ public class GameBrain implements Controller {
 				}
 
 				Field field = model.getField(arg.getField_position());
-				info_displayed = field;
 
-				DisplayFieldInfoCommand command = new DisplayFieldInfoCommand(field);
+				if (field != null) {
 
+					info_displayed = field;
+
+					DisplayFieldInfoCommand command = new DisplayFieldInfoCommand(field);
+
+					view_command_queue.enqueue(command);
+				}
+			}
+		});
+
+		this.view.addEventHandler("key-event-char-1", new ViewEventHandler() {
+
+			public void execute(ViewEvent arg) {
+
+				ZoomInCommand command = new ZoomInCommand(model.getFields());
+				command.setView(view);
 				view_command_queue.enqueue(command);
 
 			}
 		});
+
+		this.view.addEventHandler("key-event-char-2", new ViewEventHandler() {
+
+			public void execute(ViewEvent arg) {
+
+				ZoomOutCommand command = new ZoomOutCommand(model.getFields());
+				command.setView(view);
+				view_command_queue.enqueue(command);
+
+			}
+		});
+
 	}
 
 	// implement

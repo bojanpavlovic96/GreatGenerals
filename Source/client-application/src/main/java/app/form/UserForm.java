@@ -107,8 +107,7 @@ public class UserForm extends VBox implements FormMessageProducer, HasLabels {
 				if (on_login != null) {
 					on_login.execute(username_tf.getText(), password_pf.getText());
 				} else {
-					System.out.println("on_login handler is not set ..."
-										+ "\t@ UserForm.loginBtnAction ...");
+					System.out.println("on_login handler is not set ..." + "\t@ UserForm.loginBtnAction ...");
 				}
 			}
 

@@ -2,23 +2,18 @@ package view.command;
 
 import model.component.field.Field;
 import view.component.HexagonField;
+import view.component.ViewField;
 
 public class UnselectFieldCommand extends ViewCommand {
 
-	public UnselectFieldCommand(HexagonField hex) {
-		super(hex);
-
-	}
-
 	public UnselectFieldCommand(Field model) {
 		super(model);
-
 	}
 
 	public void run() {
 
-		this.hex.clearField(super.view.getMainCanvas().getGraphicsContext2D());
-		this.hex.drawOn(super.view.getMainCanvas());
+		this.field.clearField(super.view.getMainCanvas().getGraphicsContext2D());
+		this.field.drawOn(super.view.getMainCanvas());
 
 	}
 

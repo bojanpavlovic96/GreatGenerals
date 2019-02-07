@@ -1,47 +1,64 @@
 package view;
 
+import java.awt.Dimension;
+import java.awt.Toolkit;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Stack;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 import javafx.event.EventHandler;
 import javafx.geometry.Point2D;
+import javafx.geometry.Pos;
 import javafx.scene.Group;
 import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
-import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.Button;
+import javafx.scene.control.ScrollPane;
+import javafx.scene.control.ScrollPane.ScrollBarPolicy;
+import javafx.scene.input.KeyCombination;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
-
+import model.component.field.Field;
 import view.command.CommandQueue;
-import view.command.DrawFieldCommand;
 import view.command.ViewCommandProcessor;
-import view.component.HexagonField;
+import view.component.ViewFieldManager;
+import view.component.ViewField;
 import view.component.menu.FieldMenu;
 import view.component.menu.OptionMenu;
 
+// attention 
+// attention scroll pane throws some exception but it is harmless
+// attention 
 // drawing stage (as view) only provides base for "drawing" game
 public class DrawingStage extends Stage implements View {
 
-	private double STAGE_WIDTH = 800;
-	private double STAGE_HEIGHT = 500;
+	private double STAGE_WIDTH;
+	private double STAGE_HEIGHT;
 
-	private Color background_color = Color.GRAY;
+	private double CANVAS_PADDING = 20;
+
+	// attention externalize it somehow
+	private Color background_color = Color.WHITE;
 
 	private Group root;
+	private ScrollPane scroll;
 	private Scene main_scene;
 
 	private Canvas board_canvas;
 	private Canvas second_layer_canvas;
 	private OptionMenu field_menu;
+
+	private double canvas_width;
+	private double canvas_height;
 
 	// connection with controller
 	private CommandQueue command_queue;
@@ -50,8 +67,13 @@ public class DrawingStage extends Stage implements View {
 
 	private Map<String, List<ViewEventHandler>> handlers_map;
 
-	public DrawingStage() {
+	// holds info about view fields and conversion methods
+	private ViewFieldManager field_manager;
+
+	public DrawingStage(ViewFieldManager field_converter) {
 		super();
+
+		this.field_manager = field_converter;
 
 		this.initStage();
 		this.initCommandQueue();
@@ -61,45 +83,60 @@ public class DrawingStage extends Stage implements View {
 	}
 
 	// only stage specific things
+
 	private void initStage() {
 		// position on screen
 		// this.setX(100);
 		// this.setY(100);
 
-		this.setWidth(this.STAGE_WIDTH);
-		this.setHeight(this.STAGE_HEIGHT);
+		// set full screen mode
+		this.setFullScreen(true);
+		// disable exit from full screen
+		this.setFullScreenExitKeyCombination(KeyCombination.NO_MATCH);
 
-		// max/min width/height set for linux ( resizable(false) is not supported )
-		this.setMaxWidth(this.STAGE_WIDTH);
-		this.setMaxHeight(this.STAGE_HEIGHT);
-
-		this.setMinWidth(this.STAGE_WIDTH);
-		this.setMinHeight(this.STAGE_HEIGHT);
-
-		this.setResizable(false); // doesn't work on linux
-		this.initStyle(StageStyle.UNDECORATED); // removes title bar
+		// this.initStyle(StageStyle.UNDECORATED);
 
 		// create root node and add it to the main scene
 		// Group is just container
 		this.root = new Group();
-		this.main_scene = new Scene(this.root);
+		this.scroll = new ScrollPane(root);
+		this.main_scene = new Scene(scroll);
+
+		// hide scroll bars
+		this.scroll.setHbarPolicy(ScrollBarPolicy.NEVER);
+		this.scroll.setVbarPolicy(ScrollBarPolicy.NEVER);
+
+		// get screen size
+		Dimension dimension = Toolkit.getDefaultToolkit().getScreenSize();
+
+		// stage size match screen size because of full screen mode
+		this.STAGE_WIDTH = dimension.getWidth();
+		this.STAGE_HEIGHT = dimension.getHeight();
+
+		// initially set canvas size to something smaller than stage size
+		// it is going to be resized when the board is loaded (loadBoardCommand)
+		this.canvas_width = this.STAGE_WIDTH / 2;
+		this.canvas_height = this.STAGE_HEIGHT / 2;
 
 		// create canvas and add it to the root node
 		this.board_canvas = new Canvas();
 
-		// set canvas width/height to math stage size
-		this.board_canvas.setWidth(this.STAGE_WIDTH);
-		this.board_canvas.setHeight(this.STAGE_HEIGHT);
+		// set canvas width/height to match stage size
+		this.board_canvas.setWidth(this.canvas_width);
+		this.board_canvas.setHeight(this.canvas_height);
 
 		this.root.getChildren().add(this.board_canvas);
 
 		// second canvas on top of the first one used for animations and field options
 		this.second_layer_canvas = new Canvas();
 
-		this.second_layer_canvas.setWidth(this.STAGE_WIDTH);
-		this.second_layer_canvas.setHeight(this.STAGE_HEIGHT);
+		this.second_layer_canvas.setWidth(this.canvas_width);
+		this.second_layer_canvas.setHeight(this.canvas_height);
 
 		this.root.getChildren().add(this.second_layer_canvas);
+
+		System.out.println("Initial canvas width: " + this.canvas_width);
+		System.out.println("Initial canvas heigth: " + this.canvas_height);
 
 		this.field_menu = new FieldMenu();
 		this.field_menu.setVisible(false);
@@ -108,25 +145,13 @@ public class DrawingStage extends Stage implements View {
 		Button b1 = new Button("button 1");
 		Button b2 = new Button("button 2");
 		Button b3 = new Button("button 3");
-		Button b4 = new Button("button 4");
-		Button b5 = new Button("button 5");
 		this.root.getChildren().add(this.field_menu);
 		this.field_menu.getChildren().add(b1);
 		this.field_menu.getChildren().add(b2);
 		this.field_menu.getChildren().add(b3);
-		// this.field_menu.getChildren().add(b4);
-		// this.field_menu.getChildren().add(b5);
-
-		// used for drawing things
-		GraphicsContext gc = this.board_canvas.getGraphicsContext2D();
-
-		// paint background with specific color
-		gc.setFill(this.background_color);
-		gc.fillRect(0, 0, this.STAGE_WIDTH, this.STAGE_HEIGHT);
 
 		this.setScene(this.main_scene);
 
-		// this.show() is called from controller when controller is ready
 	}
 
 	private void initCommandQueue() {
@@ -145,13 +170,12 @@ public class DrawingStage extends Stage implements View {
 
 		this.handlers_map = new HashMap<String, List<ViewEventHandler>>();
 
-		this.addEventHandler(MouseEvent.MOUSE_CLICKED, new EventHandler<MouseEvent>() {
+		this.second_layer_canvas.addEventHandler(MouseEvent.MOUSE_CLICKED, new EventHandler<MouseEvent>() {
 
 			public void handle(MouseEvent arg) {
 
-				Point2D field_position = HexagonField
-						.calcStoragePosition(	new Point2D(arg.getX(), arg.getY()),
-												DrawFieldCommand.default_hex_size);
+				Point2D field_position = field_manager
+						.calcStoragePosition(new Point2D(arg.getX(), arg.getY()));
 
 				String event_name = "";
 
@@ -182,16 +206,15 @@ public class DrawingStage extends Stage implements View {
 			public void handle(KeyEvent event) {
 
 				String key = event.getCharacter();
-				System.out.println("Key pressed ... " + key);
 
 				List<ViewEventHandler> handlers = handlers_map.get("key-event-char-" + key);
 				if (handlers != null) {
 
-					System.out.println("Found handlers for: key-event-char-" + key);
-
 					for (ViewEventHandler handler : handlers) {
-						System.out.println("Executing handler - " + ((NamedEventHandler) handler).getName());
-						// handler.execute(event);
+						// argument of the execute method is never used for key pressed event...
+						// it is ok to be null
+						// TODO make null disappear
+						handler.execute(null);
 					}
 
 				}
@@ -202,8 +225,11 @@ public class DrawingStage extends Stage implements View {
 
 	}
 
+	// public methods
+
 	// CommandDrivernComponent methods
 	// command driven component
+
 	public CommandQueue getCommandQueue() {
 		return this.command_queue;
 	}
@@ -211,8 +237,6 @@ public class DrawingStage extends Stage implements View {
 	public void setCommandQueue(CommandQueue command_queue) {
 		this.command_queue = command_queue;
 	}
-
-	// EventDrivenComponent methods
 
 	public void addEventHandler(String event_name, ViewEventHandler event_handler) {
 
@@ -233,6 +257,7 @@ public class DrawingStage extends Stage implements View {
 	}
 
 	// event driven component interface
+
 	public List<ViewEventHandler> getEventHandlers(String event_name) {
 		return this.handlers_map.get(event_name);
 	}
@@ -271,6 +296,7 @@ public class DrawingStage extends Stage implements View {
 	}
 
 	// should be shoutDown interface
+
 	public void shutdown() {
 
 		// called after application stop
@@ -281,6 +307,7 @@ public class DrawingStage extends Stage implements View {
 	// layered view methods
 
 	// layered view interface
+
 	public Canvas getMainCanvas() {
 		return this.board_canvas;
 	}
@@ -302,19 +329,111 @@ public class DrawingStage extends Stage implements View {
 	}
 
 	public double getStageWidth() {
-		return this.STAGE_WIDTH;
+		return this.getWidth();
 	}
 
 	public double getStageHeight() {
-		return this.STAGE_HEIGHT;
+		return this.getHeight();
 	}
 
 	// view interface
 
 	// show() is already implemented in stage
-
 	public String getViewType() {
 		return ResourceManager.getAssetsType();
+	}
+
+	public boolean zoomIn() {
+		return this.field_manager.zoomIn();
+	}
+
+	public boolean zoomOut() {
+		return this.field_manager.zoomOut();
+	}
+
+	public void setCanvasVisibility(boolean visibilibity) {
+		this.board_canvas.setVisible(visibilibity);
+	}
+
+	public ViewField convertToViewField(Field model) {
+
+		return this.field_manager.getViewField(model);
+
+	}
+
+	public double getFieldHeight() {
+		return this.field_manager.getHeight();
+	}
+
+	public double getFieldWidth() {
+		return this.field_manager.getWidth();
+	}
+
+	public double getFieldBorderWidth() {
+		return this.field_manager.getBorderWidth();
+	}
+
+	public void adjustCanvasSize(ViewField field) {
+
+		Point2D position = field.getFieldCenter();
+
+		if (position.getX() > this.canvas_width - this.CANVAS_PADDING) {
+
+			System.out.println("adjust width");
+
+			this.canvas_width = position.getX() + this.field_manager.getWidth()
+								+ 2 * this.field_manager.getBorderWidth()
+								+ this.CANVAS_PADDING;
+
+			this.board_canvas.setWidth(this.canvas_width);
+			this.second_layer_canvas.setWidth(this.canvas_width);
+
+			// center canvas horizontally if it is smaller than the stage
+			if (this.canvas_width < this.STAGE_WIDTH) {
+				double h_difference = this.STAGE_WIDTH - this.canvas_width;
+
+				System.out.println("H center");
+
+				this.board_canvas.setLayoutX(h_difference / 2);
+				this.second_layer_canvas.setLayoutX(h_difference / 2);
+
+			}
+
+		}
+
+		if (position.getY() > this.canvas_height - this.CANVAS_PADDING) {
+
+			System.out.println("adjust height");
+
+			this.canvas_height = position.getY() + this.field_manager.getHeight()
+									+ 2 * this.field_manager.getBorderWidth()
+									+ this.CANVAS_PADDING;
+
+			this.board_canvas.setHeight(this.canvas_height);
+			this.second_layer_canvas.setHeight(this.canvas_height);
+
+			// center canvas vertically if it is smaller than the stage
+			if (this.canvas_height < this.STAGE_HEIGHT) {
+
+				double v_difference = this.STAGE_HEIGHT - this.canvas_height;
+
+				System.out.println("V center");
+
+				this.board_canvas.setLayoutY(v_difference / 2);
+				this.second_layer_canvas.setLayoutY(v_difference / 2);
+
+			}
+
+		}
+
+	}
+
+	public double getCanvasWidth() {
+		return this.canvas_width;
+	}
+
+	public double getCanvasHeight() {
+		return this.canvas_height;
 	}
 
 }

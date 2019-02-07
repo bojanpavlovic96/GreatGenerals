@@ -17,7 +17,7 @@ public class ClearTopLayerCommand extends ViewCommand {
 		// gc.setFill(Color.rgb(255, 255, 255, 0));
 		// gc.fillRect(0, 0, this.view.getStageWidth(), this.view.getStageHeight());
 
-		gc.clearRect(0, 0, this.view.getStageWidth(), this.view.getStageHeight());
+		gc.clearRect(0, 0, this.view.getCanvasWidth(), this.view.getCanvasHeight());
 
 		this.view.getFieldMenu().setVisible(false);
 

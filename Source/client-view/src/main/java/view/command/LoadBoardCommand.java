@@ -2,27 +2,40 @@ package view.command;
 
 import java.util.List;
 
+import javafx.application.Platform;
 import model.component.field.Field;
 
 public class LoadBoardCommand extends ViewCommand {
 
-	private List<Field> fields;
+	private List<Field> models;
 
 	public LoadBoardCommand(List<Field> fields) {
 
-		this.fields = fields;
+		this.models = fields;
 
 	}
 
 	public void run() {
 
-		DrawFieldCommand draw_hex_comm = null;
+		Platform.runLater(new Runnable() {
 
-		for (Field field : this.fields) {
-			draw_hex_comm = new DrawFieldCommand(field);
-			draw_hex_comm.setView(super.view);
-			draw_hex_comm.run();
-		}
+			public void run() {
+
+				DrawFieldCommand draw_hex_comm = null;
+
+				view.setCanvasVisibility(false);
+
+				for (Field field : models) {
+					draw_hex_comm = new DrawFieldCommand(field);
+					draw_hex_comm.setView(view);
+					view.adjustCanvasSize(draw_hex_comm.getField());
+					draw_hex_comm.run();
+				}
+
+				view.setCanvasVisibility(true);
+
+			}
+		});
 
 	}
 

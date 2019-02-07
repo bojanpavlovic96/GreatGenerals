@@ -10,13 +10,8 @@ public class ClearFieldCommand extends ViewCommand {
 
 	}
 
-	public ClearFieldCommand(HexagonField hex) {
-		super(hex);
-
-	}
-
 	public void run() {
-		this.hex.clearField(super.view.getMainCanvas().getGraphicsContext2D());
+		this.field.clearField(super.view.getMainCanvas().getGraphicsContext2D());
 	}
 
 }

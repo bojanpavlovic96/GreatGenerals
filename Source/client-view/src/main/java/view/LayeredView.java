@@ -21,4 +21,8 @@ public interface LayeredView {
 
 	double getStageHeight();
 
+	double getCanvasWidth();
+
+	double getCanvasHeight();
+
 }

@@ -4,6 +4,7 @@ import javafx.application.Application;
 import javafx.stage.Stage;
 import model.DataModel;
 import view.DrawingStage;
+import view.component.HexFieldManager;
 
 public class BoardLauncher extends Application {
 
@@ -12,7 +13,9 @@ public class BoardLauncher extends Application {
 	@Override
 	public void start(Stage primaryStage) throws Exception {
 
-		this.controller = new GameBrain(null, new DrawingStage(), new DataModel());
+		// fieldManger(field_width, field_height, border_width)
+		this.controller = new GameBrain(null, new DrawingStage(new HexFieldManager(70, 30, 2)),
+				new DataModel());
 		// this.controller.getView().show();
 
 	}
