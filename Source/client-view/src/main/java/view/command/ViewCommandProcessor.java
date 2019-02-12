@@ -1,9 +1,7 @@
 package view.command;
 
-import java.lang.management.PlatformManagedObject;
 import java.util.concurrent.ExecutorService;
 
-import javafx.application.Platform;
 import view.View;
 
 public class ViewCommandProcessor implements QueueEventHandler {

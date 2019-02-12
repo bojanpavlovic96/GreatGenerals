@@ -1,11 +1,9 @@
 package controller;
 
-import communication.Communicator;
+import controller.communication.Communicator;
 
 public interface CanCommunicate {
 
 	Communicator getCommunicator();
-
-	void setCommunicator(Communicator communicator);
 
 }

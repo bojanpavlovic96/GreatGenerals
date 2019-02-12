@@ -16,7 +16,7 @@
 
 		<dependency>
 			<groupId>great-generals</groupId>
-			<artifactId>communication</artifactId>
+			<artifactId>gg-server</artifactId>
 			<version>0.0.1-SNAPSHOT</version>
 		</dependency>
 

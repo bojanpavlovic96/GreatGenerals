@@ -4,15 +4,17 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
 
-import communication.Communicator;
 import controller.command.CtrlCommandQueue;
 import controller.command.CtrlMoveCommand;
+import controller.communication.Communicator;
+import controller.communication.ServerProxy;
 import javafx.geometry.Point2D;
 import model.Model;
 import model.component.Terrain;
 import model.component.field.Field;
 import model.component.field.GameField;
 import model.component.unit.MoveEventHandler;
+import server.Server;
 import view.ShouldBeShutdown;
 import view.View;
 import view.ViewEvent;
@@ -27,13 +29,15 @@ import view.command.ZoomOutCommand;
 
 public class GameBrain implements Controller {
 
-	// used for receiving updates from communicator
-	private Communicator communicator;
+	// connection with server (other players)
+	private ServerProxy server_proxy;
 
 	// implement create commands and communication protocol
+	// implement missing serverUpdateReaderTask
 	private ExecutorService server_update_reader;
+
+	// provided in message translator
 	private CtrlCommandQueue server_update_queue;
-	// queue of commands
 
 	private View view;
 	private CommandQueue view_command_queue;
@@ -45,11 +49,12 @@ public class GameBrain implements Controller {
 
 	// methods
 
-	public GameBrain(Communicator communicator, View view, Model new_model) {
-
+	public GameBrain(ServerProxy server_proxy, View view, Model new_model) {
 		super();
 
-		this.communicator = communicator;
+		this.server_proxy = server_proxy;
+		this.server_update_queue = this.server_proxy.getCtrlQueue();
+
 		this.view = view;
 		this.model = new_model;
 
@@ -64,8 +69,6 @@ public class GameBrain implements Controller {
 		this.view_command_queue.enqueue(load_command);
 
 		this.initViewEventHandlers();
-
-		this.initCommunicator();
 
 		this.view.show();
 
@@ -209,22 +212,7 @@ public class GameBrain implements Controller {
 
 	}
 
-	// implement
-	private void initCommunicator() {
-
-		// implement initialize channel with appropriate queues
-
-	}
-
 	// getters and setters
-
-	public Communicator getCommunicator() {
-		return this.communicator;
-	}
-
-	public void setCommunicator(Communicator communicator) {
-		this.communicator = communicator;
-	}
 
 	public View getView() {
 		return this.view;
@@ -254,6 +242,10 @@ public class GameBrain implements Controller {
 
 		// TODO somehow cancel timer tasks
 
+	}
+
+	public Communicator getCommunicator() {
+		return (Communicator) this.server_proxy;
 	}
 
 }

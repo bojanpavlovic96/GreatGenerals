@@ -28,7 +28,8 @@ public class HexagonField implements ViewField {
 	private Point2D hex_center;
 
 	// attention
-	private Color border_color = Color.rgb(200, 100, 100);
+	// private Color border_color = Color.rgb(200, 100, 100);
+	private Color border_color = Color.rgb(0, 0, 0);
 	private ViewTerrain terrain;
 	private ViewUnit unit;
 

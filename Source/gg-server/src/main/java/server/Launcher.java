@@ -1,4 +1,4 @@
-package server.launcher;
+package server;
 
 import java.io.IOException;
 import java.net.URISyntaxException;
@@ -57,8 +57,8 @@ public class Launcher {
 			this.channel.basicConsume(this.user_request_queue, new DefaultConsumer(this.channel) {
 
 				@Override
-				public void handleDelivery(String consumerTag, Envelope envelope,
-						BasicProperties properties, byte[] body) throws IOException {
+				public void handleDelivery(String consumerTag, Envelope envelope, BasicProperties properties,
+						byte[] body) throws IOException {
 
 					System.out.println("Received user-request ...");
 
@@ -68,10 +68,7 @@ public class Launcher {
 
 					String user_response = "ok#logged";
 
-					channel.basicPublish(	user_response_exchange,
-											args[0],
-											null,
-											user_response.getBytes());
+					channel.basicPublish(user_response_exchange, args[0], null, user_response.getBytes());
 
 					if (!users.containsKey(args[2])) {
 						users.put(args[2], args[0]);
@@ -85,8 +82,8 @@ public class Launcher {
 
 			this.channel.basicConsume(this.room_request_queue, new DefaultConsumer(channel) {
 				@Override
-				public void handleDelivery(String consumerTag, Envelope envelope,
-						BasicProperties properties, byte[] body) throws IOException {
+				public void handleDelivery(String consumerTag, Envelope envelope, BasicProperties properties,
+						byte[] body) throws IOException {
 
 					String[] args = (new String(body)).split("#");
 
@@ -105,20 +102,14 @@ public class Launcher {
 
 							// TODO just send ack for room creation
 							String message = "create-ok#room-created";
-							channel.basicPublish(	room_response_exchange,
-													args[0],
-													null,
-													message.getBytes());
+							channel.basicPublish(room_response_exchange, args[0], null, message.getBytes());
 
 						} else {
 							// room already exists
 
 							// TODO send error message
 							String message = "error#room-already-exists";
-							channel.basicPublish(	room_response_exchange,
-													args[0],
-													null,
-													message.getBytes());
+							channel.basicPublish(room_response_exchange, args[0], null, message.getBytes());
 
 						}
 
@@ -130,10 +121,7 @@ public class Launcher {
 
 							// TODO send error message
 							String message = "error#bad-room-name";
-							channel.basicPublish(	room_response_exchange,
-													args[0],
-													null,
-													message.getBytes());
+							channel.basicPublish(room_response_exchange, args[0], null, message.getBytes());
 
 						} else {
 
@@ -150,10 +138,7 @@ public class Launcher {
 
 								String key = users.get(player);
 								String message = "user-join#" + args[4];
-								channel.basicPublish(	room_response_exchange,
-														key,
-														null,
-														message.getBytes());
+								channel.basicPublish(room_response_exchange, key, null, message.getBytes());
 
 								server_response += "#" + player;
 							}

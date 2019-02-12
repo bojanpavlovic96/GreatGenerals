@@ -26,13 +26,13 @@ public class StartForm extends Stage implements InitialPage {
 	private Scene main_scene;
 
 	// page forms
-	
+
 	// messages, image and title
 	private HeaderForm header_form;
-	
+
 	// username, password, login, register
 	private UserForm user_form;
-	
+
 	// logout, roomName, roomPassword, createRoom, joinRoom, startGame,
 	// listOfPlayers
 	private RoomForm room_form;
@@ -53,8 +53,8 @@ public class StartForm extends Stage implements InitialPage {
 
 		this.initBottomForm();
 
-		//		this.room_form.setVisible(false);
-		 this.user_form.setVisible(false);
+		this.room_form.setVisible(false);
+		// this.user_form.setVisible(false);
 
 		this.setScene(this.main_scene);
 

@@ -7,17 +7,15 @@ import com.rabbitmq.client.Channel;
 
 import app.event.ConnectionReadyHandler;
 import app.event.GameReadyHandler;
-import app.form.InitialPage;
 import app.form.StartForm;
-import communication.Communicator;
 import controller.Controller;
 import controller.GameBrain;
+import controller.communication.ServerProxy;
 import javafx.application.Application;
 import javafx.stage.Stage;
 import model.DataModel;
 import model.Model;
 import model.PlayerData;
-import rabbit.Messenger;
 import view.DrawingStage;
 import view.ShouldBeShutdown;
 import view.View;
@@ -68,14 +66,17 @@ public class Launcher extends Application {
 
 				System.out.println("Creting game thread ... @ Launcher.onGameReadyEvent");
 
-				Communicator communicator = new Messenger(connection_task.getChannel());
+				// serverProxy created for communication with server
+				ServerProxy server_proxy = new ServerProxy(connection_task.getChannel(),
+						new JSONMessageTranslator());
+
 				View view = new DrawingStage(new HexFieldManager(80, 30, 2));
 				Model model = new DataModel();
 				// TODO new DataModel(players) should be like this
 
 				System.out.println("\tmodel, view, communicator created ... @ Launcher.onGameReadyEvent");
 
-				controller = new GameBrain(communicator, view, model);
+				controller = new GameBrain(server_proxy, view, model);
 				game_task = new GameTask(controller);
 				game_thread = new Thread(game_task);
 

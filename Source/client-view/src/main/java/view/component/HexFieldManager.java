@@ -9,12 +9,16 @@ public class HexFieldManager implements ViewFieldManager {
 	private double field_width;
 	private double field_border_width;
 
+	// constructors
+
 	public HexFieldManager(double field_height, double field_width, double field_border_width) {
 		super();
 		this.field_height = field_height;
 		this.field_width = field_width;
 		this.field_border_width = field_border_width;
 	}
+
+	// methods
 
 	public ViewField getViewField(Field model) {
 		return new HexagonField(model, this.field_width, this.field_height, this.field_border_width);
