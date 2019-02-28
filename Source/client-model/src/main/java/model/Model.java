@@ -8,7 +8,7 @@ import model.component.unit.MoveEventHandler;
 
 public interface Model {
 
-	void initializeModel(List<Field> fields);
+	void initializeModel(List<PlayerData> players, List<Field> fields);
 
 	boolean isInitialized();
 
@@ -22,6 +22,7 @@ public interface Model {
 
 	void setUnit(Point2D position, String unit_name);
 
+	// attention
 	MoveEventHandler getDefaultMoveEventHandler();
 
 	void setDefaultMoveEventHandler(MoveEventHandler move_handler);

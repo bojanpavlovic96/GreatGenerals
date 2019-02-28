@@ -1,6 +1,6 @@
 package view.command;
 
-public interface QueueEventHandler {
+public interface ViewQueueEventHandler {
 
 	void execute(CommandQueue queue);
 

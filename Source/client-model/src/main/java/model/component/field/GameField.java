@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javafx.geometry.Point2D;
+import model.PlayerData;
 import model.component.Terrain;
 import model.component.field.option.FieldOption;
 import model.component.unit.Unit;
@@ -11,6 +12,10 @@ import model.component.unit.Unit;
 public class GameField implements Field {
 
 	private Point2D storage_position;
+
+	private PlayerData player;
+
+	private boolean visibility;
 
 	private Unit unit;
 	private Terrain terrain;
@@ -20,10 +25,13 @@ public class GameField implements Field {
 	private List<FieldOption> options;
 
 	// methods
-	public GameField(Point2D storage_position, Unit unit, Terrain terrain) {
+
+	public GameField(Point2D storage_position, PlayerData player, boolean visibility, Unit unit,
+			Terrain terrain) {
 		super();
 
 		this.storage_position = storage_position;
+		this.visibility = visibility;
 		this.unit = unit;
 		this.terrain = terrain;
 
@@ -89,6 +97,7 @@ public class GameField implements Field {
 	}
 
 	// field options specific
+
 	public List<FieldOption> getOptions() {
 		return this.options;
 	}
@@ -111,6 +120,10 @@ public class GameField implements Field {
 			index++;
 
 		}
+	}
+
+	public boolean isVisible() {
+		return this.visibility;
 	}
 
 }

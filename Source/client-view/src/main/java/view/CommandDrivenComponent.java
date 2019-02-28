@@ -6,6 +6,7 @@ public interface CommandDrivenComponent {
 
 	CommandQueue getCommandQueue();
 
+	// TODO maybe remove
 	void setCommandQueue(CommandQueue command_queue);
 
 }

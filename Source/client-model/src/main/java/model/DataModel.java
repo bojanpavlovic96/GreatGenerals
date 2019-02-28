@@ -18,9 +18,11 @@ import model.path.AStar;
 public class DataModel implements Model {
 
 	private Map<Point2D, Field> fields;
+	private Map<String, PlayerData> players;
 
 	private UnitCreator unit_creator;
 
+	// attention there should be unique modelEvent for all events (move, attack ...)
 	private MoveEventHandler default_move_event_handler;
 
 	private Timer timer;
@@ -36,19 +38,6 @@ public class DataModel implements Model {
 		// timer is shared with all units
 
 		this.initUnitCreator();
-
-	}
-
-	public DataModel(List<Field> fields) {
-		this();
-
-		this.fields = new HashMap<Point2D, Field>();
-
-		for (Field field : fields) {
-
-			this.fields.put(field.getStoragePosition(), field);
-
-		}
 
 	}
 
@@ -70,7 +59,7 @@ public class DataModel implements Model {
 
 	// public methods
 
-	public void initializeModel(List<Field> fields) {
+	public void initializeModel(List<PlayerData> players, List<Field> fields) {
 
 		this.fields = new HashMap<Point2D, Field>();
 
@@ -138,7 +127,7 @@ public class DataModel implements Model {
 				.generateUnit(	unit_name,
 								field,
 								this.default_move_event_handler /* attack handler and ground attack handler */);
-		// prototype doesn't have handlers because they are set after creator
+		// prototype doesn't have handlers because they are set after creators
 		// initialization
 
 		field.setUnit(unit);

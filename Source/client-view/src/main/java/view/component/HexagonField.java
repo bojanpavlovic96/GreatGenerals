@@ -27,6 +27,8 @@ public class HexagonField implements ViewField {
 	// canvas coordinates
 	private Point2D hex_center;
 
+	private boolean visibility;
+
 	// attention
 	// private Color border_color = Color.rgb(200, 100, 100);
 	private Color border_color = Color.rgb(0, 0, 0);
@@ -48,6 +50,9 @@ public class HexagonField implements ViewField {
 	public HexagonField(Field model, double field_width, double field_height, double border_width) {
 
 		this.storage_position = model.getStoragePosition();
+
+		// is visible just returns visibility field from Field
+		this.visibility = model.isVisible();
 
 		if (model.getTerrain() != null)
 			this.terrain = new ViewTerrain(model.getTerrain());
@@ -193,6 +198,7 @@ public class HexagonField implements ViewField {
 
 		gc.save();
 
+		// every player has different border color
 		gc.setStroke(this.border_color);
 
 		// path
@@ -236,6 +242,15 @@ public class HexagonField implements ViewField {
 			this.terrain.drawTerrain(gc, this.hex_center, this.side_size, this.border_width);
 	}
 
+	private void drawHiddenTerrain(GraphicsContext gc) {
+		if (this.terrain != null) {
+			this.terrain.drawHiddenTerrain(	gc,
+											this.hex_center,
+											this.calculateHexSideSize(hex_height),
+											this.border_width);
+		}
+	}
+
 	private void drawUnit(GraphicsContext gc) {
 
 		if (this.unit != null) {
@@ -254,9 +269,23 @@ public class HexagonField implements ViewField {
 
 		GraphicsContext gc = canvas.getGraphicsContext2D();
 
+		// every field has borders
 		this.drawBorders(gc);
-		this.drawTerrain(gc);
-		this.drawUnit(gc);
+		
+		// not every field is visible
+		// enemy field are hidden with fog
+		if (this.visibility) {
+			// if field is visible draw terrain and unit
+
+			this.drawTerrain(gc);
+			this.drawUnit(gc);
+
+		} else {
+			// field is still hidden
+
+			this.drawHiddenTerrain(gc);
+
+		}
 
 	}
 

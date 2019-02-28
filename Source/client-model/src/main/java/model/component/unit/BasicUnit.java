@@ -8,6 +8,8 @@ public class BasicUnit implements Unit {
 
 	private String unit_id;
 
+	// attention this should be list of attacks
+
 	private MoveType movement_type;
 
 	private UnitAttack air_attack;

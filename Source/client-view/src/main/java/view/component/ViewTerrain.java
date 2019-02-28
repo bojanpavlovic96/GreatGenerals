@@ -42,4 +42,20 @@ public class ViewTerrain {
 
 	}
 
+	public void drawHiddenTerrain(GraphicsContext gc, Point2D hex_center, double hex_side,
+			double border_width) {
+
+		String old_terrain_name = this.terrain_name;
+		this.terrain_name = "fog";
+
+		int old_intensity = this.intensity;
+		this.intensity = 1;
+
+		this.drawTerrain(gc, hex_center, hex_side, border_width);
+
+		this.terrain_name = old_terrain_name;
+		this.intensity = old_intensity;
+
+	}
+
 }

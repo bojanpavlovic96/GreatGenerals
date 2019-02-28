@@ -335,6 +335,7 @@ public class DrawingStage extends Stage implements View {
 	// view interface
 
 	// show() is already implemented in stage
+	
 	public String getViewType() {
 		return ResourceManager.getAssetsType();
 	}

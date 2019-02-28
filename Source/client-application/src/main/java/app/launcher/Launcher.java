@@ -10,12 +10,12 @@ import app.event.GameReadyHandler;
 import app.form.StartForm;
 import controller.Controller;
 import controller.GameBrain;
+import controller.communication.JSONMessageTranslator;
 import controller.communication.ServerProxy;
 import javafx.application.Application;
 import javafx.stage.Stage;
 import model.DataModel;
 import model.Model;
-import model.PlayerData;
 import view.DrawingStage;
 import view.ShouldBeShutdown;
 import view.View;
@@ -28,22 +28,22 @@ public class Launcher extends Application {
 	private String hostname = "raven.rmq.cloudamqp.com";
 	private String uri = "amqp://" + username + ":" + password + "@" + hostname + "/" + username;
 
-	// TODO delete, deprecated
-	// private StartForm first_stage;
-	// new way
 	private InitialController initial_controller;
 
-	private Thread game_thread;
-	private GameTask game_task;
+	// TODO leave this application thread as game thread
+	// remove gameThread and gameTask
+	// private Thread game_thread;
+	// private GameTask game_task;
 
 	private Thread connection_thread;
 	private ConnectionTask connection_task;
 
+	// controller thread is main application thread
 	private Controller controller;
 
 	// methods
 
-	// is not on main (UI) thread
+	// init() is not on main (UI) thread
 	// constructor -> init() -> start()
 	@Override
 	public void init() throws Exception {
@@ -60,47 +60,55 @@ public class Launcher extends Application {
 		System.out.println("Uri resolved ... @ Launcher.start");
 
 		this.initial_controller = new InitialController(new StartForm());
+		this.initial_controller.showInitialPage();
+
 		this.initial_controller.setOnGameReadyHandler(new GameReadyHandler() {
 
-			public void execute(List<PlayerData> players) {
+			public void execute() {
 
-				System.out.println("Creting game thread ... @ Launcher.onGameReadyEvent");
+				System.out
+						.println("Creating game controller ... @ Launcher.onGameReadyEvent -> called from intial controller");
 
 				// serverProxy created for communication with server
 				ServerProxy server_proxy = new ServerProxy(connection_task.getChannel(),
 						new JSONMessageTranslator());
 
+				// TODO somehow initialize resource manager
+				// resources could be obtained from the server
 				View view = new DrawingStage(new HexFieldManager(80, 30, 2));
+
 				Model model = new DataModel();
-				// TODO new DataModel(players) should be like this
-
-				System.out.println("\tmodel, view, communicator created ... @ Launcher.onGameReadyEvent");
-
-				controller = new GameBrain(server_proxy, view, model);
-				game_task = new GameTask(controller);
-				game_thread = new Thread(game_task);
-
-				System.out.println("\tstarting game thread ... @ Launcher.onGameReadyEvent");
-				game_thread.start();
 
 				System.out.println("\thiding first_stage ... @ Launcher.onGameReadyEvent");
-
-				// hide login page
+				// hide login & room page
 				initial_controller.hideInitialPage();
+
+				System.out.println("\tController created ... @ Launcher.onGameReadyEvent");
+				controller = new GameBrain(server_proxy, view, model);
+
+				System.out.println("\tShowing game view ... @ Launcher.onGameReadyEvent");
+				controller.getView().show();
+
+				// remove next lines
+
+				// game_task = new GameTask(controller);
+				// game_thread = new Thread(game_task);
+
+				// System.out.println("\tstarting game thread ... @ Launcher.onGameReadyEvent");
+				// game_thread.start();
 
 			}
 
 		});
-		this.initial_controller.showInitialPage();
-		// stage created on application thread
 
-		System.out.println("Creating connection thread ... @ Launcher.init");
+		System.out.println("Creating connection thread ... @ Launcher.start");
 		this.connection_task = new ConnectionTask(this.uri);
 		this.connection_task.setOnConnectionReady(new ConnectionReadyHandler() {
 
 			public void execute(Channel channel) {
 
-				System.out.println("\tconnection ready ...");
+				System.out
+						.println("\tconnection ready ... @ Launcher.init - connectionTask.onConnecionReady");
 
 				System.out.println("\tfirst stage channel set call ... @ Launcher.init");
 				initial_controller.setCommunicationChannel(channel);

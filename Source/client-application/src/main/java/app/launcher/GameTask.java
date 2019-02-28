@@ -1,6 +1,7 @@
 package app.launcher;
 
 import controller.Controller;
+import javafx.application.Platform;
 import view.ShouldBeShutdown;
 
 public class GameTask implements Runnable, ShouldBeShutdown {
@@ -12,7 +13,18 @@ public class GameTask implements Runnable, ShouldBeShutdown {
 	}
 
 	public void run() {
-		this.controller.getView().show();
+
+		Platform.runLater(new Runnable() {
+
+			public void run() {
+
+				controller.getView().show();
+
+			}
+		});
+
+		System.out.println("Game task dead ... @ GameTask.run");
+
 	}
 
 	public void shutdown() {

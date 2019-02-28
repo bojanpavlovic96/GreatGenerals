@@ -9,7 +9,7 @@ public class CommandQueue {
 
 	private Queue<ViewCommand> queue;
 
-	private QueueEventHandler onEnqueue = null;
+	private ViewQueueEventHandler onEnqueue = null;
 
 	public CommandQueue() {
 		this.queue = new LinkedList<ViewCommand>();
@@ -36,7 +36,7 @@ public class CommandQueue {
 		return null;
 	}
 
-	public void setOnEnqueueEventHandler(QueueEventHandler handler) {
+	public void setOnEnqueueEventHandler(ViewQueueEventHandler handler) {
 		this.onEnqueue = handler;
 	}
 

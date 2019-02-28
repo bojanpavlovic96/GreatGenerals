@@ -30,6 +30,7 @@ public class CtrlCommandQueue {
 	}
 
 	public CtrlCommand dequeue() {
+
 		if (!this.queue.isEmpty()) {
 			return this.queue.remove();
 		}

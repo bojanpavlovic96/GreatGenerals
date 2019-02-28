@@ -13,7 +13,8 @@ import org.json.JSONObject;
 
 import javafx.scene.image.Image;
 
-// attention this thing is mess ... to something 
+// attention this thing is mess ... do something 
+// should be populated with resources that comes from the server ... maybe
 
 public class ResourceManager {
 

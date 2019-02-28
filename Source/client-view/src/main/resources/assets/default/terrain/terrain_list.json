@@ -28,5 +28,11 @@
 		"extension": ".png",
 		"range-start": "1",
 		"range-end": "1"
+	},
+	{
+		"name": "fog",
+		"extension": ".png",
+		"range-start": "1",
+		"range-end": "1"
 	}
 ]

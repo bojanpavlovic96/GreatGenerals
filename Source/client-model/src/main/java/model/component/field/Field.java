@@ -9,6 +9,8 @@ import model.component.unit.Unit;
 
 public interface Field {
 
+	boolean isVisible();
+	
 	Point2D getStoragePosition();
 
 	void setStoragePosition(Point2D storage_position);

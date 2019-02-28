@@ -29,11 +29,11 @@ public class CtrlMoveCommand extends CtrlCommand {
 	}
 
 	@Override
-	public void setData_model(Model data_model) {
-		super.setData_model(data_model);
+	public void setDataModel(Model data_model) {
+		super.setDataModel(data_model);
 		// sets data model and get primary field
 
-		this.second_field = super.data_model.getField(this.second_position);
+		this.second_field = super.model.getField(this.second_position);
 
 	}
 
@@ -43,7 +43,7 @@ public class CtrlMoveCommand extends CtrlCommand {
 		// this.primary_field.moveToField(this.second_field);
 		// moves all necessary data to another field
 
-		this.view_command_queue.enqueue(new RedrawFieldCommand(this.primary_field));
+		this.view_command_queue.enqueue(new RedrawFieldCommand(this.base_field));
 		this.view_command_queue.enqueue(new RedrawFieldCommand(this.second_field));
 		// redraw both fields
 

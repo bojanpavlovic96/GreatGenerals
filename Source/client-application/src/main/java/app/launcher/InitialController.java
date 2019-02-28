@@ -64,6 +64,8 @@ public class InitialController implements GameReadyEventProducer, ConnectionUser
 
 					((MessageDisplay) initial_page).showInfoMessage("login-request-sent");
 
+					on_game_ready.execute();
+
 				} else {
 					((MessageDisplay) initial_page).showInfoMessage("please-wait-for-connection");
 				}
