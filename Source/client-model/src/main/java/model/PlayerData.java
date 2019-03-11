@@ -23,11 +23,11 @@ public class PlayerData {
 		this.username = username;
 	}
 
-	public Color getField_color() {
+	public Color getPlayerColor() {
 		return field_color;
 	}
 
-	public void setField_color(Color field_color) {
+	public void setPlayerColor(Color field_color) {
 		this.field_color = field_color;
 	}
 

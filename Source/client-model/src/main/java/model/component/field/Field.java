@@ -3,6 +3,7 @@ package model.component.field;
 import java.util.List;
 
 import javafx.geometry.Point2D;
+import javafx.scene.paint.Color;
 import model.component.Terrain;
 import model.component.field.option.FieldOption;
 import model.component.unit.Unit;
@@ -14,7 +15,9 @@ public interface Field {
 	Point2D getStoragePosition();
 
 	void setStoragePosition(Point2D storage_position);
-
+	
+	Color getPlayerColor();
+	
 	// unit specific
 	Unit getUnit();
 

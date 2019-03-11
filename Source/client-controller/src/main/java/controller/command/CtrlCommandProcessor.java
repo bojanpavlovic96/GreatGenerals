@@ -25,6 +25,8 @@ public class CtrlCommandProcessor implements CtrlQueueEventHandler {
 
 			// implement prepare command somehow
 
+			command.setController(this.controller);
+
 			this.executor.execute(command);
 
 		}

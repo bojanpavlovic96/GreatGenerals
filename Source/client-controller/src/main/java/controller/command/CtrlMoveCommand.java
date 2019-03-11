@@ -28,15 +28,8 @@ public class CtrlMoveCommand extends CtrlCommand {
 		super.setName("move-command"); // identify command for database storing
 	}
 
-	@Override
-	public void setDataModel(Model data_model) {
-		super.setDataModel(data_model);
-		// sets data model and get primary field
-
-		this.second_field = super.model.getField(this.second_position);
-
-	}
-
+	
+	
 	@Override
 	public void run() {
 

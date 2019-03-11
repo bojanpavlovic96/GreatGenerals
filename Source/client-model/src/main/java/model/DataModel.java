@@ -47,7 +47,8 @@ public class DataModel implements Model {
 
 		this.unit_creator = new UnitCreator();
 
-		Unit basic_unit = new BasicUnit(new BasicMove(null, new AStar(this), this.timer), null, null);
+		Unit basic_unit =
+						new BasicUnit(new BasicMove(null, new AStar(this), this.timer), null, null);
 		basic_unit.getMoveType().setOnMoveHandler(this.default_move_event_handler);
 
 		this.unit_creator.addPrototype(basic_unit);
@@ -120,9 +121,9 @@ public class DataModel implements Model {
 		return neighbours;
 	}
 
-	public void setUnit(Point2D position, String unit_name) {
+	public void setUnit(Point2D storage_position, String unit_name) {
 
-		Field field = this.fields.get(position);
+		Field field = this.fields.get(storage_position);
 		Unit unit = this.unit_creator
 				.generateUnit(	unit_name,
 								field,

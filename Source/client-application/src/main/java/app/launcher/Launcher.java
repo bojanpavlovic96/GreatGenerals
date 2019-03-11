@@ -77,6 +77,7 @@ public class Launcher extends Application {
 				// resources could be obtained from the server
 				View view = new DrawingStage(new HexFieldManager(80, 30, 2));
 
+				// empty model (only timer and unit creator)
 				Model model = new DataModel();
 
 				System.out.println("\thiding first_stage ... @ Launcher.onGameReadyEvent");

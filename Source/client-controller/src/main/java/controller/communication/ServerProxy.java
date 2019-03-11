@@ -14,6 +14,7 @@ import model.PlayerData;
 import model.component.Terrain;
 import model.component.field.Field;
 import model.component.field.GameField;
+import model.component.unit.BasicUnit;
 import model.component.unit.MoveEventHandler;
 import server.Server;
 
@@ -75,7 +76,7 @@ public class ServerProxy implements Server, Communicator {
 		List<PlayerData> players = new ArrayList<PlayerData>();
 		players.add(new PlayerData("user 1", Color.RED));
 		players.add(new PlayerData("user 2", Color.GREEN));
-		players.add(new PlayerData("user 3", Color.WHITE));
+		players.add(new PlayerData("user 3", Color.BLACK));
 
 		List<Field> field_models = new ArrayList<Field>();
 
@@ -88,11 +89,11 @@ public class ServerProxy implements Server, Communicator {
 
 			for (int j = left; j < right; j++) {
 				if (i % 2 == 0 && j % 5 == 0)
-					field_models.add(new GameField(new Point2D(j, i), players.get(player_counter), true, null,
-							new Terrain("mountains", 1)));
+					field_models.add(new GameField(new Point2D(j, i), players.get(player_counter),
+							true, null, new Terrain("mountains", 1)));
 				else
-					field_models.add(new GameField(new Point2D(j, i), players.get(player_counter), true, null,
-							new Terrain("water", 1)));
+					field_models.add(new GameField(new Point2D(j, i), players.get(player_counter),
+							true, null, new Terrain("water", 1)));
 
 				player_counter++;
 				player_counter %= 3;
@@ -102,7 +103,9 @@ public class ServerProxy implements Server, Communicator {
 			if (left > -3)
 				left--;
 		}
-
+		
+		field_models.get(10).setUnit(new BasicUnit());
+		
 		this.ctrl_queue.enqueue(new CtrlInitializeCommand(null, players, field_models));
 
 		// attention this handler should be deprecated

@@ -41,7 +41,8 @@ public class UnitCreator {
 					return clone;
 
 				} catch (CloneNotSupportedException e) {
-					System.out.println("Exception while cloning unit ... @ UnitCreator.generateUnit");
+					System.out
+							.println("Exception while cloning unit ... @ UnitCreator.generateUnit");
 					e.printStackTrace();
 				}
 			}

@@ -376,8 +376,6 @@ public class DrawingStage extends Stage implements View {
 
 		if (position.getX() > this.canvas_width - this.CANVAS_PADDING) {
 
-			System.out.println("adjust width");
-
 			this.canvas_width = position.getX() + this.field_manager.getWidth()
 								+ 2 * this.field_manager.getBorderWidth()
 								+ this.CANVAS_PADDING;
@@ -389,8 +387,6 @@ public class DrawingStage extends Stage implements View {
 			if (this.canvas_width < this.STAGE_WIDTH) {
 				double h_difference = this.STAGE_WIDTH - this.canvas_width;
 
-				System.out.println("H center");
-
 				this.board_canvas.setLayoutX(h_difference / 2);
 				this.second_layer_canvas.setLayoutX(h_difference / 2);
 
@@ -399,8 +395,6 @@ public class DrawingStage extends Stage implements View {
 		}
 
 		if (position.getY() > this.canvas_height - this.CANVAS_PADDING) {
-
-			System.out.println("adjust height");
 
 			this.canvas_height = position.getY() + this.field_manager.getHeight()
 									+ 2 * this.field_manager.getBorderWidth()
@@ -413,8 +407,6 @@ public class DrawingStage extends Stage implements View {
 			if (this.canvas_height < this.STAGE_HEIGHT) {
 
 				double v_difference = this.STAGE_HEIGHT - this.canvas_height;
-
-				System.out.println("V center");
 
 				this.board_canvas.setLayoutY(v_difference / 2);
 				this.second_layer_canvas.setLayoutY(v_difference / 2);

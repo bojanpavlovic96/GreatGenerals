@@ -12,11 +12,12 @@ public interface Unit extends Cloneable {
 
 	MoveType getMoveType();
 
+	void moveTo(Field next_field);
+
 	boolean haveAirAttack();
 
 	boolean haveGroundAttack();
 
 	Unit clone() throws CloneNotSupportedException;
 
-	void moveTo(Field next_field);
 }

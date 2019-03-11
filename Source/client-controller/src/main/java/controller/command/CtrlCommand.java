@@ -11,7 +11,7 @@ public abstract class CtrlCommand implements Runnable {
 	protected String command_name;
 
 	protected Controller controller;
-	
+
 	// extracted from controller for quick access
 	protected CommandQueue view_command_queue;
 	protected Model model;
@@ -60,15 +60,12 @@ public abstract class CtrlCommand implements Runnable {
 		this.view_command_queue = view_command_queue;
 	}
 
-	public Model getDataModel() {
-		return model;
-	}
+	public void setController(Controller controller) {
 
-	public void setDataModel(Model data_model) {
-		this.model = data_model;
+		this.controller = controller;
 
-		// get field based on primary_position
-		this.base_field = this.model.getField(this.base_position);
+		this.model = this.controller.getModel();
+		this.view_command_queue = this.controller.getView().getCommandQueue();
 
 	}
 

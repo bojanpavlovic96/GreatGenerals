@@ -31,7 +31,7 @@ public class HexagonField implements ViewField {
 
 	// attention
 	// private Color border_color = Color.rgb(200, 100, 100);
-	private Color border_color = Color.rgb(0, 0, 0);
+	private Color border_color;
 	private ViewTerrain terrain;
 	private ViewUnit unit;
 
@@ -69,6 +69,8 @@ public class HexagonField implements ViewField {
 
 		this.hex_width = field_width;
 		this.hex_height = field_height;
+
+		this.border_color = model.getPlayerColor();
 
 		this.side_size = this.calculateHexSideSize(field_height);
 
@@ -177,7 +179,8 @@ public class HexagonField implements ViewField {
 		return new Point3D(rx, ry, rz);
 	}
 
-	static public Point2D calcStoragePosition(Point2D point, double field_width, double field_height) {
+	static public Point2D calcStoragePosition(Point2D point, double field_width,
+			double field_height) {
 
 		double side_size = field_height / 2;
 
@@ -188,8 +191,8 @@ public class HexagonField implements ViewField {
 		// y
 		double y = (2.0 / 3 * point.getY()) / side_size;
 
-		Point2D position = HexagonField
-				.convertToAxial(HexagonField.cube_round(HexagonField.convertToCube(new Point2D(x, y))));
+		Point2D position = HexagonField.convertToAxial(HexagonField
+				.cube_round(HexagonField.convertToCube(new Point2D(x, y))));
 
 		return position;
 	}
@@ -271,7 +274,7 @@ public class HexagonField implements ViewField {
 
 		// every field has borders
 		this.drawBorders(gc);
-		
+
 		// not every field is visible
 		// enemy field are hidden with fog
 		if (this.visibility) {

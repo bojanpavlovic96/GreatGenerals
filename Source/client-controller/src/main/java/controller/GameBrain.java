@@ -45,11 +45,13 @@ public class GameBrain implements Controller {
 
 		this.server_proxy = server_proxy;
 		this.server_update_queue = new CtrlCommandQueue();
-		this.server_update_queue
-				.setOnEnqueueEventHandler(new CtrlCommandProcessor(this.ctrl_command_executor, this));
+		this.server_update_queue.setOnEnqueueEventHandler(new CtrlCommandProcessor(	this.ctrl_command_executor,
+																					this));
 
 		this.view = view;
 		this.model = new_model;
+
+		this.server_proxy.setCtrlQueue(this.server_update_queue);
 
 		// TODO remove this, first server message is initialization message
 		// if (!this.model.isInitialized())

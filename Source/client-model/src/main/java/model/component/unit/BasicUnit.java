@@ -19,10 +19,12 @@ public class BasicUnit implements Unit {
 	// methods
 
 	public BasicUnit() {
-		// may be used in clone
+		// attention may be used only in clone
+		// protected is better solution than public
 	}
 
-	public BasicUnit(MoveType move_ctrl, UnitAttack air_attack_ctrl, UnitAttack ground_attack_ctrl) {
+	public BasicUnit(MoveType move_ctrl, UnitAttack air_attack_ctrl,
+			UnitAttack ground_attack_ctrl) {
 
 		this.movement_type = move_ctrl;
 		this.air_attack = air_attack_ctrl;

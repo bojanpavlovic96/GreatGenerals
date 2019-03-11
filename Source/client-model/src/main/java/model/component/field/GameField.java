@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javafx.geometry.Point2D;
+import javafx.scene.paint.Color;
 import model.PlayerData;
 import model.component.Terrain;
 import model.component.field.option.FieldOption;
@@ -31,6 +32,7 @@ public class GameField implements Field {
 		super();
 
 		this.storage_position = storage_position;
+		this.player = player;
 		this.visibility = visibility;
 		this.unit = unit;
 		this.terrain = terrain;
@@ -124,6 +126,10 @@ public class GameField implements Field {
 
 	public boolean isVisible() {
 		return this.visibility;
+	}
+
+	public Color getPlayerColor() {
+		return this.player.getPlayerColor();
 	}
 
 }

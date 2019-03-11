@@ -43,8 +43,9 @@ public class ResourceManager {
 
 	private JSONArray units_list;
 	private JSONArray terrains_list;
-
+	
 	// methods
+
 
 	private ResourceManager() {
 
