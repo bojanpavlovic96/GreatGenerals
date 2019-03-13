@@ -1,6 +1,7 @@
 package model.component.unit;
 
 import model.component.field.Field;
+import model.event.ModelEventHandler;
 
 public class BasicUnit implements Unit {
 
@@ -8,13 +9,14 @@ public class BasicUnit implements Unit {
 
 	private String unit_id;
 
-	// attention this should be list of attacks
+	// attention this should be list of attacks and movement types
 
 	private MoveType movement_type;
-
+	// attention air and ground attack could be the same thing with different range
 	private UnitAttack air_attack;
-
 	private UnitAttack ground_attack;
+
+	private ModelEventHandler event_handler;
 
 	// methods
 
@@ -23,8 +25,7 @@ public class BasicUnit implements Unit {
 		// protected is better solution than public
 	}
 
-	public BasicUnit(MoveType move_ctrl, UnitAttack air_attack_ctrl,
-			UnitAttack ground_attack_ctrl) {
+	public BasicUnit(MoveType move_ctrl, UnitAttack air_attack_ctrl, UnitAttack ground_attack_ctrl) {
 
 		this.movement_type = move_ctrl;
 		this.air_attack = air_attack_ctrl;
@@ -77,6 +78,10 @@ public class BasicUnit implements Unit {
 		this.movement_type.getMyField().setUnit(null);
 		this.movement_type.setMyField(next_field);
 
+	}
+
+	public void setModelEventHandler(ModelEventHandler handler) {
+		this.event_handler = handler;
 	}
 
 }

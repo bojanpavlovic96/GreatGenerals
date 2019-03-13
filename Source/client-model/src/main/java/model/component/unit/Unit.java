@@ -1,6 +1,7 @@
 package model.component.unit;
 
 import model.component.field.Field;
+import model.event.ModelEventHandler;
 
 public interface Unit extends Cloneable {
 
@@ -19,5 +20,7 @@ public interface Unit extends Cloneable {
 	boolean haveGroundAttack();
 
 	Unit clone() throws CloneNotSupportedException;
-
+	
+	void setModelEventHandler(ModelEventHandler handler);
+	
 }

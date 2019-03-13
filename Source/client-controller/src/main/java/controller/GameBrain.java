@@ -3,12 +3,16 @@ package controller;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
+import controller.action.DefaultModelEventHandler;
 import controller.command.CtrlCommandProcessor;
 import controller.command.CtrlCommandQueue;
+import controller.command.CtrlQueueEventHandler;
 import controller.communication.Communicator;
 import controller.communication.ServerProxy;
 import model.Model;
 import model.component.field.Field;
+import model.event.ModelEventHandler;
+import server.Server;
 import view.ShouldBeShutdown;
 import view.View;
 import view.ViewEvent;
@@ -38,81 +42,37 @@ public class GameBrain implements Controller {
 
 	// methods
 
-	public GameBrain(ServerProxy server_proxy, View view, Model new_model) {
+	public GameBrain(ServerProxy server_proxy, View view, Model model) {
 		super();
 
-		this.ctrl_command_executor = Executors.newSingleThreadExecutor();
-
-		this.server_proxy = server_proxy;
-		this.server_update_queue = new CtrlCommandQueue();
-		this.server_update_queue.setOnEnqueueEventHandler(new CtrlCommandProcessor(	this.ctrl_command_executor,
-																					this));
-
 		this.view = view;
-		this.model = new_model;
+		this.model = model;
+		this.server_proxy = server_proxy;
+
+		// attention let's say that every controller implementations has its own
+		// ModelEventHandler (maybe this isn't the best approach)
+		this.model.setModelEventHandler(new DefaultModelEventHandler(this));
+
+		// --- connect serverProxy and controller
+
+		// command queue created in controller and passed to the serverProxy
+		this.server_update_queue = new CtrlCommandQueue();
+
+		// server commands executor
+		this.ctrl_command_executor = Executors.newSingleThreadExecutor();
+		CtrlQueueEventHandler command_processor = new CtrlCommandProcessor(this.ctrl_command_executor, this);
+		this.server_update_queue.setOnEnqueueEventHandler(command_processor);
 
 		this.server_proxy.setCtrlQueue(this.server_update_queue);
 
-		// TODO remove this, first server message is initialization message
-		// if (!this.model.isInitialized())
-		// this.initializeModel(); // somehow get list of models
+		// --- done with serverProxy
 
-		// view initialization
 		this.view_command_queue = this.view.getCommandQueue();
 
-		// TODO remove this, also called from initialization command after server
-		// initialization message
-		// LoadBoardCommand load_command = new LoadBoardCommand(this.model.getFields());
-		// this.view_command_queue.enqueue(load_command);
-
-		// view events, click, key ...
+		// view events, click, key press ...
 		this.initViewEventHandlers();
 
 		this.view.show();
-
-	}
-
-	// attention fake initialization
-	private void initializeModel() {
-
-		// List<Field> models = new ArrayList<Field>();
-		//
-		// int left = 3;
-		// int right = 17;
-		//
-		// for (int i = 1; i < 16; i++) {
-		//
-		// for (int j = left; j < right; j++) {
-		// if (i % 2 == 0 && j % 5 == 0)
-		// models.add(new GameField(new Point2D(j, i), true, null, new
-		// Terrain("mountains", 1)));
-		// else
-		// models.add(new GameField(new Point2D(j, i), true, null, new Terrain("water",
-		// 1)));
-		// }
-		//
-		// if (left > -3)
-		// left--;
-		// }
-		//
-		// this.model.initializeModel(models);
-		//
-		// this.model.setDefaultMoveEventHandler(new MoveEventHandler() {
-		//
-		// public void execute(Field from, Field to) {
-		//
-		// CtrlMoveCommand move = new CtrlMoveCommand(from, to);
-		// move.setViewCommandQueue(view_command_queue);
-		// move.run();
-		//
-		// }
-		//
-		// });
-		//
-		// this.model.setUnit(new Point2D(10, 10), "basic-unit");
-		// this.model.setUnit(new Point2D(5, 5), "basic-unit");
-		// this.model.setUnit(new Point2D(5, 10), "basic-unit");
-		// this.model.setUnit(new Point2D(4, 7), "basic-unit");
 
 	}
 
@@ -246,6 +206,10 @@ public class GameBrain implements Controller {
 
 	public Communicator getCommunicator() {
 		return (Communicator) this.server_proxy;
+	}
+
+	public Server getServer() {
+		return (Server) this.server_proxy;
 	}
 
 }

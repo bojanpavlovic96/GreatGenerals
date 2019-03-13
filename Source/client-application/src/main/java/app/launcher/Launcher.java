@@ -10,6 +10,7 @@ import app.event.GameReadyHandler;
 import app.form.StartForm;
 import controller.Controller;
 import controller.GameBrain;
+import controller.action.DefaultModelEventHandler;
 import controller.communication.JSONMessageTranslator;
 import controller.communication.ServerProxy;
 import javafx.application.Application;
@@ -66,17 +67,19 @@ public class Launcher extends Application {
 
 			public void execute() {
 
-				System.out
-						.println("Creating game controller ... @ Launcher.onGameReadyEvent -> called from intial controller");
+				System.out.println("Creating game controller ... @ Launcher.onGameReadyEvent "
+									+ "-> called from intial controller");
 
 				// serverProxy created for communication with server
-				ServerProxy server_proxy = new ServerProxy(connection_task.getChannel(),
-						new JSONMessageTranslator());
+				ServerProxy server_proxy = new ServerProxy(	connection_task.getChannel(),
+															new JSONMessageTranslator());
 
 				// TODO somehow initialize resource manager
 				// resources could be obtained from the server
 				View view = new DrawingStage(new HexFieldManager(80, 30, 2));
 
+				// attention controller still null at this moment
+				// modelEventHandler set from controller constructor
 				// empty model (only timer and unit creator)
 				Model model = new DataModel();
 
@@ -84,19 +87,11 @@ public class Launcher extends Application {
 				// hide login & room page
 				initial_controller.hideInitialPage();
 
-				System.out.println("\tController created ... @ Launcher.onGameReadyEvent");
+				System.out.println("\tCreating controller ... @ Launcher.onGameReadyEvent");
 				controller = new GameBrain(server_proxy, view, model);
 
 				System.out.println("\tShowing game view ... @ Launcher.onGameReadyEvent");
 				controller.getView().show();
-
-				// remove next lines
-
-				// game_task = new GameTask(controller);
-				// game_thread = new Thread(game_task);
-
-				// System.out.println("\tstarting game thread ... @ Launcher.onGameReadyEvent");
-				// game_thread.start();
 
 			}
 
@@ -108,8 +103,7 @@ public class Launcher extends Application {
 
 			public void execute(Channel channel) {
 
-				System.out
-						.println("\tconnection ready ... @ Launcher.init - connectionTask.onConnecionReady");
+				System.out.println("\tconnection ready ... @ Launcher.init - connectionTask.onConnecionReady");
 
 				System.out.println("\tfirst stage channel set call ... @ Launcher.init");
 				initial_controller.setCommunicationChannel(channel);

@@ -9,6 +9,7 @@ import model.PlayerData;
 import model.component.Terrain;
 import model.component.field.option.FieldOption;
 import model.component.unit.Unit;
+import model.event.ModelEventHandler;
 
 public class GameField implements Field {
 
@@ -24,6 +25,8 @@ public class GameField implements Field {
 	private List<Unit> units_in_battle;
 
 	private List<FieldOption> options;
+
+	private ModelEventHandler event_handler;
 
 	// methods
 
@@ -55,6 +58,7 @@ public class GameField implements Field {
 
 	public void setUnit(Unit unit) {
 		this.unit = unit;
+		this.unit.setModelEventHandler(this.event_handler);
 	}
 
 	public Terrain getTerrain() {
@@ -130,6 +134,10 @@ public class GameField implements Field {
 
 	public Color getPlayerColor() {
 		return this.player.getPlayerColor();
+	}
+
+	public void setModelEventHandler(ModelEventHandler handler) {
+		this.event_handler = handler;
 	}
 
 }

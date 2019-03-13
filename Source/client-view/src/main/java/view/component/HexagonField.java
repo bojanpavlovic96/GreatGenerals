@@ -96,8 +96,8 @@ public class HexagonField implements ViewField {
 		for (int i = 0; i < 6; i++) {
 
 			// may be + for x an - for y, not sure, but it works with this
-			x = (float) (this.getFieldCenter().getX() - (this.getSideSize() - 1) * Math.cos(angle));
-			y = (float) (this.getFieldCenter().getY() - (this.getSideSize() - 1) * Math.sin(angle));
+			x = (float) (this.getFieldCenter().getX() - (this.getSideSize() - 2) * Math.cos(angle));
+			y = (float) (this.getFieldCenter().getY() - (this.getSideSize() - 2) * Math.sin(angle));
 
 			this.corner_points.add(new Point2D(x, y));
 
@@ -179,8 +179,7 @@ public class HexagonField implements ViewField {
 		return new Point3D(rx, ry, rz);
 	}
 
-	static public Point2D calcStoragePosition(Point2D point, double field_width,
-			double field_height) {
+	static public Point2D calcStoragePosition(Point2D point, double field_width, double field_height) {
 
 		double side_size = field_height / 2;
 
@@ -191,23 +190,23 @@ public class HexagonField implements ViewField {
 		// y
 		double y = (2.0 / 3 * point.getY()) / side_size;
 
-		Point2D position = HexagonField.convertToAxial(HexagonField
-				.cube_round(HexagonField.convertToCube(new Point2D(x, y))));
+		Point2D position = HexagonField.convertToAxial(HexagonField.cube_round(HexagonField.convertToCube(new Point2D(	x,
+																														y))));
 
 		return position;
 	}
 
+	// TODO borders are overwriting
 	private void drawBorders(GraphicsContext gc) {
 
 		gc.save();
 
 		// every player has different border color
 		gc.setStroke(this.border_color);
+		gc.setLineWidth(this.border_width);
 
 		// path
 		gc.beginPath();
-
-		gc.setLineWidth(this.border_width);
 
 		Point2D prev_point = null;
 		for (Point2D corner : this.getCornerPoints()) {
@@ -229,7 +228,6 @@ public class HexagonField implements ViewField {
 		}
 
 		// attention there should be lintTo->firstPoint, but it actually works with this
-		// also ...
 
 		// path
 		gc.closePath();

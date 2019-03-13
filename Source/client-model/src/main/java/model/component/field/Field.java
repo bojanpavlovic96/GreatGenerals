@@ -7,16 +7,19 @@ import javafx.scene.paint.Color;
 import model.component.Terrain;
 import model.component.field.option.FieldOption;
 import model.component.unit.Unit;
+import model.event.ModelEventHandler;
 
 public interface Field {
 
 	boolean isVisible();
-	
+
 	Point2D getStoragePosition();
 
 	void setStoragePosition(Point2D storage_position);
-	
+
 	Color getPlayerColor();
+	
+	void setModelEventHandler(ModelEventHandler handler);
 	
 	// unit specific
 	Unit getUnit();

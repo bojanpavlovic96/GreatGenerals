@@ -1,50 +1,36 @@
 package model.component.unit;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashMap;
+import java.util.Map;
 
 import model.component.field.Field;
 
 public class UnitCreator {
 
-	private List<Unit> prototypes;
+	private Map<String, Unit> prototypes;
 
 	public UnitCreator() {
 
-		this.prototypes = new ArrayList<Unit>();
+		this.prototypes = new HashMap<String, Unit>();
 
 	}
 
-	public Unit generateUnit(String unit_name, Field new_position,
-			MoveEventHandler move_handler /* attack handler and arit attack handler */) {
-		for (Unit prototype : this.prototypes) {
+	public Unit generateUnit(String unit_name) {
 
-			if (prototype.getUnitName().equals(unit_name)) {
-				// prototype with given name exists
+		Unit prototype = this.prototypes.get(unit_name);
 
-				try {
+		if (prototype != null) {
+			// prototype with given name exists
 
-					Unit clone = prototype.clone();
-					clone.getMoveType().setMyField(new_position);
+			try {
 
-					if (clone.canMove()) {
-						clone.getMoveType().setOnMoveHandler(move_handler);
-					}
+				Unit clone = prototype.clone();
 
-					/*
-					 * if clone.can attack set attack handler
-					 * 
-					 * if clone.can air attack set air attack handler
-					 * 
-					 */
+				return clone;
 
-					return clone;
-
-				} catch (CloneNotSupportedException e) {
-					System.out
-							.println("Exception while cloning unit ... @ UnitCreator.generateUnit");
-					e.printStackTrace();
-				}
+			} catch (CloneNotSupportedException e) {
+				System.out.println("Exception while cloning unit ... @ UnitCreator.generateUnit");
+				e.printStackTrace();
 			}
 
 		}
@@ -54,7 +40,7 @@ public class UnitCreator {
 
 	public void addPrototype(Unit unit_prototype) {
 
-		this.prototypes.add(unit_prototype);
+		this.prototypes.put(unit_prototype.getUnitName(), unit_prototype);
 
 	}
 

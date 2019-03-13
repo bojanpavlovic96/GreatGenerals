@@ -10,9 +10,9 @@ import javafx.geometry.Point2D;
 import model.component.field.Field;
 import model.component.unit.BasicMove;
 import model.component.unit.BasicUnit;
-import model.component.unit.MoveEventHandler;
 import model.component.unit.Unit;
 import model.component.unit.UnitCreator;
+import model.event.ModelEventHandler;
 import model.path.AStar;
 
 public class DataModel implements Model {
@@ -22,10 +22,10 @@ public class DataModel implements Model {
 
 	private UnitCreator unit_creator;
 
-	// attention there should be unique modelEvent for all events (move, attack ...)
-	private MoveEventHandler default_move_event_handler;
-
 	private Timer timer;
+
+	// attention unique event_handler from previous attentionTask
+	private ModelEventHandler event_handler;
 
 	// methods
 
@@ -47,12 +47,8 @@ public class DataModel implements Model {
 
 		this.unit_creator = new UnitCreator();
 
-		Unit basic_unit =
-						new BasicUnit(new BasicMove(null, new AStar(this), this.timer), null, null);
-		basic_unit.getMoveType().setOnMoveHandler(this.default_move_event_handler);
-
+		Unit basic_unit = new BasicUnit(new BasicMove(null, new AStar(this), this.timer), null, null);
 		this.unit_creator.addPrototype(basic_unit);
-		// only basic unit for now
 
 		// TODO add some more units
 
@@ -60,12 +56,18 @@ public class DataModel implements Model {
 
 	// public methods
 
-	public void initializeModel(List<PlayerData> players, List<Field> fields) {
+	public void initializeModel(List<PlayerData> list_of_players, List<Field> fields) {
+
+		this.players = new HashMap<String, PlayerData>();
+		for (PlayerData player : list_of_players) {
+			this.players.put(player.getUsername(), player);
+		}
 
 		this.fields = new HashMap<Point2D, Field>();
-
 		for (Field field : fields) {
 
+			// event handler specific to this data model
+			field.setModelEventHandler(this.event_handler);
 			this.fields.put(field.getStoragePosition(), field);
 
 		}
@@ -124,10 +126,10 @@ public class DataModel implements Model {
 	public void setUnit(Point2D storage_position, String unit_name) {
 
 		Field field = this.fields.get(storage_position);
-		Unit unit = this.unit_creator
-				.generateUnit(	unit_name,
-								field,
-								this.default_move_event_handler /* attack handler and ground attack handler */);
+		Unit unit = this.unit_creator.generateUnit(unit_name);
+
+		unit.getMoveType().setMyField(field);
+
 		// prototype doesn't have handlers because they are set after creators
 		// initialization
 
@@ -135,12 +137,8 @@ public class DataModel implements Model {
 
 	}
 
-	public MoveEventHandler getDefaultMoveEventHandler() {
-		return default_move_event_handler;
-	}
-
-	public void setDefaultMoveEventHandler(MoveEventHandler default_move_event_handler) {
-		this.default_move_event_handler = default_move_event_handler;
+	public void setModelEventHandler(ModelEventHandler handler) {
+		this.event_handler = handler;
 	}
 
 }

@@ -15,7 +15,7 @@ import model.component.Terrain;
 import model.component.field.Field;
 import model.component.field.GameField;
 import model.component.unit.BasicUnit;
-import model.component.unit.MoveEventHandler;
+import model.event.ModelEvent;
 import server.Server;
 
 public class ServerProxy implements Server, Communicator {
@@ -52,8 +52,10 @@ public class ServerProxy implements Server, Communicator {
 	// server methods
 
 	// TODO add argument ... what to send
-	public void sendIntention() {
+	public void sendIntention(ModelEvent model_event) {
 
+		byte[] message_to_send = this.message_translator.translate(model_event);
+		
 	}
 
 	// communicator methods
@@ -65,6 +67,8 @@ public class ServerProxy implements Server, Communicator {
 	public CtrlCommandQueue getCtrlQueue() {
 		return this.ctrl_queue;
 	}
+
+	// getters and setters
 
 	public void setCtrlQueue(CtrlCommandQueue queue) {
 		this.ctrl_queue = queue;
@@ -89,11 +93,17 @@ public class ServerProxy implements Server, Communicator {
 
 			for (int j = left; j < right; j++) {
 				if (i % 2 == 0 && j % 5 == 0)
-					field_models.add(new GameField(new Point2D(j, i), players.get(player_counter),
-							true, null, new Terrain("mountains", 1)));
+					field_models.add(new GameField(	new Point2D(j, i),
+													players.get(player_counter),
+													true,
+													null,
+													new Terrain("mountains", 1)));
 				else
-					field_models.add(new GameField(new Point2D(j, i), players.get(player_counter),
-							true, null, new Terrain("water", 1)));
+					field_models.add(new GameField(	new Point2D(j, i),
+													players.get(player_counter),
+													true,
+													null,
+													new Terrain("water", 1)));
 
 				player_counter++;
 				player_counter %= 3;
@@ -103,32 +113,15 @@ public class ServerProxy implements Server, Communicator {
 			if (left > -3)
 				left--;
 		}
-		
+
 		field_models.get(10).setUnit(new BasicUnit());
-		
+
 		this.ctrl_queue.enqueue(new CtrlInitializeCommand(null, players, field_models));
 
-		// attention this handler should be deprecated
+	}
 
-		// this.model.setDefaultMoveEventHandler(new MoveEventHandler() {
-		//
-		// public void execute(Field from, Field to) {
-		//
-		// CtrlMoveCommand move = new CtrlMoveCommand(from, to);
-		// move.setViewCommandQueue(view_command_queue);
-		// move.run();
-		//
-		// }
-		//
-		// });
-
-		// attention maybe find a better way for this
-
-		// this.model.setUnit(new Point2D(10, 10), "basic-unit");
-		// this.model.setUnit(new Point2D(5, 5), "basic-unit");
-		// this.model.setUnit(new Point2D(5, 10), "basic-unit");
-		// this.model.setUnit(new Point2D(4, 7), "basic-unit");
-
+	public ServerMessageTranslator getMessageTranslator() {
+		return message_translator;
 	}
 
 }
