@@ -9,6 +9,10 @@ public interface Unit extends Cloneable {
 
 	String getUnitName();
 
+	Field getField();
+
+	void setField(Field field);
+
 	boolean canMove();
 
 	MoveType getMoveType();
@@ -20,7 +24,7 @@ public interface Unit extends Cloneable {
 	boolean haveGroundAttack();
 
 	Unit clone() throws CloneNotSupportedException;
-	
+
 	void setModelEventHandler(ModelEventHandler handler);
-	
+
 }

@@ -1,10 +1,10 @@
 package controller.action;
 
 import org.json.JSONObject;
-import model.event.ModelEvent;
+import model.event.ModelEventArg;
 
 public interface EventToJSONTranslator {
 	
-	JSONObject translate(ModelEvent model_event);
+	JSONObject translate(ModelEventArg model_event);
 	
 }

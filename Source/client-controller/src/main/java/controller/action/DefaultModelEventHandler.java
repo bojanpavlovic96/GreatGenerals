@@ -1,7 +1,7 @@
 package controller.action;
 
 import controller.Controller;
-import model.event.ModelEvent;
+import model.event.ModelEventArg;
 import model.event.ModelEventHandler;
 
 public class DefaultModelEventHandler implements ModelEventHandler {
@@ -14,7 +14,7 @@ public class DefaultModelEventHandler implements ModelEventHandler {
 		this.controller = controller;
 	}
 
-	public void execute(ModelEvent arg) {
+	public void execute(ModelEventArg arg) {
 
 		this.controller.getServer().sendIntention(arg);
 

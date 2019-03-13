@@ -2,6 +2,6 @@ package model.event;
 
 public interface ModelEventHandler {
 
-	public abstract void execute(ModelEvent arg);
+	public abstract void execute(ModelEventArg arg);
 
 }

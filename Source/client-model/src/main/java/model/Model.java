@@ -4,7 +4,6 @@ import java.util.List;
 
 import javafx.geometry.Point2D;
 import model.component.field.Field;
-import model.component.unit.MoveEventHandler;
 import model.event.ModelEventHandler;
 
 public interface Model {
@@ -22,7 +21,7 @@ public interface Model {
 	List<Field> getFreeNeighbours(Field for_field);
 
 	void setUnit(Point2D position, String unit_name);
-	
+
 	void setModelEventHandler(ModelEventHandler handler);
-	
+
 }

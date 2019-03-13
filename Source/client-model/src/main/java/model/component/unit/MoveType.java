@@ -3,16 +3,18 @@ package model.component.unit;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Timer;
+import java.util.TimerTask;
 
 import model.component.field.Field;
+import model.event.ModelEventHandler;
+import model.event.MoveModelEventArg;
 import model.path.PathFinder;
 
-public abstract class MoveType implements Cloneable {
+public abstract class MoveType extends TimerTask implements Cloneable {
 
 	// fields
 
 	protected Timer timer;
-	protected DefaultMoveTimerTask temp_timer_task;
 
 	protected PathFinder path_finder;
 
@@ -22,19 +24,20 @@ public abstract class MoveType implements Cloneable {
 	protected boolean moving;
 
 	protected List<Field> path;
-	protected MoveEventHandler on_move;
+
+	protected ModelEventHandler on_event;
 
 	// methods
 
 	public MoveType(Field my_field, PathFinder path_finder, Timer move_timer) {
-		this.setMyField(my_field);
-		// this.move_delay = speed;
+		super();
 
+		this.setField(my_field);
 		this.path_finder = path_finder;
 
 		this.path = new ArrayList<Field>();
 		this.timer = move_timer;
-		// data_model timer
+		// timer passed from model
 
 	}
 
@@ -73,39 +76,37 @@ public abstract class MoveType implements Cloneable {
 		this.move_delay = speed;
 	}
 
-	public void setOnMoveHandler(MoveEventHandler move_handler) {
-		this.on_move = move_handler;
+	public void setEventHandelr(ModelEventHandler handler) {
+		this.on_event = handler;
 	}
 
-	public MoveEventHandler getOnMoveHandler() {
-		return this.on_move;
+	public ModelEventHandler getEventHandler() {
+		return this.on_event;
 	}
 
 	public Field getMyField() {
 		return my_field;
 	}
 
-	public void setMyField(Field my_field) {
+	public void setField(Field my_field) {
 		this.my_field = my_field;
 	}
 
 	// abstract
+
 	public abstract long calculate_delay();
 
 	public abstract void move();
 
 	// abstract
 
-	public DefaultMoveTimerTask getTemp_timer_task() {
-		return temp_timer_task;
-	}
+	// timer task
+	@Override
+	public void run() {
 
-	public void setTemp_timer_task(DefaultMoveTimerTask temp_timer_task) {
-		this.temp_timer_task = temp_timer_task;
-	}
+		this.on_event.execute(new MoveModelEventArg(this.my_field.getStoragePosition(),
+													this.path.get(0).getStoragePosition()));
 
-	public void defaultSchedule() {
-		this.timer.schedule(this.temp_timer_task, this.move_delay);
 	}
 
 	public MoveType clone() throws CloneNotSupportedException {

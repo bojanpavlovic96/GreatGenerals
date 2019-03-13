@@ -30,7 +30,7 @@ public class BasicMove extends MoveType {
 
 		this.calculate_delay();
 
-		super.timer.schedule(new DefaultMoveTimerTask(super.my_field), super.move_delay);
+		this.timer.schedule(this, this.move_delay);
 
 	}
 

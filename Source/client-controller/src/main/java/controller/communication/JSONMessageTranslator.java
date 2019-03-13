@@ -8,8 +8,8 @@ import org.json.JSONObject;
 import controller.action.EventToJSONTranslator;
 import controller.communication.ServerMessage;
 import controller.communication.ServerMessageTranslator;
-import model.event.ModelEvent;
-import model.event.MoveModelEvent;
+import model.event.ModelEventArg;
+import model.event.MoveModelEventArg;
 
 public class JSONMessageTranslator extends ServerMessageTranslator {
 
@@ -34,9 +34,9 @@ public class JSONMessageTranslator extends ServerMessageTranslator {
 
 		this.event_to_json_translators.put("move-model-event", new EventToJSONTranslator() {
 
-			public JSONObject translate(ModelEvent model_event) {
+			public JSONObject translate(ModelEventArg model_event) {
 
-				MoveModelEvent move_event = (MoveModelEvent) model_event;
+				MoveModelEventArg move_event = (MoveModelEventArg) model_event;
 
 				// get source
 				// get destination
@@ -51,7 +51,7 @@ public class JSONMessageTranslator extends ServerMessageTranslator {
 
 		this.event_to_json_translators.put("attack-model-event", new EventToJSONTranslator() {
 
-			public JSONObject translate(ModelEvent model_event) {
+			public JSONObject translate(ModelEventArg model_event) {
 
 				return null;
 			}
@@ -69,9 +69,9 @@ public class JSONMessageTranslator extends ServerMessageTranslator {
 	}
 
 	@Override
-	public byte[] translate(ModelEvent model_event) {
+	public byte[] translate(ModelEventArg model_event) {
 
-		JSONObject json = this.event_to_json_translators.get(model_event.getEventName()).translate(model_event);
+		JSONObject json = this.event_to_json_translators.get(model_event.getName()).translate(model_event);
 
 		// maybe add something more to generated object
 		// probably not

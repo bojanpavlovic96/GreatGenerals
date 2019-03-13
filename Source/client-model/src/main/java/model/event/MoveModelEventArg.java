@@ -2,14 +2,14 @@ package model.event;
 
 import javafx.geometry.Point2D;
 
-public class MoveModelEvent extends ModelEvent {
+public class MoveModelEventArg extends ModelEventArg {
 
 	private Point2D source_field; // move from
 	private Point2D destinatoin_field; // move to
 
 	// constructors
 
-	public MoveModelEvent(Point2D source_field, Point2D destination_field) {
+	public MoveModelEventArg(Point2D source_field, Point2D destination_field) {
 		super("move-model-event");
 
 		this.setSourceField(source_field);

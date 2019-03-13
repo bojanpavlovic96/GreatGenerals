@@ -20,7 +20,7 @@ public class DefaultMoveTimerTask extends TimerTask {
 
 		this.unit = this.my_field.getUnit();
 		this.path = this.unit.getMoveType().getPath();
-		this.on_move = this.unit.getMoveType().getOnMoveHandler();
+//		this.on_move = this.unit.getMoveType().getOnMoveHandler();
 
 	}
 
@@ -63,3 +63,4 @@ public class DefaultMoveTimerTask extends TimerTask {
 	}
 
 }
+

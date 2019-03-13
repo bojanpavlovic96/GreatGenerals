@@ -57,8 +57,11 @@ public class GameField implements Field {
 	}
 
 	public void setUnit(Unit unit) {
+	
 		this.unit = unit;
+		
 		this.unit.setModelEventHandler(this.event_handler);
+
 	}
 
 	public Terrain getTerrain() {

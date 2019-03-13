@@ -98,7 +98,7 @@ public class GameBrain implements Controller {
 						for (Field field : selected_field.getUnit().getMoveType().getPath()) {
 							view_command_queue.enqueue(new SelectFieldCommand(field));
 						}
-
+						
 						selected_field.getUnit().getMoveType().move();
 
 						selected_field = null;

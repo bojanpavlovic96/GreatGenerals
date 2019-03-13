@@ -2,14 +2,14 @@ package model.event;
 
 import javafx.geometry.Point2D;
 
-public class AttackModelEvent extends ModelEvent {
+public class AttackModelEventArg extends ModelEventArg {
 
 	private Point2D source_field;
 	private Point2D destination_field;
 
 	// constructors
 
-	public AttackModelEvent(Point2D source_field, Point2D destination_field) {
+	public AttackModelEventArg(Point2D source_field, Point2D destination_field) {
 		super("attack-model-event");
 
 		this.source_field = source_field;

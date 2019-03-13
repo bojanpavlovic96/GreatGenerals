@@ -5,6 +5,8 @@ import model.event.ModelEventHandler;
 
 public class BasicUnit implements Unit {
 
+	private Field field;
+
 	private final String unit_name = "basic-unit";
 
 	private String unit_id;
@@ -76,12 +78,35 @@ public class BasicUnit implements Unit {
 		next_field.setUnit(this);
 
 		this.movement_type.getMyField().setUnit(null);
-		this.movement_type.setMyField(next_field);
+		this.movement_type.setField(next_field);
 
 	}
 
 	public void setModelEventHandler(ModelEventHandler handler) {
 		this.event_handler = handler;
+
+		if (this.canMove()) {
+			this.movement_type.setEventHandelr(this.event_handler);
+		}
+		
+		// TODO do the same for attack
+
+	}
+
+	public Field getField() {
+		return this.field;
+	}
+
+	public void setField(Field field) {
+
+		this.field = field;
+
+		if (this.canMove()) {
+			this.movement_type.setField(field);
+		}
+
+		// TODO do the same thing for attack
+
 	}
 
 }

@@ -7,7 +7,6 @@ import com.rabbitmq.client.Channel;
 
 import controller.command.CtrlCommandQueue;
 import controller.command.CtrlInitializeCommand;
-import controller.command.CtrlMoveCommand;
 import javafx.geometry.Point2D;
 import javafx.scene.paint.Color;
 import model.PlayerData;
@@ -15,7 +14,7 @@ import model.component.Terrain;
 import model.component.field.Field;
 import model.component.field.GameField;
 import model.component.unit.BasicUnit;
-import model.event.ModelEvent;
+import model.event.ModelEventArg;
 import server.Server;
 
 public class ServerProxy implements Server, Communicator {
@@ -52,10 +51,13 @@ public class ServerProxy implements Server, Communicator {
 	// server methods
 
 	// TODO add argument ... what to send
-	public void sendIntention(ModelEvent model_event) {
+	public void sendIntention(ModelEventArg model_event) {
 
-		byte[] message_to_send = this.message_translator.translate(model_event);
-		
+		// debug
+		System.out.println("Intention ready ... " + model_event.getName());
+
+		// byte[] message_to_send = this.message_translator.translate(model_event);
+
 	}
 
 	// communicator methods

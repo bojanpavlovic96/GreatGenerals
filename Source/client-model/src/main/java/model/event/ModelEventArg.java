@@ -1,6 +1,6 @@
 package model.event;
 
-public abstract class ModelEvent {
+public abstract class ModelEventArg {
 
 	// translator uses this field to determine how to translate message to
 	// appropriate format
@@ -8,13 +8,13 @@ public abstract class ModelEvent {
 
 	// constructors
 
-	public ModelEvent(String event_name) {
+	public ModelEventArg(String event_name) {
 		this.setEventName(event_name);
 	}
 
 	// getters and setters
 
-	public String getEventName() {
+	public String getName() {
 		return event_name;
 	}
 

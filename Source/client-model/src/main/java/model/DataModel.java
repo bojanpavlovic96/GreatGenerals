@@ -24,7 +24,7 @@ public class DataModel implements Model {
 
 	private Timer timer;
 
-	// attention unique event_handler from previous attentionTask
+	// unique event handler (move, attack, build ... )
 	private ModelEventHandler event_handler;
 
 	// methods
@@ -66,8 +66,10 @@ public class DataModel implements Model {
 		this.fields = new HashMap<Point2D, Field>();
 		for (Field field : fields) {
 
-			// event handler specific to this data model
+			// event handlers passed from controller
+
 			field.setModelEventHandler(this.event_handler);
+
 			this.fields.put(field.getStoragePosition(), field);
 
 		}
@@ -128,12 +130,9 @@ public class DataModel implements Model {
 		Field field = this.fields.get(storage_position);
 		Unit unit = this.unit_creator.generateUnit(unit_name);
 
-		unit.getMoveType().setMyField(field);
-
-		// prototype doesn't have handlers because they are set after creators
-		// initialization
-
 		field.setUnit(unit);
+
+		unit.setField(field);
 
 	}
 

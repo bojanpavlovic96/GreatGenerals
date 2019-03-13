@@ -1,6 +1,6 @@
 package controller.communication;
 
-import model.event.ModelEvent;
+import model.event.ModelEventArg;
 
 public abstract class ServerMessageTranslator {
 
@@ -10,6 +10,6 @@ public abstract class ServerMessageTranslator {
 
 	public abstract ServerMessage translate(byte[] source);
 
-	public abstract byte[] translate(ModelEvent model_action);
+	public abstract byte[] translate(ModelEventArg model_action);
 
 }
