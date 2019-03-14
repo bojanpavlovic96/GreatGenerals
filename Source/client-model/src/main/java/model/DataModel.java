@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.ScheduledThreadPoolExecutor;
 
 import javafx.geometry.Point2D;
 import model.component.field.Field;
@@ -36,6 +37,8 @@ public class DataModel implements Model {
 
 		// this is timer...
 		this.executor = Executors.newScheduledThreadPool(3);
+		// remove task from waiting queue after it is canceled
+		((ScheduledThreadPoolExecutor) this.executor).setRemoveOnCancelPolicy(true);
 
 		this.initUnitCreator();
 
@@ -144,7 +147,8 @@ public class DataModel implements Model {
 		// attention this could possibly throw some exceptions if some tasks are still
 		// running or waiting
 		if (this.executor != null && !this.executor.isShutdown()) {
-			this.executor.shutdown();
+			// this shutdown cancels all running and waiting tasks
+			this.executor.shutdownNow();
 		}
 
 	}

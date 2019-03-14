@@ -118,8 +118,6 @@ public class ServerProxy implements Server, Communicator {
 				left--;
 		}
 
-		field_models.get(10).setUnit(new BasicUnit());
-
 		this.ctrl_queue.enqueue(new CtrlInitializeCommand(null, players, field_models));
 
 	}

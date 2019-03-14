@@ -21,11 +21,10 @@ public class ZoomInCommand extends ViewCommand {
 			clear_view_command.setView(this.view);
 			clear_view_command.run();
 
-			LoadBoardCommand load_command = new LoadBoardCommand(fields);
+			LoadBoardCommand load_command = new LoadBoardCommand(this.fields);
 			load_command.setView(this.view);
-			// this.view.adjustCanvasSize(load_command.getField());
 			load_command.run();
-			
+
 		}
 	}
 

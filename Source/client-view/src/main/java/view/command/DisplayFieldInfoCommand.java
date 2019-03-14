@@ -38,7 +38,22 @@ public class DisplayFieldInfoCommand extends ViewCommand {
 		if (menu.getHeight() > 104) {
 			height = menu.getHeight();
 		}
+
 		gc.fillRect(pos.getX() + menu.getWidth(), pos.getY(), DisplayFieldInfoCommand.INFO_WIDTH, height + 1);
+
+		// debug
+		System.out.println("Info on: \nmenu: " + pos.getX()
+							+ "-"
+							+ pos.getY()
+							+ "\ninfo: "
+							+ pos.getX()
+							+ menu.getWidth()
+							+ "-"
+							+ pos.getY()
+							+ "  w: "
+							+ DisplayFieldInfoCommand.INFO_WIDTH
+							+ " h: "
+							+ (height + 1));
 
 		gc.restore();
 	}

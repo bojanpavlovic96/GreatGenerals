@@ -31,4 +31,6 @@ public interface View extends EventDrivenComponent, CommandDrivenComponent, Shou
 
 	void adjustCanvasSize(ViewField field);
 
+	void singleAdjust(Field width_model, Field height_model);
+
 }

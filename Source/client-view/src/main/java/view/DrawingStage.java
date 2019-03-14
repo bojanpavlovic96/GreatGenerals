@@ -14,6 +14,7 @@ import javafx.geometry.Point2D;
 import javafx.scene.Group;
 import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
+import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.Button;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.ScrollPane.ScrollBarPolicy;
@@ -120,11 +121,11 @@ public class DrawingStage extends Stage implements View {
 		// it is going to be resized when the board is loaded (loadBoardCommand)
 		// this.canvas_width = this.STAGE_WIDTH / 2;
 		// this.canvas_height = this.STAGE_HEIGHT / 2;
-		this.canvas_width = 1;
-		this.canvas_height = 1;
+		this.canvas_width = dimension.getWidth();
+		this.canvas_height = dimension.getHeight();
 
 		// initial value same as canvas size
-		this.last_h_field = 1;
+		this.last_v_field = 1;
 		this.last_h_field = 1;
 
 		// create canvas and add it to the root node
@@ -139,6 +140,7 @@ public class DrawingStage extends Stage implements View {
 		// second canvas on top of the first one used for animations and field options
 		this.second_layer_canvas = new Canvas();
 
+		// width and height same as the board canvas
 		this.second_layer_canvas.setWidth(this.canvas_width);
 		this.second_layer_canvas.setHeight(this.canvas_height);
 
@@ -202,6 +204,7 @@ public class DrawingStage extends Stage implements View {
 					for (ViewEventHandler handler : handlers_list) {
 						handler.execute(new ViewEvent(arg, field_position));
 					}
+
 				}
 
 			}
@@ -384,7 +387,7 @@ public class DrawingStage extends Stage implements View {
 	}
 
 	public void adjustCanvasSize(ViewField field) {
-		
+
 		Point2D position = field.getFieldCenter();
 
 		if (position.getX() > this.canvas_width - this.CANVAS_PADDING) {
@@ -405,6 +408,8 @@ public class DrawingStage extends Stage implements View {
 
 			}
 
+			// debug
+			System.out.println("Adjusted ... ");
 		}
 
 		if (position.getY() > this.canvas_height - this.CANVAS_PADDING) {
@@ -426,6 +431,9 @@ public class DrawingStage extends Stage implements View {
 
 			}
 
+			// debug
+			System.out.println("Adjusted ... ");
+
 		}
 
 	}
@@ -436,6 +444,59 @@ public class DrawingStage extends Stage implements View {
 
 	public double getCanvasHeight() {
 		return this.canvas_height;
+	}
+
+	public void singleAdjust(Field width_model, Field height_model) {
+
+		ViewField view_width_model = this.field_manager.getViewField(width_model);
+		ViewField view_height_model = this.field_manager.getViewField(height_model);
+
+		Point2D right_center = view_width_model.getFieldCenter();
+		Point2D down_center = view_height_model.getFieldCenter();
+
+		if (right_center.getX() > down_center.getX()) {
+			this.canvas_width = right_center.getX();
+		} else {
+			this.canvas_width = down_center.getX();
+		}
+
+		if (right_center.getY() > down_center.getY()) {
+			this.canvas_height = right_center.getY();
+		} else {
+			this.canvas_height = down_center.getY();
+		}
+
+		this.canvas_width += this.field_manager.getWidth() / 2 + this.CANVAS_PADDING;
+		this.canvas_height += this.field_manager.getHeight() / 2 + this.CANVAS_PADDING;
+
+		this.board_canvas.setWidth(this.canvas_width);
+		this.board_canvas.setHeight(this.canvas_height);
+
+		this.second_layer_canvas.setWidth(this.canvas_width);
+		this.second_layer_canvas.setHeight(this.canvas_height);
+
+		this.fillBackground();
+
+		// debug
+		System.out.println("single adjusted");
+		System.out.println("W: " + this.canvas_width);
+		System.out.println("H: " + this.canvas_height);
+
+	}
+
+	// attention just testing
+	private void fillBackground() {
+
+		GraphicsContext gc = this.board_canvas.getGraphicsContext2D();
+
+		gc.save();
+
+		gc.setFill(Color.GRAY);
+
+		gc.fillRect(0, 0, this.canvas_width, this.canvas_height);
+
+		gc.restore();
+
 	}
 
 }

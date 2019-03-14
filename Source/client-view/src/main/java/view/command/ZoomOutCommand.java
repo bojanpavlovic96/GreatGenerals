@@ -10,7 +10,6 @@ public class ZoomOutCommand extends ViewCommand {
 
 	public ZoomOutCommand(List<Field> fields) {
 		this.fields = fields;
-
 	}
 
 	public void run() {

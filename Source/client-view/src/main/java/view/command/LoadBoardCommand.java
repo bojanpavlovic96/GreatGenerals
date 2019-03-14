@@ -25,16 +25,30 @@ public class LoadBoardCommand extends ViewCommand {
 
 				view.setCanvasVisibility(false);
 
-				// TODO clear canvas and reset its size to 0 (or something small )
+				Field right_field = models.get(0);
+				Field down_field = models.get(0);
 
-				view.getMainCanvas().setWidth(1);
-				view.getMainCanvas().setHeight(1);
+				for (Field field : models) {
+
+					if (field.getStoragePosition().getX() >= right_field.getStoragePosition().getX()) {
+						right_field = field;
+					}
+
+					if (field.getStoragePosition().getY() >= down_field.getStoragePosition().getY()) {
+						down_field = field;
+					}
+
+				}
+
+				System.out.println("For single adjust W : " + right_field.getStoragePosition());
+				System.out.println("For single adjust H : " + down_field.getStoragePosition());
+
+				view.singleAdjust(right_field, down_field);
 
 				for (Field field : models) {
 
 					draw_hex_comm = new DrawFieldCommand(field);
 					draw_hex_comm.setView(view);
-					view.adjustCanvasSize(draw_hex_comm.getField());
 					draw_hex_comm.run();
 
 				}
