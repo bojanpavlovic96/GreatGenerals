@@ -56,6 +56,10 @@ public class DrawingStage extends Stage implements View {
 	private double canvas_width;
 	private double canvas_height;
 
+	// TODO initialize
+	private double last_h_field;
+	private double last_v_field;
+
 	// connection with controller
 	private CommandQueue command_queue;
 	private ExecutorService executor;
@@ -66,12 +70,15 @@ public class DrawingStage extends Stage implements View {
 	// holds info about view fields and conversion methods
 	private ViewFieldManager field_manager;
 
+	// constructors
+
 	public DrawingStage(ViewFieldManager field_converter) {
 		super();
 
 		this.field_manager = field_converter;
 
 		this.initStage();
+
 		this.initCommandQueue();
 
 		this.initEventHandlers();
@@ -111,8 +118,14 @@ public class DrawingStage extends Stage implements View {
 
 		// initially set canvas size to something smaller than stage size
 		// it is going to be resized when the board is loaded (loadBoardCommand)
-		this.canvas_width = this.STAGE_WIDTH / 2;
-		this.canvas_height = this.STAGE_HEIGHT / 2;
+		// this.canvas_width = this.STAGE_WIDTH / 2;
+		// this.canvas_height = this.STAGE_HEIGHT / 2;
+		this.canvas_width = 1;
+		this.canvas_height = 1;
+
+		// initial value same as canvas size
+		this.last_h_field = 1;
+		this.last_h_field = 1;
 
 		// create canvas and add it to the root node
 		this.board_canvas = new Canvas();
@@ -170,8 +183,8 @@ public class DrawingStage extends Stage implements View {
 
 			public void handle(MouseEvent arg) {
 
-				Point2D field_position = field_manager
-						.calcStoragePosition(new Point2D(arg.getX(), arg.getY()));
+				Point2D field_position = field_manager.calcStoragePosition(new Point2D(	arg.getX(),
+																						arg.getY()));
 
 				String event_name = "";
 
@@ -335,7 +348,7 @@ public class DrawingStage extends Stage implements View {
 	// view interface
 
 	// show() is already implemented in stage
-	
+
 	public String getViewType() {
 		return ResourceManager.getAssetsType();
 	}
@@ -371,7 +384,7 @@ public class DrawingStage extends Stage implements View {
 	}
 
 	public void adjustCanvasSize(ViewField field) {
-
+		
 		Point2D position = field.getFieldCenter();
 
 		if (position.getX() > this.canvas_width - this.CANVAS_PADDING) {

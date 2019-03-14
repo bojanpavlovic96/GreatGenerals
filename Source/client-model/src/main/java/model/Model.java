@@ -24,4 +24,9 @@ public interface Model {
 
 	void setModelEventHandler(ModelEventHandler handler);
 
+	// TODO extract this in some other interface
+	// existing ShouldBeShutDown interface is from client-view ... that is not good
+	// ... nop nop
+	void shutdown();
+
 }

@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javafx.geometry.Point2D;
-import javafx.scene.paint.Color;
 import model.PlayerData;
 import model.component.Terrain;
 import model.component.field.option.FieldOption;
@@ -57,10 +56,13 @@ public class GameField implements Field {
 	}
 
 	public void setUnit(Unit unit) {
-	
+
 		this.unit = unit;
-		
-		this.unit.setModelEventHandler(this.event_handler);
+
+		// if method is used for setting (not removing) unit
+		if (this.unit != null) {
+			this.unit.setModelEventHandler(this.event_handler);
+		}
 
 	}
 
@@ -135,8 +137,8 @@ public class GameField implements Field {
 		return this.visibility;
 	}
 
-	public Color getPlayerColor() {
-		return this.player.getPlayerColor();
+	public PlayerData getPlayer() {
+		return this.player;
 	}
 
 	public void setModelEventHandler(ModelEventHandler handler) {

@@ -4,7 +4,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Timer;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
 
 import javafx.geometry.Point2D;
 import model.component.field.Field;
@@ -22,7 +23,7 @@ public class DataModel implements Model {
 
 	private UnitCreator unit_creator;
 
-	private Timer timer;
+	private ScheduledExecutorService executor;
 
 	// unique event handler (move, attack, build ... )
 	private ModelEventHandler event_handler;
@@ -33,9 +34,8 @@ public class DataModel implements Model {
 
 	public DataModel() {
 
-		this.timer = new Timer(true);
-		// true means that timer threads are running as daemons
-		// timer is shared with all units
+		// this is timer...
+		this.executor = Executors.newScheduledThreadPool(3);
 
 		this.initUnitCreator();
 
@@ -47,14 +47,12 @@ public class DataModel implements Model {
 
 		this.unit_creator = new UnitCreator();
 
-		Unit basic_unit = new BasicUnit(new BasicMove(null, new AStar(this), this.timer), null, null);
+		Unit basic_unit = new BasicUnit(new BasicMove(null, new AStar(this), this.executor), null, null);
 		this.unit_creator.addPrototype(basic_unit);
 
 		// TODO add some more units
 
 	}
-
-	// public methods
 
 	public void initializeModel(List<PlayerData> list_of_players, List<Field> fields) {
 
@@ -138,6 +136,17 @@ public class DataModel implements Model {
 
 	public void setModelEventHandler(ModelEventHandler handler) {
 		this.event_handler = handler;
+	}
+
+	@Override
+	public void shutdown() {
+
+		// attention this could possibly throw some exceptions if some tasks are still
+		// running or waiting
+		if (this.executor != null && !this.executor.isShutdown()) {
+			this.executor.shutdown();
+		}
+
 	}
 
 }

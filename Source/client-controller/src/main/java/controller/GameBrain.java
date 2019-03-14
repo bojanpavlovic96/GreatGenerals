@@ -11,7 +11,6 @@ import controller.communication.Communicator;
 import controller.communication.ServerProxy;
 import model.Model;
 import model.component.field.Field;
-import model.event.ModelEventHandler;
 import server.Server;
 import view.ShouldBeShutdown;
 import view.View;
@@ -98,7 +97,7 @@ public class GameBrain implements Controller {
 						for (Field field : selected_field.getUnit().getMoveType().getPath()) {
 							view_command_queue.enqueue(new SelectFieldCommand(field));
 						}
-						
+
 						selected_field.getUnit().getMoveType().move();
 
 						selected_field = null;
@@ -200,7 +199,9 @@ public class GameBrain implements Controller {
 			((ShouldBeShutdown) this.view).shutdown();
 		}
 
-		// TODO somehow cancel timer tasks
+		if (this.model != null) {
+			this.model.shutdown();
+		}
 
 	}
 

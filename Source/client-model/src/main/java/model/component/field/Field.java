@@ -4,6 +4,7 @@ import java.util.List;
 
 import javafx.geometry.Point2D;
 import javafx.scene.paint.Color;
+import model.PlayerData;
 import model.component.Terrain;
 import model.component.field.option.FieldOption;
 import model.component.unit.Unit;
@@ -17,7 +18,7 @@ public interface Field {
 
 	void setStoragePosition(Point2D storage_position);
 
-	Color getPlayerColor();
+	PlayerData getPlayer();
 	
 	void setModelEventHandler(ModelEventHandler handler);
 	

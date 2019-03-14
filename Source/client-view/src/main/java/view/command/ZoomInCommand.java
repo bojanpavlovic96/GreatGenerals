@@ -25,6 +25,7 @@ public class ZoomInCommand extends ViewCommand {
 			load_command.setView(this.view);
 			// this.view.adjustCanvasSize(load_command.getField());
 			load_command.run();
+			
 		}
 	}
 

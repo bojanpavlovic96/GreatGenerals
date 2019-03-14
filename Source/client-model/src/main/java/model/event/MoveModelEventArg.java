@@ -9,8 +9,8 @@ public class MoveModelEventArg extends ModelEventArg {
 
 	// constructors
 
-	public MoveModelEventArg(Point2D source_field, Point2D destination_field) {
-		super("move-model-event");
+	public MoveModelEventArg(String player_name,Point2D source_field, Point2D destination_field) {
+		super("move-model-event",player_name);
 
 		this.setSourceField(source_field);
 		setDestinatoinField(destination_field);
@@ -27,7 +27,7 @@ public class MoveModelEventArg extends ModelEventArg {
 		this.source_field = source_field;
 	}
 
-	public Point2D getDestinatoinField() {
+	public Point2D getDestinationField() {
 		return destinatoin_field;
 	}
 

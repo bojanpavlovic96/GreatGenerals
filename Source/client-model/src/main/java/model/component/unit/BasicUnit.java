@@ -5,7 +5,7 @@ import model.event.ModelEventHandler;
 
 public class BasicUnit implements Unit {
 
-	private Field field;
+	private Field my_field;
 
 	private final String unit_name = "basic-unit";
 
@@ -75,10 +75,13 @@ public class BasicUnit implements Unit {
 
 	public void moveTo(Field next_field) {
 
+		// remove from current field
+		this.my_field.setUnit(null);
+		// set on next field
 		next_field.setUnit(this);
-
-		this.movement_type.getMyField().setUnit(null);
-		this.movement_type.setField(next_field);
+		// update units reference to field
+		// and also movement type reference
+		this.setField(next_field);
 
 	}
 
@@ -88,18 +91,18 @@ public class BasicUnit implements Unit {
 		if (this.canMove()) {
 			this.movement_type.setEventHandelr(this.event_handler);
 		}
-		
+
 		// TODO do the same for attack
 
 	}
 
 	public Field getField() {
-		return this.field;
+		return this.my_field;
 	}
 
 	public void setField(Field field) {
 
-		this.field = field;
+		this.my_field = field;
 
 		if (this.canMove()) {
 			this.movement_type.setField(field);

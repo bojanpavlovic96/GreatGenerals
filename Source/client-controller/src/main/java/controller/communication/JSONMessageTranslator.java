@@ -5,15 +5,15 @@ import java.util.Map;
 
 import org.json.JSONObject;
 
-import controller.action.EventToJSONTranslator;
-import controller.communication.ServerMessage;
-import controller.communication.ServerMessageTranslator;
+import controller.command.CtrlCommand;
+import controller.command.CtrlMoveCommand;
+import javafx.geometry.Point2D;
 import model.event.ModelEventArg;
 import model.event.MoveModelEventArg;
 
-public class JSONMessageTranslator extends ServerMessageTranslator {
+public class JSONMessageTranslator implements ServerMessageTranslator {
 
-	private Map<String, EventToJSONTranslator> event_to_json_translators;
+	private Map<String, ServerMessageTranslator> message_translators;
 
 	// constructors
 
@@ -30,30 +30,41 @@ public class JSONMessageTranslator extends ServerMessageTranslator {
 
 		// map all events to appropriate event translators
 
-		this.event_to_json_translators = new HashMap<String, EventToJSONTranslator>();
+		this.message_translators = new HashMap<String, ServerMessageTranslator>();
 
-		this.event_to_json_translators.put("move-model-event", new EventToJSONTranslator() {
+		this.message_translators.put("move-model-event", new ServerMessageTranslator() {
 
-			public JSONObject translate(ModelEventArg model_event) {
+			@Override
+			public byte[] translate(ModelEventArg model_action) {
 
-				MoveModelEventArg move_event = (MoveModelEventArg) model_event;
+				MoveModelEventArg move_event = (MoveModelEventArg) model_action;
 
-				// get source
-				// get destination
-				// pack to json
-				// add player username
-				// ...
-				// return json
+				JSONObject json = new JSONObject();
 
-				return null;
+				json.put("event_name", move_event.getEventName());
+				json.put("player_name", move_event.getPlayerName());
+
+				json.put("source_field_x", move_event.getSourceField().getX());
+				json.put("source_field_y", move_event.getSourceField().getY());
+				json.put("destination_field_x", move_event.getDestinationField().getX());
+				json.put("destination_field_y", move_event.getDestinationField().getY());
+
+				return json.toString().getBytes();
 			}
-		});
 
-		this.event_to_json_translators.put("attack-model-event", new EventToJSONTranslator() {
+			@Override
+			public CtrlCommand translate(byte[] source) {
 
-			public JSONObject translate(ModelEventArg model_event) {
+				JSONObject json = new JSONObject(new String(source));
 
-				return null;
+				Point2D first_postition = new Point2D(	json.getDouble("source_field_x"),
+														json.getDouble("source_field_y"));
+
+				Point2D second_position = new Point2D(	json.getDouble("destination_field_x"),
+														json.getDouble("destination_field_y"));
+
+				return new CtrlMoveCommand(first_postition, second_position);
+
 			}
 		});
 
@@ -63,20 +74,18 @@ public class JSONMessageTranslator extends ServerMessageTranslator {
 
 	// attention this method should return ctrlCommand
 	@Override
-	public ServerMessage translate(byte[] source) {
+	public CtrlCommand translate(byte[] source) {
 
-		return null;
+		JSONObject json = new JSONObject(new String(source));
+
+		return this.message_translators.get(json.get("event_name")).translate(source);
 	}
 
 	@Override
 	public byte[] translate(ModelEventArg model_event) {
 
-		JSONObject json = this.event_to_json_translators.get(model_event.getName()).translate(model_event);
+		return this.message_translators.get(model_event.getEventName()).translate(model_event);
 
-		// maybe add something more to generated object
-		// probably not
-
-		return json.toString().getBytes();
 	}
 
 }

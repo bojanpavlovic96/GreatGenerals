@@ -23,8 +23,6 @@ public class CtrlCommandProcessor implements CtrlQueueEventHandler {
 
 			CtrlCommand command = queue.dequeue();
 
-			// implement prepare command somehow
-
 			command.setController(this.controller);
 
 			this.executor.execute(command);

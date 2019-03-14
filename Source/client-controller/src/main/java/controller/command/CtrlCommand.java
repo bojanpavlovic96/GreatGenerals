@@ -67,6 +67,10 @@ public abstract class CtrlCommand implements Runnable {
 		this.model = this.controller.getModel();
 		this.view_command_queue = this.controller.getView().getCommandQueue();
 
+		if (this.base_position != null) {
+			this.base_field = this.model.getField(this.base_position);
+		}
+
 	}
 
 }

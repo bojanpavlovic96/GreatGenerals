@@ -9,8 +9,8 @@ public class AttackModelEventArg extends ModelEventArg {
 
 	// constructors
 
-	public AttackModelEventArg(Point2D source_field, Point2D destination_field) {
-		super("attack-model-event");
+	public AttackModelEventArg(String player_name, Point2D source_field, Point2D destination_field) {
+		super("attack-model-event", player_name);
 
 		this.source_field = source_field;
 		this.destination_field = destination_field;

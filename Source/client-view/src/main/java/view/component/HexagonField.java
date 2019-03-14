@@ -70,7 +70,7 @@ public class HexagonField implements ViewField {
 		this.hex_width = field_width;
 		this.hex_height = field_height;
 
-		this.border_color = model.getPlayerColor();
+		this.border_color = model.getPlayer().getPlayerColor();
 
 		this.side_size = this.calculateHexSideSize(field_height);
 

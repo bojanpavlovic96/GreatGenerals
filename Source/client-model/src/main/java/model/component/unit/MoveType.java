@@ -2,19 +2,18 @@ package model.component.unit;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Timer;
-import java.util.TimerTask;
+import java.util.concurrent.ScheduledExecutorService;
 
 import model.component.field.Field;
 import model.event.ModelEventHandler;
 import model.event.MoveModelEventArg;
 import model.path.PathFinder;
 
-public abstract class MoveType extends TimerTask implements Cloneable {
+public abstract class MoveType implements Cloneable, Runnable {
 
 	// fields
 
-	protected Timer timer;
+	protected ScheduledExecutorService executor;
 
 	protected PathFinder path_finder;
 
@@ -29,14 +28,14 @@ public abstract class MoveType extends TimerTask implements Cloneable {
 
 	// methods
 
-	public MoveType(Field my_field, PathFinder path_finder, Timer move_timer) {
+	public MoveType(Field my_field, PathFinder path_finder, ScheduledExecutorService executor) {
 		super();
 
 		this.setField(my_field);
 		this.path_finder = path_finder;
 
 		this.path = new ArrayList<Field>();
-		this.timer = move_timer;
+		this.executor = executor;
 		// timer passed from model
 
 	}
@@ -104,7 +103,9 @@ public abstract class MoveType extends TimerTask implements Cloneable {
 	@Override
 	public void run() {
 
-		this.on_event.execute(new MoveModelEventArg(this.my_field.getStoragePosition(),
+
+		this.on_event.execute(new MoveModelEventArg(this.my_field.getPlayer().getUsername(),
+													this.my_field.getStoragePosition(),
 													this.path.get(0).getStoragePosition()));
 
 	}

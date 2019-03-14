@@ -50,13 +50,15 @@ public class ServerProxy implements Server, Communicator {
 
 	// server methods
 
-	// TODO add argument ... what to send
 	public void sendIntention(ModelEventArg model_event) {
 
 		// debug
-		System.out.println("Intention ready ... " + model_event.getName());
+		System.out.println("Sending intention ... " + model_event.getEventName()
+							+ " @ ServerProxy.sendIntention");
 
-		// byte[] message_to_send = this.message_translator.translate(model_event);
+		byte[] message_to_send = this.message_translator.translate(model_event);
+
+		this.ctrl_queue.enqueue(this.message_translator.translate(message_to_send));
 
 	}
 

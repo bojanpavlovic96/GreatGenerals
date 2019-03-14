@@ -27,13 +27,16 @@ public class LoadBoardCommand extends ViewCommand {
 
 				// TODO clear canvas and reset its size to 0 (or something small )
 
+				view.getMainCanvas().setWidth(1);
+				view.getMainCanvas().setHeight(1);
+
 				for (Field field : models) {
-					
+
 					draw_hex_comm = new DrawFieldCommand(field);
 					draw_hex_comm.setView(view);
 					view.adjustCanvasSize(draw_hex_comm.getField());
 					draw_hex_comm.run();
-				
+
 				}
 
 				view.setCanvasVisibility(true);
