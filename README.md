@@ -1,4 +1,4 @@
-## Deadline 18.2.2019.
+## Deadline unknown
 ```
 client-view.app.launcher.Launcher - entry point
 
