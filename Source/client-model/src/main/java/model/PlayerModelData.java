@@ -1,14 +1,15 @@
 package model;
 
 import javafx.scene.paint.Color;
+import root.model.PlayerData;
 
-public class PlayerData {
+public class PlayerModelData  implements PlayerData{
 
 	private String username;
 
 	private Color field_color;
 
-	public PlayerData(String username, Color field_color) {
+	public PlayerModelData(String username, Color field_color) {
 		super();
 
 		this.username = username;

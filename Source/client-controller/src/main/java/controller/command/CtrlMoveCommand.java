@@ -36,7 +36,7 @@ public class CtrlMoveCommand extends CtrlCommand {
 			// continue moving
 
 			this.second_field.getUnit().getMoveType().move();
-			// triger timer
+			// trigger timer
 
 		}
 

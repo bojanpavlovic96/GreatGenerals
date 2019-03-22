@@ -1,4 +1,4 @@
-package model.event;
+package root.model.event;
 
 public abstract class ModelEventArg {
 

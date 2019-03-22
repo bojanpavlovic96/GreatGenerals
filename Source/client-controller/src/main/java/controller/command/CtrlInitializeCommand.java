@@ -3,20 +3,20 @@ package controller.command;
 import java.util.List;
 
 import javafx.geometry.Point2D;
-import model.PlayerData;
+import model.PlayerModelData;
 import model.component.field.Field;
 import view.command.LoadBoardCommand;
 
 public class CtrlInitializeCommand extends CtrlCommand {
 
-	private List<PlayerData> players;
+	private List<PlayerModelData> players;
 	private List<Field> fields;
 
 	/**
 	 * @param primary_field - leave it null, it is just inherited from the ctrlCommand
 	 * 
 	 */
-	public CtrlInitializeCommand(Field primary_field, List<PlayerData> players, List<Field> fields) {
+	public CtrlInitializeCommand(Field primary_field, List<PlayerModelData> players, List<Field> fields) {
 		super(primary_field);
 
 		this.players = players;

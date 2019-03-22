@@ -1,9 +1,8 @@
-package model.path;
+package root.model.action.move;
 
 import java.util.List;
 
-import model.component.field.Field;
-
+import root.model.component.Field;
 
 public interface PathFinder {
 

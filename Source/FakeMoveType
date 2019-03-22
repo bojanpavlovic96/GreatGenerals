@@ -4,18 +4,19 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ScheduledExecutorService;
 
-import model.component.field.Field;
 import model.event.ModelEventHandler;
 import model.event.MoveModelEventArg;
 import model.path.PathFinder;
+import root.model.Field;
 
-public abstract class MoveType implements Cloneable, Runnable {
+public abstract class FakeMoveType implements Cloneable, Runnable {
 
 	// fields
 
 	protected ScheduledExecutorService executor;
 
 	protected PathFinder path_finder;
+	protected Field destination_field;
 
 	protected Field my_field;
 
@@ -28,10 +29,10 @@ public abstract class MoveType implements Cloneable, Runnable {
 
 	// methods
 
-	public MoveType(Field my_field, PathFinder path_finder, ScheduledExecutorService executor) {
+	public FakeMoveType(Field my_field, PathFinder path_finder, ScheduledExecutorService executor) {
 		super();
 
-		this.setField(my_field);
+		this.my_field = my_field;
 		this.path_finder = path_finder;
 
 		this.path = new ArrayList<Field>();
@@ -63,16 +64,8 @@ public abstract class MoveType implements Cloneable, Runnable {
 		this.path.addAll(fields);
 	}
 
-	public void calculatePath(Field destination) {
-		this.path = this.path_finder.findPath(this.my_field, destination);
-	}
-
 	public long getDelay() {
 		return this.move_delay;
-	}
-
-	public void setDelay(long speed) {
-		this.move_delay = speed;
 	}
 
 	public void setEventHandelr(ModelEventHandler handler) {
@@ -81,14 +74,6 @@ public abstract class MoveType implements Cloneable, Runnable {
 
 	public ModelEventHandler getEventHandler() {
 		return this.on_event;
-	}
-
-	public Field getMyField() {
-		return my_field;
-	}
-
-	public void setField(Field my_field) {
-		this.my_field = my_field;
 	}
 
 	// abstract
@@ -103,7 +88,6 @@ public abstract class MoveType implements Cloneable, Runnable {
 	@Override
 	public void run() {
 
-
 		this.on_event.execute(new MoveModelEventArg(this.my_field.getPlayer().getUsername(),
 													this.my_field.getStoragePosition(),
 													this.path.get(0).getStoragePosition()));
@@ -115,3 +99,4 @@ public abstract class MoveType implements Cloneable, Runnable {
 	}
 
 }
+

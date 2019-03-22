@@ -9,11 +9,10 @@ import controller.command.CtrlCommandQueue;
 import controller.command.CtrlInitializeCommand;
 import javafx.geometry.Point2D;
 import javafx.scene.paint.Color;
-import model.PlayerData;
+import model.PlayerModelData;
 import model.component.Terrain;
 import model.component.field.Field;
 import model.component.field.GameField;
-import model.component.unit.BasicUnit;
 import model.event.ModelEventArg;
 import server.Server;
 
@@ -81,10 +80,10 @@ public class ServerProxy implements Server, Communicator {
 
 		// let say this is some content from the server
 
-		List<PlayerData> players = new ArrayList<PlayerData>();
-		players.add(new PlayerData("user 1", Color.RED));
-		players.add(new PlayerData("user 2", Color.GREEN));
-		players.add(new PlayerData("user 3", Color.BLACK));
+		List<PlayerModelData> players = new ArrayList<PlayerModelData>();
+		players.add(new PlayerModelData("user 1", Color.RED));
+		players.add(new PlayerModelData("user 2", Color.GREEN));
+		players.add(new PlayerModelData("user 3", Color.BLACK));
 
 		List<Field> field_models = new ArrayList<Field>();
 
