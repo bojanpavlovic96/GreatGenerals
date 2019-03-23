@@ -36,6 +36,12 @@
 			<version>0.0.1-SNAPSHOT</version>
 		</dependency>
 
+		<dependency>
+			<groupId>great-generals</groupId>
+			<artifactId>communication</artifactId>
+			<version>0.0.1-SNAPSHOT</version>
+		</dependency>
+
 		<!-- dependencies that are not from the GreatGenerals -->
 
 		<dependency>

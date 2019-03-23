@@ -162,4 +162,9 @@ public class DataModel implements Model {
 
 	}
 
+	@Override
+	public Unit generateUnit(String unit_name) {
+		return this.unit_creator.generateUnit(unit_name);
+	}
+
 }

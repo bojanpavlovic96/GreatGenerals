@@ -10,9 +10,9 @@ import com.rabbitmq.client.Connection;
 import com.rabbitmq.client.ConnectionFactory;
 
 import app.event.ConnectionReadyHandler;
-import view.ShouldBeShutdown;
+import root.ActiveComponent;
 
-public class ConnectionTask implements Runnable, ShouldBeShutdown {
+public class ConnectionTask implements Runnable, ActiveComponent {
 
 	private boolean connection_established = false;
 

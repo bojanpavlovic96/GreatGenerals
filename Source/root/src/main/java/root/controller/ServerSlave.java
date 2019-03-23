@@ -1,5 +1,7 @@
 package root.controller;
 
+import root.communication.ServerProxy;
+
 public interface ServerSlave {
 
 	ServerProxy getServerProxy();

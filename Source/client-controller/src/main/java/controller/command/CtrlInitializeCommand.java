@@ -3,22 +3,21 @@ package controller.command;
 import java.util.List;
 
 import javafx.geometry.Point2D;
-import model.PlayerModelData;
 import root.command.Command;
+import root.command.CommandDrivenComponent;
+import root.controller.Controller;
+import root.model.Model;
+import root.model.PlayerData;
 import root.model.component.Field;
 import view.command.LoadBoardCommand;
 
 public class CtrlInitializeCommand extends Command {
 
-	private List<PlayerModelData> players;
+	private List<PlayerData> players;
 	private List<Field> fields;
 
-	/**
-	 * @param primary_field - leave it null, it is just inherited from the ctrlCommand
-	 * 
-	 */
-	public CtrlInitializeCommand(Field primary_field, List<PlayerModelData> players, List<Field> fields) {
-		super(primary_field);
+	public CtrlInitializeCommand(List<PlayerData> players, List<Field> fields) {
+		super("initialize-ctrl-command");
 
 		this.players = players;
 		this.fields = fields;
@@ -28,16 +27,19 @@ public class CtrlInitializeCommand extends Command {
 	public void run() {
 
 		System.out.println("Calling initalizeModel ... @ CtrlInitializeCommand.run");
-		this.model.initializeModel(this.players, this.fields);
+		((Model) super.target_component).initializeModel(this.players, this.fields);
 
-		this.model.setUnit(new Point2D(10, 10), "basic-unit");
-		this.model.setUnit(new Point2D(5, 5), "basic-unit");
-		this.model.setUnit(new Point2D(5, 10), "basic-unit");
-		this.model.setUnit(new Point2D(4, 7), "basic-unit");
+		Model model = ((Controller) super.target_component).getModel();
+
+		model.getField(new Point2D(10, 10)).setUnit(model.generateUnit("basic-unit"));
+		model.getField(new Point2D(4, 5)).setUnit(model.generateUnit("basic-unit"));
+		model.getField(new Point2D(5, 5)).setUnit(model.generateUnit("basic-unit"));
+		model.getField(new Point2D(5, 10)).setUnit(model.generateUnit("basic-unit"));
+		model.getField(new Point2D(4, 7)).setUnit(model.generateUnit("basic-unit"));
 
 		LoadBoardCommand view_command = new LoadBoardCommand(this.fields);
 		System.out.println("Load board command enqueue ... @ CtrlInitializeCommand.run");
-		this.view_command_queue.enqueue(view_command);
+		((Controller) super.target_component).getCommandConsumer().enqueue(view_command);
 
 	}
 

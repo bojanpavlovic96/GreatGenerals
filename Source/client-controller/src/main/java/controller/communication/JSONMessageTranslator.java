@@ -5,15 +5,16 @@ import java.util.Map;
 
 import org.json.JSONObject;
 
-import controller.command.CtrlCommand;
 import controller.command.CtrlMoveCommand;
 import javafx.geometry.Point2D;
-import model.event.ModelEventArg;
 import model.event.MoveModelEventArg;
+import root.command.Command;
+import root.communication.MessageTranslator;
+import root.model.event.ModelEventArg;
 
-public class JSONMessageTranslator implements ServerMessageTranslator {
+public class JSONMessageTranslator implements MessageTranslator {
 
-	private Map<String, ServerMessageTranslator> message_translators;
+	private Map<String, MessageTranslator> message_translators;
 
 	// constructors
 
@@ -30,9 +31,9 @@ public class JSONMessageTranslator implements ServerMessageTranslator {
 
 		// map all events to appropriate event translators
 
-		this.message_translators = new HashMap<String, ServerMessageTranslator>();
+		this.message_translators = new HashMap<String, MessageTranslator>();
 
-		this.message_translators.put("move-model-event", new ServerMessageTranslator() {
+		this.message_translators.put("move-model-event", new MessageTranslator() {
 
 			@Override
 			public byte[] translate(ModelEventArg model_action) {
@@ -53,7 +54,7 @@ public class JSONMessageTranslator implements ServerMessageTranslator {
 			}
 
 			@Override
-			public CtrlCommand translate(byte[] source) {
+			public Command translate(byte[] source) {
 
 				JSONObject json = new JSONObject(new String(source));
 
@@ -74,7 +75,7 @@ public class JSONMessageTranslator implements ServerMessageTranslator {
 
 	// attention this method should return ctrlCommand
 	@Override
-	public CtrlCommand translate(byte[] source) {
+	public Command translate(byte[] source) {
 
 		JSONObject json = new JSONObject(new String(source));
 

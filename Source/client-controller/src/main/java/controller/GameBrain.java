@@ -4,35 +4,31 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 import controller.action.DefaultModelEventHandler;
-import controller.command.CtrlCommandProcessor;
-import controller.command.CtrlCommandQueue;
-import controller.command.CtrlQueueEventHandler;
-import controller.communication.Communicator;
-import controller.communication.ServerProxy;
 
 import root.ActiveComponent;
+import root.command.BasicCommandProcessor;
+import root.command.CommandProcessor;
+import root.command.CommandQueue;
+import root.communication.ServerProxy;
 import root.controller.Controller;
 import root.model.Model;
 import root.model.component.Field;
 import root.model.event.ModelEventArg;
 import root.view.View;
-
-import view.ViewEvent;
-import view.ViewEventHandler;
+import root.view.event.ViewEventArg;
+import root.view.event.ViewEventHandler;
 import view.command.ClearTopLayerCommand;
-import view.command.CommandQueue;
 import view.command.DisplayFieldInfoCommand;
-import view.command.SelectFieldCommand;
 import view.command.ZoomInCommand;
 import view.command.ZoomOutCommand;
 
 public class GameBrain implements Controller {
 
-	// connection with server (other players)
 	private ServerProxy server_proxy;
 
-	private ExecutorService ctrl_command_executor;
-	private CtrlCommandQueue server_update_queue;
+	private ExecutorService server_command_executor;
+	private CommandProcessor server_command_processor;
+	private CommandQueue server_command_queue;
 
 	private View view;
 	private CommandQueue view_command_queue;
@@ -58,14 +54,14 @@ public class GameBrain implements Controller {
 		// --- connect serverProxy and controller
 
 		// command queue created in controller and passed to the serverProxy
-		this.server_update_queue = new CtrlCommandQueue();
+		this.server_command_queue = new CommandQueue();
 
 		// server commands executor
-		this.ctrl_command_executor = Executors.newSingleThreadExecutor();
-		CtrlQueueEventHandler command_processor = new CtrlCommandProcessor(this.ctrl_command_executor, this);
-		this.server_update_queue.setOnEnqueueEventHandler(command_processor);
+		this.server_command_executor = Executors.newSingleThreadExecutor();
+		this.server_command_processor = new BasicCommandProcessor(this.server_command_executor, this);
+		this.server_command_queue.setCommandProcessor(this.server_command_processor);
 
-		this.server_proxy.setCtrlQueue(this.server_update_queue);
+		this.server_proxy.registerConsumerQueue(this.server_command_queue);
 
 		// --- done with serverProxy
 
@@ -82,7 +78,7 @@ public class GameBrain implements Controller {
 
 		this.view.addEventHandler("left-mouse-click-event", new ViewEventHandler() {
 
-			public void execute(ViewEvent arg) {
+			public void execute(ViewEventArg arg) {
 
 				// if (selected_field != null) {
 				// System.out.println("Some action from selected to goal ...");
@@ -129,7 +125,7 @@ public class GameBrain implements Controller {
 
 		this.view.addEventHandler("right-mouse-click-event", new ViewEventHandler() {
 
-			public void execute(ViewEvent arg) {
+			public void execute(ViewEventArg arg) {
 
 				if (info_displayed != null) {
 					ClearTopLayerCommand clear_command = new ClearTopLayerCommand();
@@ -137,7 +133,7 @@ public class GameBrain implements Controller {
 					info_displayed = null;
 				}
 
-				Field field = model.getField(arg.getField_position());
+				Field field = model.getField(arg.getFieldPosition());
 
 				if (field != null) {
 
@@ -152,10 +148,10 @@ public class GameBrain implements Controller {
 
 		this.view.addEventHandler("key-event-char-1", new ViewEventHandler() {
 
-			public void execute(ViewEvent arg) {
+			public void execute(ViewEventArg arg) {
 
 				ZoomInCommand command = new ZoomInCommand(model.getFields());
-				command.setView(view);
+				command.setTargetComponent(view);
 				view_command_queue.enqueue(command);
 
 			}
@@ -163,10 +159,10 @@ public class GameBrain implements Controller {
 
 		this.view.addEventHandler("key-event-char-2", new ViewEventHandler() {
 
-			public void execute(ViewEvent arg) {
+			public void execute(ViewEventArg arg) {
 
 				ZoomOutCommand command = new ZoomOutCommand(model.getFields());
-				command.setView(view);
+				command.setTargetComponent(view);
 				view_command_queue.enqueue(command);
 
 			}
@@ -176,26 +172,31 @@ public class GameBrain implements Controller {
 
 	// getters and setters
 
+	@Override
 	public View getView() {
 		return this.view;
 	}
 
+	@Override
 	public void setView(View view) {
 		this.view = view;
 	}
 
+	@Override
 	public Model getModel() {
 		return this.model;
 	}
 
+	@Override
 	public void setModel(Model model) {
 		this.model = model;
 	}
 
+	@Override
 	public void shutdown() {
 
-		if (this.ctrl_command_executor != null && !this.ctrl_command_executor.isShutdown()) {
-			this.ctrl_command_executor.shutdown();
+		if (this.server_command_executor != null && !this.server_command_executor.isShutdown()) {
+			this.server_command_executor.shutdown();
 		}
 
 		if (this.view != null) {
@@ -208,27 +209,43 @@ public class GameBrain implements Controller {
 
 	}
 
-	public Communicator getCommunicator() {
-		return (Communicator) this.server_proxy;
-	}
-
-	public Server getServer() {
-		return (Server) this.server_proxy;
-	}
-
-	// from move event handler
 	@Override
 	public void execute(ModelEventArg event_argument) {
-
+		this.server_proxy.sendIntention(event_argument);
 	}
 
 	@Override
-	public root.controller.ServerProxy getServerProxy() {
+	public root.communication.ServerProxy getServerProxy() {
 		return this.server_proxy;
 	}
 
 	@Override
-	public void setServerProxy(root.controller.ServerProxy new_proxy) {
+	public void setServerProxy(root.communication.ServerProxy new_proxy) {
+		this.server_proxy = new_proxy;
+	}
+
+	@Override
+	public CommandQueue getCommandQueue() {
+		return this.server_command_queue;
+	}
+
+	@Override
+	public void setCommandQueue(CommandQueue new_queue) {
+		this.server_command_queue = new_queue;
+	}
+
+	@Override
+	public CommandProcessor getCommandProcessor() {
+		return this.server_command_processor;
+	}
+
+	public void registerConsumerQueue(CommandQueue consumer_queue) {
+		this.view_command_queue = consumer_queue;
+	}
+
+	@Override
+	public CommandQueue getCommandConsumer() {
+		return this.view_command_queue;
 	}
 
 }

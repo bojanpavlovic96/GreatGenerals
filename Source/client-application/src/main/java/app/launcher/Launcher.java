@@ -8,18 +8,22 @@ import com.rabbitmq.client.Channel;
 import app.event.ConnectionReadyHandler;
 import app.event.GameReadyHandler;
 import app.form.StartForm;
-import controller.Controller;
+import communication.BasicServerProxy;
 import controller.GameBrain;
+
 import controller.action.DefaultModelEventHandler;
 import controller.communication.JSONMessageTranslator;
-import controller.communication.ServerProxy;
+
 import javafx.application.Application;
 import javafx.stage.Stage;
+
 import model.DataModel;
-import model.Model;
+import root.ActiveComponent;
+import root.communication.ServerProxy;
+import root.controller.Controller;
+import root.model.Model;
+import root.view.View;
 import view.DrawingStage;
-import view.ShouldBeShutdown;
-import view.View;
 import view.component.HexFieldManager;
 
 public class Launcher extends Application {
@@ -71,8 +75,8 @@ public class Launcher extends Application {
 									+ "-> called from intial controller");
 
 				// serverProxy created for communication with server
-				ServerProxy server_proxy = new ServerProxy(	connection_task.getChannel(),
-															new JSONMessageTranslator());
+				ServerProxy server_proxy = new BasicServerProxy(connection_task.getChannel(),
+																new JSONMessageTranslator());
 
 				// TODO somehow initialize resource manager
 				// resources could be obtained from the server
@@ -138,17 +142,17 @@ public class Launcher extends Application {
 		// close connection on shutdown
 		if (this.connection_task != null) {
 			System.out.println("Closing connection ... @ Launcher.stop");
-			((ShouldBeShutdown) this.connection_task).shutdown();
+			((ActiveComponent) this.connection_task).shutdown();
 		}
 
 		if (this.controller != null) {
 			System.out.println("Shutting down controller ... @ Launcher.stop");
-			((ShouldBeShutdown) this.controller).shutdown();
+			((ActiveComponent) this.controller).shutdown();
 		}
 
 		if (this.initial_controller != null) {
 			System.out.println("Shutting down initial controller ... @ Launcher.stop");
-			((ShouldBeShutdown) this.initial_controller).shutdown();
+			((ActiveComponent) this.initial_controller).shutdown();
 		}
 
 	}

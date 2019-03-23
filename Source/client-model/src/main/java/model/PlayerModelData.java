@@ -3,7 +3,7 @@ package model;
 import javafx.scene.paint.Color;
 import root.model.PlayerData;
 
-public class PlayerModelData  implements PlayerData{
+public class PlayerModelData implements PlayerData {
 
 	private String username;
 
@@ -16,20 +16,14 @@ public class PlayerModelData  implements PlayerData{
 		this.field_color = field_color;
 	}
 
+	@Override
 	public String getUsername() {
 		return username;
 	}
 
-	public void setUsername(String username) {
-		this.username = username;
-	}
-
-	public Color getPlayerColor() {
-		return field_color;
-	}
-
-	public void setPlayerColor(Color field_color) {
-		this.field_color = field_color;
+	@Override
+	public Color getColor() {
+		return this.field_color;
 	}
 
 }

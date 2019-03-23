@@ -1,10 +1,10 @@
 package app.launcher;
 
-import controller.Controller;
 import javafx.application.Platform;
-import view.ShouldBeShutdown;
+import root.ActiveComponent;
+import root.controller.Controller;
 
-public class GameTask implements Runnable, ShouldBeShutdown {
+public class GameTask implements Runnable, ActiveComponent {
 
 	private Controller controller;
 
@@ -29,7 +29,7 @@ public class GameTask implements Runnable, ShouldBeShutdown {
 
 	public void shutdown() {
 		System.out.println("Shutting down controller ... \tin GameTask ...");
-		((ShouldBeShutdown) this.controller).shutdown();
+		((ActiveComponent) this.controller).shutdown();
 	}
 
 }

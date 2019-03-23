@@ -1,87 +1,65 @@
-package controller.communication;
+package communication;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import com.rabbitmq.client.Channel;
 
-import controller.command.CtrlCommandQueue;
 import controller.command.CtrlInitializeCommand;
 import javafx.geometry.Point2D;
 import javafx.scene.paint.Color;
 import model.PlayerModelData;
 import model.component.field.GameField;
 import root.command.CommandQueue;
+import root.communication.MessageTranslator;
+import root.communication.ServerProxy;
+import root.model.PlayerData;
 import root.model.component.Field;
 import root.model.component.Terrain;
 import root.model.event.ModelEventArg;
-import server.Server;
 
-public class ServerProxy implements Server, Communicator {
+public class BasicServerProxy implements ServerProxy {
 
 	private Channel channel;
 
-	private ServerMessageTranslator message_translator;
+	private MessageTranslator translator;
 
-	private CommandQueue ctrl_queue;
+	private CommandQueue command_queue;
 
 	// constructors
 
-	public ServerProxy(Channel channel, ServerMessageTranslator translator) {
-
+	public BasicServerProxy(Channel channel, MessageTranslator translator) {
 		this.channel = channel;
-		this.message_translator = translator;
+		this.translator = translator;
 
 		this.initCommunicationChannel();
 
 	}
 
 	// methods
-	// implement
-	private void initCommunicationChannel() {
 
+	// implement create queues and stuff
+	private void initCommunicationChannel() {
 		// configure channels and start listening for server messages
 
 		// first message must be model initialization message
 
 		// attention do not start receiving messages until queue is set !!!
-
 	}
 
-	// server methods
-
-	public void sendIntention(ModelEventArg model_event) {
-
-		// debug
-		System.out.println("Sending intention ... " + model_event.getEventName()
-							+ " @ ServerProxy.sendIntention");
-
-		byte[] message_to_send = this.message_translator.translate(model_event);
-
-		this.ctrl_queue.enqueue(this.message_translator.translate(message_to_send));
-
-	}
-
-	// communicator methods
-
+	@Override
 	public Channel getCommunicationChannel() {
 		return this.channel;
 	}
 
-	public CommandQueue getCtrlQueue() {
-		return this.ctrl_queue;
-	}
+	@Override
+	public void setCommunicationChannel(Channel new_channel) {
+		this.channel = new_channel;
 
-	// getters and setters
+		// TODO somehow start receiving messages
 
-	public void setCtrlQueue(CommandQueue queue) {
-		this.ctrl_queue = queue;
-
-		// attention start receiving messages from server
-
-		// let say this is some content from the server
-
-		List<PlayerModelData> players = new ArrayList<PlayerModelData>();
+		// fake first initialization message
+		List<PlayerData> players = new ArrayList<PlayerData>();
 		players.add(new PlayerModelData("user 1", Color.RED));
 		players.add(new PlayerModelData("user 2", Color.GREEN));
 		players.add(new PlayerModelData("user 3", Color.BLACK));
@@ -118,12 +96,40 @@ public class ServerProxy implements Server, Communicator {
 				left--;
 		}
 
-		this.ctrl_queue.enqueue(new CtrlInitializeCommand(null, players, field_models));
+		this.command_queue.enqueue(new CtrlInitializeCommand(players, field_models));
 
 	}
 
-	public ServerMessageTranslator getMessageTranslator() {
-		return message_translator;
+	@Override
+	public MessageTranslator getMessageTranslator() {
+		return this.translator;
+	}
+
+	@Override
+	public void setMessageTranslator(MessageTranslator new_translator) {
+		this.translator = new_translator;
+	}
+
+	@Override
+	public void registerConsumerQueue(CommandQueue consumer_queue) {
+		this.command_queue = consumer_queue;
+	}
+
+	@Override
+	public CommandQueue getCommandConsumer() {
+		return this.command_queue;
+	}
+
+	@Override
+	public void sendIntention(ModelEventArg action) {
+
+		// debug
+		System.out.println("Sending intention: " + action.getEventName() + "@ BasicServeProxy.sendIntention");
+
+		byte[] message = this.translator.translate(action);
+
+		// TODO somehow send it through channel
+
 	}
 
 }

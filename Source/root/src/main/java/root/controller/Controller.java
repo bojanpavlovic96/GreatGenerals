@@ -1,11 +1,19 @@
 package root.controller;
 
-import root.ActiveComponent;
+import root.command.CommandDrivenComponent;
+import root.command.CommandProducer;
 import root.model.Model;
 import root.model.event.ModelEventHandler;
 import root.view.View;
 
-public interface Controller extends ModelEventHandler, ServerSlave, ActiveComponent {
+public interface Controller	extends
+							ModelEventHandler,
+							// has server proxy
+							ServerSlave,
+							// command received from serve proxy
+							CommandDrivenComponent,
+							// produces view commands
+							CommandProducer {
 
 	View getView();
 
@@ -14,12 +22,5 @@ public interface Controller extends ModelEventHandler, ServerSlave, ActiveCompon
 	Model getModel();
 
 	void setModel(Model new_model);
-
-	// from ActiveComponent
-	// void shutdown()
-
-	// from ServerSlave
-	// ServerProxy getServerProxy()
-	// void setServerProxy(ServerProxy new_proxy)
 
 }

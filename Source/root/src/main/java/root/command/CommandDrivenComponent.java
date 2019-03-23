@@ -8,4 +8,6 @@ public interface CommandDrivenComponent extends ActiveComponent {
 
 	void setCommandQueue(CommandQueue new_queue);
 
+	CommandProcessor getCommandProcessor();
+
 }

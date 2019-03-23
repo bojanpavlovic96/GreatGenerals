@@ -38,9 +38,9 @@ import view.component.menu.FieldMenu;
 import view.component.menu.OptionMenu;
 
 // attention 
-// attention scroll pane throws some exception but it is harmless
+// attention scroll pane (sometimes) throws some exception but it is harmless
 // attention 
-// drawing stage (as view) only provides base for "drawing" game
+
 public class DrawingStage extends Stage implements View {
 
 	private double STAGE_WIDTH;
@@ -490,6 +490,11 @@ public class DrawingStage extends Stage implements View {
 	@Override
 	public Color getBackgroundColor() {
 		return this.background_color;
+	}
+
+	@Override
+	public CommandProcessor getCommandProcessor() {
+		return this.command_processor;
 	}
 
 }

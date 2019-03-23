@@ -12,9 +12,9 @@ import app.form.GameReadyEventProducer;
 import app.form.InitialPage;
 import app.form.MessageDisplay;
 import app.resource_manager.QueueNamingManager;
-import view.ShouldBeShutdown;
+import root.ActiveComponent;
 
-public class InitialController implements GameReadyEventProducer, ConnectionUser, ShouldBeShutdown {
+public class InitialController implements GameReadyEventProducer, ConnectionUser, ActiveComponent {
 
 	private Channel channel;
 
