@@ -4,10 +4,11 @@ import java.util.List;
 
 import javafx.geometry.Point2D;
 import model.PlayerModelData;
-import model.component.field.Field;
+import root.command.Command;
+import root.model.component.Field;
 import view.command.LoadBoardCommand;
 
-public class CtrlInitializeCommand extends CtrlCommand {
+public class CtrlInitializeCommand extends Command {
 
 	private List<PlayerModelData> players;
 	private List<Field> fields;

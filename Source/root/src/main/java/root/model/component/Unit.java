@@ -28,6 +28,6 @@ public interface Unit extends Cloneable{
 	
 	Unit clone() throws CloneNotSupportedException;
 	
-	void setModelEventHandler(ModelEventHandler event_handler);
+	void setEventHandler(ModelEventHandler event_handler);
 	
 }

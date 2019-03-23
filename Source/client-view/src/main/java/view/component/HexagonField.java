@@ -11,8 +11,9 @@ import javafx.scene.image.Image;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Line;
 import javafx.scene.shape.Path;
-import model.component.field.Field;
-import model.component.unit.Unit;
+import root.model.component.Field;
+import root.model.component.Unit;
+import root.view.field.ViewField;
 import view.ResourceManager;
 
 public class HexagonField implements ViewField {
@@ -60,17 +61,12 @@ public class HexagonField implements ViewField {
 		if (model.getUnit() != null)
 			this.unit = new ViewUnit(model.getUnit());
 
-		this.units_in_battle = new ArrayList<ViewUnit>();
-		if (model.isInBattle()) {
-			for (Unit model_unit : model.getBattle()) {
-				this.units_in_battle.add(new ViewUnit(model_unit));
-			}
-		}
+		// TODO do something with battle
 
 		this.hex_width = field_width;
 		this.hex_height = field_height;
 
-		this.border_color = model.getPlayer().getPlayerColor();
+		this.border_color = model.getPlayer().getColor();
 
 		this.side_size = this.calculateHexSideSize(field_height);
 
@@ -266,9 +262,7 @@ public class HexagonField implements ViewField {
 
 	// DrawableHexagon
 
-	public void drawOn(Canvas canvas) {
-
-		GraphicsContext gc = canvas.getGraphicsContext2D();
+	public void drawOn(GraphicsContext gc) {
 
 		// every field has borders
 		this.drawBorders(gc);

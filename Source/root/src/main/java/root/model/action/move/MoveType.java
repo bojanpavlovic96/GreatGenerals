@@ -6,7 +6,6 @@ import java.util.concurrent.ScheduledExecutorService;
 
 import root.model.component.Field;
 import root.model.event.ModelEventHandler;
-import root.model.event.MoveModelEventArg;
 
 public abstract class MoveType implements Cloneable, Runnable {
 
@@ -84,12 +83,6 @@ public abstract class MoveType implements Cloneable, Runnable {
 
 	}
 
-	public void run() {
-		this.on_event.execute(new MoveModelEventArg(this.my_field.getPlayer().getUsername(),
-													this.my_field.getStoragePosition(),
-													this.path.get(0).getStoragePosition()));
-	}
-
 	public List<Field> getPath() {
 		return this.path;
 	}
@@ -99,5 +92,7 @@ public abstract class MoveType implements Cloneable, Runnable {
 	public abstract void move();
 
 	public abstract int calculateDelay();
+
+	public abstract void run();
 
 }

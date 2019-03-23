@@ -9,11 +9,14 @@ import controller.command.CtrlCommandQueue;
 import controller.command.CtrlQueueEventHandler;
 import controller.communication.Communicator;
 import controller.communication.ServerProxy;
-import model.Model;
-import model.component.field.Field;
-import server.Server;
-import view.ShouldBeShutdown;
-import view.View;
+
+import root.ActiveComponent;
+import root.controller.Controller;
+import root.model.Model;
+import root.model.component.Field;
+import root.model.event.ModelEventArg;
+import root.view.View;
+
 import view.ViewEvent;
 import view.ViewEventHandler;
 import view.command.ClearTopLayerCommand;
@@ -50,7 +53,7 @@ public class GameBrain implements Controller {
 
 		// attention let's say that every controller implementations has its own
 		// ModelEventHandler (maybe this isn't the best approach)
-		this.model.setModelEventHandler(new DefaultModelEventHandler(this));
+		this.model.setEventHandler(new DefaultModelEventHandler(this));
 
 		// --- connect serverProxy and controller
 
@@ -81,44 +84,44 @@ public class GameBrain implements Controller {
 
 			public void execute(ViewEvent arg) {
 
-				if (selected_field != null) {
-					System.out.println("Some action from selected to goal ...");
-
-					if (info_displayed != null) {
-						ClearTopLayerCommand clear_command = new ClearTopLayerCommand();
-						view_command_queue.enqueue(clear_command);
-						info_displayed = null;
-					}
-
-					Field goal = model.getField(arg.getField_position());
-					if (goal.getUnit() == null) {
-						selected_field.getUnit().getMoveType().calculatePath(goal);
-
-						for (Field field : selected_field.getUnit().getMoveType().getPath()) {
-							view_command_queue.enqueue(new SelectFieldCommand(field));
-						}
-
-						selected_field.getUnit().getMoveType().move();
-
-						selected_field = null;
-					}
-				} else {
-					if (info_displayed != null) {
-						ClearTopLayerCommand clear_command = new ClearTopLayerCommand();
-						view_command_queue.enqueue(clear_command);
-						info_displayed = null;
-					}
-					selected_field = model.getField(arg.getField_position());
-					if (selected_field.getUnit() == null) {
-						selected_field = null;
-					} else {
-
-						System.out.println("Selecting ...");
-						SelectFieldCommand select = new SelectFieldCommand(selected_field);
-
-						view_command_queue.enqueue(select);
-					}
-				}
+				// if (selected_field != null) {
+				// System.out.println("Some action from selected to goal ...");
+				//
+				// if (info_displayed != null) {
+				// ClearTopLayerCommand clear_command = new ClearTopLayerCommand();
+				// view_command_queue.enqueue(clear_command);
+				// info_displayed = null;
+				// }
+				//
+				// Field goal = model.getField(arg.getField_position());
+				// if (goal.getUnit() == null) {
+				// selected_field.getUnit().getMoveType().calculatePath(goal);
+				//
+				// for (Field field : selected_field.getUnit().getMoveType().getPath()) {
+				// view_command_queue.enqueue(new SelectFieldCommand(field));
+				// }
+				//
+				// selected_field.getUnit().getMoveType().move();
+				//
+				// selected_field = null;
+				// }
+				// } else {
+				// if (info_displayed != null) {
+				// ClearTopLayerCommand clear_command = new ClearTopLayerCommand();
+				// view_command_queue.enqueue(clear_command);
+				// info_displayed = null;
+				// }
+				// selected_field = model.getField(arg.getField_position());
+				// if (selected_field.getUnit() == null) {
+				// selected_field = null;
+				// } else {
+				//
+				// System.out.println("Selecting ...");
+				// SelectFieldCommand select = new SelectFieldCommand(selected_field);
+				//
+				// view_command_queue.enqueue(select);
+				// }
+				// }
 
 			}
 
@@ -196,7 +199,7 @@ public class GameBrain implements Controller {
 		}
 
 		if (this.view != null) {
-			((ShouldBeShutdown) this.view).shutdown();
+			((ActiveComponent) this.view).shutdown();
 		}
 
 		if (this.model != null) {
@@ -211,6 +214,21 @@ public class GameBrain implements Controller {
 
 	public Server getServer() {
 		return (Server) this.server_proxy;
+	}
+
+	// from move event handler
+	@Override
+	public void execute(ModelEventArg event_argument) {
+
+	}
+
+	@Override
+	public root.controller.ServerProxy getServerProxy() {
+		return this.server_proxy;
+	}
+
+	@Override
+	public void setServerProxy(root.controller.ServerProxy new_proxy) {
 	}
 
 }

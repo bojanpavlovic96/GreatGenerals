@@ -1,6 +1,7 @@
 package model.event;
 
 import javafx.geometry.Point2D;
+import root.model.event.ModelEventArg;
 
 public class AttackModelEventArg extends ModelEventArg {
 

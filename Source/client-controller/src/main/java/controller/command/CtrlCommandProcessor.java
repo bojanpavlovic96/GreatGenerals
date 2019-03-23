@@ -2,7 +2,7 @@ package controller.command;
 
 import java.util.concurrent.ExecutorService;
 
-import controller.Controller;
+import root.controller.Controller;
 
 public class CtrlCommandProcessor implements CtrlQueueEventHandler {
 

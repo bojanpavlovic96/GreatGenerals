@@ -87,7 +87,7 @@ public class BasicUnit implements Unit {
 
 	}
 
-	public void setModelEventHandler(ModelEventHandler handler) {
+	public void setEventHandler(ModelEventHandler handler) {
 		this.event_handler = handler;
 
 		if (this.canMove()) {

@@ -24,10 +24,15 @@ import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
-import model.component.field.Field;
-import view.command.CommandQueue;
-import view.command.ViewCommandProcessor;
-import view.component.ViewField;
+
+import root.command.BasicCommandProcessor;
+import root.command.CommandProcessor;
+import root.command.CommandQueue;
+import root.model.component.Field;
+import root.view.View;
+import root.view.event.ViewEventArg;
+import root.view.event.ViewEventHandler;
+import root.view.field.ViewField;
 import view.component.ViewFieldManager;
 import view.component.menu.FieldMenu;
 import view.component.menu.OptionMenu;
@@ -43,9 +48,6 @@ public class DrawingStage extends Stage implements View {
 
 	private double CANVAS_PADDING = 20;
 
-	// attention externalize it somehow
-	private Color background_color = Color.WHITE;
-
 	private Group root;
 	private ScrollPane scroll;
 	private Scene main_scene;
@@ -57,14 +59,12 @@ public class DrawingStage extends Stage implements View {
 	private double canvas_width;
 	private double canvas_height;
 
-	// TODO initialize
-	private double last_h_field;
-	private double last_v_field;
+	private Color background_color = Color.GRAY;
 
 	// connection with controller
 	private CommandQueue command_queue;
 	private ExecutorService executor;
-	private ViewCommandProcessor command_processor;
+	private CommandProcessor command_processor;
 
 	private Map<String, List<ViewEventHandler>> handlers_map;
 
@@ -124,10 +124,6 @@ public class DrawingStage extends Stage implements View {
 		this.canvas_width = dimension.getWidth();
 		this.canvas_height = dimension.getHeight();
 
-		// initial value same as canvas size
-		this.last_v_field = 1;
-		this.last_h_field = 1;
-
 		// create canvas and add it to the root node
 		this.board_canvas = new Canvas();
 
@@ -171,9 +167,9 @@ public class DrawingStage extends Stage implements View {
 
 		this.executor = Executors.newSingleThreadExecutor();
 
-		this.command_processor = new ViewCommandProcessor(this.executor, this);
+		this.command_processor = new BasicCommandProcessor(this.executor, this);
 
-		this.command_queue.setOnEnqueueEventHandler(this.command_processor);
+		this.command_queue.setCommandProcessor(this.command_processor);
 
 	}
 
@@ -202,7 +198,7 @@ public class DrawingStage extends Stage implements View {
 				if (handlers_list != null) {
 
 					for (ViewEventHandler handler : handlers_list) {
-						handler.execute(new ViewEvent(arg, field_position));
+						handler.execute(new ViewEventArg(arg, field_position));
 					}
 
 				}
@@ -237,19 +233,36 @@ public class DrawingStage extends Stage implements View {
 
 	}
 
+	// attention just testing
+	private void fillBackground() {
+
+		GraphicsContext gc = this.board_canvas.getGraphicsContext2D();
+
+		gc.save();
+
+		gc.setFill(Color.GRAY);
+
+		gc.fillRect(0, 0, this.canvas_width, this.canvas_height);
+
+		gc.restore();
+
+	}
+
 	// public methods
 
 	// CommandDrivernComponent methods
-	// command driven component
 
+	@Override
 	public CommandQueue getCommandQueue() {
 		return this.command_queue;
 	}
 
+	@Override
 	public void setCommandQueue(CommandQueue command_queue) {
 		this.command_queue = command_queue;
 	}
 
+	@Override
 	public void addEventHandler(String event_name, ViewEventHandler event_handler) {
 
 		List<ViewEventHandler> handlers = this.handlers_map.get(event_name);
@@ -270,10 +283,12 @@ public class DrawingStage extends Stage implements View {
 
 	// event driven component interface
 
+	@Override
 	public List<ViewEventHandler> getEventHandlers(String event_name) {
 		return this.handlers_map.get(event_name);
 	}
 
+	@Override
 	public ViewEventHandler getSingleEventHandler(String event_name, String handler_name) {
 
 		List<ViewEventHandler> handlers = this.handlers_map.get(event_name);
@@ -287,6 +302,7 @@ public class DrawingStage extends Stage implements View {
 
 	}
 
+	@Override
 	public ViewEventHandler removeEventHandler(String event_name, String handler_name) {
 
 		List<ViewEventHandler> handlers = this.handlers_map.get(event_name);
@@ -303,12 +319,12 @@ public class DrawingStage extends Stage implements View {
 
 	}
 
+	@Override
 	public List<ViewEventHandler> removeAllEventHandlers(String event_name) {
 		return this.handlers_map.remove(event_name);
 	}
 
-	// should be shoutDown interface
-
+	@Override
 	public void shutdown() {
 
 		// called after application stop
@@ -316,72 +332,48 @@ public class DrawingStage extends Stage implements View {
 
 	}
 
-	// layered view methods
-
-	// layered view interface
-
-	public Canvas getMainCanvas() {
-		return this.board_canvas;
-	}
-
-	public Canvas getTopLayerCanvas() {
-		return this.second_layer_canvas;
-	}
-
-	public OptionMenu getFieldMenu() {
-		return this.field_menu;
-	}
-
-	public Group getRootContainer() {
-		return this.root;
-	}
-
-	public Color getBackgroundColor() {
-		return background_color;
-	}
-
-	public double getStageWidth() {
-		return this.getWidth();
-	}
-
-	public double getStageHeight() {
-		return this.getHeight();
-	}
-
 	// view interface
 
 	// show() is already implemented in stage
 
-	public String getViewType() {
+	@Override
+	public String getViewTheme() {
 		return ResourceManager.getAssetsType();
 	}
 
+	@Override
 	public boolean zoomIn() {
 		return this.field_manager.zoomIn();
 	}
 
+	@Override
 	public boolean zoomOut() {
 		return this.field_manager.zoomOut();
 	}
 
+	@Override
 	public void setCanvasVisibility(boolean visibilibity) {
 		this.board_canvas.setVisible(visibilibity);
 	}
 
+	@Override
 	public ViewField convertToViewField(Field model) {
 
 		return this.field_manager.getViewField(model);
 
 	}
 
+	@Override
 	public double getFieldHeight() {
 		return this.field_manager.getHeight();
 	}
 
+	@Override
 	public double getFieldWidth() {
 		return this.field_manager.getWidth();
 	}
 
+	@Override
 	public double getFieldBorderWidth() {
 		return this.field_manager.getBorderWidth();
 	}
@@ -438,14 +430,6 @@ public class DrawingStage extends Stage implements View {
 
 	}
 
-	public double getCanvasWidth() {
-		return this.canvas_width;
-	}
-
-	public double getCanvasHeight() {
-		return this.canvas_height;
-	}
-
 	public void singleAdjust(Field width_model, Field height_model) {
 
 		ViewField view_width_model = this.field_manager.getViewField(width_model);
@@ -484,19 +468,28 @@ public class DrawingStage extends Stage implements View {
 
 	}
 
-	// attention just testing
-	private void fillBackground() {
+	@Override
+	public void adjustCanvasSize() {
+	}
 
-		GraphicsContext gc = this.board_canvas.getGraphicsContext2D();
+	@Override
+	public GraphicsContext getGraphicContext() {
+		return this.board_canvas.getGraphicsContext2D();
+	}
 
-		gc.save();
+	@Override
+	public void showMenu() {
+		this.field_menu.setVisible(true);
+	}
 
-		gc.setFill(Color.GRAY);
+	@Override
+	public void hideMenu() {
+		this.field_menu.setVisible(false);
+	}
 
-		gc.fillRect(0, 0, this.canvas_width, this.canvas_height);
-
-		gc.restore();
-
+	@Override
+	public Color getBackgroundColor() {
+		return this.background_color;
 	}
 
 }

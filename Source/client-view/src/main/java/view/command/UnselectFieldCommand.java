@@ -1,19 +1,36 @@
 package view.command;
 
-import model.component.field.Field;
-import view.component.HexagonField;
-import view.component.ViewField;
+import root.command.Command;
+import root.command.CommandDrivenComponent;
+import root.model.component.Field;
+import root.view.View;
+import root.view.field.ViewField;
 
-public class UnselectFieldCommand extends ViewCommand {
+public class UnselectFieldCommand extends Command {
+
+	private Field model;
+
+	private ViewField view_field;
 
 	public UnselectFieldCommand(Field model) {
-		super(model);
+		super("unselect-field-view-command");
+
+		this.model = model;
+
+	}
+
+	@Override
+	public void setTargetComponent(CommandDrivenComponent target) {
+		super.setTargetComponent(target);
+
+		this.view_field = ((View) super.target_component).convertToViewField(this.model);
+
 	}
 
 	public void run() {
 
-		this.field.clearField(super.view.getMainCanvas().getGraphicsContext2D());
-		this.field.drawOn(super.view.getMainCanvas());
+		this.view_field.clearField(((View) super.target_component).getGraphicContext());
+		this.view_field.drawOn(((View) super.target_component).getGraphicContext());
 
 	}
 

@@ -1,7 +1,8 @@
 package view.component;
 
 import javafx.geometry.Point2D;
-import model.component.field.Field;
+import root.model.component.Field;
+import root.view.field.ViewField;
 
 public class HexFieldManager implements ViewFieldManager {
 

@@ -61,7 +61,7 @@ public class GameField implements Field {
 
 		// if method is used for setting (not removing) unit
 		if (this.unit != null) {
-			this.unit.setModelEventHandler(this.event_handler);
+			this.unit.setEventHandler(this.event_handler);
 		}
 
 	}

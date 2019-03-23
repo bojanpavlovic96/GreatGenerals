@@ -1,12 +1,12 @@
 package controller.command;
 
-import controller.Controller;
 import javafx.geometry.Point2D;
-import model.Model;
-import model.component.field.Field;
-import view.command.CommandQueue;
+import root.command.Command;
+import root.controller.Controller;
+import root.model.Model;
+import root.model.component.Field;
 
-public abstract class CtrlCommand implements Runnable {
+public abstract class CtrlCommand extends Command implements Runnable {
 
 	protected String command_name;
 

@@ -10,10 +10,11 @@ import controller.command.CtrlInitializeCommand;
 import javafx.geometry.Point2D;
 import javafx.scene.paint.Color;
 import model.PlayerModelData;
-import model.component.Terrain;
-import model.component.field.Field;
 import model.component.field.GameField;
-import model.event.ModelEventArg;
+import root.command.CommandQueue;
+import root.model.component.Field;
+import root.model.component.Terrain;
+import root.model.event.ModelEventArg;
 import server.Server;
 
 public class ServerProxy implements Server, Communicator {
@@ -22,7 +23,7 @@ public class ServerProxy implements Server, Communicator {
 
 	private ServerMessageTranslator message_translator;
 
-	private CtrlCommandQueue ctrl_queue;
+	private CommandQueue ctrl_queue;
 
 	// constructors
 
@@ -67,13 +68,13 @@ public class ServerProxy implements Server, Communicator {
 		return this.channel;
 	}
 
-	public CtrlCommandQueue getCtrlQueue() {
+	public CommandQueue getCtrlQueue() {
 		return this.ctrl_queue;
 	}
 
 	// getters and setters
 
-	public void setCtrlQueue(CtrlCommandQueue queue) {
+	public void setCtrlQueue(CommandQueue queue) {
 		this.ctrl_queue = queue;
 
 		// attention start receiving messages from server

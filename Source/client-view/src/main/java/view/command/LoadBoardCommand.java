@@ -3,13 +3,16 @@ package view.command;
 import java.util.List;
 
 import javafx.application.Platform;
-import model.component.field.Field;
+import root.command.Command;
+import root.model.component.Field;
+import root.view.View;
 
-public class LoadBoardCommand extends ViewCommand {
+public class LoadBoardCommand extends Command {
 
 	private List<Field> models;
 
 	public LoadBoardCommand(List<Field> fields) {
+		super("load-board-view-command");
 
 		this.models = fields;
 
@@ -23,7 +26,7 @@ public class LoadBoardCommand extends ViewCommand {
 
 				DrawFieldCommand draw_hex_comm = null;
 
-				view.setCanvasVisibility(false);
+				((View) target_component).hide();
 
 				Field right_field = models.get(0);
 				Field down_field = models.get(0);
@@ -43,17 +46,17 @@ public class LoadBoardCommand extends ViewCommand {
 				System.out.println("For single adjust W : " + right_field.getStoragePosition());
 				System.out.println("For single adjust H : " + down_field.getStoragePosition());
 
-				view.singleAdjust(right_field, down_field);
+				// view.singleAdjust(right_field, down_field);
 
 				for (Field field : models) {
 
 					draw_hex_comm = new DrawFieldCommand(field);
-					draw_hex_comm.setView(view);
+					draw_hex_comm.setTargetComponent(target_component);
 					draw_hex_comm.run();
 
 				}
 
-				view.setCanvasVisibility(true);
+				((View) target_component).show();
 
 			}
 		});

@@ -10,6 +10,12 @@
 
 		<dependency>
 			<groupId>great-generals</groupId>
+			<artifactId>root</artifactId>
+			<version>0.0.1-SNAPSHOT</version>
+		</dependency>
+
+		<dependency>
+			<groupId>great-generals</groupId>
 			<artifactId>client-view</artifactId>
 			<version>0.0.1-SNAPSHOT</version>
 		</dependency>

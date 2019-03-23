@@ -1,15 +1,30 @@
 package view.command;
 
-import model.component.field.Field;
+import root.command.Command;
+import root.command.CommandDrivenComponent;
+import root.model.component.Field;
+import root.view.View;
+import root.view.field.ViewField;
 
-public class DrawFieldCommand extends ViewCommand {
+public class DrawFieldCommand extends Command {
+
+	private Field model;
+	private ViewField view_Field;
 
 	public DrawFieldCommand(Field model) {
-		super(model);
+		super("draw-field-view-command");
+	}
+
+	@Override
+	public void setTargetComponent(CommandDrivenComponent target) {
+		super.setTargetComponent(target);
+
+		this.view_Field = ((View) super.target_component).convertToViewField(this.model);
+
 	}
 
 	public void run() {
-		this.field.drawOn(super.view.getMainCanvas());
+		this.view_Field.drawOn(((View) super.target_component).getGraphicContext());
 	}
 
 }

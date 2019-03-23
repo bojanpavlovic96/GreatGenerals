@@ -1,6 +1,6 @@
 package server;
 
-import model.event.ModelEventArg;
+import root.model.event.ModelEventArg;
 
 // also used for ServerProxy in GameController
 

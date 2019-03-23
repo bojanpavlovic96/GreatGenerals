@@ -8,26 +8,22 @@ public interface Field {
 
 	boolean isVisible();
 
-	Point2D getStoragePosition();
+	Unit getUnit();
 
-	// maybe setStoragePosition
+	Terrain getTerrain();
 
 	PlayerData getPlayer();
 
-	void setModelEventHandler(ModelEventHandler event_handler);
-
-	Unit getUnit();
-
 	void setUnit(Unit new_unit);
+
+	Point2D getStoragePosition();
+
+	void setModelEventHandler(ModelEventHandler event_handler);
 
 	// TODO add something about battle
 
 	boolean isInBattle();
 
-	Terrain getTerrain();
-
-	// no need for setTerrain, it is set from the constructor and never changed
-
-	// TODO something about options
+	// TODO add something about options
 
 }

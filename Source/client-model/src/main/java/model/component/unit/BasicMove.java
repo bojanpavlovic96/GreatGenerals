@@ -3,6 +3,7 @@ package model.component.unit;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
+import model.event.MoveModelEventArg;
 import root.model.action.move.MoveType;
 import root.model.action.move.PathFinder;
 import root.model.component.Field;
@@ -60,6 +61,14 @@ public class BasicMove extends MoveType {
 	@Override
 	public int calculateDelay() {
 		return 1000;
+	}
+
+	@Override
+	public void run() {
+		this.on_event.execute(new MoveModelEventArg(this.my_field.getPlayer().getUsername(),
+													this.my_field.getStoragePosition(),
+													this.path.get(0).getStoragePosition()));
+		;
 	}
 
 }

@@ -1,8 +1,8 @@
-package view;
+package root.view.event;
 
 import java.util.List;
 
-public interface EventDrivenComponent {
+public interface ViewEventProducer {
 
 	void addEventHandler(String event_name, ViewEventHandler event_handler);
 
