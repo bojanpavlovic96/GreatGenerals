@@ -84,6 +84,11 @@ public abstract class MoveType implements Cloneable, Runnable {
 	}
 
 	public List<Field> getPath() {
+		if (this.path == null) {
+			if (this.destination_field != null) {
+				this.path = this.path_finder.findPath(this.my_field, this.destination_field);
+			}
+		}
 		return this.path;
 	}
 

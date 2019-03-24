@@ -354,6 +354,7 @@ public class DrawingStage extends Stage implements View {
 	@Override
 	public void setCanvasVisibility(boolean visibilibity) {
 		this.board_canvas.setVisible(visibilibity);
+		this.second_layer_canvas.setVisible(visibilibity);
 	}
 
 	@Override

@@ -9,11 +9,10 @@ import app.event.ConnectionReadyHandler;
 import app.event.GameReadyHandler;
 import app.form.StartForm;
 import communication.BasicServerProxy;
+import communication.translator.JSONMessageTranslator;
 import controller.GameBrain;
 
 import controller.action.DefaultModelEventHandler;
-import controller.communication.JSONMessageTranslator;
-
 import javafx.application.Application;
 import javafx.stage.Stage;
 
@@ -74,7 +73,6 @@ public class Launcher extends Application {
 				System.out.println("Creating game controller ... @ Launcher.onGameReadyEvent "
 									+ "-> called from intial controller");
 
-				// serverProxy created for communication with server
 				ServerProxy server_proxy = new BasicServerProxy(connection_task.getChannel(),
 																new JSONMessageTranslator());
 

@@ -1,7 +1,10 @@
 package root.model.component;
 
+import java.util.Map;
+
 import javafx.geometry.Point2D;
 import root.model.PlayerData;
+import root.model.component.option.FieldOption;
 import root.model.event.ModelEventHandler;
 
 public interface Field {
@@ -24,6 +27,9 @@ public interface Field {
 
 	boolean isInBattle();
 
-	// TODO add something about options
+	// attention this could be hash map
+	Map<String, FieldOption> getOptions();
 
+	
+	
 }

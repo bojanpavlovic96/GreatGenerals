@@ -2,9 +2,8 @@ package root.command;
 
 public interface CommandProducer {
 
-	void registerConsumerQueue(CommandQueue consumer_queue);
+	void setConsumerQueue(CommandQueue consumer_queue);
 
-	// attention this should be list of command queues but ...
-	CommandQueue getCommandConsumer();
+	CommandQueue getConsumerQueue();
 
 }

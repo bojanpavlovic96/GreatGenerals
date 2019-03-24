@@ -63,6 +63,8 @@ public class HexagonField implements ViewField {
 
 		// TODO do something with battle
 
+		this.units_in_battle = new ArrayList<ViewUnit>();
+
 		this.hex_width = field_width;
 		this.hex_height = field_height;
 

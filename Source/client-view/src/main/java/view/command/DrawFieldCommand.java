@@ -13,6 +13,9 @@ public class DrawFieldCommand extends Command {
 
 	public DrawFieldCommand(Field model) {
 		super("draw-field-view-command");
+
+		this.model = model;
+
 	}
 
 	@Override

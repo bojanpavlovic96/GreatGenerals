@@ -1,4 +1,4 @@
-package controller.communication;
+package communication.translator;
 
 import java.util.HashMap;
 import java.util.Map;

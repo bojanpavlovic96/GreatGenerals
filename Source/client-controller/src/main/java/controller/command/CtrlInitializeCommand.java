@@ -9,6 +9,7 @@ import root.controller.Controller;
 import root.model.Model;
 import root.model.PlayerData;
 import root.model.component.Field;
+import view.command.ClearViewCommand;
 import view.command.LoadBoardCommand;
 
 public class CtrlInitializeCommand extends Command {
@@ -26,10 +27,10 @@ public class CtrlInitializeCommand extends Command {
 	@Override
 	public void run() {
 
-		System.out.println("Calling initalizeModel ... @ CtrlInitializeCommand.run");
-		((Model) super.target_component).initializeModel(this.players, this.fields);
-
 		Model model = ((Controller) super.target_component).getModel();
+
+		System.out.println("Calling initalizeModel ... @ CtrlInitializeCommand.run");
+		model.initializeModel(this.players, this.fields);
 
 		model.getField(new Point2D(10, 10)).setUnit(model.generateUnit("basic-unit"));
 		model.getField(new Point2D(4, 5)).setUnit(model.generateUnit("basic-unit"));
@@ -37,9 +38,11 @@ public class CtrlInitializeCommand extends Command {
 		model.getField(new Point2D(5, 10)).setUnit(model.generateUnit("basic-unit"));
 		model.getField(new Point2D(4, 7)).setUnit(model.generateUnit("basic-unit"));
 
+		ClearViewCommand clear_command = new ClearViewCommand();
 		LoadBoardCommand view_command = new LoadBoardCommand(this.fields);
 		System.out.println("Load board command enqueue ... @ CtrlInitializeCommand.run");
-		((Controller) super.target_component).getCommandConsumer().enqueue(view_command);
+		((Controller) super.target_component).getConsumerQueue().enqueue(clear_command);
+		((Controller) super.target_component).getConsumerQueue().enqueue(view_command);
 
 	}
 

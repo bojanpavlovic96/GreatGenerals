@@ -26,7 +26,7 @@ public class LoadBoardCommand extends Command {
 
 				DrawFieldCommand draw_hex_comm = null;
 
-				((View) target_component).hide();
+				((View) target_component).setCanvasVisibility(false);
 
 				Field right_field = models.get(0);
 				Field down_field = models.get(0);
@@ -56,7 +56,7 @@ public class LoadBoardCommand extends Command {
 
 				}
 
-				((View) target_component).show();
+				((View) target_component).setCanvasVisibility(true);
 
 			}
 		});

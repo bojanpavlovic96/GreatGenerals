@@ -1,17 +1,18 @@
 package model.component.field;
 
-import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javafx.geometry.Point2D;
-import model.component.field.option.FieldOption;
 import root.model.PlayerData;
 import root.model.component.Field;
 import root.model.component.Terrain;
 import root.model.component.Unit;
+import root.model.component.option.FieldOption;
 import root.model.event.ModelEventHandler;
 
-public class GameField implements Field {
+public class ModelField implements Field {
 
 	private Point2D storage_position;
 
@@ -22,15 +23,17 @@ public class GameField implements Field {
 	private Unit unit;
 	private Terrain terrain;
 
-	// implement battle and options
+	// implement battle
 	private List<Unit> units_in_battle;
-	private List<FieldOption> options;
+
+	// key format: name-field-option => move-to-field-option
+	private Map<String, FieldOption> options;
 
 	private ModelEventHandler event_handler;
 
 	// methods
 
-	public GameField(Point2D storage_position, PlayerData player, boolean visibility, Unit unit,
+	public ModelField(Point2D storage_position, PlayerData player, boolean visibility, Unit unit,
 			Terrain terrain) {
 		super();
 
@@ -40,7 +43,16 @@ public class GameField implements Field {
 		this.unit = unit;
 		this.terrain = terrain;
 
-		this.units_in_battle = new ArrayList<Unit>();
+		this.initOptions();
+
+	}
+
+	private void initOptions() {
+
+		this.options = new HashMap<String, FieldOption>();
+
+		// TODO add some default options
+
 	}
 
 	@Override
@@ -91,6 +103,11 @@ public class GameField implements Field {
 	@Override
 	public boolean isInBattle() {
 		return false;
+	}
+
+	@Override
+	public Map<String, FieldOption> getOptions() {
+		return this.options;
 	}
 
 }

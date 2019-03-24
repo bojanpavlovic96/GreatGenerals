@@ -8,6 +8,7 @@ import controller.action.DefaultModelEventHandler;
 import root.ActiveComponent;
 import root.command.BasicCommandProcessor;
 import root.command.CommandProcessor;
+import root.command.CommandProducer;
 import root.command.CommandQueue;
 import root.communication.ServerProxy;
 import root.controller.Controller;
@@ -19,6 +20,7 @@ import root.view.event.ViewEventArg;
 import root.view.event.ViewEventHandler;
 import view.command.ClearTopLayerCommand;
 import view.command.DisplayFieldInfoCommand;
+import view.command.SelectFieldCommand;
 import view.command.ZoomInCommand;
 import view.command.ZoomOutCommand;
 
@@ -53,15 +55,12 @@ public class GameBrain implements Controller {
 
 		// --- connect serverProxy and controller
 
-		// command queue created in controller and passed to the serverProxy
-		this.server_command_queue = new CommandQueue();
+		this.server_command_queue = ((CommandProducer) this.server_proxy).getConsumerQueue();
 
 		// server commands executor
 		this.server_command_executor = Executors.newSingleThreadExecutor();
 		this.server_command_processor = new BasicCommandProcessor(this.server_command_executor, this);
 		this.server_command_queue.setCommandProcessor(this.server_command_processor);
-
-		this.server_proxy.registerConsumerQueue(this.server_command_queue);
 
 		// --- done with serverProxy
 
@@ -80,47 +79,21 @@ public class GameBrain implements Controller {
 
 			public void execute(ViewEventArg arg) {
 
-				// if (selected_field != null) {
-				// System.out.println("Some action from selected to goal ...");
-				//
-				// if (info_displayed != null) {
-				// ClearTopLayerCommand clear_command = new ClearTopLayerCommand();
-				// view_command_queue.enqueue(clear_command);
-				// info_displayed = null;
-				// }
-				//
-				// Field goal = model.getField(arg.getField_position());
-				// if (goal.getUnit() == null) {
-				// selected_field.getUnit().getMoveType().calculatePath(goal);
-				//
-				// for (Field field : selected_field.getUnit().getMoveType().getPath()) {
-				// view_command_queue.enqueue(new SelectFieldCommand(field));
-				// }
-				//
-				// selected_field.getUnit().getMoveType().move();
-				//
-				// selected_field = null;
-				// }
-				// } else {
-				// if (info_displayed != null) {
-				// ClearTopLayerCommand clear_command = new ClearTopLayerCommand();
-				// view_command_queue.enqueue(clear_command);
-				// info_displayed = null;
-				// }
-				// selected_field = model.getField(arg.getField_position());
-				// if (selected_field.getUnit() == null) {
-				// selected_field = null;
-				// } else {
-				//
-				// System.out.println("Selecting ...");
-				// SelectFieldCommand select = new SelectFieldCommand(selected_field);
-				//
-				// view_command_queue.enqueue(select);
-				// }
-				// }
+				// debug
+				System.out.println("Handling view event ... " + arg.getEvent().getEventType().getName());
+				Field focused_field = model.getField(arg.getFieldPosition());
+
+				if (selected_field != null) {
+					// debug
+					System.out.println("\talready has selection @ GameBrain.left-mouse-click-event");
+
+				} else {
+					// debug
+					System.out.println("\tselecting field @ GameBrain.left-mouse-click-event");
+
+				}
 
 			}
-
 		});
 
 		this.view.addEventHandler("right-mouse-click-event", new ViewEventHandler() {
@@ -151,7 +124,6 @@ public class GameBrain implements Controller {
 			public void execute(ViewEventArg arg) {
 
 				ZoomInCommand command = new ZoomInCommand(model.getFields());
-				command.setTargetComponent(view);
 				view_command_queue.enqueue(command);
 
 			}
@@ -162,7 +134,6 @@ public class GameBrain implements Controller {
 			public void execute(ViewEventArg arg) {
 
 				ZoomOutCommand command = new ZoomOutCommand(model.getFields());
-				command.setTargetComponent(view);
 				view_command_queue.enqueue(command);
 
 			}
@@ -239,12 +210,12 @@ public class GameBrain implements Controller {
 		return this.server_command_processor;
 	}
 
-	public void registerConsumerQueue(CommandQueue consumer_queue) {
+	public void setConsumerQueue(CommandQueue consumer_queue) {
 		this.view_command_queue = consumer_queue;
 	}
 
 	@Override
-	public CommandQueue getCommandConsumer() {
+	public CommandQueue getConsumerQueue() {
 		return this.view_command_queue;
 	}
 

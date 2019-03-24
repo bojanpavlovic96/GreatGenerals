@@ -43,6 +43,11 @@ public class CommandQueue {
 
 	public void setCommandProcessor(CommandProcessor command_processor) {
 		this.on_enqueue = command_processor;
+
+		// attention if queue wasn't empty when processor is set
+
+		this.on_enqueue.execute(this);
+
 	}
 
 }

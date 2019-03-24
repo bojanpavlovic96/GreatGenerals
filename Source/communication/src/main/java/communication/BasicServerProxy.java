@@ -9,7 +9,7 @@ import controller.command.CtrlInitializeCommand;
 import javafx.geometry.Point2D;
 import javafx.scene.paint.Color;
 import model.PlayerModelData;
-import model.component.field.GameField;
+import model.component.field.ModelField;
 import root.command.CommandQueue;
 import root.communication.MessageTranslator;
 import root.communication.ServerProxy;
@@ -32,6 +32,8 @@ public class BasicServerProxy implements ServerProxy {
 		this.channel = channel;
 		this.translator = translator;
 
+		this.command_queue = new CommandQueue();
+
 		this.initCommunicationChannel();
 
 	}
@@ -45,18 +47,6 @@ public class BasicServerProxy implements ServerProxy {
 		// first message must be model initialization message
 
 		// attention do not start receiving messages until queue is set !!!
-	}
-
-	@Override
-	public Channel getCommunicationChannel() {
-		return this.channel;
-	}
-
-	@Override
-	public void setCommunicationChannel(Channel new_channel) {
-		this.channel = new_channel;
-
-		// TODO somehow start receiving messages
 
 		// fake first initialization message
 		List<PlayerData> players = new ArrayList<PlayerData>();
@@ -75,13 +65,13 @@ public class BasicServerProxy implements ServerProxy {
 
 			for (int j = left; j < right; j++) {
 				if (i % 2 == 0 && j % 5 == 0)
-					field_models.add(new GameField(	new Point2D(j, i),
+					field_models.add(new ModelField(	new Point2D(j, i),
 													players.get(player_counter),
 													true,
 													null,
 													new Terrain("mountains", 1)));
 				else
-					field_models.add(new GameField(	new Point2D(j, i),
+					field_models.add(new ModelField(	new Point2D(j, i),
 													players.get(player_counter),
 													true,
 													null,
@@ -95,8 +85,19 @@ public class BasicServerProxy implements ServerProxy {
 			if (left > -3)
 				left--;
 		}
-
+		
 		this.command_queue.enqueue(new CtrlInitializeCommand(players, field_models));
+
+	}
+
+	@Override
+	public Channel getCommunicationChannel() {
+		return this.channel;
+	}
+
+	@Override
+	public void setCommunicationChannel(Channel new_channel) {
+		this.channel = new_channel;
 
 	}
 
@@ -111,12 +112,12 @@ public class BasicServerProxy implements ServerProxy {
 	}
 
 	@Override
-	public void registerConsumerQueue(CommandQueue consumer_queue) {
+	public void setConsumerQueue(CommandQueue consumer_queue) {
 		this.command_queue = consumer_queue;
 	}
 
 	@Override
-	public CommandQueue getCommandConsumer() {
+	public CommandQueue getConsumerQueue() {
 		return this.command_queue;
 	}
 

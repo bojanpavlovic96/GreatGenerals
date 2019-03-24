@@ -41,7 +41,7 @@ public class CtrlMoveCommand extends Command {
 		this.base_field.getUnit().moveTo(this.second_field);
 
 		// redraw both fields
-		CommandQueue view_command_queue = ((Controller) super.target_component).getCommandConsumer();
+		CommandQueue view_command_queue = ((Controller) super.target_component).getConsumerQueue();
 
 		// clear both fields
 		view_command_queue.enqueue(new ClearFieldCommand(this.base_field));

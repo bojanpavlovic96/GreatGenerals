@@ -14,15 +14,10 @@
 			<version>0.0.1-SNAPSHOT</version>
 		</dependency>
 
-		<dependency>
-			<groupId>great-generals</groupId>
-			<artifactId>client-view</artifactId>
-			<version>0.0.1-SNAPSHOT</version>
-		</dependency>
 
 		<dependency>
 			<groupId>great-generals</groupId>
-			<artifactId>gg-server</artifactId>
+			<artifactId>client-view</artifactId>
 			<version>0.0.1-SNAPSHOT</version>
 		</dependency>
 

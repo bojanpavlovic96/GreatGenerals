@@ -45,9 +45,9 @@ public class HexFieldManager implements ViewFieldManager {
 
 	public boolean zoomIn() {
 		if (this.field_height < 200) {
-			this.field_height *= 1.5;
-			this.field_width *= 1.5;
-			this.field_border_width *= 1.5;
+			this.field_height += this.field_height * 0.2;
+			this.field_width += this.field_width * 0.2;
+			// this.field_border_width *= this.field_border_width * 0.2;
 
 			return true;
 		}
@@ -57,9 +57,10 @@ public class HexFieldManager implements ViewFieldManager {
 
 	public boolean zoomOut() {
 		if (this.field_height > 50) {
-			this.field_height *= 0.5;
-			this.field_width *= 0.5;
-			this.field_border_width *= 0.5;
+
+			this.field_height -= this.field_height * 0.2;
+			this.field_width -= this.field_width * 0.2;
+			// this.field_border_width -= this.field_border_width * 0.2;
 
 			return true;
 		}
