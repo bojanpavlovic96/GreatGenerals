@@ -1,11 +1,13 @@
 package root.view;
 
+import javafx.geometry.Point2D;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
 import root.command.CommandDrivenComponent;
 import root.model.component.Field;
 import root.view.event.ViewEventProducer;
 import root.view.field.ViewField;
+import root.view.menu.Menu;
 
 public interface View extends ViewEventProducer, CommandDrivenComponent {
 
@@ -29,13 +31,17 @@ public interface View extends ViewEventProducer, CommandDrivenComponent {
 
 	double getFieldBorderWidth();
 
-	GraphicsContext getGraphicContext();
+	GraphicsContext getMainGraphicContext();
+
+	GraphicsContext getTopLayerGraphicContext();
 
 	Color getBackgroundColor();
 
-	void showMenu();
-
-	void hideMenu();
+	void setMenuVisibility(boolean visibility);
+	
+	void setMenuPosition(Point2D position);
+	
+	Menu getOptionMenu();
 
 	// attention bad approach
 	void adjustCanvasSize();

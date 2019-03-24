@@ -57,7 +57,7 @@ public class LoadBoardCommand extends Command {
 				}
 
 				((View) target_component).setCanvasVisibility(true);
-
+				
 			}
 		});
 

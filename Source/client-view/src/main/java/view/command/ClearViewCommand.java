@@ -18,7 +18,7 @@ public class ClearViewCommand extends Command {
 		clear_top_layer.run();
 
 		// clear main canvas
-		GraphicsContext gc = ((View) super.target_component).getGraphicContext();
+		GraphicsContext gc = ((View) super.target_component).getMainGraphicContext();
 		gc.save();
 
 		gc.setFill(((View) super.target_component).getBackgroundColor());

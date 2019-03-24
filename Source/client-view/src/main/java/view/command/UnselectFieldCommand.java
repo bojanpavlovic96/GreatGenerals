@@ -29,8 +29,8 @@ public class UnselectFieldCommand extends Command {
 
 	public void run() {
 
-		this.view_field.clearField(((View) super.target_component).getGraphicContext());
-		this.view_field.drawOn(((View) super.target_component).getGraphicContext());
+		this.view_field.clearField(((View) super.target_component).getMainGraphicContext());
+		this.view_field.drawOn(((View) super.target_component).getMainGraphicContext());
 
 	}
 

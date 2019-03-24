@@ -27,7 +27,7 @@ public class DrawFieldCommand extends Command {
 	}
 
 	public void run() {
-		this.view_Field.drawOn(((View) super.target_component).getGraphicContext());
+		this.view_Field.drawOn(((View) super.target_component).getMainGraphicContext());
 	}
 
 }

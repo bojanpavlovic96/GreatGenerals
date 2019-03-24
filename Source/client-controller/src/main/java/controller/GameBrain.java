@@ -18,9 +18,8 @@ import root.model.event.ModelEventArg;
 import root.view.View;
 import root.view.event.ViewEventArg;
 import root.view.event.ViewEventHandler;
-import view.command.ClearTopLayerCommand;
+
 import view.command.DisplayFieldInfoCommand;
-import view.command.SelectFieldCommand;
 import view.command.ZoomInCommand;
 import view.command.ZoomOutCommand;
 
@@ -100,16 +99,10 @@ public class GameBrain implements Controller {
 
 			public void execute(ViewEventArg arg) {
 
-				if (info_displayed != null) {
-					ClearTopLayerCommand clear_command = new ClearTopLayerCommand();
-					view_command_queue.enqueue(clear_command);
-					info_displayed = null;
-				}
-
 				Field field = model.getField(arg.getFieldPosition());
 
 				if (field != null) {
-
+					
 					info_displayed = field;
 
 					DisplayFieldInfoCommand command = new DisplayFieldInfoCommand(field);

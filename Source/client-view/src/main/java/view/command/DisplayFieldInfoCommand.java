@@ -1,13 +1,17 @@
 package view.command;
 
+import javafx.application.Platform;
 import javafx.geometry.Point2D;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
 import root.command.Command;
 import root.command.CommandDrivenComponent;
 import root.model.component.Field;
+import root.model.component.option.FieldOption;
 import root.view.View;
 import root.view.field.ViewField;
+import root.view.menu.Menu;
+import view.component.menu.Option;
 import view.component.menu.OptionMenu;
 
 public class DisplayFieldInfoCommand extends Command {
@@ -15,16 +19,13 @@ public class DisplayFieldInfoCommand extends Command {
 	public static double INFO_WIDTH = 200;
 	public static double INFO_HEIGHT = 100;
 
-	// options
-
-	private Field model;
-
+	private Field field_model;
 	private ViewField view_field;
 
-	public DisplayFieldInfoCommand(Field model /* options */) {
+	public DisplayFieldInfoCommand(Field model) {
 		super("display-field-info-view-command");
 
-		this.model = model /* options */;
+		this.field_model = model;
 
 	}
 
@@ -32,49 +33,55 @@ public class DisplayFieldInfoCommand extends Command {
 	public void setTargetComponent(CommandDrivenComponent target) {
 		super.setTargetComponent(target);
 
-		this.view_field = ((View) super.target_component).convertToViewField(this.model);
+		this.view_field = ((View) super.target_component).convertToViewField(this.field_model);
 
 	}
 
+	@Override
 	public void run() {
 
-		GraphicsContext gc = ((View) super.target_component).getGraphicContext();
-		gc.save();
+		// get view menu
+		Menu menu = ((View) super.target_component).getOptionMenu();
 
-		gc.setFill(Color.GRAY);
+		Platform.runLater(new Runnable() {
 
-		Point2D pos = this.view_field.getFieldCenter();
+			@Override
+			public void run() {
 
-		// OptionMenu menu = this.view_field.getFieldMenu();
-		OptionMenu menu = null;
+				// clear previous options
+				menu.clearOptions();
 
-		menu.clearMenu();
-		// add options for this field
-		menu.setPosition(pos);
-		menu.setVisible(true);
+				// populate menu with new option
+				for (FieldOption item : field_model.getOptions().values()) {
+					menu.addOption(new Option(item.getName()));
+				}
 
-		double height = 104;
-		if (menu.getHeight() > 104) {
-			height = menu.getHeight();
-		}
+				menu.addOption(new Option("option jedan"));
+				menu.addOption(new Option("option dva"));
 
-		gc.fillRect(pos.getX() + menu.getWidth(), pos.getY(), DisplayFieldInfoCommand.INFO_WIDTH, height + 1);
+				// menu.setPosition(new Point2D( view_field.getFieldCenter().getX(),
+				// view_field.getFieldCenter().getY()));
 
-		// debug
-		System.out.println("Info on: \nmenu: " + pos.getX()
-							+ "-"
-							+ pos.getY()
-							+ "\ninfo: "
-							+ pos.getX()
-							+ menu.getWidth()
-							+ "-"
-							+ pos.getY()
-							+ "  w: "
-							+ DisplayFieldInfoCommand.INFO_WIDTH
-							+ " h: "
-							+ (height + 1));
+				((View) target_component).setMenuPosition(new Point2D(	view_field.getFieldCenter().getX(),
+																		view_field.getFieldCenter().getY()));
 
-		gc.restore();
+				((View) target_component).setMenuVisibility(true);
+
+				GraphicsContext gc = ((View) target_component).getTopLayerGraphicContext();
+
+				gc.save();
+
+				gc.setFill(Color.GRAY);
+
+				gc.fillRect(view_field.getFieldCenter().getX() + ((OptionMenu) menu).getWidth(),
+							view_field.getFieldCenter().getY(),
+							200,
+							DisplayFieldInfoCommand.INFO_HEIGHT);
+
+				gc.restore();
+
+			}
+		});
 	}
 
 }

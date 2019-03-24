@@ -27,7 +27,7 @@ public class ClearFieldCommand extends Command {
 	}
 
 	public void run() {
-		this.view_field.clearField(((View) super.target_component).getGraphicContext());
+		this.view_field.clearField(((View) super.target_component).getMainGraphicContext());
 	}
 
 }

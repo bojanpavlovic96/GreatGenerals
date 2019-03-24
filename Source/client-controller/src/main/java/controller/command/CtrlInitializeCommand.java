@@ -4,7 +4,6 @@ import java.util.List;
 
 import javafx.geometry.Point2D;
 import root.command.Command;
-import root.command.CommandDrivenComponent;
 import root.controller.Controller;
 import root.model.Model;
 import root.model.PlayerData;

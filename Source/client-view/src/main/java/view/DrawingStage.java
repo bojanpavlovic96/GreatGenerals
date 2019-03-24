@@ -33,8 +33,9 @@ import root.view.View;
 import root.view.event.ViewEventArg;
 import root.view.event.ViewEventHandler;
 import root.view.field.ViewField;
+import root.view.menu.Menu;
 import view.component.ViewFieldManager;
-import view.component.menu.FieldMenu;
+import view.component.menu.Option;
 import view.component.menu.OptionMenu;
 
 // attention 
@@ -54,6 +55,8 @@ public class DrawingStage extends Stage implements View {
 
 	private Canvas board_canvas;
 	private Canvas second_layer_canvas;
+
+	private ScrollPane menu_scroll;
 	private OptionMenu field_menu;
 
 	private double canvas_width;
@@ -145,17 +148,20 @@ public class DrawingStage extends Stage implements View {
 		System.out.println("Initial canvas width: " + this.canvas_width);
 		System.out.println("Initial canvas heigth: " + this.canvas_height);
 
-		this.field_menu = new FieldMenu();
-		this.field_menu.setVisible(false);
+		// attention adjust size
+		this.field_menu = new OptionMenu(100, 100);
+		this.field_menu.addOption(new Option("option"));
+		// scroll wrapper
+		this.menu_scroll = new ScrollPane(this.field_menu);
+		this.menu_scroll.setPrefSize(100, 200);
+		this.menu_scroll.setStyle("-fx-background-color: gray;");
 
-		// attention buttons used just for testing
-		Button b1 = new Button("button 1");
-		Button b2 = new Button("button 2");
-		Button b3 = new Button("button 3");
+		this.field_menu.setLayoutX(100);
+		this.field_menu.setLayoutY(100);
+		this.field_menu.setVisible(true);
+
 		this.root.getChildren().add(this.field_menu);
-		this.field_menu.getChildren().add(b1);
-		this.field_menu.getChildren().add(b2);
-		this.field_menu.getChildren().add(b3);
+		this.root.getChildren().add(this.menu_scroll);
 
 		this.setScene(this.main_scene);
 
@@ -474,18 +480,21 @@ public class DrawingStage extends Stage implements View {
 	}
 
 	@Override
-	public GraphicsContext getGraphicContext() {
+	public GraphicsContext getMainGraphicContext() {
 		return this.board_canvas.getGraphicsContext2D();
 	}
 
 	@Override
-	public void showMenu() {
-		this.field_menu.setVisible(true);
+	public GraphicsContext getTopLayerGraphicContext() {
+		return this.second_layer_canvas.getGraphicsContext2D();
 	}
 
 	@Override
-	public void hideMenu() {
-		this.field_menu.setVisible(false);
+	public void setMenuVisibility(boolean visibility) {
+		this.field_menu.setVisible(visibility);
+		this.menu_scroll.setVisible(visibility);
+		// debug
+		System.out.println("Menu visibility set to : " + visibility);
 	}
 
 	@Override
@@ -496,6 +505,19 @@ public class DrawingStage extends Stage implements View {
 	@Override
 	public CommandProcessor getCommandProcessor() {
 		return this.command_processor;
+	}
+
+	@Override
+	public Menu getOptionMenu() {
+		return this.field_menu;
+	}
+
+	@Override
+	public void setMenuPosition(Point2D position) {
+		this.field_menu.setPosition(position);
+
+		this.menu_scroll.setLayoutX(position.getX());
+		this.menu_scroll.setLayoutY(position.getY());
 	}
 
 }

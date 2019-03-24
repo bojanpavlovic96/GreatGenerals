@@ -36,7 +36,7 @@ public class SelectFieldCommand extends Command {
 	}
 
 	public void run() {
-		GraphicsContext gc = ((View) super.target_component).getGraphicContext();
+		GraphicsContext gc = ((View) super.target_component).getMainGraphicContext();
 
 		gc.save();
 
