@@ -14,7 +14,7 @@ import root.view.menu.Menu;
 import view.component.menu.Option;
 import view.component.menu.OptionMenu;
 
-public class DisplayFieldInfoCommand extends Command {
+public class ShowFieldInfoCommand extends Command {
 
 	public static double INFO_WIDTH = 200;
 	public static double INFO_HEIGHT = 100;
@@ -22,7 +22,7 @@ public class DisplayFieldInfoCommand extends Command {
 	private Field field_model;
 	private ViewField view_field;
 
-	public DisplayFieldInfoCommand(Field model) {
+	public ShowFieldInfoCommand(Field model) {
 		super("display-field-info-view-command");
 
 		this.field_model = model;
@@ -56,32 +56,31 @@ public class DisplayFieldInfoCommand extends Command {
 					menu.addOption(new Option(item.getName()));
 				}
 
-				menu.addOption(new Option("option jedan"));
-				menu.addOption(new Option("option dva"));
-
-				// menu.setPosition(new Point2D( view_field.getFieldCenter().getX(),
-				// view_field.getFieldCenter().getY()));
-
 				((View) target_component).setMenuPosition(new Point2D(	view_field.getFieldCenter().getX(),
 																		view_field.getFieldCenter().getY()));
 
 				((View) target_component).setMenuVisibility(true);
-
+				
+				// draw field info
+				
 				GraphicsContext gc = ((View) target_component).getTopLayerGraphicContext();
-
 				gc.save();
 
 				gc.setFill(Color.GRAY);
-
 				gc.fillRect(view_field.getFieldCenter().getX() + ((OptionMenu) menu).getWidth(),
 							view_field.getFieldCenter().getY(),
 							200,
-							DisplayFieldInfoCommand.INFO_HEIGHT);
+							ShowFieldInfoCommand.INFO_HEIGHT);
 
 				gc.restore();
 
 			}
 		});
+	}
+
+	@Override
+	public Command getAntiCommand() {
+		return new ClearTopLayerCommand();
 	}
 
 }

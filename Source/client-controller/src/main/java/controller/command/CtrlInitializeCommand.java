@@ -45,4 +45,9 @@ public class CtrlInitializeCommand extends Command {
 
 	}
 
+	@Override
+	public Command getAntiCommand() {
+		return null;
+	}
+
 }

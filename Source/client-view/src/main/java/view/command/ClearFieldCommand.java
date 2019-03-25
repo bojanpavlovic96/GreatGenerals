@@ -30,4 +30,10 @@ public class ClearFieldCommand extends Command {
 		this.view_field.clearField(((View) super.target_component).getMainGraphicContext());
 	}
 
+
+	@Override
+	public Command getAntiCommand() {
+		return null;
+	}
+
 }

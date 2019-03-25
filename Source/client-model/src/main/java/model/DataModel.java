@@ -76,7 +76,7 @@ public class DataModel implements Model {
 			field.setModelEventHandler(this.event_handler);
 
 			this.fields.put(field.getStoragePosition(), field);
-
+			
 		}
 	}
 

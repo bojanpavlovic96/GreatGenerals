@@ -72,4 +72,9 @@ public class CtrlMoveCommand extends Command {
 		this.second_position = second_position;
 	}
 
+	@Override
+	public Command getAntiCommand() {
+		return null;
+	}
+
 }

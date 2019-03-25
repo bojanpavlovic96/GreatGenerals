@@ -29,4 +29,10 @@ public class ClearViewCommand extends Command {
 
 	}
 
+	@Override
+	public Command getAntiCommand() {
+		
+		return null;
+	}
+
 }

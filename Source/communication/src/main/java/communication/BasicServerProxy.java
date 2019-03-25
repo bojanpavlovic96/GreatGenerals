@@ -65,13 +65,13 @@ public class BasicServerProxy implements ServerProxy {
 
 			for (int j = left; j < right; j++) {
 				if (i % 2 == 0 && j % 5 == 0)
-					field_models.add(new ModelField(	new Point2D(j, i),
+					field_models.add(new ModelField(new Point2D(j, i),
 													players.get(player_counter),
 													true,
 													null,
 													new Terrain("mountains", 1)));
 				else
-					field_models.add(new ModelField(	new Point2D(j, i),
+					field_models.add(new ModelField(new Point2D(j, i),
 													players.get(player_counter),
 													true,
 													null,
@@ -85,7 +85,7 @@ public class BasicServerProxy implements ServerProxy {
 			if (left > -3)
 				left--;
 		}
-		
+
 		this.command_queue.enqueue(new CtrlInitializeCommand(players, field_models));
 
 	}

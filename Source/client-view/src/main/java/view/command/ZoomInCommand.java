@@ -32,4 +32,9 @@ public class ZoomInCommand extends Command {
 		}
 	}
 
+	@Override
+	public Command getAntiCommand() {
+		return new ZoomOutCommand(this.fields);
+	}
+
 }

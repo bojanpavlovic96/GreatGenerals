@@ -11,6 +11,8 @@ public interface ViewFieldManager {
 
 	Point2D calcStoragePosition(Point2D position);
 
+	Point2D calcRealPosition(Point2D storage_position);
+
 	double getHeight();
 
 	double getWidth();
@@ -18,7 +20,7 @@ public interface ViewFieldManager {
 	double getBorderWidth();
 
 	boolean zoomIn();
-	
+
 	boolean zoomOut();
-	
+
 }

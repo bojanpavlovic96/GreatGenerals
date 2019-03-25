@@ -27,9 +27,9 @@ public interface Field {
 
 	boolean isInBattle();
 
-	// attention this could be hash map
 	Map<String, FieldOption> getOptions();
-
+	
+	
 	
 	
 }

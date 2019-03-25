@@ -46,4 +46,9 @@ public class SelectFieldCommand extends Command {
 
 	}
 
+	@Override
+	public Command getAntiCommand() {
+		return new UnselectFieldCommand(this.model);
+	}
+
 }

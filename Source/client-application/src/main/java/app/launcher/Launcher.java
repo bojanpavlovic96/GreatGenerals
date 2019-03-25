@@ -70,6 +70,7 @@ public class Launcher extends Application {
 
 			public void execute() {
 
+				// debug
 				System.out.println("Creating game controller ... @ Launcher.onGameReadyEvent "
 									+ "-> called from intial controller");
 
@@ -85,13 +86,16 @@ public class Launcher extends Application {
 				// empty model (only timer and unit creator)
 				Model model = new DataModel();
 
+				// debug
 				System.out.println("\thiding first_stage ... @ Launcher.onGameReadyEvent");
 				// hide login & room page
 				initial_controller.hideInitialPage();
 
+				// debug
 				System.out.println("\tCreating controller ... @ Launcher.onGameReadyEvent");
 				controller = new GameBrain(server_proxy, view, model);
 
+				// debug
 				System.out.println("\tShowing game view ... @ Launcher.onGameReadyEvent");
 				controller.getView().show();
 
@@ -105,8 +109,10 @@ public class Launcher extends Application {
 
 			public void execute(Channel channel) {
 
+				// debug
 				System.out.println("\tconnection ready ... @ Launcher.init - connectionTask.onConnecionReady");
 
+				// debug
 				System.out.println("\tfirst stage channel set call ... @ Launcher.init");
 				initial_controller.setCommunicationChannel(channel);
 
@@ -115,6 +121,7 @@ public class Launcher extends Application {
 
 		this.connection_thread = new Thread(this.connection_task);
 		this.connection_thread.start();
+		// debug
 		System.out.println("Connection thread started ... @ Launcher.init");
 
 	}

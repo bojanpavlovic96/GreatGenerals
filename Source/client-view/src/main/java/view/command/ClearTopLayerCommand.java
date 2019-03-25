@@ -23,4 +23,9 @@ public class ClearTopLayerCommand extends Command {
 
 	}
 
+	@Override
+	public Command getAntiCommand() {
+		return null;
+	}
+
 }

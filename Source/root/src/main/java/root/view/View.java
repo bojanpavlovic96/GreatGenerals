@@ -38,12 +38,12 @@ public interface View extends ViewEventProducer, CommandDrivenComponent {
 	Color getBackgroundColor();
 
 	void setMenuVisibility(boolean visibility);
-	
+
 	void setMenuPosition(Point2D position);
-	
+
 	Menu getOptionMenu();
 
 	// attention bad approach
-	void adjustCanvasSize();
+	void adjustCanvasSize(Point2D point);
 
 }

@@ -30,4 +30,9 @@ public class DrawFieldCommand extends Command {
 		this.view_Field.drawOn(((View) super.target_component).getMainGraphicContext());
 	}
 
+	@Override
+	public Command getAntiCommand() {
+		return new ClearFieldCommand(this.model);
+	}
+
 }

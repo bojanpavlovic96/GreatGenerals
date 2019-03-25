@@ -56,6 +56,7 @@ public class InitialController implements GameReadyEventProducer, ConnectionUser
 
 			public void execute(String username, String password) {
 
+				// debug
 				System.out.println("Handling login event ... @ InitialController");
 
 				if (channel != null) {
@@ -78,6 +79,7 @@ public class InitialController implements GameReadyEventProducer, ConnectionUser
 
 			public void execute(String username, String password) {
 
+				// debug
 				System.out.println("Handling register event ... @ InitialController");
 
 				if (channel != null) {
@@ -101,6 +103,7 @@ public class InitialController implements GameReadyEventProducer, ConnectionUser
 
 			public void execute(String room_name, String room_password) {
 
+				// debug
 				System.out.println("Handling create room event ... @ InitialController");
 
 				if (channel != null) {
@@ -120,6 +123,7 @@ public class InitialController implements GameReadyEventProducer, ConnectionUser
 
 			public void execute(String room_name, String room_password) {
 
+				// debug
 				System.out.println("Handling join room event ... @ InitialController");
 
 				if (channel != null) {
@@ -135,15 +139,11 @@ public class InitialController implements GameReadyEventProducer, ConnectionUser
 
 		});
 
-		// implement
 		this.initial_page.setOnStartGameHandler();
 		// check number of players (there should be 3 of them because of the map
 		// dividing)
 
 	}
-
-	// public methods
-	// TODO maybe wrap with some interface, not necessary
 
 	public void hideInitialPage() {
 		this.initial_page.hide();

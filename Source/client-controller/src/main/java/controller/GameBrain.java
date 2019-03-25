@@ -1,5 +1,7 @@
 package controller;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -7,6 +9,7 @@ import controller.action.DefaultModelEventHandler;
 
 import root.ActiveComponent;
 import root.command.BasicCommandProcessor;
+import root.command.Command;
 import root.command.CommandProcessor;
 import root.command.CommandProducer;
 import root.command.CommandQueue;
@@ -19,7 +22,9 @@ import root.view.View;
 import root.view.event.ViewEventArg;
 import root.view.event.ViewEventHandler;
 
-import view.command.DisplayFieldInfoCommand;
+import view.command.ShowFieldInfoCommand;
+import view.command.LoadBoardCommand;
+import view.command.SelectFieldCommand;
 import view.command.ZoomInCommand;
 import view.command.ZoomOutCommand;
 
@@ -37,16 +42,17 @@ public class GameBrain implements Controller {
 	private Model model;
 
 	private Field selected_field;
-	private Field info_displayed;
+	private List<Command> to_undo;
 
-	// methods
-
+	// constructors
 	public GameBrain(ServerProxy server_proxy, View view, Model model) {
 		super();
 
 		this.view = view;
 		this.model = model;
 		this.server_proxy = server_proxy;
+
+		this.to_undo = new ArrayList<Command>();
 
 		// attention let's say that every controller implementations has its own
 		// ModelEventHandler (maybe this isn't the best approach)
@@ -72,6 +78,8 @@ public class GameBrain implements Controller {
 
 	}
 
+	// methods
+
 	private void initViewEventHandlers() {
 
 		this.view.addEventHandler("left-mouse-click-event", new ViewEventHandler() {
@@ -80,36 +88,44 @@ public class GameBrain implements Controller {
 
 				// debug
 				System.out.println("Handling view event ... " + arg.getEvent().getEventType().getName());
+
 				Field focused_field = model.getField(arg.getFieldPosition());
 
-				if (selected_field != null) {
-					// debug
-					System.out.println("\talready has selection @ GameBrain.left-mouse-click-event");
+				if (focused_field != null) {
 
-				} else {
-					// debug
-					System.out.println("\tselecting field @ GameBrain.left-mouse-click-event");
+					// undone all previous commands
+					if (!to_undo.isEmpty()) {
+						for (int i = (to_undo.size() - 1); i >= 0; i--) {
+							view_command_queue.enqueue(to_undo.get(i).getAntiCommand());
+						}
+					}
+					to_undo.clear();
+
+					// execute new command
+					Command select_command = new SelectFieldCommand(focused_field);
+					view_command_queue.enqueue(select_command);
+					to_undo.add(select_command);
+					selected_field = focused_field;
 
 				}
 
 			}
+
 		});
 
 		this.view.addEventHandler("right-mouse-click-event", new ViewEventHandler() {
 
 			public void execute(ViewEventArg arg) {
 
-				Field field = model.getField(arg.getFieldPosition());
+				Field focused_field = model.getField(arg.getFieldPosition());
 
-				if (field != null) {
-					
-					info_displayed = field;
+				// valid click
+				if (focused_field != null) {
 
-					DisplayFieldInfoCommand command = new DisplayFieldInfoCommand(field);
-
-					view_command_queue.enqueue(command);
 				}
+
 			}
+
 		});
 
 		this.view.addEventHandler("key-event-char-1", new ViewEventHandler() {

@@ -10,7 +10,6 @@ public abstract class Command implements Runnable {
 
 	public Command(String name) {
 		this.name = name;
-
 	}
 
 	// methods
@@ -22,5 +21,7 @@ public abstract class Command implements Runnable {
 	public CommandDrivenComponent getTargetComponent() {
 		return this.target_component;
 	}
+
+	public abstract Command getAntiCommand();
 
 }

@@ -23,6 +23,7 @@ import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.paint.Color;
+import javafx.stage.Screen;
 import javafx.stage.Stage;
 
 import root.command.BasicCommandProcessor;
@@ -92,9 +93,6 @@ public class DrawingStage extends Stage implements View {
 	// only stage specific things
 
 	private void initStage() {
-		// position on screen
-		// this.setX(100);
-		// this.setY(100);
 
 		// set full screen mode
 		this.setFullScreen(true);
@@ -113,19 +111,13 @@ public class DrawingStage extends Stage implements View {
 		this.scroll.setHbarPolicy(ScrollBarPolicy.NEVER);
 		this.scroll.setVbarPolicy(ScrollBarPolicy.NEVER);
 
-		// get screen size
-		Dimension dimension = Toolkit.getDefaultToolkit().getScreenSize();
-
 		// stage size match screen size because of full screen mode
-		this.STAGE_WIDTH = dimension.getWidth();
-		this.STAGE_HEIGHT = dimension.getHeight();
+		this.STAGE_WIDTH = Screen.getPrimary().getBounds().getWidth();
+		this.STAGE_HEIGHT = Screen.getPrimary().getBounds().getHeight();
 
-		// initially set canvas size to something smaller than stage size
-		// it is going to be resized when the board is loaded (loadBoardCommand)
-		// this.canvas_width = this.STAGE_WIDTH / 2;
-		// this.canvas_height = this.STAGE_HEIGHT / 2;
-		this.canvas_width = dimension.getWidth();
-		this.canvas_height = dimension.getHeight();
+		// match canvas size with stage (windows) size
+		this.canvas_width = this.STAGE_WIDTH;
+		this.canvas_height = this.STAGE_HEIGHT;
 
 		// create canvas and add it to the root node
 		this.board_canvas = new Canvas();
@@ -150,7 +142,6 @@ public class DrawingStage extends Stage implements View {
 
 		// attention adjust size
 		this.field_menu = new OptionMenu(100, 100);
-		this.field_menu.addOption(new Option("option"));
 		// scroll wrapper
 		this.menu_scroll = new ScrollPane(this.field_menu);
 		this.menu_scroll.setPrefSize(100, 200);
@@ -239,21 +230,6 @@ public class DrawingStage extends Stage implements View {
 
 	}
 
-	// attention just testing
-	private void fillBackground() {
-
-		GraphicsContext gc = this.board_canvas.getGraphicsContext2D();
-
-		gc.save();
-
-		gc.setFill(Color.GRAY);
-
-		gc.fillRect(0, 0, this.canvas_width, this.canvas_height);
-
-		gc.restore();
-
-	}
-
 	// public methods
 
 	// CommandDrivernComponent methods
@@ -287,7 +263,7 @@ public class DrawingStage extends Stage implements View {
 
 	}
 
-	// event driven component interface
+	// event producer interface
 
 	@Override
 	public List<ViewEventHandler> getEventHandlers(String event_name) {
@@ -385,100 +361,6 @@ public class DrawingStage extends Stage implements View {
 		return this.field_manager.getBorderWidth();
 	}
 
-	public void adjustCanvasSize(ViewField field) {
-
-		Point2D position = field.getFieldCenter();
-
-		if (position.getX() > this.canvas_width - this.CANVAS_PADDING) {
-
-			this.canvas_width = position.getX() + this.field_manager.getWidth()
-								+ 2 * this.field_manager.getBorderWidth()
-								+ this.CANVAS_PADDING;
-
-			this.board_canvas.setWidth(this.canvas_width);
-			this.second_layer_canvas.setWidth(this.canvas_width);
-
-			// center canvas horizontally if it is smaller than the stage
-			if (this.canvas_width < this.STAGE_WIDTH) {
-				double h_difference = this.STAGE_WIDTH - this.canvas_width;
-
-				this.board_canvas.setLayoutX(h_difference / 2);
-				this.second_layer_canvas.setLayoutX(h_difference / 2);
-
-			}
-
-			// debug
-			System.out.println("Adjusted ... ");
-		}
-
-		if (position.getY() > this.canvas_height - this.CANVAS_PADDING) {
-
-			this.canvas_height = position.getY() + this.field_manager.getHeight()
-									+ 2 * this.field_manager.getBorderWidth()
-									+ this.CANVAS_PADDING;
-
-			this.board_canvas.setHeight(this.canvas_height);
-			this.second_layer_canvas.setHeight(this.canvas_height);
-
-			// center canvas vertically if it is smaller than the stage
-			if (this.canvas_height < this.STAGE_HEIGHT) {
-
-				double v_difference = this.STAGE_HEIGHT - this.canvas_height;
-
-				this.board_canvas.setLayoutY(v_difference / 2);
-				this.second_layer_canvas.setLayoutY(v_difference / 2);
-
-			}
-
-			// debug
-			System.out.println("Adjusted ... ");
-
-		}
-
-	}
-
-	public void singleAdjust(Field width_model, Field height_model) {
-
-		ViewField view_width_model = this.field_manager.getViewField(width_model);
-		ViewField view_height_model = this.field_manager.getViewField(height_model);
-
-		Point2D right_center = view_width_model.getFieldCenter();
-		Point2D down_center = view_height_model.getFieldCenter();
-
-		if (right_center.getX() > down_center.getX()) {
-			this.canvas_width = right_center.getX();
-		} else {
-			this.canvas_width = down_center.getX();
-		}
-
-		if (right_center.getY() > down_center.getY()) {
-			this.canvas_height = right_center.getY();
-		} else {
-			this.canvas_height = down_center.getY();
-		}
-
-		this.canvas_width += this.field_manager.getWidth() / 2 + this.CANVAS_PADDING;
-		this.canvas_height += this.field_manager.getHeight() / 2 + this.CANVAS_PADDING;
-
-		this.board_canvas.setWidth(this.canvas_width);
-		this.board_canvas.setHeight(this.canvas_height);
-
-		this.second_layer_canvas.setWidth(this.canvas_width);
-		this.second_layer_canvas.setHeight(this.canvas_height);
-
-		this.fillBackground();
-
-		// debug
-		System.out.println("single adjusted");
-		System.out.println("W: " + this.canvas_width);
-		System.out.println("H: " + this.canvas_height);
-
-	}
-
-	@Override
-	public void adjustCanvasSize() {
-	}
-
 	@Override
 	public GraphicsContext getMainGraphicContext() {
 		return this.board_canvas.getGraphicsContext2D();
@@ -491,10 +373,9 @@ public class DrawingStage extends Stage implements View {
 
 	@Override
 	public void setMenuVisibility(boolean visibility) {
-		this.field_menu.setVisible(visibility);
+		// with next line, vbox throws some outOfBoundsException: -1 ... don't touch it
+		// this.field_menu.setVisible(visibility);
 		this.menu_scroll.setVisible(visibility);
-		// debug
-		System.out.println("Menu visibility set to : " + visibility);
 	}
 
 	@Override
@@ -518,6 +399,30 @@ public class DrawingStage extends Stage implements View {
 
 		this.menu_scroll.setLayoutX(position.getX());
 		this.menu_scroll.setLayoutY(position.getY());
+	}
+
+	@Override
+	public void adjustCanvasSize(Point2D point) {
+
+		Point2D real_position = this.field_manager.calcRealPosition(new Point2D(point.getX() + 1,
+																				point.getY() + 1));
+
+		if (real_position.getX() > this.STAGE_WIDTH)
+			this.canvas_width = real_position.getX();
+		else
+			this.canvas_width = this.STAGE_WIDTH;
+
+		if (real_position.getY() > this.STAGE_HEIGHT)
+			this.canvas_height = real_position.getY();
+		else
+			this.canvas_height = this.STAGE_HEIGHT;
+
+		this.board_canvas.setWidth(this.canvas_width);
+		this.second_layer_canvas.setWidth(this.canvas_width);
+
+		this.board_canvas.setHeight(this.canvas_height);
+		this.second_layer_canvas.setHeight(this.canvas_height);
+
 	}
 
 }
