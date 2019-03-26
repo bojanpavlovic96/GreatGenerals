@@ -30,6 +30,7 @@ public class ZoomInCommand extends Command {
 			load_command.run();
 
 		}
+
 	}
 
 	@Override

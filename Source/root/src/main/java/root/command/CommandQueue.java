@@ -5,8 +5,6 @@ import java.util.Queue;
 
 public class CommandQueue {
 
-	private boolean handling = false;
-
 	private Queue<Command> queue;
 
 	private CommandProcessor on_enqueue = null;
@@ -18,12 +16,10 @@ public class CommandQueue {
 	public void enqueue(Command new_command) {
 		this.queue.add(new_command);
 
-		if (!this.handling && this.on_enqueue != null) {
-			this.handling = true;
+		if (this.on_enqueue != null) {
 
 			this.on_enqueue.execute(this);
 
-			this.handling = false;
 		}
 
 	}

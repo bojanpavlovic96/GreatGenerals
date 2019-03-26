@@ -24,10 +24,7 @@ public class LoadBoardCommand extends Command {
 		Platform.runLater(new Runnable() {
 
 			public void run() {
-				
-				// debug 
-				System.out.println("Loading board");
-				
+
 				DrawFieldCommand draw_hex_comm = null;
 
 				// hide canvas

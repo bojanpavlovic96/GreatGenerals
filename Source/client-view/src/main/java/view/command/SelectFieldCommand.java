@@ -1,5 +1,6 @@
 package view.command;
 
+import javafx.application.Platform;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
 import root.command.Command;
@@ -36,14 +37,22 @@ public class SelectFieldCommand extends Command {
 	}
 
 	public void run() {
-		GraphicsContext gc = ((View) super.target_component).getMainGraphicContext();
 
-		gc.save();
+		Platform.runLater(new Runnable() {
 
-		this.view_field.paintField(gc, this.filter_color);
+			@Override
+			public void run() {
 
-		gc.restore();
+				GraphicsContext gc = ((View) target_component).getMainGraphicContext();
 
+				gc.save();
+
+				((View) target_component).convertToViewField(model).paintField(gc, filter_color);
+
+				gc.restore();
+
+			}
+		});
 	}
 
 	@Override

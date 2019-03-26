@@ -22,6 +22,10 @@ public abstract class Command implements Runnable {
 		return this.target_component;
 	}
 
+	public String getName() {
+		return this.name;
+	}
+
 	public abstract Command getAntiCommand();
 
 }

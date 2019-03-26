@@ -28,8 +28,5 @@ public interface Field {
 	boolean isInBattle();
 
 	Map<String, FieldOption> getOptions();
-	
-	
-	
-	
+
 }

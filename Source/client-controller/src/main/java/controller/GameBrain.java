@@ -5,6 +5,8 @@ import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
+import org.w3c.dom.css.ViewCSS;
+
 import controller.action.DefaultModelEventHandler;
 
 import root.ActiveComponent;
@@ -135,6 +137,11 @@ public class GameBrain implements Controller {
 				ZoomInCommand command = new ZoomInCommand(model.getFields());
 				view_command_queue.enqueue(command);
 
+				// reset old state
+				for (Command prev_command : to_undo) {
+					view_command_queue.enqueue(prev_command);
+				}
+
 			}
 		});
 
@@ -144,6 +151,11 @@ public class GameBrain implements Controller {
 
 				ZoomOutCommand command = new ZoomOutCommand(model.getFields());
 				view_command_queue.enqueue(command);
+
+				// reset old state
+				for (Command prev_command : to_undo) {
+					view_command_queue.enqueue(prev_command);
+				}
 
 			}
 		});
