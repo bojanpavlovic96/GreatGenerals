@@ -1,13 +1,17 @@
 package view.component;
 
 import javafx.geometry.Point2D;
-import model.component.field.Field;
+import javafx.scene.paint.Color;
+import root.model.component.Field;
+import root.view.field.ViewField;
 
 public interface ViewFieldManager {
 
 	ViewField getViewField(Field model);
 
 	Point2D calcStoragePosition(Point2D position);
+
+	Point2D calcRealPosition(Point2D storage_position);
 
 	double getHeight();
 
@@ -16,7 +20,7 @@ public interface ViewFieldManager {
 	double getBorderWidth();
 
 	boolean zoomIn();
-	
+
 	boolean zoomOut();
-	
+
 }

@@ -8,11 +8,41 @@
 
 	<dependencies>
 
+		<!-- root contains all components declaration (interface) -->
+
+		<dependency>
+			<groupId>great-generals</groupId>
+			<artifactId>root</artifactId>
+			<version>0.0.1-SNAPSHOT</version>
+		</dependency>
+
+		<!-- include every other component (model, view, controller) -->
+
+		<dependency>
+			<groupId>great-generals</groupId>
+			<artifactId>client-model</artifactId>
+			<version>0.0.1-SNAPSHOT</version>
+		</dependency>
+
+		<dependency>
+			<groupId>great-generals</groupId>
+			<artifactId>client-view</artifactId>
+			<version>0.0.1-SNAPSHOT</version>
+		</dependency>
+
 		<dependency>
 			<groupId>great-generals</groupId>
 			<artifactId>client-controller</artifactId>
 			<version>0.0.1-SNAPSHOT</version>
 		</dependency>
+
+		<dependency>
+			<groupId>great-generals</groupId>
+			<artifactId>communication</artifactId>
+			<version>0.0.1-SNAPSHOT</version>
+		</dependency>
+
+		<!-- dependencies that are not from the GreatGenerals -->
 
 		<dependency>
 			<groupId>com.rabbitmq</groupId>
@@ -31,6 +61,16 @@
 	</dependencies>
 
 	<build>
+
+		<resources>
+			<resource>
+				<directory>
+				src/main/resources
+				</directory>
+				<filtering>false</filtering>
+			</resource>
+		</resources>
+
 		<plugins>
 
 			<plugin>

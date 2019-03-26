@@ -1,6 +1,7 @@
 package view;
 
 import javafx.event.Event;
+import root.view.event.ViewEventHandler;
 
 public abstract class NamedEventHandler implements ViewEventHandler {
 

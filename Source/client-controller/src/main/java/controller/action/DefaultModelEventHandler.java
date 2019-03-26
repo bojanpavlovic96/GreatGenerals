@@ -1,8 +1,8 @@
 package controller.action;
 
-import controller.Controller;
-import model.event.ModelEventArg;
-import model.event.ModelEventHandler;
+import root.controller.Controller;
+import root.model.event.ModelEventArg;
+import root.model.event.ModelEventHandler;
 
 public class DefaultModelEventHandler implements ModelEventHandler {
 
@@ -16,7 +16,7 @@ public class DefaultModelEventHandler implements ModelEventHandler {
 
 	public void execute(ModelEventArg arg) {
 
-		this.controller.getServer().sendIntention(arg);
+		this.controller.getServerProxy().sendIntention(arg);
 
 	}
 

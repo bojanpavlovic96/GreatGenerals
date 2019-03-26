@@ -3,7 +3,7 @@ package view.component;
 import javafx.geometry.Point2D;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.Image;
-import model.component.unit.Unit;
+import root.model.component.Unit;
 import view.ResourceManager;
 
 public class ViewUnit {

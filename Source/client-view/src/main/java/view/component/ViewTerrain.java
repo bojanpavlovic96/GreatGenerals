@@ -3,7 +3,7 @@ package view.component;
 import javafx.geometry.Point2D;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.Image;
-import model.component.Terrain;
+import root.model.component.Terrain;
 import view.ResourceManager;
 
 public class ViewTerrain {
@@ -13,7 +13,7 @@ public class ViewTerrain {
 
 	public ViewTerrain(Terrain model) {
 
-		this.terrain_name = model.getTerrainName();
+		this.terrain_name = model.getName();
 		this.intensity = model.getIntensity();
 
 	}
@@ -42,8 +42,10 @@ public class ViewTerrain {
 
 	}
 
-	public void drawHiddenTerrain(GraphicsContext gc, Point2D hex_center, double hex_side,
-			double border_width) {
+	public void drawHiddenTerrain(	GraphicsContext gc,
+									Point2D hex_center,
+									double hex_side,
+									double border_width) {
 
 		String old_terrain_name = this.terrain_name;
 		this.terrain_name = "fog";

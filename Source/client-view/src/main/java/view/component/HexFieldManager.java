@@ -1,7 +1,8 @@
 package view.component;
 
 import javafx.geometry.Point2D;
-import model.component.field.Field;
+import root.model.component.Field;
+import root.view.field.ViewField;
 
 public class HexFieldManager implements ViewFieldManager {
 
@@ -30,6 +31,11 @@ public class HexFieldManager implements ViewFieldManager {
 
 	}
 
+	@Override
+	public Point2D calcRealPosition(Point2D storage_position) {
+		return HexagonField.calcRealPosition(storage_position, this.field_height / 2);
+	}
+
 	public double getHeight() {
 		return this.field_height;
 	}
@@ -44,9 +50,9 @@ public class HexFieldManager implements ViewFieldManager {
 
 	public boolean zoomIn() {
 		if (this.field_height < 200) {
-			this.field_height *= 1.5;
-			this.field_width *= 1.5;
-			this.field_border_width *= 1.5;
+			this.field_height += this.field_height * 0.2;
+			this.field_width += this.field_width * 0.2;
+			// this.field_border_width *= this.field_border_width * 0.2;
 
 			return true;
 		}
@@ -56,9 +62,10 @@ public class HexFieldManager implements ViewFieldManager {
 
 	public boolean zoomOut() {
 		if (this.field_height > 50) {
-			this.field_height *= 0.5;
-			this.field_width *= 0.5;
-			this.field_border_width *= 0.5;
+
+			this.field_height -= this.field_height * 0.2;
+			this.field_width -= this.field_width * 0.2;
+			// this.field_border_width -= this.field_border_width * 0.2;
 
 			return true;
 		}

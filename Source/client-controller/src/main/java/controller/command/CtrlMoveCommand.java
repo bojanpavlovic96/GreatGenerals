@@ -1,21 +1,36 @@
 package controller.command;
 
-import controller.Controller;
 import javafx.geometry.Point2D;
-import model.component.field.Field;
-import view.command.RedrawFieldCommand;
+import root.command.Command;
+import root.command.CommandDrivenComponent;
+import root.command.CommandQueue;
+import root.controller.Controller;
+import root.model.component.Field;
+import view.command.ClearFieldCommand;
+import view.command.DrawFieldCommand;
 
-public class CtrlMoveCommand extends CtrlCommand {
+public class CtrlMoveCommand extends Command {
+
+	private Point2D base_position;
+	private Field base_field;
 
 	private Point2D second_position;
 	private Field second_field;
 
 	public CtrlMoveCommand(Point2D first_position, Point2D second_position) {
-		super("move-command", first_position);
-		// sets command name for database storing
-		// sets primary position
+		super("move-command");
 
-		this.setSecondPosition(second_position);
+		this.base_position = first_position;
+		this.second_position = second_position;
+
+	}
+
+	@Override
+	public void setTargetComponent(CommandDrivenComponent target) {
+		super.setTargetComponent(target);
+
+		this.base_field = ((Controller) super.target_component).getModel().getField(this.base_position);
+		this.second_field = ((Controller) super.target_component).getModel().getField(this.second_position);
 
 	}
 
@@ -26,8 +41,15 @@ public class CtrlMoveCommand extends CtrlCommand {
 		this.base_field.getUnit().moveTo(this.second_field);
 
 		// redraw both fields
-		this.view_command_queue.enqueue(new RedrawFieldCommand(this.base_field));
-		this.view_command_queue.enqueue(new RedrawFieldCommand(this.second_field));
+		CommandQueue view_command_queue = ((Controller) super.target_component).getConsumerQueue();
+
+		// clear both fields
+		view_command_queue.enqueue(new ClearFieldCommand(this.base_field));
+		view_command_queue.enqueue(new ClearFieldCommand(this.second_field));
+
+		// then draw them again
+		view_command_queue.enqueue(new DrawFieldCommand(this.base_field));
+		view_command_queue.enqueue(new DrawFieldCommand(this.second_field));
 
 		this.second_field.getUnit().getMoveType().getPath().remove(0);
 
@@ -36,7 +58,7 @@ public class CtrlMoveCommand extends CtrlCommand {
 			// continue moving
 
 			this.second_field.getUnit().getMoveType().move();
-			// triger timer
+			// trigger timer
 
 		}
 
@@ -51,10 +73,8 @@ public class CtrlMoveCommand extends CtrlCommand {
 	}
 
 	@Override
-	public void setController(Controller controller) {
-		super.setController(controller);
-
-		this.second_field = this.model.getField(this.second_position);
-
+	public Command getAntiCommand() {
+		return null;
 	}
+
 }

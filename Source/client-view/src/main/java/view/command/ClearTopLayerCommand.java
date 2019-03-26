@@ -1,25 +1,31 @@
 package view.command;
 
 import javafx.scene.canvas.GraphicsContext;
-import javafx.scene.paint.Color;
+import root.command.Command;
+import root.view.View;
 
-public class ClearTopLayerCommand extends ViewCommand {
+public class ClearTopLayerCommand extends Command {
 
 	public ClearTopLayerCommand() {
-		super();
+		super("clear-top-layer-view-command");
 	}
 
 	public void run() {
-		GraphicsContext gc = this.view.getTopLayerCanvas().getGraphicsContext2D();
+		GraphicsContext gc = ((View) super.target_component).getTopLayerGraphicContext();
 
 		gc.save();
 
-		gc.clearRect(0, 0, this.view.getCanvasWidth(), this.view.getCanvasHeight());
+		gc.clearRect(0, 0, gc.getCanvas().getWidth(), gc.getCanvas().getHeight());
 
-		this.view.getFieldMenu().setVisible(false);
+		((View) super.target_component).setMenuVisibility(false);
 
 		gc.restore();
 
+	}
+
+	@Override
+	public Command getAntiCommand() {
+		return null;
 	}
 
 }

@@ -8,6 +8,12 @@
 
 	<dependencies>
 
+		<dependency>
+			<groupId>great-generals</groupId>
+			<artifactId>root</artifactId>
+			<version>0.0.1-SNAPSHOT</version>
+		</dependency>
+
 		<!-- https://mvnrepository.com/artifact/org.openjfx/javafx-controls -->
 		<dependency>
 			<groupId>org.openjfx</groupId>
@@ -15,13 +21,6 @@
 			<version>11</version>
 		</dependency>
 
-		<dependency>
-			<groupId>great-generals</groupId>
-			<artifactId>client-model</artifactId>
-			<version>0.0.1-SNAPSHOT</version>
-		</dependency>
-
-		<!-- https://mvnrepository.com/artifact/org.json/json -->
 		<dependency>
 			<groupId>org.json</groupId>
 			<artifactId>json</artifactId>

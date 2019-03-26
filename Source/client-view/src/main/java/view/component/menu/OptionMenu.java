@@ -2,18 +2,38 @@ package view.component.menu;
 
 import javafx.geometry.Point2D;
 import javafx.scene.layout.VBox;
+import root.view.menu.Menu;
+import root.view.menu.MenuItem;
 
-public abstract class OptionMenu extends VBox {
+public class OptionMenu extends VBox implements Menu {
 
 	public OptionMenu(double menu_width, double menu_height) {
 		super.setWidth(menu_width);
 		super.setHeight(menu_height);
+
 	}
 
-	public abstract void addOption(String option);
+	@Override
+	public void addOption(MenuItem new_option) {
 
-	public abstract void clearMenu();
+		this.getChildren().add(new Option(new_option.getName()));
 
-	public abstract void setPosition(Point2D new_position);
+	}
+
+	@Override
+	public void removeOption(String option_name) {
+		this.getChildren().removeIf(option -> ((MenuItem) option).getName().equals(option_name));
+	}
+
+	@Override
+	public void clearOptions() {
+		this.getChildren().clear();
+	}
+
+	@Override
+	public void setPosition(Point2D position) {
+		super.setLayoutX(position.getX());
+		super.setLayoutY(position.getY());
+	}
 
 }

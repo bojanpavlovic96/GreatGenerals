@@ -3,13 +3,17 @@ package view.command;
 import java.util.List;
 
 import javafx.application.Platform;
-import model.component.field.Field;
+import javafx.geometry.Point2D;
+import root.command.Command;
+import root.model.component.Field;
+import root.view.View;
 
-public class LoadBoardCommand extends ViewCommand {
+public class LoadBoardCommand extends Command {
 
 	private List<Field> models;
 
 	public LoadBoardCommand(List<Field> fields) {
+		super("load-board-view-command");
 
 		this.models = fields;
 
@@ -23,41 +27,47 @@ public class LoadBoardCommand extends ViewCommand {
 
 				DrawFieldCommand draw_hex_comm = null;
 
-				view.setCanvasVisibility(false);
+				// hide canvas
+				((View) target_component).setCanvasVisibility(false);
 
-				Field right_field = models.get(0);
-				Field down_field = models.get(0);
+				int most_x = -10;
+				int most_y = -10;
 
 				for (Field field : models) {
 
-					if (field.getStoragePosition().getX() >= right_field.getStoragePosition().getX()) {
-						right_field = field;
-					}
+					if (field.getStoragePosition().getX() > most_x)
+						most_x = (int) field.getStoragePosition().getX();
 
-					if (field.getStoragePosition().getY() >= down_field.getStoragePosition().getY()) {
-						down_field = field;
-					}
+					if (field.getStoragePosition().getY() > most_y)
+						most_y = (int) field.getStoragePosition().getY();
 
 				}
 
-				System.out.println("For single adjust W : " + right_field.getStoragePosition());
-				System.out.println("For single adjust H : " + down_field.getStoragePosition());
+				((View) target_component).adjustCanvasSize(new Point2D(most_x, most_y));
 
-				view.singleAdjust(right_field, down_field);
+				ClearViewCommand clear_command = new ClearViewCommand();
+				clear_command.setTargetComponent(target_component);
+				clear_command.run();
 
 				for (Field field : models) {
 
 					draw_hex_comm = new DrawFieldCommand(field);
-					draw_hex_comm.setView(view);
+					draw_hex_comm.setTargetComponent(target_component);
 					draw_hex_comm.run();
 
 				}
 
-				view.setCanvasVisibility(true);
+				// show canvas
+				((View) target_component).setCanvasVisibility(true);
 
 			}
 		});
 
+	}
+
+	@Override
+	public Command getAntiCommand() {
+		return new ClearViewCommand();
 	}
 
 }

@@ -9,13 +9,15 @@ import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledThreadPoolExecutor;
 
 import javafx.geometry.Point2D;
-import model.component.field.Field;
 import model.component.unit.BasicMove;
 import model.component.unit.BasicUnit;
-import model.component.unit.Unit;
 import model.component.unit.UnitCreator;
-import model.event.ModelEventHandler;
 import model.path.AStar;
+import root.model.Model;
+import root.model.PlayerData;
+import root.model.component.Field;
+import root.model.component.Unit;
+import root.model.event.ModelEventHandler;
 
 public class DataModel implements Model {
 
@@ -57,6 +59,8 @@ public class DataModel implements Model {
 
 	}
 
+	// methods
+
 	public void initializeModel(List<PlayerData> list_of_players, List<Field> fields) {
 
 		this.players = new HashMap<String, PlayerData>();
@@ -72,14 +76,16 @@ public class DataModel implements Model {
 			field.setModelEventHandler(this.event_handler);
 
 			this.fields.put(field.getStoragePosition(), field);
-
+			
 		}
 	}
 
+	@Override
 	public Field getField(Point2D storage_position) {
 		return this.fields.get(storage_position);
 	}
 
+	@Override
 	public void setField(Field new_field) {
 		this.fields.put(new_field.getStoragePosition(), new_field);
 	}
@@ -88,10 +94,12 @@ public class DataModel implements Model {
 		return this.fields != null;
 	}
 
+	@Override
 	public List<Field> getFields() {
 		return new ArrayList<Field>(this.fields.values());
 	}
 
+	@Override
 	public List<Field> getFreeNeighbours(Field for_field) {
 
 		List<Field> neighbours = new ArrayList<Field>();
@@ -137,7 +145,8 @@ public class DataModel implements Model {
 
 	}
 
-	public void setModelEventHandler(ModelEventHandler handler) {
+	@Override
+	public void setEventHandler(ModelEventHandler handler) {
 		this.event_handler = handler;
 	}
 
@@ -151,6 +160,11 @@ public class DataModel implements Model {
 			this.executor.shutdownNow();
 		}
 
+	}
+
+	@Override
+	public Unit generateUnit(String unit_name) {
+		return this.unit_creator.generateUnit(unit_name);
 	}
 
 }

@@ -1,3 +1,3 @@
 #!/bin/bash
 
-./build.sh client-model client-view gg-server client-controller client-application
+./build.sh root client-model client-controller communication client-view client-application

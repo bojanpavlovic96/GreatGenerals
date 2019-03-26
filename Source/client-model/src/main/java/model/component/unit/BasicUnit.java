@@ -1,7 +1,9 @@
 package model.component.unit;
 
-import model.component.field.Field;
-import model.event.ModelEventHandler;
+import root.model.action.move.MoveType;
+import root.model.component.Field;
+import root.model.component.Unit;
+import root.model.event.ModelEventHandler;
 
 public class BasicUnit implements Unit {
 
@@ -85,11 +87,11 @@ public class BasicUnit implements Unit {
 
 	}
 
-	public void setModelEventHandler(ModelEventHandler handler) {
+	public void setEventHandler(ModelEventHandler handler) {
 		this.event_handler = handler;
 
 		if (this.canMove()) {
-			this.movement_type.setEventHandelr(this.event_handler);
+			this.movement_type.setEventHandler(this.event_handler);
 		}
 
 		// TODO do the same for attack

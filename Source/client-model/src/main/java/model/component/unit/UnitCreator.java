@@ -3,6 +3,8 @@ package model.component.unit;
 import java.util.HashMap;
 import java.util.Map;
 
+import root.model.component.Unit;
+
 public class UnitCreator {
 
 	private Map<String, Unit> prototypes;

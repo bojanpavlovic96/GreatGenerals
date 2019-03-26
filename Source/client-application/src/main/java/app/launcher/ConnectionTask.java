@@ -10,9 +10,9 @@ import com.rabbitmq.client.Connection;
 import com.rabbitmq.client.ConnectionFactory;
 
 import app.event.ConnectionReadyHandler;
-import view.ShouldBeShutdown;
+import root.ActiveComponent;
 
-public class ConnectionTask implements Runnable, ShouldBeShutdown {
+public class ConnectionTask implements Runnable, ActiveComponent {
 
 	private boolean connection_established = false;
 
@@ -41,6 +41,7 @@ public class ConnectionTask implements Runnable, ShouldBeShutdown {
 
 			this.conn_factory.setUri(this.connection_uri);
 
+			// debug
 			System.out.println("Creating connection ... @ ConnectionTask.run");
 			this.connection = this.conn_factory.newConnection();
 
@@ -50,16 +51,17 @@ public class ConnectionTask implements Runnable, ShouldBeShutdown {
 
 				if (this.channel != null && this.channel.isOpen()) {
 
+					// debug
 					System.out.println("Connection established ...");
 					System.out.println("MQ address: " + this.connection.getAddress());
 
-					System.out.println("Channel created ...");
+					// debug
 					System.out.println("Channel num: " + this.channel.getChannelNumber());
 
 					if (this.on_connection_ready != null) {
 
-						System.out.println("Executing on_connection_handler ...");
-						System.out.println("Launcher->ConnectionThread");
+						// debug
+						System.out.println("Executing on_connection_handler ... @ Launcher.ConnectionThread");
 
 						this.connection_established = true;
 
@@ -88,6 +90,7 @@ public class ConnectionTask implements Runnable, ShouldBeShutdown {
 			if (this.getChannel() != null && this.getChannel().isOpen()) {
 				this.getChannel().close();
 
+				// debug
 				System.out.println("Closing channel ... @ ConnectionTask.shutdown");
 			}
 
@@ -95,6 +98,7 @@ public class ConnectionTask implements Runnable, ShouldBeShutdown {
 			if (this.getConnection() != null && this.getConnection().isOpen()) {
 				this.getConnection().close();
 
+				// debug
 				System.out.println("Closing connection ... @ ConnectionTask.shutdown");
 			}
 
