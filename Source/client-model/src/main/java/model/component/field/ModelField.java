@@ -1,10 +1,12 @@
 package model.component.field;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import javafx.geometry.Point2D;
+import root.controller.Controller;
 import root.model.PlayerData;
 import root.model.component.Field;
 import root.model.component.Terrain;
@@ -31,7 +33,7 @@ public class ModelField implements Field {
 
 	private ModelEventHandler event_handler;
 
-	// methods
+	// constructors
 
 	public ModelField(Point2D storage_position, PlayerData player, boolean visibility, Unit unit,
 			Terrain terrain) {
@@ -43,17 +45,9 @@ public class ModelField implements Field {
 		this.unit = unit;
 		this.terrain = terrain;
 
-		this.initOptions();
-
 	}
 
-	private void initOptions() {
-
-		this.options = new HashMap<String, FieldOption>();
-
-		// TODO add some default options
-
-	}
+	// methods
 
 	@Override
 	public Point2D getStoragePosition() {
@@ -71,9 +65,12 @@ public class ModelField implements Field {
 
 		this.unit = unit;
 
-		// if method is used for setting (not removing) unit
+		// if method is used for inserting (not removing) unit
 		if (this.unit != null) {
+			// update unit event handler (modelEventHandler)
 			this.unit.setEventHandler(this.event_handler);
+			// update reference to field
+			this.unit.setField(this);
 		}
 
 	}
@@ -84,7 +81,6 @@ public class ModelField implements Field {
 	}
 
 	// field options specific
-
 	@Override
 	public boolean isVisible() {
 		return this.visibility;
@@ -106,8 +102,44 @@ public class ModelField implements Field {
 	}
 
 	@Override
-	public Map<String, FieldOption> getOptions() {
-		return this.options;
+	public List<FieldOption> getEnabledOptions() {
+		return new ArrayList<FieldOption>(this.options.values());
+	}
+
+	// implement
+	@Override
+	public void adjustOptionsFor(Field second_field) {
+
+		// debug
+		System.out.println("ADJUSTING OPTOIONS ...");
+
+		for (FieldOption option : this.options.values()) {
+			option.setSecondaryField(second_field);
+		}
+
+		// restore all disabled options if there are any
+
+		// check what is available
+		// save every disabled option
+
+	}
+
+	@Override
+	public void initializeOptions(List<FieldOption> new_options) {
+
+		this.options = new HashMap<String, FieldOption>();
+
+		for (FieldOption option : new_options) {
+			this.options.put(option.getName(), option);
+		}
+
+		this.selfOptionAdjust();
+
+	}
+
+	// implement
+	private void selfOptionAdjust() {
+
 	}
 
 }

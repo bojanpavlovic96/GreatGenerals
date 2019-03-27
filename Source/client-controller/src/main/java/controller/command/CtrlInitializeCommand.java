@@ -28,6 +28,10 @@ public class CtrlInitializeCommand extends Command {
 
 		Model model = ((Controller) super.target_component).getModel();
 
+		for (Field field : this.fields) {
+			field.initializeOptions(((Controller) super.target_component).getFieldOptions());
+		}
+
 		System.out.println("Calling initalizeModel ... @ CtrlInitializeCommand.run");
 		model.initializeModel(this.players, this.fields);
 

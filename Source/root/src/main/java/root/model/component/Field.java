@@ -1,8 +1,9 @@
 package root.model.component;
 
-import java.util.Map;
+import java.util.List;
 
 import javafx.geometry.Point2D;
+import root.controller.Controller;
 import root.model.PlayerData;
 import root.model.component.option.FieldOption;
 import root.model.event.ModelEventHandler;
@@ -27,6 +28,10 @@ public interface Field {
 
 	boolean isInBattle();
 
-	Map<String, FieldOption> getOptions();
+	List<FieldOption> getEnabledOptions();
+
+	void initializeOptions(List<FieldOption> new_options);
+
+	void adjustOptionsFor(Field second_field);
 
 }

@@ -38,7 +38,8 @@ public class CtrlMoveCommand extends Command {
 	public void run() {
 
 		// move unit
-		this.base_field.getUnit().moveTo(this.second_field);
+		this.base_field.getUnit().reallocateTo(this.second_field);
+		//  !!! unit is now on second field
 
 		// redraw both fields
 		CommandQueue view_command_queue = ((Controller) super.target_component).getConsumerQueue();
@@ -53,7 +54,8 @@ public class CtrlMoveCommand extends Command {
 
 		this.second_field.getUnit().getMoveType().getPath().remove(0);
 
-		// if path is not empty ...
+		// if path is not empty
+		// !!! unit is now on second field
 		if (!this.second_field.getUnit().getMoveType().getPath().isEmpty()) {
 			// continue moving
 

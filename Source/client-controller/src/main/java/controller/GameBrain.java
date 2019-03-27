@@ -5,10 +5,7 @@ import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-import org.w3c.dom.css.ViewCSS;
-
 import controller.action.DefaultModelEventHandler;
-
 import root.ActiveComponent;
 import root.command.BasicCommandProcessor;
 import root.command.Command;
@@ -19,14 +16,13 @@ import root.communication.ServerProxy;
 import root.controller.Controller;
 import root.model.Model;
 import root.model.component.Field;
+import root.model.component.option.FieldOption;
 import root.model.event.ModelEventArg;
 import root.view.View;
 import root.view.event.ViewEventArg;
 import root.view.event.ViewEventHandler;
-
-import view.command.ShowFieldInfoCommand;
-import view.command.LoadBoardCommand;
 import view.command.SelectFieldCommand;
+import view.command.ShowFieldInfoCommand;
 import view.command.ZoomInCommand;
 import view.command.ZoomOutCommand;
 
@@ -46,6 +42,8 @@ public class GameBrain implements Controller {
 	private Field selected_field;
 	private List<Command> to_undo;
 
+	private List<FieldOption> field_options;
+
 	// constructors
 	public GameBrain(ServerProxy server_proxy, View view, Model model) {
 		super();
@@ -59,6 +57,8 @@ public class GameBrain implements Controller {
 		// attention let's say that every controller implementations has its own
 		// ModelEventHandler (maybe this isn't the best approach)
 		this.model.setEventHandler(new DefaultModelEventHandler(this));
+
+		this.initFieldOptions();
 
 		// --- connect serverProxy and controller
 
@@ -123,7 +123,8 @@ public class GameBrain implements Controller {
 
 				// valid click
 				if (focused_field != null) {
-
+					Command show_menu = new ShowFieldInfoCommand(selected_field, focused_field);
+					view_command_queue.enqueue(show_menu);
 				}
 
 			}
@@ -158,6 +159,28 @@ public class GameBrain implements Controller {
 				}
 
 			}
+		});
+
+	}
+
+	private void initFieldOptions() {
+		this.field_options = new ArrayList<FieldOption>();
+
+		this.field_options.add(new FieldOption("Select path", this) {
+
+			@Override
+			public void run() {
+
+				for (Field field : primary_field.getUnit().getMoveType().getPath(	this.primary_field,
+																					this.secondary_field)) {
+					Command select = new SelectFieldCommand(field);
+					controller.getConsumerQueue().enqueue(select);
+					to_undo.add(select);
+
+				}
+
+			}
+
 		});
 
 	}
@@ -238,6 +261,11 @@ public class GameBrain implements Controller {
 	@Override
 	public CommandQueue getConsumerQueue() {
 		return this.view_command_queue;
+	}
+
+	@Override
+	public List<FieldOption> getFieldOptions() {
+		return this.field_options;
 	}
 
 }

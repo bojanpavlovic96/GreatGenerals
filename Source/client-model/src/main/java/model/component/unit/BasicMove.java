@@ -46,7 +46,7 @@ public class BasicMove extends MoveType {
 
 			this.calculate_delay();
 
-			this.executor.schedule(this, this.move_delay, TimeUnit.MILLISECONDS);
+			this.timer.schedule(this, this.move_delay, TimeUnit.MILLISECONDS);
 
 		}
 
@@ -68,7 +68,6 @@ public class BasicMove extends MoveType {
 		this.on_event.execute(new MoveModelEventArg(this.my_field.getPlayer().getUsername(),
 													this.my_field.getStoragePosition(),
 													this.path.get(0).getStoragePosition()));
-		;
 	}
 
 }

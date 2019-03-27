@@ -75,12 +75,13 @@ public class BasicUnit implements Unit {
 		return clone;
 	}
 
-	public void moveTo(Field next_field) {
+	public void reallocateTo(Field next_field) {
 
 		// remove from current field
 		this.my_field.setUnit(null);
 		// set on next field
 		next_field.setUnit(this);
+		
 		// update units reference to field
 		// and also movement type reference
 		this.setField(next_field);

@@ -1,6 +1,7 @@
 package view.component.menu;
 
 import javafx.geometry.Point2D;
+import javafx.scene.control.Button;
 import javafx.scene.layout.VBox;
 import root.view.menu.Menu;
 import root.view.menu.MenuItem;
@@ -16,7 +17,7 @@ public class OptionMenu extends VBox implements Menu {
 	@Override
 	public void addOption(MenuItem new_option) {
 
-		this.getChildren().add(new Option(new_option.getName()));
+		this.getChildren().add((Button) new_option);
 
 	}
 
