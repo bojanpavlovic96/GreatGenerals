@@ -16,17 +16,12 @@ public abstract class FieldOption implements Runnable {
 
 	// constructors
 
-	public FieldOption(String option_name, Controller controller) {
+	public FieldOption(String option_name, boolean enabled, Controller controller, Field primary_field) {
 		super();
 
 		this.name = option_name;
+		this.enabled = enabled;
 		this.controller = controller;
-
-	}
-
-	public FieldOption(FieldOption old_option, Field primary_field) {
-		this(old_option.name, old_option.controller);
-
 		this.primary_field = primary_field;
 
 	}

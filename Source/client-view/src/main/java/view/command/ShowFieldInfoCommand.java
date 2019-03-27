@@ -67,7 +67,6 @@ public class ShowFieldInfoCommand extends Command {
 
 					FieldOption item = options.get(i);
 
-					item.setPrimaryField(selected_field);
 					item.setSecondaryField(target_field);
 
 					menu.addOption(new Option(item));

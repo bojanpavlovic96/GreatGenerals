@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collector;
+import java.util.stream.Collectors;
 
 import javafx.geometry.Point2D;
 import root.controller.Controller;
@@ -103,7 +105,8 @@ public class ModelField implements Field {
 
 	@Override
 	public List<FieldOption> getEnabledOptions() {
-		return new ArrayList<FieldOption>(this.options.values());
+		// filder enabled options
+		return this.options.values().stream().filter(option -> option.isEnabled()).collect(Collectors.toList());
 	}
 
 	// implement
@@ -125,7 +128,7 @@ public class ModelField implements Field {
 	}
 
 	@Override
-	public void initializeOptions(List<FieldOption> new_options) {
+	public void initializeFieldOptions(List<FieldOption> new_options) {
 
 		this.options = new HashMap<String, FieldOption>();
 

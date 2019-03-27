@@ -6,6 +6,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 import controller.action.DefaultModelEventHandler;
+import controller.option.SelectPathFieldOption;
 import root.ActiveComponent;
 import root.command.BasicCommandProcessor;
 import root.command.Command;
@@ -57,8 +58,6 @@ public class GameBrain implements Controller {
 		// attention let's say that every controller implementations has its own
 		// ModelEventHandler (maybe this isn't the best approach)
 		this.model.setEventHandler(new DefaultModelEventHandler(this));
-
-		this.initFieldOptions();
 
 		// --- connect serverProxy and controller
 
@@ -125,6 +124,7 @@ public class GameBrain implements Controller {
 				if (focused_field != null) {
 					Command show_menu = new ShowFieldInfoCommand(selected_field, focused_field);
 					view_command_queue.enqueue(show_menu);
+					to_undo.add(show_menu);
 				}
 
 			}
@@ -159,28 +159,6 @@ public class GameBrain implements Controller {
 				}
 
 			}
-		});
-
-	}
-
-	private void initFieldOptions() {
-		this.field_options = new ArrayList<FieldOption>();
-
-		this.field_options.add(new FieldOption("Select path", this) {
-
-			@Override
-			public void run() {
-
-				for (Field field : primary_field.getUnit().getMoveType().getPath(	this.primary_field,
-																					this.secondary_field)) {
-					Command select = new SelectFieldCommand(field);
-					controller.getConsumerQueue().enqueue(select);
-					to_undo.add(select);
-
-				}
-
-			}
-
 		});
 
 	}
@@ -266,6 +244,22 @@ public class GameBrain implements Controller {
 	@Override
 	public List<FieldOption> getFieldOptions() {
 		return this.field_options;
+	}
+
+	@Override
+	public void initializeFieldOptions(Field field) {
+
+		List<FieldOption> new_options = new ArrayList<FieldOption>();
+
+		new_options.add(new SelectPathFieldOption("select-path-option", true, this, field));
+
+		field.initializeFieldOptions(new_options);
+
+	}
+
+	@Override
+	public void enqueueForUndone(Command new_command) {
+		this.to_undo.add(new_command);
 	}
 
 }
