@@ -11,11 +11,8 @@ import app.form.StartForm;
 import communication.BasicServerProxy;
 import communication.translator.JSONMessageTranslator;
 import controller.GameBrain;
-
-import controller.action.DefaultModelEventHandler;
 import javafx.application.Application;
 import javafx.stage.Stage;
-
 import model.DataModel;
 import root.ActiveComponent;
 import root.communication.ServerProxy;

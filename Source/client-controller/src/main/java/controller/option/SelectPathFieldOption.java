@@ -18,8 +18,7 @@ public class SelectPathFieldOption extends FieldOption {
 	@Override
 	public void run() {
 
-		for (Field field : primary_field.getUnit().getMoveType().getPath(	primary_field,
-																			this.secondary_field)) {
+		for (Field field : primary_field.getUnit().getMoveType().calculatePath(this.secondary_field)) {
 			Command select_command = new SelectFieldCommand(field);
 			super.controller.getConsumerQueue().enqueue(select_command);
 			super.controller.enqueueForUndone(select_command);

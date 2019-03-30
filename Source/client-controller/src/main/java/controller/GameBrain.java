@@ -6,7 +6,9 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 import controller.action.DefaultModelEventHandler;
+import controller.option.MoveFieldOption;
 import controller.option.SelectPathFieldOption;
+
 import root.ActiveComponent;
 import root.command.BasicCommandProcessor;
 import root.command.Command;
@@ -22,6 +24,7 @@ import root.model.event.ModelEventArg;
 import root.view.View;
 import root.view.event.ViewEventArg;
 import root.view.event.ViewEventHandler;
+
 import view.command.SelectFieldCommand;
 import view.command.ShowFieldInfoCommand;
 import view.command.ZoomInCommand;
@@ -87,14 +90,11 @@ public class GameBrain implements Controller {
 
 			public void execute(ViewEventArg arg) {
 
-				// debug
-				System.out.println("Handling view event ... " + arg.getEvent().getEventType().getName());
-
 				Field focused_field = model.getField(arg.getFieldPosition());
 
 				if (focused_field != null) {
 
-					// undone all previous commands
+					// undo all previous commands
 					if (!to_undo.isEmpty()) {
 						for (int i = (to_undo.size() - 1); i >= 0; i--) {
 							view_command_queue.enqueue(to_undo.get(i).getAntiCommand());
@@ -105,7 +105,9 @@ public class GameBrain implements Controller {
 					// execute new command
 					Command select_command = new SelectFieldCommand(focused_field);
 					view_command_queue.enqueue(select_command);
+
 					to_undo.add(select_command);
+
 					selected_field = focused_field;
 
 				}
@@ -208,7 +210,7 @@ public class GameBrain implements Controller {
 	}
 
 	@Override
-	public root.communication.ServerProxy getServerProxy() {
+	public ServerProxy getServerProxy() {
 		return this.server_proxy;
 	}
 
@@ -252,6 +254,7 @@ public class GameBrain implements Controller {
 		List<FieldOption> new_options = new ArrayList<FieldOption>();
 
 		new_options.add(new SelectPathFieldOption("select-path-option", true, this, field));
+		new_options.add(new MoveFieldOption("move-option", true, this, field));
 
 		field.initializeFieldOptions(new_options);
 

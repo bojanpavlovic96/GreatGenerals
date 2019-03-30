@@ -30,9 +30,10 @@ public interface Controller	extends
 
 	List<FieldOption> getFieldOptions();
 
-	// not the best aproach but ...
+	// not the best approach but ...
 
 	void initializeFieldOptions(Field field);
 
 	void enqueueForUndone(Command new_command);
+
 }

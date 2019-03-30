@@ -25,21 +25,14 @@ public abstract class MoveType implements Cloneable, Runnable {
 
 	// constructors
 
-	public MoveType(Field my_field, PathFinder path_finder, ScheduledExecutorService executor,
-			ModelEventHandler on_event) {
-		super();
-
-		this.timer = executor;
-		this.my_field = my_field;
-		this.path_finder = path_finder;
-		this.on_event = on_event;
-	}
-
 	public MoveType(Field my_field, PathFinder path_finder, ScheduledExecutorService executor) {
 		super();
+
 		this.timer = executor;
 		this.my_field = my_field;
 		this.path_finder = path_finder;
+
+		this.path = null;
 
 	}
 
@@ -78,23 +71,21 @@ public abstract class MoveType implements Cloneable, Runnable {
 	public MoveType clone() throws CloneNotSupportedException {
 		MoveType clone = (MoveType) super.clone();
 
-		clone.path = new ArrayList<Field>();
+		clone.path = null;
 
 		return clone;
 
 	}
 
 	public List<Field> getPath() {
-		if (this.path == null) {
-			if (this.destination_field != null) {
-				this.path = this.path_finder.findPath(this.my_field, this.destination_field);
-			}
-		}
 		return this.path;
 	}
 
-	public List<Field> getPath(Field primary_field,Field target_field) {
-		return this.path_finder.findPath(primary_field, target_field);
+	public List<Field> calculatePath(Field target_field) {
+
+		this.path = this.path_finder.findPath(this.my_field, target_field);
+
+		return this.path;
 	}
 
 	// abstract methods

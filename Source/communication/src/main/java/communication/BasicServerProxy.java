@@ -10,6 +10,7 @@ import javafx.geometry.Point2D;
 import javafx.scene.paint.Color;
 import model.PlayerModelData;
 import model.component.field.ModelField;
+import root.command.Command;
 import root.command.CommandQueue;
 import root.communication.MessageTranslator;
 import root.communication.ServerProxy;
@@ -128,7 +129,11 @@ public class BasicServerProxy implements ServerProxy {
 		System.out.println("Sending intention: " + action.getEventName() + "@ BasicServeProxy.sendIntention");
 
 		byte[] message = this.translator.translate(action);
-
+		
+		Command received_command=this.translator.translate(message);
+		
+		this.command_queue.enqueue(received_command);
+		
 		// TODO somehow send it through channel
 
 	}
