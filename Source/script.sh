@@ -1,2 +1,7 @@
 #!/bin/bash
-echo "something"
+
+echo "running"
+
+$1
+
+echo "done"

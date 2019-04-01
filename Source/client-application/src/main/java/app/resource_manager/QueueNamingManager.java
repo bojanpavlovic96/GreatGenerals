@@ -4,6 +4,8 @@ import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -70,8 +72,10 @@ public class QueueNamingManager {
 									+ QueueNamingManager.RESOURCE_SUFFIX;
 
 			ClassLoader loader = QueueNamingManager.class.getClassLoader();
-			FileReader reader = new FileReader(loader.getResource(resource_path).getPath());
-			BufferedReader buff_reader = new BufferedReader(reader);
+
+			InputStream input_stream = loader.getResourceAsStream(resource_path);
+			InputStreamReader stream_reader = new InputStreamReader(input_stream);
+			BufferedReader buff_reader = new BufferedReader(stream_reader);
 
 			StringBuilder content = new StringBuilder();
 			String line = "";
@@ -80,7 +84,8 @@ public class QueueNamingManager {
 			}
 
 			buff_reader.close();
-			reader.close();
+			stream_reader.close();
+			input_stream.close();
 
 			this.config_resource = new JSONObject(content.toString());
 

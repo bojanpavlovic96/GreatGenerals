@@ -1,9 +1,13 @@
 package app.resource_manager;
 
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.net.URL;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -40,38 +44,36 @@ public class StringResourceManager {
 
 	private void loadResources() {
 
+		String file_name = StringResourceManager.RESOURCE_PREFIX + StringResourceManager.language
+							+ StringResourceManager.RESOURCE_SUFFIX;
+
+		System.out.println("Searching for: " + file_name);
+
+		ClassLoader loader = getClass().getClassLoader();
+
+		InputStream input_stream = loader.getResourceAsStream(file_name);
+		InputStreamReader stream_reder = new InputStreamReader(input_stream);
+		BufferedReader buff_reader = new BufferedReader(stream_reder);
+
+		StringBuilder content = new StringBuilder();
+		String line = "";
 		try {
 
-			String file_name = StringResourceManager.RESOURCE_PREFIX + StringResourceManager.language
-								+ StringResourceManager.RESOURCE_SUFFIX;
-
-			// attention no such file or directory when running from jar
-			ClassLoader loader = getClass().getClassLoader();
-			FileReader reader = new FileReader(loader.getResource(file_name).getPath());
-			BufferedReader buff_reader = new BufferedReader(reader);
-
-			StringBuilder content = new StringBuilder();
-			String line = "";
-			try {
-				while ((line = buff_reader.readLine()) != null) {
-					content.append(line + "\n");
-
-				}
-
-				buff_reader.close();
-				reader.close();
-
-				// transform plain text in JSONObject
-				this.resources = new JSONObject(content.toString());
-
-				// extract array of messages from JSONObject
-				this.messages = this.resources.getJSONArray("messages");
-
-			} catch (IOException e) {
-				e.printStackTrace();
+			while ((line = buff_reader.readLine()) != null) {
+				content.append(line + "\n");
 			}
 
-		} catch (FileNotFoundException e) {
+			buff_reader.close();
+			stream_reder.close();
+			input_stream.close();
+
+			// transform plain text in JSONObject
+			this.resources = new JSONObject(content.toString());
+
+			// extract array of messages from JSONObject
+			this.messages = this.resources.getJSONArray("messages");
+
+		} catch (IOException e) {
 			e.printStackTrace();
 		}
 

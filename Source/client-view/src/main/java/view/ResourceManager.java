@@ -5,6 +5,8 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -43,9 +45,8 @@ public class ResourceManager {
 
 	private JSONArray units_list;
 	private JSONArray terrains_list;
-	
-	// methods
 
+	// methods
 
 	private ResourceManager() {
 
@@ -123,11 +124,12 @@ public class ResourceManager {
 										+ "terrain_list"
 										+ ResourceManager.CONFIG_SUFFIX;
 
-			String PHYSICAL_LIST_PATH = this.getClass().getClassLoader().getResource(LOGICAL_LIST_PATH)
-					.getPath();
+			// String PHYSICAL_LIST_PATH =
+			// this.getClass().getClassLoader().getResource(LOGICAL_LIST_PATH).getPath();
 
-			FileReader reader = new FileReader(new File(PHYSICAL_LIST_PATH));
-			BufferedReader buff_reader = new BufferedReader(reader);
+			InputStream input_stream = this.getClass().getClassLoader().getResourceAsStream(LOGICAL_LIST_PATH);
+			InputStreamReader stream_reader = new InputStreamReader(input_stream);
+			BufferedReader buff_reader = new BufferedReader(stream_reader);
 
 			StringBuilder buffer = new StringBuilder();
 
@@ -137,6 +139,8 @@ public class ResourceManager {
 			}
 
 			buff_reader.close();
+			stream_reader.close();
+			input_stream.close();
 
 			this.terrains_list = new JSONArray(buffer.toString());
 
@@ -163,11 +167,12 @@ public class ResourceManager {
 										+ "unit_list"
 										+ ResourceManager.CONFIG_SUFFIX;
 
-			String PHYSICAL_LIST_PATH = this.getClass().getClassLoader().getResource(LOGICAL_LIST_PATH)
-					.getPath();
+			// String PHYSICAL_LIST_PATH =
+			// this.getClass().getClassLoader().getResource(LOGICAL_LIST_PATH).getPath();
 
-			FileReader reader = new FileReader(new File(PHYSICAL_LIST_PATH));
-			BufferedReader buff_reader = new BufferedReader(reader);
+			InputStream input_stream = this.getClass().getClassLoader().getResourceAsStream(LOGICAL_LIST_PATH);
+			InputStreamReader stream_reader = new InputStreamReader(input_stream);
+			BufferedReader buff_reader = new BufferedReader(stream_reader);
 
 			StringBuilder buffer = new StringBuilder();
 
