@@ -242,4 +242,14 @@ public class StartForm extends Stage implements InitialPage {
 		this.user_form.setUserPassword(password);
 	}
 
+	@Override
+	public String getUsername() {
+		return this.user_form.getUsername();
+	}
+
+	@Override
+	public String getPassword() {
+		return this.user_form.getPassword();
+	}
+
 }

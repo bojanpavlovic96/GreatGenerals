@@ -1,8 +1,13 @@
 package app.launcher;
 
+import java.io.IOException;
 import java.util.List;
+import java.util.Random;
+
+import org.json.JSONObject;
 
 import com.rabbitmq.client.Channel;
+import com.rabbitmq.tools.json.JSONReader;
 
 import app.event.GameReadyHandler;
 import app.event.RoomFormActionHandler;
@@ -11,18 +16,22 @@ import app.form.ConnectionUser;
 import app.form.GameReadyEventProducer;
 import app.form.InitialPage;
 import app.form.MessageDisplay;
-import app.resource_manager.QueueNamingManager;
+import app.resource_manager.CommunicationNamingManager;
 import root.ActiveComponent;
 
 public class InitialController implements GameReadyEventProducer, ConnectionUser, ActiveComponent {
 
+	private int id;
+
 	private Channel channel;
 
-	private QueueNamingManager naming_manager;
+	private CommunicationNamingManager naming_manager;
 
 	private InitialPage initial_page;
 
 	private GameReadyHandler on_game_ready;
+
+	private String response_queue;
 
 	// game data
 	// user
@@ -39,10 +48,13 @@ public class InitialController implements GameReadyEventProducer, ConnectionUser
 
 	public InitialController(InitialPage initial_page) {
 
+		// TODO something better than this, maybe mac-address
+		this.id = (new Random()).nextInt();
+
 		this.initial_page = initial_page;
 
 		// get default queue naming manager
-		this.naming_manager = QueueNamingManager.getInstance("default");
+		this.naming_manager = CommunicationNamingManager.getInstance("default");
 
 		this.showInitialPage();
 
@@ -59,13 +71,35 @@ public class InitialController implements GameReadyEventProducer, ConnectionUser
 				// debug
 				System.out.println("Handling login event ... @ InitialController");
 
+				username = initial_page.getUsername();
+				password = initial_page.getPassword();
+
 				if (channel != null) {
 
-					// TODO send login request using this.channel
+					try {
+
+						JSONObject json_request = new JSONObject();
+						json_request.put("id", id);
+						json_request.put("username", username);
+						json_request.put("password", password);
+
+						// debug
+						System.out.println("Publishing on: " + naming_manager.getConfig("login-exchange-name")
+											+ "\nfor: "
+											+ naming_manager.getConfig("login-routing-key"));
+
+						channel.basicPublish(	naming_manager.getConfig("login-exchange-name"),
+												naming_manager.getConfig("login-routing-key"),
+												null,
+												(json_request.toString()).getBytes());
+
+					} catch (IOException e) {
+						// Auto-generated catch block
+						e.printStackTrace();
+					}
 
 					((MessageDisplay) initial_page).showInfoMessage("login-request-sent");
-
-					on_game_ready.execute();
+					// on_game_ready.execute();
 
 				} else {
 					((MessageDisplay) initial_page).showInfoMessage("please-wait-for-connection");
@@ -166,6 +200,17 @@ public class InitialController implements GameReadyEventProducer, ConnectionUser
 
 	// implement
 	private void initChannel() {
+
+		try {
+
+			this.channel.exchangeDeclare(this.naming_manager.getConfig("login-exchange-name"), "topic");
+
+			this.response_queue = this.channel.queueDeclare().getQueue();
+
+		} catch (IOException e) {
+			// Auto-generated catch block
+			e.printStackTrace();
+		}
 
 		/**
 		 * implement 

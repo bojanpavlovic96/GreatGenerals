@@ -28,11 +28,15 @@ public interface InitialPage extends MessageDisplay {
 	public void hideRoomForm();
 
 	public void setUsername(String username);
-	
+
 	public void setUserPassword(String password);
 	
-	void show(); // expose stage show
+	public String getUsername();
+	
+	public String getPassword();
+	
+	void show(); // expose show from stage
 
-	void hide(); // expose tage hide
+	void hide(); // expose hide from stage
 
 }

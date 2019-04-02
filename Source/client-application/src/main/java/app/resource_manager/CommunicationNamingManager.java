@@ -2,7 +2,6 @@ package app.resource_manager;
 
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
-import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -11,13 +10,13 @@ import java.util.Map;
 
 import org.json.JSONObject;
 
-public class QueueNamingManager {
+public class CommunicationNamingManager {
 
 	static private final String RESOURCE_PREFIX = "config/queue/";
 	private String resource_type = "default";
 	static private final String RESOURCE_SUFFIX = "-queue-config.json";
 
-	static private Map<String, QueueNamingManager> instances;
+	static private Map<String, CommunicationNamingManager> instances;
 
 	private JSONObject config_resource;
 
@@ -29,7 +28,7 @@ public class QueueNamingManager {
 	 * @return QueueNamingManager instance for given type
 	 * 
 	 */
-	static public QueueNamingManager getInstance(String config_type) {
+	static public CommunicationNamingManager getInstance(String config_type) {
 
 		// resolve configuration type
 		if (config_type == null)
@@ -37,18 +36,18 @@ public class QueueNamingManager {
 
 		config_type.toLowerCase();
 
-		if (QueueNamingManager.instances == null) {
-			QueueNamingManager.instances = new HashMap<String, QueueNamingManager>();
+		if (CommunicationNamingManager.instances == null) {
+			CommunicationNamingManager.instances = new HashMap<String, CommunicationNamingManager>();
 		}
 
-		QueueNamingManager manager = QueueNamingManager.instances.get(config_type);
+		CommunicationNamingManager manager = CommunicationNamingManager.instances.get(config_type);
 
 		if (manager == null) {
 
-			manager = new QueueNamingManager(config_type);
+			manager = new CommunicationNamingManager(config_type);
 
 			// save configuration in to the hash map for later reuse
-			QueueNamingManager.instances.put(config_type, manager);
+			CommunicationNamingManager.instances.put(config_type, manager);
 
 		}
 
@@ -56,7 +55,7 @@ public class QueueNamingManager {
 
 	}
 
-	private QueueNamingManager(String config_type) {
+	private CommunicationNamingManager(String config_type) {
 
 		this.resource_type = config_type;
 
@@ -68,10 +67,10 @@ public class QueueNamingManager {
 
 		try {
 
-			String resource_path = QueueNamingManager.RESOURCE_PREFIX + this.resource_type
-									+ QueueNamingManager.RESOURCE_SUFFIX;
+			String resource_path = CommunicationNamingManager.RESOURCE_PREFIX + this.resource_type
+									+ CommunicationNamingManager.RESOURCE_SUFFIX;
 
-			ClassLoader loader = QueueNamingManager.class.getClassLoader();
+			ClassLoader loader = CommunicationNamingManager.class.getClassLoader();
 
 			InputStream input_stream = loader.getResourceAsStream(resource_path);
 			InputStreamReader stream_reader = new InputStreamReader(input_stream);
@@ -97,11 +96,11 @@ public class QueueNamingManager {
 
 	}
 
-	public String getQueueName(String queue) {
+	public String getConfig(String queue) {
 		return this.config_resource.getString(queue);
 	}
 
-	public String getConfigName() {
+	public String getConfigType() {
 		return this.resource_type;
 	}
 

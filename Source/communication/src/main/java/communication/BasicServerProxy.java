@@ -129,11 +129,11 @@ public class BasicServerProxy implements ServerProxy {
 		System.out.println("Sending intention: " + action.getEventName() + "@ BasicServeProxy.sendIntention");
 
 		byte[] message = this.translator.translate(action);
-		
-		Command received_command=this.translator.translate(message);
-		
+
+		Command received_command = this.translator.translate(message);
+
 		this.command_queue.enqueue(received_command);
-		
+
 		// TODO somehow send it through channel
 
 	}
