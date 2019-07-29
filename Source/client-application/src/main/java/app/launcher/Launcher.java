@@ -61,7 +61,6 @@ public class Launcher extends Application {
 		System.out.println("Uri resolved ... @ Launcher.start");
 
 		this.initial_controller = new InitialController(new StartForm());
-		this.initial_controller.showInitialPage();
 
 		this.initial_controller.setOnGameReadyHandler(new GameReadyHandler() {
 
@@ -72,15 +71,15 @@ public class Launcher extends Application {
 									+ "-> called from intial controller");
 
 				ServerProxy server_proxy = new BasicServerProxy(connection_task.getChannel(),
-																new JSONMessageTranslator());
+						new JSONMessageTranslator());
 
 				// TODO somehow initialize resource manager
 				// resources could be obtained from the server
 				View view = new DrawingStage(new HexFieldManager(80, 30, 2));
 
 				// attention controller still null at this moment
-				// modelEventHandler set from controller constructor
-				// empty model (only timer and unit creator)
+				// modelEventHandler is set from controller constructor
+				// this is empty model (only timer and unit creator)
 				Model model = new DataModel();
 
 				// debug
@@ -99,6 +98,7 @@ public class Launcher extends Application {
 			}
 
 		});
+		this.initial_controller.showInitialPage();
 
 		System.out.println("Creating connection thread ... @ Launcher.start");
 		this.connection_task = new ConnectionTask(this.uri);
@@ -107,7 +107,8 @@ public class Launcher extends Application {
 			public void execute(Channel channel) {
 
 				// debug
-				System.out.println("\tconnection ready ... @ Launcher.init - connectionTask.onConnecionReady");
+				System.out
+						.println("\tconnection ready ... @ Launcher.init - connectionTask.onConnecionReady");
 
 				// debug
 				System.out.println("\tfirst stage channel set call ... @ Launcher.init");
@@ -118,6 +119,7 @@ public class Launcher extends Application {
 
 		this.connection_thread = new Thread(this.connection_task);
 		this.connection_thread.start();
+
 		// debug
 		System.out.println("Connection thread started ... @ Launcher.init");
 
@@ -129,7 +131,7 @@ public class Launcher extends Application {
 		List<String> args = this.getParameters().getRaw();
 
 		if (args.size() > 1) {
-			System.out.println("\turi initialized from arguments ...");
+			System.out.println("\tUri initialized from arguments ...");
 			this.uri = args.get(1);
 		}
 

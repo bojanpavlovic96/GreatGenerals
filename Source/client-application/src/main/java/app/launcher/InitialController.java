@@ -84,7 +84,8 @@ public class InitialController implements GameReadyEventProducer, ConnectionUser
 						json_request.put("password", password);
 
 						// debug
-						System.out.println("Publishing on: " + naming_manager.getConfig("login-exchange-name")
+						System.out.println("Publishing on: "
+											+ naming_manager.getConfig("login-exchange-name")
 											+ "\nfor: "
 											+ naming_manager.getConfig("login-routing-key"));
 
@@ -92,6 +93,10 @@ public class InitialController implements GameReadyEventProducer, ConnectionUser
 												naming_manager.getConfig("login-routing-key"),
 												null,
 												(json_request.toString()).getBytes());
+
+						// debug
+						System.out.println("Calling on_game_ready event handler ... ");
+						on_game_ready.execute();
 
 					} catch (IOException e) {
 						// Auto-generated catch block
@@ -203,7 +208,8 @@ public class InitialController implements GameReadyEventProducer, ConnectionUser
 
 		try {
 
-			this.channel.exchangeDeclare(this.naming_manager.getConfig("login-exchange-name"), "topic");
+			this.channel.exchangeDeclare(	this.naming_manager.getConfig("login-exchange-name"),
+											"topic");
 
 			this.response_queue = this.channel.queueDeclare().getQueue();
 

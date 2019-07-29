@@ -1,4 +1,4 @@
 {
 	"login-exchange-name": "login-exc",
-	"login-routing-key": "login"
+	"login-routing-key": "login-request"
 }
