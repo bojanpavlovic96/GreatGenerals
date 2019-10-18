@@ -182,12 +182,12 @@ public class StartForm extends Stage implements InitialPage {
 
 	}
 
-	public String getStatusMessage() {
-		return ((MessageDisplay) this.header_form).getStatusMessage();
+	public String getCurrentStatusMessage() {
+		return ((MessageDisplay) this.header_form).getCurrentStatusMessage();
 	}
 
-	public String getInfoMessage() {
-		return ((MessageDisplay) this.header_form).getInfoMessage();
+	public String getCurrentInfoMessage() {
+		return ((MessageDisplay) this.header_form).getCurrentInfoMessage();
 	}
 
 	// initial page interface

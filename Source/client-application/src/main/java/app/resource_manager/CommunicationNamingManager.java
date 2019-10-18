@@ -31,7 +31,7 @@ public class CommunicationNamingManager {
 	static public CommunicationNamingManager getInstance(String config_type) {
 
 		// resolve configuration type
-		if (config_type == null)
+		if (config_type == null || config_type.isEmpty())
 			config_type = "default";
 
 		config_type.toLowerCase();
@@ -100,6 +100,7 @@ public class CommunicationNamingManager {
 		return this.config_resource.getString(queue);
 	}
 
+	
 	public String getConfigType() {
 		return this.resource_type;
 	}

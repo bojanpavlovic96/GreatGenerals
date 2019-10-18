@@ -1,4 +1,5 @@
 #!/bin/bash
+# used by ordered build
 
 build() {
 	

@@ -1,7 +1,5 @@
 package view;
 
-import java.awt.Dimension;
-import java.awt.Toolkit;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -15,7 +13,6 @@ import javafx.scene.Group;
 import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
-import javafx.scene.control.Button;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.ScrollPane.ScrollBarPolicy;
 import javafx.scene.input.KeyCombination;
@@ -25,7 +22,6 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.paint.Color;
 import javafx.stage.Screen;
 import javafx.stage.Stage;
-
 import root.command.BasicCommandProcessor;
 import root.command.CommandProcessor;
 import root.command.CommandQueue;
@@ -35,13 +31,14 @@ import root.view.event.ViewEventArg;
 import root.view.event.ViewEventHandler;
 import root.view.field.ViewField;
 import root.view.menu.Menu;
+import view.command.FxCommandProcessor;
 import view.component.ViewFieldManager;
-import view.component.menu.Option;
 import view.component.menu.OptionMenu;
 
 // attention 
 // attention scroll pane (sometimes) throws some exception but it is harmless
 // attention 
+// (somehow lost later in development... )
 
 public class DrawingStage extends Stage implements View {
 
@@ -94,7 +91,6 @@ public class DrawingStage extends Stage implements View {
 
 	private void initStage() {
 
-		// set full screen mode
 		this.setFullScreen(true);
 		// disable exit from full screen
 		this.setFullScreenExitKeyCombination(KeyCombination.NO_MATCH);
@@ -161,10 +157,7 @@ public class DrawingStage extends Stage implements View {
 	private void initCommandQueue() {
 
 		this.command_queue = new CommandQueue();
-
-		this.executor = Executors.newSingleThreadExecutor();
-
-		this.command_processor = new BasicCommandProcessor(this.executor, this);
+		this.command_processor = new FxCommandProcessor(this);
 
 		this.command_queue.setCommandProcessor(this.command_processor);
 
@@ -174,12 +167,11 @@ public class DrawingStage extends Stage implements View {
 
 		this.handlers_map = new HashMap<String, List<ViewEventHandler>>();
 
-		this.second_layer_canvas.addEventHandler(MouseEvent.MOUSE_CLICKED, new EventHandler<MouseEvent>() {
+		EventHandler<MouseEvent> eventHandler = new EventHandler<MouseEvent>() {
 
 			public void handle(MouseEvent arg) {
-
-				Point2D field_position = field_manager.calcStoragePosition(new Point2D(	arg.getX(),
-																						arg.getY()));
+				Point2D field_position = field_manager
+						.calcStoragePosition(new Point2D(arg.getX(), arg.getY()));
 
 				String event_name = "";
 
@@ -199,10 +191,9 @@ public class DrawingStage extends Stage implements View {
 					}
 
 				}
-
 			}
-
-		});
+		};
+		this.second_layer_canvas.addEventHandler(MouseEvent.MOUSE_CLICKED, eventHandler);
 
 		// key event handler name format
 		// key-event-char-k - 'k' pressed button
@@ -309,7 +300,6 @@ public class DrawingStage extends Stage implements View {
 	@Override
 	public void shutdown() {
 
-		// called after application stop
 		this.executor.shutdown();
 
 	}
@@ -404,8 +394,8 @@ public class DrawingStage extends Stage implements View {
 	@Override
 	public void adjustCanvasSize(Point2D point) {
 
-		Point2D real_position = this.field_manager.calcRealPosition(new Point2D(point.getX() + 1,
-																				point.getY() + 1));
+		Point2D real_position = this.field_manager
+				.calcRealPosition(new Point2D(point.getX() + 1, point.getY() + 1));
 
 		if (real_position.getX() > this.STAGE_WIDTH)
 			this.canvas_width = real_position.getX();

@@ -2,6 +2,6 @@ package app.event;
 
 public interface GameReadyHandler {
 
-	void execute();
+	void execute(String username, String roomName);
 
 }

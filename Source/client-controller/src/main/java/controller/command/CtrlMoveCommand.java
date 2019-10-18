@@ -1,5 +1,7 @@
 package controller.command;
 
+import java.util.List;
+
 import javafx.geometry.Point2D;
 import root.command.Command;
 import root.command.CommandDrivenComponent;
@@ -38,8 +40,8 @@ public class CtrlMoveCommand extends Command {
 	public void run() {
 
 		// move unit
-		this.base_field.getUnit().reallocateTo(this.second_field);
-		//  !!! unit is now on second field
+		this.base_field.getUnit().relocateTo(this.second_field);
+		// !!! unit is now on second field
 
 		// redraw both fields
 		CommandQueue view_command_queue = ((Controller) super.target_component).getConsumerQueue();
@@ -52,11 +54,13 @@ public class CtrlMoveCommand extends Command {
 		view_command_queue.enqueue(new DrawFieldCommand(this.base_field));
 		view_command_queue.enqueue(new DrawFieldCommand(this.second_field));
 
-		this.second_field.getUnit().getMoveType().getPath().remove(0);
+		List<Field> unit_path = this.second_field.getUnit().getMoveType().getPath();
+
+		unit_path.remove(0);
 
 		// if path is not empty
 		// !!! unit is now on second field
-		if (!this.second_field.getUnit().getMoveType().getPath().isEmpty()) {
+		if (!unit_path.isEmpty()) {
 			// continue moving
 
 			this.second_field.getUnit().getMoveType().move();

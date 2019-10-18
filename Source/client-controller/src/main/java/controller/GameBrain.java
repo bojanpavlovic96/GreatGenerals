@@ -62,11 +62,12 @@ public class GameBrain implements Controller {
 		// ModelEventHandler (maybe this isn't the best approach)
 		this.model.setEventHandler(new DefaultModelEventHandler(this));
 
-		// --- connect serverProxy and controller
+		// connect serverProxy and controller
 
 		this.server_command_queue = ((CommandProducer) this.server_proxy).getConsumerQueue();
 
-		// server commands executor
+		// --- server commands executor
+
 		this.server_command_executor = Executors.newSingleThreadExecutor();
 		this.server_command_processor = new BasicCommandProcessor(this.server_command_executor, this);
 		this.server_command_queue.setCommandProcessor(this.server_command_processor);

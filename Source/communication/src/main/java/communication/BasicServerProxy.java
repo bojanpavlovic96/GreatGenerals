@@ -27,11 +27,19 @@ public class BasicServerProxy implements ServerProxy {
 
 	private CommandQueue command_queue;
 
+	// used for calculating routing key
+	private String username;
+	private String room_name;
+
 	// constructors
 
-	public BasicServerProxy(Channel channel, MessageTranslator translator) {
+	public BasicServerProxy(Channel channel, MessageTranslator translator, String username,
+			String room_name) {
 		this.channel = channel;
 		this.translator = translator;
+
+		this.room_name = room_name;
+		this.room_name = room_name;
 
 		this.command_queue = new CommandQueue();
 
@@ -66,17 +74,11 @@ public class BasicServerProxy implements ServerProxy {
 
 			for (int j = left; j < right; j++) {
 				if (i % 2 == 0 && j % 5 == 0)
-					field_models.add(new ModelField(new Point2D(j, i),
-													players.get(player_counter),
-													true,
-													null,
-													new Terrain("mountains", 1)));
+					field_models.add(new ModelField(new Point2D(j, i), players.get(player_counter), true,
+							null, new Terrain("mountains", 1)));
 				else
-					field_models.add(new ModelField(new Point2D(j, i),
-													players.get(player_counter),
-													true,
-													null,
-													new Terrain("water", 1)));
+					field_models.add(new ModelField(new Point2D(j, i), players.get(player_counter), true,
+							null, new Terrain("water", 1)));
 
 				player_counter++;
 				player_counter %= 3;

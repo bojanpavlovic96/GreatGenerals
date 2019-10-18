@@ -120,11 +120,11 @@ public class HeaderForm extends VBox implements MessageDisplay, HasLabels {
 
 	// MessageDisplay interface
 
-	public String getStatusMessage() {
+	public String getCurrentStatusMessage() {
 		return this.status_message.getText();
 	}
 
-	public String getInfoMessage() {
+	public String getCurrentInfoMessage() {
 		return this.info_message.getText();
 	}
 
@@ -136,13 +136,11 @@ public class HeaderForm extends VBox implements MessageDisplay, HasLabels {
 
 		if (message != null) {
 			this.status_message.setText(message.getMessage());
-			this.status_message
-					.setStyle("-fx-background-color: " + message.getColor() + this.ALPHA_VALUE);
+			this.status_message.setStyle("-fx-background-color: " + message.getColor() + this.ALPHA_VALUE);
 		} else {
 			// just passed message with white background
 			this.status_message.setText(status_message_name);
-			this.status_message
-					.setStyle("-fx-background-color: #111111" + this.ALPHA_VALUE + ";\n");
+			this.status_message.setStyle("-fx-background-color: #111111" + this.ALPHA_VALUE + ";\n");
 		}
 
 	}
@@ -159,8 +157,7 @@ public class HeaderForm extends VBox implements MessageDisplay, HasLabels {
 
 		if (message != null) {
 			this.info_message.setText(message.getMessage());
-			this.info_message
-					.setStyle("-fx-background-color: " + message.getColor() + this.ALPHA_VALUE);
+			this.info_message.setStyle("-fx-background-color: " + message.getColor() + this.ALPHA_VALUE);
 		} else {
 			// just passed message with white background
 			this.info_message.setText("Unknown: " + info_message_name);

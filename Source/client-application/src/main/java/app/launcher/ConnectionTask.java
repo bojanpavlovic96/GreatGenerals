@@ -9,28 +9,33 @@ import com.rabbitmq.client.Channel;
 import com.rabbitmq.client.Connection;
 import com.rabbitmq.client.ConnectionFactory;
 
+import app.event.ConnectionEventHandler;
 import app.event.ConnectionReadyHandler;
 import root.ActiveComponent;
 
 public class ConnectionTask implements Runnable, ActiveComponent {
 
-	private boolean connection_established = false;
-
-	private String connection_id;
-
 	private String connection_uri;
 
 	private ConnectionFactory conn_factory;
 	private Connection connection;
-	private Channel channel;
 
-	private ConnectionReadyHandler on_connection_ready;
+	private ConnectionEventHandler connectionReadyHandler;
+	private ConnectionEventHandler connectionFailedHandler;
 
 	public ConnectionTask(String uri) {
 
 		this.connection_uri = uri;
 
-		this.connection_id = Integer.toString((int) Math.random());
+	}
+
+	public ConnectionTask(String uri, ConnectionEventHandler connectionReadyHandler,
+			ConnectionEventHandler connectionFailedHandler) {
+		this(uri);
+
+		this.connectionReadyHandler = connectionReadyHandler;
+		this.connectionFailedHandler = connectionFailedHandler;
+
 	}
 
 	public void run() {
@@ -45,54 +50,67 @@ public class ConnectionTask implements Runnable, ActiveComponent {
 			System.out.println("Creating connection ... @ ConnectionTask.run");
 			this.connection = this.conn_factory.newConnection();
 
-			if (this.getConnection().isOpen()) {
+			if (this.connection != null && this.connection.isOpen()) {
 
-				this.channel = this.getConnection().createChannel();
+				// debug
+				System.out.println("Connection established ...");
+				System.out.println("MQ address: " + this.connection.getAddress());
 
-				if (this.channel != null && this.channel.isOpen()) {
+				if (this.connectionReadyHandler != null) {
 
-					// debug
-					System.out.println("Connection established ...");
-					System.out.println("MQ address: " + this.connection.getAddress());
+					System.out.println("Executing connection ready handler ... @ Launcher.ConnectionThread");
 
-					// debug
-					System.out.println("Channel num: " + this.channel.getChannelNumber());
-
-					if (this.on_connection_ready != null) {
-
-						// debug
-						System.out.println("Executing on_connection_handler ... @ Launcher.ConnectionThread");
-
-						this.connection_established = true;
-
-						this.on_connection_ready.execute(this.channel);
-					}
+					this.connectionReadyHandler.execute(this);
 
 				}
+
+			} else {
+				if (this.getConnectionFailedHandler() != null) {
+					System.out.println("Connection failed ... @ Launcher.ConnectionThread");
+					this.getConnectionFailedHandler().execute(this);
+				}
+			}
+		} catch (Exception e) {
+
+			// only Exception is catch because there is no special handling for every single
+			// exception
+			// just print stack trace and call connection failed handler
+
+			// TODO maybe add some logic for retrying to connect
+			// maybe list of broker addresses or something like that
+
+			e.printStackTrace();
+
+			System.out.println("Connection failed ... @ Launcher.ConnectionThread");
+
+			if (this.getConnectionFailedHandler() != null) {
+				this.getConnectionFailedHandler().execute(this);
 			}
 
-		} catch (KeyManagementException e) {
-			e.printStackTrace();
-		} catch (NoSuchAlgorithmException e) {
-			e.printStackTrace();
-		} catch (URISyntaxException e) {
-			e.printStackTrace();
-		} catch (IOException e) {
-			e.printStackTrace();
 		}
+
+		// all possible exceptions
+		// } catch (KeyManagementException e) {
+		// e.printStackTrace();
+		// } catch (NoSuchAlgorithmException e) {
+		// e.printStackTrace();
+		// } catch (URISyntaxException e) {
+		// e.printStackTrace();
+		// } catch (IOException e) {
+		// e.printStackTrace();
+		// } finally {
+		//
+		// System.out.println("Connection failed ... @ Launcher.ConnectionThread");
+		// if (this.getConnectionFailedHandler() != null) {
+		// this.getConnectionFailedHandler().execute(this);
+		// }
+		//
+		// }
 	}
 
 	public void shutdown() {
 
 		try {
-
-			// close channel
-			if (this.getChannel() != null && this.getChannel().isOpen()) {
-				this.getChannel().close();
-
-				// debug
-				System.out.println("Closing channel ... @ ConnectionTask.shutdown");
-			}
 
 			// close connection
 			if (this.getConnection() != null && this.getConnection().isOpen()) {
@@ -115,23 +133,50 @@ public class ConnectionTask implements Runnable, ActiveComponent {
 	}
 
 	public Channel getChannel() {
-		return channel;
-	}
 
-	public ConnectionReadyHandler getOn_connection_ready() {
-		return on_connection_ready;
-	}
+		try {
 
-	public void setOnConnectionReady(ConnectionReadyHandler on_connection_ready) {
-		this.on_connection_ready = on_connection_ready;
-	}
+			return this.connection.createChannel();
 
-	public String getConnectionId() {
-		return this.connection_id;
+		} catch (IOException e) {
+
+			e.printStackTrace();
+
+			if (this.getConnectionFailedHandler() != null) {
+				this.getConnectionFailedHandler().execute(this);
+			}
+
+		}
+
+		return null;
 	}
 
 	public boolean isConnected() {
-		return this.connection_established == true;
+		return this.isConnected();
+	}
+
+	public ConnectionEventHandler getConnectionReadyHandler() {
+		return connectionReadyHandler;
+	}
+
+	public void setConnectionReadyHandler(ConnectionEventHandler connectionReadyHandler) {
+
+		this.connectionReadyHandler = connectionReadyHandler;
+
+		if (this.isConnected()) {
+			if (this.connectionReadyHandler != null) {
+				this.connectionReadyHandler.execute(this);
+			}
+		}
+
+	}
+
+	public ConnectionEventHandler getConnectionFailedHandler() {
+		return connectionFailedHandler;
+	}
+
+	public void setConnectionFailedHandler(ConnectionEventHandler connectionFailedHandler) {
+		this.connectionFailedHandler = connectionFailedHandler;
 	}
 
 }

@@ -20,7 +20,7 @@ public interface Unit extends Cloneable {
 	// attention maybe list of move types
 	MoveType getMoveType();
 
-	void reallocateTo(Field next_field);
+	void relocateTo(Field next_field);
 
 	boolean haveAirAttack();
 

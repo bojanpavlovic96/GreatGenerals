@@ -13,6 +13,8 @@ import view.command.LoadBoardCommand;
 
 public class CtrlInitializeCommand extends Command {
 
+	private String username;
+	
 	private List<PlayerData> players;
 	private List<Field> fields;
 

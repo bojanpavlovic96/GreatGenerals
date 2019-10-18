@@ -5,8 +5,10 @@ import java.util.List;
 
 import com.rabbitmq.client.Channel;
 
+import app.event.ConnectionEventHandler;
 import app.event.ConnectionReadyHandler;
 import app.event.GameReadyHandler;
+import app.form.ConnectionUser;
 import app.form.StartForm;
 import communication.BasicServerProxy;
 import communication.translator.JSONMessageTranslator;
@@ -24,17 +26,18 @@ import view.component.HexFieldManager;
 
 public class Launcher extends Application {
 
-	private String password = "lzMIQ5SJvR083poynUF6Rc8T_QPNUJow";
-	private String username = "wdvozwsr";
-	private String hostname = "raven.rmq.cloudamqp.com";
-	private String uri = "amqp://" + username + ":" + password + "@" + hostname + "/" + username;
+	// private String password = "lzMIQ5SJvR083poynUF6Rc8T_QPNUJow";
+	// private String username = "wdvozwsr";
+	// private String hostname = "raven.rmq.cloudamqp.com";
+	// private String uri = "amqp://" + username + ":" + password + "@" + hostname +
+	// "/" + username;
+
+	private static String hostname = "localhost";
+	private static String uri = "amqp://" + hostname;
 
 	private InitialController initial_controller;
 
 	// TODO leave this application thread as game thread
-	// remove gameThread and gameTask
-	// private Thread game_thread;
-	// private GameTask game_task;
 
 	private Thread connection_thread;
 	private ConnectionTask connection_task;
@@ -64,17 +67,19 @@ public class Launcher extends Application {
 
 		this.initial_controller.setOnGameReadyHandler(new GameReadyHandler() {
 
-			public void execute() {
+			public void execute(String username, String room_name) {
 
 				// debug
 				System.out.println("Creating game controller ... @ Launcher.onGameReadyEvent "
 									+ "-> called from intial controller");
 
 				ServerProxy server_proxy = new BasicServerProxy(connection_task.getChannel(),
-						new JSONMessageTranslator());
+						new JSONMessageTranslator(), username, room_name);
 
 				// TODO somehow initialize resource manager
 				// resources could be obtained from the server
+				// values passed to the hexFieldManager should also be extracted from
+				// configuration
 				View view = new DrawingStage(new HexFieldManager(80, 30, 2));
 
 				// attention controller still null at this moment
@@ -101,10 +106,11 @@ public class Launcher extends Application {
 		this.initial_controller.showInitialPage();
 
 		System.out.println("Creating connection thread ... @ Launcher.start");
-		this.connection_task = new ConnectionTask(this.uri);
-		this.connection_task.setOnConnectionReady(new ConnectionReadyHandler() {
+		this.connection_task = new ConnectionTask(this.uri, new ConnectionEventHandler() {
 
-			public void execute(Channel channel) {
+			// connection ready handler
+			@Override
+			public void execute(ConnectionTask connectionTask) {
 
 				// debug
 				System.out
@@ -112,7 +118,31 @@ public class Launcher extends Application {
 
 				// debug
 				System.out.println("\tfirst stage channel set call ... @ Launcher.init");
-				initial_controller.setCommunicationChannel(channel);
+				Channel channel = connectionTask.getChannel();
+				if (channel != null && channel.isOpen()) {
+					initial_controller.setCommunicationChannel(connectionTask.getChannel());
+				} else {
+
+					// null is returned only if exception occurred in .getChannel function
+					// in that case connection failed handler is called (inside catch block)
+					// so this case is covered, just continue with execution
+
+				}
+
+			}
+			// connection failed handler
+		}, new ConnectionEventHandler() {
+
+			@Override
+			public void execute(ConnectionTask connectionTask) {
+
+				// debug
+				System.out.println("Connection failed for some reason ... @ ConnectionEventHandler");
+
+				ConnectionUser connectionUser = (ConnectionUser) initial_controller;
+				if (connectionUser != null) {
+					connectionUser.handleConnectionFailure();
+				}
 
 			}
 		});

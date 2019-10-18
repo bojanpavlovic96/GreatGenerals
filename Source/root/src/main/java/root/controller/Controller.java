@@ -11,14 +11,13 @@ import root.model.component.option.FieldOption;
 import root.model.event.ModelEventHandler;
 import root.view.View;
 
-public interface Controller	extends
-							ModelEventHandler,
-							// has server proxy
-							ServerSlave,
-							// command received from serve proxy
-							CommandDrivenComponent,
-							// produces view commands
-							CommandProducer {
+public interface Controller extends ModelEventHandler,
+		// has server proxy
+		ServerSlave,
+		// command received from server proxy
+		CommandDrivenComponent,
+		// produces view commands
+		CommandProducer {
 
 	View getView();
 

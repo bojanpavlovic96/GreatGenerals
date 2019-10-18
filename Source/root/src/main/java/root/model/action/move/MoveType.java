@@ -1,6 +1,5 @@
 package root.model.action.move;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ScheduledExecutorService;
 
@@ -83,6 +82,7 @@ public abstract class MoveType implements Cloneable, Runnable {
 
 	public List<Field> calculatePath(Field target_field) {
 
+		this.destination_field = target_field;
 		this.path = this.path_finder.findPath(this.my_field, target_field);
 
 		return this.path;

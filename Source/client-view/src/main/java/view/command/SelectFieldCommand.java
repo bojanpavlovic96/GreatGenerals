@@ -38,10 +38,10 @@ public class SelectFieldCommand extends Command {
 
 	public void run() {
 
-		Platform.runLater(new Runnable() {
+//		Platform.runLater(new Runnable() {
 
-			@Override
-			public void run() {
+//			@Override
+//			public void run() {
 
 				GraphicsContext gc = ((View) target_component).getMainGraphicContext();
 
@@ -51,8 +51,8 @@ public class SelectFieldCommand extends Command {
 
 				gc.restore();
 
-			}
-		});
+//			}
+		//		});
 	}
 
 	@Override

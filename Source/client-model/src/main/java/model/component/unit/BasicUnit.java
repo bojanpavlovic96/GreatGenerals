@@ -75,7 +75,7 @@ public class BasicUnit implements Unit {
 		return clone;
 	}
 
-	public void reallocateTo(Field next_field) {
+	public void relocateTo(Field next_field) {
 
 		// remove from current field
 		this.my_field.setUnit(null);

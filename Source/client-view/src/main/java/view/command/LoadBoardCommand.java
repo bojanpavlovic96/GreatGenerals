@@ -21,47 +21,47 @@ public class LoadBoardCommand extends Command {
 
 	public void run() {
 
-		Platform.runLater(new Runnable() {
+		// Platform.runLater(new Runnable() {
+		// @Override
+		// public void run() {
 
-			public void run() {
+		DrawFieldCommand draw_hex_comm = null;
 
-				DrawFieldCommand draw_hex_comm = null;
+		// hide canvas
+		((View) target_component).setCanvasVisibility(false);
 
-				// hide canvas
-				((View) target_component).setCanvasVisibility(false);
+		int most_x = -10;
+		int most_y = -10;
 
-				int most_x = -10;
-				int most_y = -10;
+		for (Field field : models) {
 
-				for (Field field : models) {
+			if (field.getStoragePosition().getX() > most_x)
+				most_x = (int) field.getStoragePosition().getX();
 
-					if (field.getStoragePosition().getX() > most_x)
-						most_x = (int) field.getStoragePosition().getX();
+			if (field.getStoragePosition().getY() > most_y)
+				most_y = (int) field.getStoragePosition().getY();
 
-					if (field.getStoragePosition().getY() > most_y)
-						most_y = (int) field.getStoragePosition().getY();
+		}
 
-				}
+		((View) target_component).adjustCanvasSize(new Point2D(most_x, most_y));
 
-				((View) target_component).adjustCanvasSize(new Point2D(most_x, most_y));
+		ClearViewCommand clear_command = new ClearViewCommand();
+		clear_command.setTargetComponent(target_component);
+		clear_command.run();
 
-				ClearViewCommand clear_command = new ClearViewCommand();
-				clear_command.setTargetComponent(target_component);
-				clear_command.run();
+		for (Field field : models) {
 
-				for (Field field : models) {
+			draw_hex_comm = new DrawFieldCommand(field);
+			draw_hex_comm.setTargetComponent(target_component);
+			draw_hex_comm.run();
 
-					draw_hex_comm = new DrawFieldCommand(field);
-					draw_hex_comm.setTargetComponent(target_component);
-					draw_hex_comm.run();
+		}
 
-				}
+		// show canvas
+		((View) target_component).setCanvasVisibility(true);
 
-				// show canvas
-				((View) target_component).setCanvasVisibility(true);
-
-			}
-		});
+		// }
+		// });
 
 	}
 

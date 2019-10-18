@@ -7,7 +7,6 @@ import java.util.Random;
 import org.json.JSONObject;
 
 import com.rabbitmq.client.Channel;
-import com.rabbitmq.tools.json.JSONReader;
 
 import app.event.GameReadyHandler;
 import app.event.RoomFormActionHandler;
@@ -46,6 +45,7 @@ public class InitialController implements GameReadyEventProducer, ConnectionUser
 
 	// methods
 
+	// TODO onGameReadyHandler should be passed in constructor
 	public InitialController(InitialPage initial_page) {
 
 		// TODO something better than this, maybe mac-address
@@ -66,13 +66,13 @@ public class InitialController implements GameReadyEventProducer, ConnectionUser
 
 		this.initial_page.setOnLoginHandler(new UserFormActionHandler() {
 
-			public void execute(String username, String password) {
+			public void execute(String _username, String _password) {
 
 				// debug
 				System.out.println("Handling login event ... @ InitialController");
 
-				username = initial_page.getUsername();
-				password = initial_page.getPassword();
+				username = _username;
+				password = _password;
 
 				if (channel != null) {
 
@@ -84,8 +84,7 @@ public class InitialController implements GameReadyEventProducer, ConnectionUser
 						json_request.put("password", password);
 
 						// debug
-						System.out.println("Publishing on: "
-											+ naming_manager.getConfig("login-exchange-name")
+						System.out.println("Publishing on: " + naming_manager.getConfig("login-exchange-name")
 											+ "\nfor: "
 											+ naming_manager.getConfig("login-routing-key"));
 
@@ -96,7 +95,7 @@ public class InitialController implements GameReadyEventProducer, ConnectionUser
 
 						// debug
 						System.out.println("Calling on_game_ready event handler ... ");
-						on_game_ready.execute();
+						on_game_ready.execute(username, room_name);
 
 					} catch (IOException e) {
 						// Auto-generated catch block
@@ -195,6 +194,7 @@ public class InitialController implements GameReadyEventProducer, ConnectionUser
 	// connection user interface
 
 	public void setCommunicationChannel(Channel channel) {
+
 		this.channel = channel;
 
 		this.initial_page.showStatusMessage("connection-established");
@@ -208,8 +208,7 @@ public class InitialController implements GameReadyEventProducer, ConnectionUser
 
 		try {
 
-			this.channel.exchangeDeclare(	this.naming_manager.getConfig("login-exchange-name"),
-											"topic");
+			this.channel.exchangeDeclare(this.naming_manager.getConfig("login-exchange-name"), "topic");
 
 			this.response_queue = this.channel.queueDeclare().getQueue();
 
@@ -251,13 +250,24 @@ public class InitialController implements GameReadyEventProducer, ConnectionUser
 
 	}
 
+	@Override
 	public Channel getCommunicationChannel() {
 		return this.channel;
 	}
 
-	// should be shutdown interface
-
+	@Override
 	public void shutdown() {
+
+		if (this.channel != null && this.channel.isOpen()) {
+			try {
+
+				this.channel.close();
+
+			} catch (IOException e) {
+				// Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
 
 	}
 
@@ -269,6 +279,23 @@ public class InitialController implements GameReadyEventProducer, ConnectionUser
 
 	public GameReadyHandler getGameReadyHandler() {
 		return this.on_game_ready;
+	}
+
+	// from connection user
+	@Override
+	public void handleConnectionFailure() {
+
+		if (this.channel != null && this.channel.isOpen()) {
+			try {
+				this.channel.close();
+			} catch (IOException e) {
+				// Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+
+		this.initial_page.showStatusMessage("server-unreachable");
+
 	}
 
 }

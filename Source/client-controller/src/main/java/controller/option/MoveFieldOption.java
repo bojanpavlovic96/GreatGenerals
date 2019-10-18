@@ -1,5 +1,7 @@
 package controller.option;
 
+import java.util.List;
+
 import root.controller.Controller;
 import root.model.component.Field;
 import root.model.component.option.FieldOption;
@@ -13,13 +15,14 @@ public class MoveFieldOption extends FieldOption {
 
 	@Override
 	public void run() {
-		if (this.primary_field.getUnit().getMoveType().getPath() != null) {
+
+		List<Field> path = this.primary_field.getUnit().getMoveType().getPath();
+
+		if (path != null && !path.isEmpty()) {
 			this.primary_field.getUnit().getMoveType().move();
 		} else {
-			SelectPathFieldOption select_path = new SelectPathFieldOption(	"",
-																			true,
-																			this.controller,
-																			this.primary_field);
+			SelectPathFieldOption select_path = new SelectPathFieldOption("", true, this.controller,
+					this.primary_field);
 			select_path.setSecondaryField(this.secondary_field);
 			select_path.run();
 			// path is calculated, set and selected

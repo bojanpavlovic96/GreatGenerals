@@ -24,15 +24,22 @@ public class BasicMove extends MoveType {
 
 	}
 
+	/* (non-Javadoc)
+	 * @see root.model.action.move.MoveType#move()
+	 * 
+	 * this implementation only starts timer for move.
+	 * timer just raise MoveModelEvent
+	 * 
+	 * 
+	 */
 	@Override
 	public void move() {
 
-		// debug
-		System.out.println("move from : " + this.my_field.getStoragePosition());
-		System.out.println("move to: " + this.path.get(0).getStoragePosition());
-
 		if (this.path != null && !this.path.isEmpty()) {
-			// path exists and contains some fields
+
+			// debug
+			System.out.println("move from : " + this.my_field.getStoragePosition());
+			System.out.println("move to: " + this.path.get(0).getStoragePosition());
 
 			Field next_field = path.get(0);
 
@@ -48,6 +55,9 @@ public class BasicMove extends MoveType {
 
 			this.timer.schedule(this, this.move_delay, TimeUnit.MILLISECONDS);
 
+		} else {
+			// debug
+			System.out.println("Move called on null or empty path ... @ BasicMove.move()");
 		}
 
 	}
@@ -66,8 +76,7 @@ public class BasicMove extends MoveType {
 	@Override
 	public void run() {
 		this.on_event.execute(new MoveModelEventArg(this.my_field.getPlayer().getUsername(),
-													this.my_field.getStoragePosition(),
-													this.path.get(0).getStoragePosition()));
+				this.my_field.getStoragePosition(), this.path.get(0).getStoragePosition()));
 	}
 
 }
