@@ -5,14 +5,10 @@ import java.util.List;
 
 import javafx.geometry.Point2D;
 import javafx.geometry.Point3D;
-import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.Image;
 import javafx.scene.paint.Color;
-import javafx.scene.shape.Line;
-import javafx.scene.shape.Path;
 import root.model.component.Field;
-import root.model.component.Unit;
 import root.view.field.ViewField;
 import view.ResourceManager;
 

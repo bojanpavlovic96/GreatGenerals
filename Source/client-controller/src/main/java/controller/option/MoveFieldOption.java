@@ -2,9 +2,12 @@ package controller.option;
 
 import java.util.List;
 
+import root.command.Command;
+import root.command.CommandQueue;
 import root.controller.Controller;
 import root.model.component.Field;
 import root.model.component.option.FieldOption;
+import view.command.ClearTopLayerCommand;
 
 public class MoveFieldOption extends FieldOption {
 
@@ -30,6 +33,12 @@ public class MoveFieldOption extends FieldOption {
 			this.primary_field.getUnit().getMoveType().move();
 
 		}
+
+		// TODO next 3 lines should be moved inside fieldOption.run method
+		CommandQueue viewQueue = this.controller.getConsumerQueue();
+		Command hideMenuCommand = new ClearTopLayerCommand();
+		viewQueue.enqueue(hideMenuCommand);
+
 	}
 
 	@Override

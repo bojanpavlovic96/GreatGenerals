@@ -20,6 +20,7 @@ import root.communication.ServerProxy;
 import root.controller.Controller;
 import root.model.Model;
 import root.model.component.Field;
+import root.model.component.Unit;
 import root.model.component.option.FieldOption;
 import root.model.event.ModelEventArg;
 import root.view.View;
@@ -27,6 +28,7 @@ import root.view.event.ViewEventArg;
 import root.view.event.ViewEventHandler;
 
 import view.command.SelectFieldCommand;
+import view.command.SelectUnitCommand;
 import view.command.ShowFieldInfoCommand;
 import view.command.ZoomInCommand;
 import view.command.ZoomOutCommand;
@@ -45,6 +47,7 @@ public class GameBrain implements Controller {
 	private Model model;
 
 	private Field selected_field;
+	private Unit selected_unit;
 	private List<Command> to_undo;
 
 	private List<FieldOption> field_options;
@@ -96,6 +99,8 @@ public class GameBrain implements Controller {
 
 				if (focused_field != null) {
 
+					selected_field = focused_field;
+
 					// undo all previous commands
 					if (!to_undo.isEmpty()) {
 						for (int i = (to_undo.size() - 1); i >= 0; i--) {
@@ -104,13 +109,31 @@ public class GameBrain implements Controller {
 					}
 					to_undo.clear();
 
-					// execute new command
-					Command select_command = new SelectFieldCommand(focused_field);
-					view_command_queue.enqueue(select_command);
+					Command nextCommand = null;
 
-					to_undo.add(select_command);
+					Unit focused_unit = focused_field.getUnit();
+					if (focused_unit != null) {
 
-					selected_field = focused_field;
+						// unit is in focus
+
+						selected_unit = focused_unit;
+
+						nextCommand = new SelectUnitCommand(selected_unit);
+
+					} else {
+
+						// this field doesn't have any unit on it
+
+						nextCommand = new SelectFieldCommand(focused_field);
+
+					}
+
+					if (nextCommand != null) {
+
+						view_command_queue.enqueue(nextCommand);
+						to_undo.add(nextCommand);
+
+					}
 
 				}
 

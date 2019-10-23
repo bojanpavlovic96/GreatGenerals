@@ -13,10 +13,18 @@ public class UnselectFieldCommand extends Command {
 
 	private ViewField view_field;
 
-	public UnselectFieldCommand(Field model) {
+	public UnselectFieldCommand(Field modelField) {
 		super("unselect-field-view-command");
 
-		this.model_field = model;
+		this.model_field = modelField;
+
+	}
+
+	public UnselectFieldCommand(Field modelField, CommandDrivenComponent targetComponent) {
+		super("unselect-field-view-command", targetComponent);
+
+		this.model_field = modelField;
+		this.view_field = ((View) this.target_component).convertToViewField(this.model_field);
 
 	}
 
@@ -35,19 +43,20 @@ public class UnselectFieldCommand extends Command {
 		this.view_field.clearField(gc);
 		this.view_field.drawOn(gc);
 
-		if (this.model_field.getUnit() != null
-			&& this.model_field.getUnit().getMoveType().getPath() != null) {
-
-			for (Field pathField : this.model_field.getUnit().getMoveType().getPath()) {
-
-				ViewField viewField = ((View) this.target_component).convertToViewField(pathField);
-
-				viewField.clearField(gc);
-				viewField.drawOn(gc);
-
-			}
-
-		}
+		// if (this.model_field.getUnit() != null
+		// && this.model_field.getUnit().getMoveType().getPath() != null) {
+		//
+		// for (Field pathField : this.model_field.getUnit().getMoveType().getPath()) {
+		//
+		// ViewField viewField = ((View)
+		// this.target_component).convertToViewField(pathField);
+		//
+		// viewField.clearField(gc);
+		// viewField.drawOn(gc);
+		//
+		// }
+		//
+		// }
 
 	}
 

@@ -10,6 +10,7 @@ import root.view.field.ViewField;
 
 public class SelectFieldCommand extends Command {
 
+	// TODO filter color should be adjusted based on the player's color
 	private Color filter_color;
 
 	private Field modelField;
@@ -27,6 +28,16 @@ public class SelectFieldCommand extends Command {
 
 	}
 
+	public SelectFieldCommand(Field modelField, CommandDrivenComponent target_component) {
+		super("select-field-view-command", target_component);
+
+		this.filter_color = SelectFieldCommand.default_filter_color;
+
+		this.modelField = modelField;
+		this.view_field = ((View) this.target_component).convertToViewField(this.modelField);
+
+	}
+
 	@Override
 	public void setTargetComponent(CommandDrivenComponent target) {
 		super.setTargetComponent(target);
@@ -39,20 +50,18 @@ public class SelectFieldCommand extends Command {
 
 		GraphicsContext gc = ((View) target_component).getMainGraphicContext();
 
-		gc.save();
-
 		((View) target_component).convertToViewField(modelField).paintField(gc, filter_color);
 
-		if (this.modelField.getUnit() != null && this.modelField.getUnit().getMoveType().getPath() != null) {
-
-			for (Field pathField : this.modelField.getUnit().getMoveType().getPath()) {
-
-				((View) target_component).convertToViewField(pathField).paintField(gc, filter_color);
-
-			}
-		}
-
-		gc.restore();
+		// if (this.modelField.getUnit() != null &&
+		// this.modelField.getUnit().getMoveType().getPath() != null) {
+		//
+		// for (Field pathField : this.modelField.getUnit().getMoveType().getPath()) {
+		//
+		// ((View) target_component).convertToViewField(pathField).paintField(gc,
+		// filter_color);
+		//
+		// }
+		// }
 
 	}
 

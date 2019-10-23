@@ -18,7 +18,8 @@ build() {
 
 if [ $# -lt 1 ]
 then 
-	echo "ERROR: Missing projects"
+	echo "ERROR: Missing projects (as arguments)"
+	echo "To build all projects use: ordered_build.sh"
 else
 	
 	for project in $@

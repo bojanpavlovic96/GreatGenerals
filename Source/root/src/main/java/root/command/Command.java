@@ -12,6 +12,13 @@ public abstract class Command implements Runnable {
 		this.name = name;
 	}
 
+	public Command(String name, CommandDrivenComponent target_componentn) {
+
+		this.name = name;
+		this.target_component = target_componentn;
+
+	}
+
 	// methods
 
 	public void setTargetComponent(CommandDrivenComponent target) {
