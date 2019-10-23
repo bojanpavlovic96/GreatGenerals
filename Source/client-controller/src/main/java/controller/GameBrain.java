@@ -6,6 +6,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 import controller.action.DefaultModelEventHandler;
+import controller.option.AddToPathFieldOption;
 import controller.option.MoveFieldOption;
 import controller.option.SelectPathFieldOption;
 
@@ -62,11 +63,11 @@ public class GameBrain implements Controller {
 		// ModelEventHandler (maybe this isn't the best approach)
 		this.model.setEventHandler(new DefaultModelEventHandler(this));
 
-		// connect serverProxy and controller
+		this.initFieldOptions();
+
+		// --- connect serverProxy and controller
 
 		this.server_command_queue = ((CommandProducer) this.server_proxy).getConsumerQueue();
-
-		// --- server commands executor
 
 		this.server_command_executor = Executors.newSingleThreadExecutor();
 		this.server_command_processor = new BasicCommandProcessor(this.server_command_executor, this);
@@ -166,6 +167,16 @@ public class GameBrain implements Controller {
 
 	}
 
+	private void initFieldOptions() {
+
+		this.field_options = new ArrayList<FieldOption>();
+
+		this.field_options.add(new SelectPathFieldOption(true, this, null));
+		this.field_options.add(new MoveFieldOption(true, this, null));
+		this.field_options.add(new AddToPathFieldOption(true, this, null));
+
+	}
+
 	// getters and setters
 
 	@Override
@@ -247,18 +258,6 @@ public class GameBrain implements Controller {
 	@Override
 	public List<FieldOption> getFieldOptions() {
 		return this.field_options;
-	}
-
-	@Override
-	public void initializeFieldOptions(Field field) {
-
-		List<FieldOption> new_options = new ArrayList<FieldOption>();
-
-		new_options.add(new SelectPathFieldOption("select-path-option", true, this, field));
-		new_options.add(new MoveFieldOption("move-option", true, this, field));
-
-		field.initializeFieldOptions(new_options);
-
 	}
 
 	@Override

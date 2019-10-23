@@ -8,8 +8,8 @@ import root.model.component.option.FieldOption;
 
 public class MoveFieldOption extends FieldOption {
 
-	public MoveFieldOption(String option_name, boolean enabled, Controller controller, Field primary_field) {
-		super(option_name, enabled, controller, primary_field);
+	public MoveFieldOption(boolean enabled, Controller controller, Field primary_field) {
+		super("move-field-option", enabled, controller, primary_field);
 
 	}
 
@@ -21,7 +21,7 @@ public class MoveFieldOption extends FieldOption {
 		if (path != null && !path.isEmpty()) {
 			this.primary_field.getUnit().getMoveType().move();
 		} else {
-			SelectPathFieldOption select_path = new SelectPathFieldOption("", true, this.controller,
+			SelectPathFieldOption select_path = new SelectPathFieldOption(true, this.controller,
 					this.primary_field);
 			select_path.setSecondaryField(this.secondary_field);
 			select_path.run();
@@ -30,6 +30,13 @@ public class MoveFieldOption extends FieldOption {
 			this.primary_field.getUnit().getMoveType().move();
 
 		}
+	}
+
+	@Override
+	public FieldOption getCopy() {
+
+		return new MoveFieldOption(true, this.controller, null);
+
 	}
 
 }

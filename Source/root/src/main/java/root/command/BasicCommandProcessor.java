@@ -24,7 +24,7 @@ public class BasicCommandProcessor implements CommandProcessor {
 			this.executor.execute(command);
 
 		}
-
+		
 	}
 
 }

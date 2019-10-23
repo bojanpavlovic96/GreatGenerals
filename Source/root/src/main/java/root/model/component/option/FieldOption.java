@@ -60,4 +60,7 @@ public abstract class FieldOption implements Runnable {
 		return this.enabled;
 	}
 
+	// TODO maybe just cloneable
+	public abstract FieldOption getCopy();
+
 }

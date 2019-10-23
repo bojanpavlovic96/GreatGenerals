@@ -1,6 +1,5 @@
 package view.command;
 
-import javafx.application.Platform;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
 import root.command.Command;
@@ -13,18 +12,18 @@ public class SelectFieldCommand extends Command {
 
 	private Color filter_color;
 
-	private Field model;
+	private Field modelField;
 	private ViewField view_field;
 
-	// attention
+	// attention extract from configuration
 	private static Color default_filter_color = Color.rgb(100, 10, 10, 0.5);
 
-	public SelectFieldCommand(Field model) {
+	public SelectFieldCommand(Field modelField) {
 		super("select-field-view-command");
 
 		this.filter_color = SelectFieldCommand.default_filter_color;
 
-		this.model = model;
+		this.modelField = modelField;
 
 	}
 
@@ -32,32 +31,34 @@ public class SelectFieldCommand extends Command {
 	public void setTargetComponent(CommandDrivenComponent target) {
 		super.setTargetComponent(target);
 
-		this.view_field = ((View) super.target_component).convertToViewField(this.model);
+		this.view_field = ((View) super.target_component).convertToViewField(this.modelField);
 
 	}
 
 	public void run() {
 
-//		Platform.runLater(new Runnable() {
+		GraphicsContext gc = ((View) target_component).getMainGraphicContext();
 
-//			@Override
-//			public void run() {
+		gc.save();
 
-				GraphicsContext gc = ((View) target_component).getMainGraphicContext();
+		((View) target_component).convertToViewField(modelField).paintField(gc, filter_color);
 
-				gc.save();
+		if (this.modelField.getUnit() != null && this.modelField.getUnit().getMoveType().getPath() != null) {
 
-				((View) target_component).convertToViewField(model).paintField(gc, filter_color);
+			for (Field pathField : this.modelField.getUnit().getMoveType().getPath()) {
 
-				gc.restore();
+				((View) target_component).convertToViewField(pathField).paintField(gc, filter_color);
 
-//			}
-		//		});
+			}
+		}
+
+		gc.restore();
+
 	}
 
 	@Override
 	public Command getAntiCommand() {
-		return new UnselectFieldCommand(this.model);
+		return new UnselectFieldCommand(this.modelField);
 	}
 
 }

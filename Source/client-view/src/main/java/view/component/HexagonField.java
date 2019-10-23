@@ -188,8 +188,8 @@ public class HexagonField implements ViewField {
 		// y
 		double y = (2.0 / 3 * point.getY()) / side_size;
 
-		Point2D position = HexagonField.convertToAxial(HexagonField.cube_round(HexagonField.convertToCube(new Point2D(	x,
-																														y))));
+		Point2D position = HexagonField
+				.convertToAxial(HexagonField.cube_round(HexagonField.convertToCube(new Point2D(x, y))));
 
 		return position;
 	}

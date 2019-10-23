@@ -8,13 +8,14 @@ import root.controller.Controller;
 import root.model.Model;
 import root.model.PlayerData;
 import root.model.component.Field;
+import root.model.component.option.FieldOption;
 import view.command.ClearViewCommand;
 import view.command.LoadBoardCommand;
 
 public class CtrlInitializeCommand extends Command {
 
 	private String username;
-	
+
 	private List<PlayerData> players;
 	private List<Field> fields;
 
@@ -30,11 +31,19 @@ public class CtrlInitializeCommand extends Command {
 
 		Model model = ((Controller) super.target_component).getModel();
 
+		List<FieldOption> options = ((Controller) super.target_component).getFieldOptions();
+
 		for (Field field : this.fields) {
-			((Controller) super.target_component).initializeFieldOptions(field);
+
+			for (FieldOption oldOption : options) {
+				field.addFieldOption(oldOption.getCopy());
+			}
+
+//			field.addFieldOptions(((Controller) super.target_component).getFieldOptions());
+
 		}
 
-		System.out.println("Calling initalizeModel ... @ CtrlInitializeCommand.run");
+		System.out.println("Calling initializeModel ... @ CtrlInitializeCommand.run");
 		model.initializeModel(this.players, this.fields);
 
 		model.getField(new Point2D(10, 10)).setUnit(model.generateUnit("basic-unit"));

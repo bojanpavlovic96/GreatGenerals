@@ -29,10 +29,6 @@ public interface Controller extends ModelEventHandler,
 
 	List<FieldOption> getFieldOptions();
 
-	// not the best approach but ...
-
-	void initializeFieldOptions(Field field);
-
 	void enqueueForUndone(Command new_command);
 
 }

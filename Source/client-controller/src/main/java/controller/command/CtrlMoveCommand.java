@@ -13,17 +13,17 @@ import view.command.DrawFieldCommand;
 
 public class CtrlMoveCommand extends Command {
 
-	private Point2D base_position;
+	private Point2D start_field;
 	private Field base_field;
 
-	private Point2D second_position;
+	private Point2D next_field;
 	private Field second_field;
 
 	public CtrlMoveCommand(Point2D first_position, Point2D second_position) {
 		super("move-command");
 
-		this.base_position = first_position;
-		this.second_position = second_position;
+		this.start_field = first_position;
+		this.next_field = second_position;
 
 	}
 
@@ -31,8 +31,8 @@ public class CtrlMoveCommand extends Command {
 	public void setTargetComponent(CommandDrivenComponent target) {
 		super.setTargetComponent(target);
 
-		this.base_field = ((Controller) super.target_component).getModel().getField(this.base_position);
-		this.second_field = ((Controller) super.target_component).getModel().getField(this.second_position);
+		this.base_field = ((Controller) super.target_component).getModel().getField(this.start_field);
+		this.second_field = ((Controller) super.target_component).getModel().getField(this.next_field);
 
 	}
 
@@ -71,11 +71,11 @@ public class CtrlMoveCommand extends Command {
 	}
 
 	public Point2D getSecondPosition() {
-		return second_position;
+		return next_field;
 	}
 
 	public void setSecondPosition(Point2D second_position) {
-		this.second_position = second_position;
+		this.next_field = second_position;
 	}
 
 	@Override

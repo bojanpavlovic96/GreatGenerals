@@ -9,15 +9,15 @@ import view.command.SelectFieldCommand;
 
 public class SelectPathFieldOption extends FieldOption {
 
-	public SelectPathFieldOption(String option_name, boolean enabled, Controller controller,
-			Field primary_field) {
-		super(option_name, enabled, controller, primary_field);
+	public SelectPathFieldOption(boolean enabled, Controller controller, Field primary_field) {
+		super("select-path-field-option", enabled, controller, primary_field);
 		// Auto-generated constructor stub
 	}
 
 	@Override
 	public void run() {
 
+		// second field must be without unit in order to calculate path
 		for (Field field : primary_field.getUnit().getMoveType().calculatePath(this.secondary_field)) {
 			Command select_command = new SelectFieldCommand(field);
 			super.controller.getConsumerQueue().enqueue(select_command);
@@ -25,6 +25,13 @@ public class SelectPathFieldOption extends FieldOption {
 		}
 
 		super.controller.getConsumerQueue().enqueue(new ClearTopLayerCommand());
+
+	}
+
+	@Override
+	public FieldOption getCopy() {
+
+		return new SelectPathFieldOption(true, this.controller, null);
 
 	}
 

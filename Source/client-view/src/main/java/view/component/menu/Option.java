@@ -44,6 +44,7 @@ public class Option extends Button implements MenuItem {
 	public void setOnClickRunnable(Runnable new_runnable) {
 		this.on_click = new_runnable;
 
+		// method from button
 		super.setOnAction(new EventHandler<ActionEvent>() {
 
 			@Override

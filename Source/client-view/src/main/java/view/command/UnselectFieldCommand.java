@@ -1,5 +1,6 @@
 package view.command;
 
+import javafx.scene.canvas.GraphicsContext;
 import root.command.Command;
 import root.command.CommandDrivenComponent;
 import root.model.component.Field;
@@ -8,14 +9,14 @@ import root.view.field.ViewField;
 
 public class UnselectFieldCommand extends Command {
 
-	private Field model;
+	private Field model_field;
 
 	private ViewField view_field;
 
 	public UnselectFieldCommand(Field model) {
 		super("unselect-field-view-command");
 
-		this.model = model;
+		this.model_field = model;
 
 	}
 
@@ -23,20 +24,36 @@ public class UnselectFieldCommand extends Command {
 	public void setTargetComponent(CommandDrivenComponent target) {
 		super.setTargetComponent(target);
 
-		this.view_field = ((View) super.target_component).convertToViewField(this.model);
+		this.view_field = ((View) super.target_component).convertToViewField(this.model_field);
 
 	}
 
 	public void run() {
 
-		this.view_field.clearField(((View) super.target_component).getMainGraphicContext());
-		this.view_field.drawOn(((View) super.target_component).getMainGraphicContext());
+		GraphicsContext gc = ((View) this.target_component).getMainGraphicContext();
+
+		this.view_field.clearField(gc);
+		this.view_field.drawOn(gc);
+
+		if (this.model_field.getUnit() != null
+			&& this.model_field.getUnit().getMoveType().getPath() != null) {
+
+			for (Field pathField : this.model_field.getUnit().getMoveType().getPath()) {
+
+				ViewField viewField = ((View) this.target_component).convertToViewField(pathField);
+
+				viewField.clearField(gc);
+				viewField.drawOn(gc);
+
+			}
+
+		}
 
 	}
 
 	@Override
 	public Command getAntiCommand() {
-		return new SelectFieldCommand(this.model);
+		return new SelectFieldCommand(this.model_field);
 	}
 
 }

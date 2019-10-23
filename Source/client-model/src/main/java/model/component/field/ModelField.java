@@ -1,14 +1,10 @@
 package model.component.field;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-import java.util.stream.Collector;
 import java.util.stream.Collectors;
 
 import javafx.geometry.Point2D;
-import root.controller.Controller;
 import root.model.PlayerData;
 import root.model.component.Field;
 import root.model.component.Terrain;
@@ -31,7 +27,9 @@ public class ModelField implements Field {
 	private List<Unit> units_in_battle;
 
 	// key format: name-field-option => move-to-field-option
-	private Map<String, FieldOption> options;
+	// private Map<String, FieldOption> options;
+
+	private List<FieldOption> options;
 
 	private ModelEventHandler event_handler;
 
@@ -105,8 +103,8 @@ public class ModelField implements Field {
 
 	@Override
 	public List<FieldOption> getEnabledOptions() {
-		// filder enabled options
-		return this.options.values().stream().filter(option -> option.isEnabled()).collect(Collectors.toList());
+		// filter enabled options
+		return this.options.stream().filter(option -> option.isEnabled()).collect(Collectors.toList());
 	}
 
 	// implement
@@ -116,7 +114,7 @@ public class ModelField implements Field {
 		// debug
 		System.out.println("ADJUSTING OPTOIONS ...");
 
-		for (FieldOption option : this.options.values()) {
+		for (FieldOption option : this.options) {
 			option.setSecondaryField(second_field);
 		}
 
@@ -127,21 +125,39 @@ public class ModelField implements Field {
 
 	}
 
+	// implement
+	private void selfOptionAdjust() {
+
+	}
+
 	@Override
-	public void initializeFieldOptions(List<FieldOption> new_options) {
+	public void addFieldOptions(List<FieldOption> newOptions) {
 
-		this.options = new HashMap<String, FieldOption>();
+		if (this.options == null) {
+			this.options = new ArrayList<FieldOption>();
+		}
 
-		for (FieldOption option : new_options) {
-			this.options.put(option.getName(), option);
+		for (FieldOption option : newOptions) {
+			option.setPrimaryField(this); // attention this line should be moved in to the selfOptionAdjust
+											 // maybe
+			this.options.add(option);
 		}
 
 		this.selfOptionAdjust();
 
 	}
 
-	// implement
-	private void selfOptionAdjust() {
+	@Override
+	public void addFieldOption(FieldOption newOption) {
+
+		if (this.options == null) {
+			this.options = new ArrayList<FieldOption>();
+		}
+
+		newOption.setPrimaryField(this);
+		this.options.add(newOption);
+
+		this.selfOptionAdjust();
 
 	}
 

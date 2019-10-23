@@ -3,7 +3,8 @@ package root.command;
 import java.util.LinkedList;
 import java.util.Queue;
 
-// TODO should implement. active component 
+import root.ActiveComponent;
+
 public class CommandQueue {
 
 	private Queue<Command> queue;

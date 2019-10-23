@@ -29,6 +29,7 @@ public class ShowFieldInfoCommand extends Command {
 
 	public ShowFieldInfoCommand(Field selected_field, Field target_field) {
 		super("display-field-info-view-command");
+		// attention this is not the most appropriate name
 
 		this.selected_field = selected_field;
 		this.target_field = target_field;
@@ -39,6 +40,10 @@ public class ShowFieldInfoCommand extends Command {
 	public void setTargetComponent(CommandDrivenComponent target) {
 		super.setTargetComponent(target);
 
+		// TODO
+		// check if selected field is null
+		// if is null, target field is also selected field
+
 		this.view_field = ((View) super.target_component).convertToViewField(this.selected_field);
 		this.view_target = ((View) super.target_component).convertToViewField(this.target_field);
 
@@ -46,11 +51,6 @@ public class ShowFieldInfoCommand extends Command {
 
 	@Override
 	public void run() {
-
-		// Platform.runLater(new Runnable() {
-
-		// @Override
-		// public void run() {
 
 		// get view menu
 		Menu menu = ((View) target_component).getOptionMenu();
@@ -63,13 +63,11 @@ public class ShowFieldInfoCommand extends Command {
 
 		// populate menu with new option
 		List<FieldOption> options = selected_field.getEnabledOptions();
-		for (int i = 0; i < options.size(); i++) {
 
-			FieldOption item = options.get(i);
+		for (FieldOption singleOption : options) {
 
-			item.setSecondaryField(target_field);
-
-			menu.addOption(new Option(item));
+			singleOption.setSecondaryField(target_field);
+			menu.addOption(new Option(singleOption));
 
 		}
 
@@ -93,8 +91,6 @@ public class ShowFieldInfoCommand extends Command {
 
 		gc.restore();
 
-		// }
-		// });
 	}
 
 	@Override

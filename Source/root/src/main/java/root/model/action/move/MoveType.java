@@ -88,6 +88,10 @@ public abstract class MoveType implements Cloneable, Runnable {
 		return this.path;
 	}
 
+	public PathFinder getPathFinder() {
+		return this.path_finder;
+	}
+
 	// abstract methods
 
 	public abstract void move();
