@@ -50,8 +50,7 @@ public class DataModel implements Model {
 
 		this.unit_creator = new UnitCreator();
 
-		Unit basic_unit = new BasicUnit(new BasicMove(null, new AStar(this), this.executor), null,
-				null);
+		Unit basic_unit = new BasicUnit(new BasicMove(null, new AStar(this), this.executor), null, null);
 		this.unit_creator.addPrototype(basic_unit);
 
 		// TODO add some more units

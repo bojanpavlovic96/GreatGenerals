@@ -52,17 +52,6 @@ public class SelectFieldCommand extends Command {
 
 		((View) target_component).convertToViewField(modelField).paintField(gc, filter_color);
 
-		// if (this.modelField.getUnit() != null &&
-		// this.modelField.getUnit().getMoveType().getPath() != null) {
-		//
-		// for (Field pathField : this.modelField.getUnit().getMoveType().getPath()) {
-		//
-		// ((View) target_component).convertToViewField(pathField).paintField(gc,
-		// filter_color);
-		//
-		// }
-		// }
-
 	}
 
 	@Override

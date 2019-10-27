@@ -22,8 +22,11 @@ public class MoveFieldOption extends FieldOption {
 		List<Field> path = this.primary_field.getUnit().getMoveType().getPath();
 
 		if (path != null && !path.isEmpty()) {
+
 			this.primary_field.getUnit().getMoveType().move();
+
 		} else {
+
 			SelectPathFieldOption select_path = new SelectPathFieldOption(true, this.controller,
 					this.primary_field);
 			select_path.setSecondaryField(this.secondary_field);

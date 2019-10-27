@@ -37,8 +37,8 @@ public interface Field {
 
 	// void initializeFieldOptions(List<FieldOption> new_options);
 
-	List<FieldOption> getEnabledOptions();
+	List<FieldOption> adjustOptionsFor(Field second_field);
 
-	void adjustOptionsFor(Field second_field);
+	List<FieldOption> getEnabledOptions();
 
 }

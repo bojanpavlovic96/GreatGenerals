@@ -58,7 +58,7 @@ public class CtrlMoveCommand extends Command {
 
 		unit_path.remove(0);
 
-		// if path is not empty
+		// if path is NOT empty
 		// !!! unit is now on second field
 		if (!unit_path.isEmpty()) {
 			// continue moving

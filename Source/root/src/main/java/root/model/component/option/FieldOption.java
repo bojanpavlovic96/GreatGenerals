@@ -61,6 +61,7 @@ public abstract class FieldOption implements Runnable {
 	}
 
 	// TODO maybe just cloneable
+	// used in crtlInitializeCommand so that every field can get new (no just reference) option
 	public abstract FieldOption getCopy();
 
 }

@@ -1,8 +1,12 @@
 package model.component.unit;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import root.model.action.move.MoveType;
 import root.model.component.Field;
 import root.model.component.Unit;
+import root.model.component.option.FieldOption;
 import root.model.event.ModelEventHandler;
 
 public class BasicUnit implements Unit {
@@ -22,6 +26,8 @@ public class BasicUnit implements Unit {
 
 	private ModelEventHandler event_handler;
 
+	private List<FieldOption> options;
+
 	// methods
 
 	public BasicUnit() {
@@ -30,6 +36,8 @@ public class BasicUnit implements Unit {
 	}
 
 	public BasicUnit(MoveType move_ctrl, UnitAttack air_attack_ctrl, UnitAttack ground_attack_ctrl) {
+
+		this.options = new ArrayList<FieldOption>();
 
 		this.movement_type = move_ctrl;
 		this.air_attack = air_attack_ctrl;
@@ -81,7 +89,7 @@ public class BasicUnit implements Unit {
 		this.my_field.setUnit(null);
 		// set on next field
 		next_field.setUnit(this);
-		
+
 		// update units reference to field
 		// and also movement type reference
 		this.setField(next_field);
@@ -113,6 +121,33 @@ public class BasicUnit implements Unit {
 
 		// TODO do the same thing for attack
 
+	}
+
+	@Override
+	public List<FieldOption> adjustOptionsFor(Field targetField, Unit targetUnit) {
+
+		// implement adjust options
+
+		if (targetUnit != null) {
+
+			// unit has priority
+
+			// adjustForUnit
+
+		} else {
+
+			// adjustForFiled
+
+		}
+
+		return null;
+
+	}
+
+	@Override
+	public List<FieldOption> getAvailableOptions() {
+
+		return null;
 	}
 
 }

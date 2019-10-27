@@ -1,6 +1,9 @@
 package root.model.component;
 
+import java.util.List;
+
 import root.model.action.move.MoveType;
+import root.model.component.option.FieldOption;
 import root.model.event.ModelEventHandler;
 
 public interface Unit extends Cloneable {
@@ -29,5 +32,9 @@ public interface Unit extends Cloneable {
 	Unit clone() throws CloneNotSupportedException;
 
 	void setEventHandler(ModelEventHandler event_handler);
+
+	List<FieldOption> adjustOptionsFor(Field targetField, Unit targetUnit);
+
+	List<FieldOption> getAvailableOptions();
 
 }

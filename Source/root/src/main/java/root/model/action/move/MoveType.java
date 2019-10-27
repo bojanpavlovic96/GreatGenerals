@@ -94,6 +94,13 @@ public abstract class MoveType implements Cloneable, Runnable {
 
 	// abstract methods
 
+	public void stop() {
+		if(this.moving) {
+			
+			
+		}
+	}
+	
 	public abstract void move();
 
 	public abstract int calculateDelay();

@@ -58,6 +58,7 @@ public class BasicMove extends MoveType {
 		} else {
 			// debug
 			System.out.println("Move called on null or empty path ... @ BasicMove.move()");
+			this.moving = false;
 		}
 
 	}

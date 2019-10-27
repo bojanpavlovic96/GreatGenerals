@@ -91,6 +91,45 @@ public class BasicServerProxy implements ServerProxy {
 
 		this.command_queue.enqueue(new CtrlInitializeCommand(players, field_models));
 
+		// 
+		//		initialMessage : {
+		//			
+		//			players : [
+		//			           {
+		//			        	   name: "user_1",
+		//			        	   color: Color.RED,
+		//			        	   rank: someRank,
+		//			        	   .
+		//			        	   .
+		//			           },
+		//			           .,
+		//			           .,
+		//			           .
+		//			           
+		//			           ],
+		//			map : [
+		//			       { // single field
+		//			      	    position : {x: 10, y:20}
+		//			       		terrain : water,
+		//			       		owner : "user_n",
+		//			       		.,
+		//			       		.,
+		//			       		.
+		//			       },
+		//			       .,
+		//			       .
+		//			       ]
+		//			
+		//			units: [
+		//			        position : {x: 15, y: 100},
+		//			        owner : "user_k",
+		//			        type: "basic"
+		//			        .,
+		//			        .,
+		//			        .
+		//			        ]
+		//		}
+
 	}
 
 	@Override

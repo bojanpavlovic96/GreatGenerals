@@ -29,7 +29,8 @@ import root.view.event.ViewEventHandler;
 
 import view.command.SelectFieldCommand;
 import view.command.SelectUnitCommand;
-import view.command.ShowFieldInfoCommand;
+import view.command.ShowFieldOptionsCommand;
+import view.command.ShowUnitOptionsCommand;
 import view.command.ZoomInCommand;
 import view.command.ZoomOutCommand;
 
@@ -118,6 +119,7 @@ public class GameBrain implements Controller {
 
 						selected_unit = focused_unit;
 
+						// selectUnitCommand will also select current field on which unit is
 						nextCommand = new SelectUnitCommand(selected_unit);
 
 					} else {
@@ -145,13 +147,32 @@ public class GameBrain implements Controller {
 
 			public void execute(ViewEventArg arg) {
 
-				Field focused_field = model.getField(arg.getFieldPosition());
+				Field target_field = model.getField(arg.getFieldPosition());
 
-				// valid click
-				if (focused_field != null) {
-					Command show_menu = new ShowFieldInfoCommand(selected_field, focused_field);
-					view_command_queue.enqueue(show_menu);
-					to_undo.add(show_menu);
+				Unit target_unit = null;
+				if (target_field != null) {
+					target_unit = target_field.getUnit();
+				}
+
+				Command nextCommand = null;
+
+				if (selected_unit != null) {
+					// unit options have priority
+
+					nextCommand = new ShowUnitOptionsCommand(selected_unit, target_field, target_unit);
+
+				} else if (selected_field != null) {
+					// valid click
+
+					nextCommand = new ShowFieldOptionsCommand(selected_field, target_field);
+
+				}
+
+				if (nextCommand != null) {
+
+					view_command_queue.enqueue(nextCommand);
+					to_undo.add(nextCommand);
+
 				}
 
 			}

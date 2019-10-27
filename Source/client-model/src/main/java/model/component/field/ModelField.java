@@ -109,10 +109,12 @@ public class ModelField implements Field {
 
 	// implement
 	@Override
-	public void adjustOptionsFor(Field second_field) {
+	public List<FieldOption> adjustOptionsFor(Field second_field) {
+
+		// attention always check is second field null
 
 		// debug
-		System.out.println("ADJUSTING OPTOIONS ...");
+		System.out.println("Adjusting field options ...");
 
 		for (FieldOption option : this.options) {
 			option.setSecondaryField(second_field);
@@ -122,6 +124,8 @@ public class ModelField implements Field {
 
 		// check what is available
 		// save every disabled option
+
+		return this.options;
 
 	}
 

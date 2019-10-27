@@ -43,21 +43,6 @@ public class UnselectFieldCommand extends Command {
 		this.view_field.clearField(gc);
 		this.view_field.drawOn(gc);
 
-		// if (this.model_field.getUnit() != null
-		// && this.model_field.getUnit().getMoveType().getPath() != null) {
-		//
-		// for (Field pathField : this.model_field.getUnit().getMoveType().getPath()) {
-		//
-		// ViewField viewField = ((View)
-		// this.target_component).convertToViewField(pathField);
-		//
-		// viewField.clearField(gc);
-		// viewField.drawOn(gc);
-		//
-		// }
-		//
-		// }
-
 	}
 
 	@Override

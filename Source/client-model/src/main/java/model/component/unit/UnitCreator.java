@@ -29,6 +29,9 @@ public class UnitCreator {
 				return clone;
 
 			} catch (CloneNotSupportedException e) {
+
+				// TODO this exception should not be handled there 
+
 				System.out.println("Exception while cloning unit ... @ UnitCreator.generateUnit");
 				e.printStackTrace();
 			}

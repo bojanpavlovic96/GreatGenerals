@@ -18,13 +18,12 @@ public class BasicCommandProcessor implements CommandProcessor {
 		while (!command_queue.isEmpty()) {
 
 			Command command = command_queue.dequeue();
-
 			command.setTargetComponent(this.command_target);
 
 			this.executor.execute(command);
 
 		}
-		
+
 	}
 
 }
