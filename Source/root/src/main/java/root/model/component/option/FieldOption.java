@@ -64,4 +64,12 @@ public abstract class FieldOption implements Runnable {
 	// used in crtlInitializeCommand so that every field can get new (no just reference) option
 	public abstract FieldOption getCopy();
 
+	public void reset() {
+
+		this.primary_field = null;
+		this.secondary_field = null;
+
+		this.enabled = false;
+	}
+
 }

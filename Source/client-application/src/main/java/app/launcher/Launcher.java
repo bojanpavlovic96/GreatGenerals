@@ -72,7 +72,6 @@ public class Launcher extends Application {
 				// debug
 				System.out.println("Creating game controller ... @ Launcher.onGameReadyEvent "
 									+ "-> called from intial controller");
-
 				ServerProxy server_proxy = new BasicServerProxy(connection_task.getChannel(),
 						new JSONMessageTranslator(), username, room_name);
 
@@ -84,6 +83,7 @@ public class Launcher extends Application {
 
 				// attention controller still null at this moment
 				// modelEventHandler is set from controller constructor
+				// unit/field options also set from controller
 				// this is empty model (only timer and unit creator)
 				Model model = new DataModel();
 

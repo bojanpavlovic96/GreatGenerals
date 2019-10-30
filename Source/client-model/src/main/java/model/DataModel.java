@@ -17,6 +17,8 @@ import root.model.Model;
 import root.model.PlayerData;
 import root.model.component.Field;
 import root.model.component.Unit;
+import root.model.component.option.FieldOption;
+import root.model.component.option.UnitOption;
 import root.model.event.ModelEventHandler;
 
 public class DataModel implements Model {
@@ -28,8 +30,11 @@ public class DataModel implements Model {
 
 	private ScheduledExecutorService executor;
 
-	// unique event handler (move, attack, build ... )
+	// move, attack, build ... events raised from "timer"
 	private ModelEventHandler event_handler;
+
+	private List<FieldOption> fieldOptions;
+	private List<UnitOption> unitOptions;
 
 	// constructors
 
@@ -59,7 +64,7 @@ public class DataModel implements Model {
 
 	// methods
 
-	public void initializeModel(List<PlayerData> list_of_players, List<Field> fields) {
+	public void fillModel(List<PlayerData> list_of_players, List<Field> fields) {
 
 		this.players = new HashMap<String, PlayerData>();
 		for (PlayerData player : list_of_players) {
@@ -104,28 +109,30 @@ public class DataModel implements Model {
 		Field neighbour = null;
 		Point2D position = for_field.getStoragePosition();
 
+		// up left
+		neighbour = this.fields.get(new Point2D(position.getX() - 1, position.getY()));
+		if (neighbour != null && !neighbour.isInBattle() && neighbour.getUnit() == null)
+			neighbours.add(neighbour);
 		// up right
 		neighbour = this.fields.get(new Point2D(position.getX() - 1, position.getY() + 1));
+		if (neighbour != null && !neighbour.isInBattle() && neighbour.getUnit() == null)
+			neighbours.add(neighbour);
+
+		// left
+		neighbour = this.fields.get(new Point2D(position.getX(), position.getY() - 1));
 		if (neighbour != null && !neighbour.isInBattle() && neighbour.getUnit() == null)
 			neighbours.add(neighbour);
 		// right
 		neighbour = this.fields.get(new Point2D(position.getX(), position.getY() + 1));
 		if (neighbour != null && !neighbour.isInBattle() && neighbour.getUnit() == null)
 			neighbours.add(neighbour);
-		// down right
-		neighbour = this.fields.get(new Point2D(position.getX() + 1, position.getY()));
-		if (neighbour != null && !neighbour.isInBattle() && neighbour.getUnit() == null)
-			neighbours.add(neighbour);
+
 		// down left
 		neighbour = this.fields.get(new Point2D(position.getX() + 1, position.getY() - 1));
 		if (neighbour != null && !neighbour.isInBattle() && neighbour.getUnit() == null)
 			neighbours.add(neighbour);
-		// left
-		neighbour = this.fields.get(new Point2D(position.getX(), position.getY() - 1));
-		if (neighbour != null && !neighbour.isInBattle() && neighbour.getUnit() == null)
-			neighbours.add(neighbour);
-		// // up left
-		neighbour = this.fields.get(new Point2D(position.getX() - 1, position.getY()));
+		// down right
+		neighbour = this.fields.get(new Point2D(position.getX() + 1, position.getY()));
 		if (neighbour != null && !neighbour.isInBattle() && neighbour.getUnit() == null)
 			neighbours.add(neighbour);
 
@@ -144,8 +151,14 @@ public class DataModel implements Model {
 	}
 
 	@Override
-	public void setEventHandler(ModelEventHandler handler) {
-		this.event_handler = handler;
+	public void initializeModel(ModelEventHandler eventHandler, List<FieldOption> fieldOptions,
+			List<UnitOption> unitOptions) {
+
+		this.event_handler = eventHandler;
+
+		this.fieldOptions = fieldOptions;
+		this.unitOptions = unitOptions;
+
 	}
 
 	@Override
@@ -163,6 +176,22 @@ public class DataModel implements Model {
 	@Override
 	public Unit generateUnit(String unit_name) {
 		return this.unit_creator.generateUnit(unit_name);
+	}
+
+	@Override
+	public List<FieldOption> getFieldOptions() {
+		// reset all options first
+		
+		for(FieldOption singleOptions:this.fieldOptions) {
+			
+		}
+		
+		return this.fieldOptions;
+	}
+
+	@Override
+	public List<UnitOption> getUnitOptions() {
+		return this.unitOptions;
 	}
 
 }

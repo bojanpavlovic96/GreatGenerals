@@ -6,6 +6,8 @@ import javafx.geometry.Point2D;
 import root.ActiveComponent;
 import root.model.component.Field;
 import root.model.component.Unit;
+import root.model.component.option.FieldOption;
+import root.model.component.option.UnitOption;
 import root.model.event.ModelEventHandler;
 
 public interface Model extends ActiveComponent {
@@ -18,9 +20,16 @@ public interface Model extends ActiveComponent {
 
 	void setField(Field field);
 
-	void setEventHandler(ModelEventHandler event_handler);
+	void fillModel(List<PlayerData> list_of_players, List<Field> fields);
 
-	void initializeModel(List<PlayerData> list_of_players, List<Field> fields);
+	void initializeModel(ModelEventHandler eventHandler, List<FieldOption> fieldOptions,
+			List<UnitOption> unitOptions);
+
+	List<FieldOption> getFieldOptions();
+
+	List<UnitOption> getUnitOptions();
+
+	// TODO maybe add some interface for changing field/unit options
 
 	Unit generateUnit(String unit_name);
 

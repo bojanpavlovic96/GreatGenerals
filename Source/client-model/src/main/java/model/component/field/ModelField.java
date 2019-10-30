@@ -109,7 +109,7 @@ public class ModelField implements Field {
 
 	// implement
 	@Override
-	public List<FieldOption> adjustOptionsFor(Field second_field) {
+	public List<FieldOption> adjustOptionsFor(List<FieldOption> options, Field second_field) {
 
 		// attention always check is second field null
 
@@ -117,7 +117,12 @@ public class ModelField implements Field {
 		System.out.println("Adjusting field options ...");
 
 		for (FieldOption option : this.options) {
+		
+			option.reset();
+			
+			option.setPrimaryField(this);
 			option.setSecondaryField(second_field);
+		
 		}
 
 		// restore all disabled options if there are any
@@ -143,7 +148,7 @@ public class ModelField implements Field {
 
 		for (FieldOption option : newOptions) {
 			option.setPrimaryField(this); // attention this line should be moved in to the selfOptionAdjust
-											 // maybe
+											// maybe
 			this.options.add(option);
 		}
 

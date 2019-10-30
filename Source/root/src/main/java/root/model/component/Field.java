@@ -27,17 +27,11 @@ public interface Field {
 
 	boolean isInBattle();
 
-	// TODO maybe better solution (next 2 methods) than initializeFieldOptions
 	void addFieldOptions(List<FieldOption> options);
 
 	void addFieldOption(FieldOption option);
 
-	// attention maybe also add remove field options, but this is already covered
-	// with enabled field in option
-
-	// void initializeFieldOptions(List<FieldOption> new_options);
-
-	List<FieldOption> adjustOptionsFor(Field second_field);
+	List<FieldOption> adjustOptionsFor(List<FieldOption> options, Field second_field);
 
 	List<FieldOption> getEnabledOptions();
 

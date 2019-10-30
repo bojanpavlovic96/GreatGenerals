@@ -5,7 +5,6 @@ import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-import controller.action.DefaultModelEventHandler;
 import controller.option.AddToPathFieldOption;
 import controller.option.MoveFieldOption;
 import controller.option.SelectPathFieldOption;
@@ -22,6 +21,7 @@ import root.model.Model;
 import root.model.component.Field;
 import root.model.component.Unit;
 import root.model.component.option.FieldOption;
+import root.model.component.option.UnitOption;
 import root.model.event.ModelEventArg;
 import root.view.View;
 import root.view.event.ViewEventArg;
@@ -51,8 +51,6 @@ public class GameBrain implements Controller {
 	private Unit selected_unit;
 	private List<Command> to_undo;
 
-	private List<FieldOption> field_options;
-
 	// constructors
 	public GameBrain(ServerProxy server_proxy, View view, Model model) {
 		super();
@@ -65,9 +63,7 @@ public class GameBrain implements Controller {
 
 		// attention let's say that every controller implementations has its own
 		// ModelEventHandler (maybe this isn't the best approach)
-		this.model.setEventHandler(new DefaultModelEventHandler(this));
-
-		this.initFieldOptions();
+		this.model.initializeModel(this, this.getFieldOptions(), this.getUnitOptions());
 
 		// --- connect serverProxy and controller
 
@@ -209,19 +205,29 @@ public class GameBrain implements Controller {
 			}
 		});
 
-	}
-
-	private void initFieldOptions() {
-
-		this.field_options = new ArrayList<FieldOption>();
-
-		this.field_options.add(new SelectPathFieldOption(true, this, null));
-		this.field_options.add(new MoveFieldOption(true, this, null));
-		this.field_options.add(new AddToPathFieldOption(true, this, null));
+		// TODO add 'esc' handler for some menu or exit
 
 	}
 
-	// getters and setters
+	// TODO read some configuration or something ... 
+	private List<FieldOption> getFieldOptions() {
+
+		List<FieldOption> fieldOptions = new ArrayList<FieldOption>();
+
+		fieldOptions.add(new SelectPathFieldOption(true, this, null));
+		fieldOptions.add(new MoveFieldOption(true, this, null));
+		fieldOptions.add(new AddToPathFieldOption(true, this, null));
+
+		return fieldOptions;
+
+	}
+
+	// TODO implement 
+	private List<UnitOption> getUnitOptions() {
+
+		return null;
+
+	}
 
 	@Override
 	public View getView() {
@@ -243,6 +249,7 @@ public class GameBrain implements Controller {
 		this.model = model;
 	}
 
+	// active component
 	@Override
 	public void shutdown() {
 
@@ -260,6 +267,7 @@ public class GameBrain implements Controller {
 
 	}
 
+	// model event handler
 	@Override
 	public void execute(ModelEventArg event_argument) {
 		this.server_proxy.sendIntention(event_argument);
@@ -297,11 +305,6 @@ public class GameBrain implements Controller {
 	@Override
 	public CommandQueue getConsumerQueue() {
 		return this.view_command_queue;
-	}
-
-	@Override
-	public List<FieldOption> getFieldOptions() {
-		return this.field_options;
 	}
 
 	@Override

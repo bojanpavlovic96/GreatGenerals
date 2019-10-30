@@ -27,8 +27,6 @@ public interface Controller extends ModelEventHandler,
 
 	void setModel(Model new_model);
 
-	List<FieldOption> getFieldOptions();
-
 	void enqueueForUndone(Command new_command);
 
 }
