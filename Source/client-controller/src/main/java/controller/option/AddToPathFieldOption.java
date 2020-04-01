@@ -13,6 +13,13 @@ import view.command.SelectFieldCommand;
 
 public class AddToPathFieldOption extends FieldOption {
 
+	public static final String Name = "add-to-path-field-option";
+
+	public AddToPathFieldOption(Controller gameController) {
+		super(AddToPathFieldOption.Name, gameController);
+
+	}
+
 	public AddToPathFieldOption(boolean enabled, Controller controller, Field primary_field) {
 		super("add-to-path-field-option", enabled, controller, primary_field);
 		// Auto-generated constructor stub
@@ -21,20 +28,20 @@ public class AddToPathFieldOption extends FieldOption {
 	@Override
 	public void run() {
 
-		MoveType moveType = this.primary_field.getUnit().getMoveType();
+		MoveType moveType = this.primaryField.getUnit().getMoveType();
 		List<Field> oldPath = moveType.getPath();
 
 		List<Field> pathToAdd = null;
 
 		if (oldPath == null || oldPath.isEmpty()) {
 
-			pathToAdd = moveType.calculatePath(this.secondary_field);
+			pathToAdd = moveType.calculatePath(this.secondaryField);
 
 		} else {
 
 			Field lastPathField = oldPath.get(oldPath.size() - 1);
 			PathFinder pathFinder = moveType.getPathFinder();
-			pathToAdd = pathFinder.findPath(lastPathField, this.secondary_field);
+			pathToAdd = pathFinder.findPath(lastPathField, this.secondaryField);
 
 			moveType.addToPath(pathToAdd);
 

@@ -1,12 +1,11 @@
-
 package app.launcher;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import com.rabbitmq.client.Channel;
 
 import app.event.ConnectionEventHandler;
-import app.event.ConnectionReadyHandler;
 import app.event.GameReadyHandler;
 import app.form.ConnectionUser;
 import app.form.StartForm;
@@ -26,26 +25,31 @@ import view.component.HexFieldManager;
 
 public class Launcher extends Application {
 
-	// private String password = "lzMIQ5SJvR083poynUF6Rc8T_QPNUJow";
-	// private String username = "wdvozwsr";
-	// private String hostname = "raven.rmq.cloudamqp.com";
-	// private String uri = "amqp://" + username + ":" + password + "@" + hostname +
-	// "/" + username;
+	private final static BrokerInfo CloudBroker = new BrokerInfo(
+			"wdvozwsr",
+			"lzMIQ5SJvR083poynUF6Rc8T_QPNUJow",
+			"raven.rmq.cloudamqp.com");
+	private final static BrokerInfo LocalDockerBroker = new BrokerInfo(
+			"gg_user",
+			"gg_password",
+			"localhost");
+	private final static BrokerInfo LocalDefaultBroker = new BrokerInfo(
+			"guest",
+			"guest",
+			"localhost");
 
-	private static String hostname = "localhost";
-	private static String uri = "amqp://" + hostname;
+	private BrokerInfo TargetBroker = CloudBroker; // this field is initialized in resolveUri
 
 	private InitialController initial_controller;
 
-	// TODO leave this application thread as game thread
-
+	// TODO leave this application thread as the main game thread
 	private Thread connection_thread;
 	private ConnectionTask connection_task;
 
 	// controller thread is main application thread
 	private Controller controller;
 
-	// methods
+	// METHODS
 
 	// init() is not on main (UI) thread
 	// constructor -> init() -> start()
@@ -61,7 +65,6 @@ public class Launcher extends Application {
 
 		// take default uri or one provided with the application arguments
 		this.resolveUri();
-		System.out.println("Uri resolved ... @ Launcher.start");
 
 		this.initial_controller = new InitialController(new StartForm());
 
@@ -71,10 +74,11 @@ public class Launcher extends Application {
 
 				// debug
 				System.out.println("Creating game controller ... @ Launcher.onGameReadyEvent "
-									+ "-> called from intial controller");
+						+ "-> called from intial controller");
 
-				ServerProxy server_proxy = new BasicServerProxy(connection_task.getChannel(),
-						new JSONMessageTranslator(), username, room_name);
+				ServerProxy server_proxy = new BasicServerProxy(
+						connection_task.getChannel(), new JSONMessageTranslator(),
+						username, room_name);
 
 				// TODO somehow initialize resource manager
 				// resources could be obtained from the server
@@ -106,15 +110,14 @@ public class Launcher extends Application {
 		this.initial_controller.showInitialPage();
 
 		System.out.println("Creating connection thread ... @ Launcher.start");
-		this.connection_task = new ConnectionTask(this.uri, new ConnectionEventHandler() {
+		this.connection_task = new ConnectionTask(this.TargetBroker, new ConnectionEventHandler() {
 
 			// connection ready handler
 			@Override
 			public void execute(ConnectionTask connectionTask) {
 
 				// debug
-				System.out
-						.println("\tconnection ready ... @ Launcher.init - connectionTask.onConnecionReady");
+				System.out.println("\tconnection ready ... @ Launcher.init - connectionTask.onConnecionReady");
 
 				// debug
 				System.out.println("\tfirst stage channel set call ... @ Launcher.init");
@@ -159,11 +162,17 @@ public class Launcher extends Application {
 
 		System.out.println("Resolving uri ... @ Launcher.resolveUri");
 		List<String> args = this.getParameters().getRaw();
+		System.out.println("Reading cli arguments not implemented ... ");
 
 		if (args.size() > 1) {
 			System.out.println("\tUri initialized from arguments ...");
-			this.uri = args.get(1);
+			this.TargetBroker = new BrokerInfo(args.get(1));
+		} else {
+			System.out.println("\tUri initialized from default values ...");
+			this.TargetBroker = Launcher.LocalDefaultBroker;
 		}
+
+		System.out.println("Uri resolved to: " + TargetBroker.GetUri() + " ... @ Launcher.start");
 
 	}
 
@@ -192,9 +201,7 @@ public class Launcher extends Application {
 	}
 
 	public static void main(String[] args) {
-
 		Application.launch(args);
-
 	}
 
 }

@@ -20,7 +20,6 @@ public class UnitCreator {
 		Unit prototype = this.prototypes.get(unit_name);
 
 		if (prototype != null) {
-			// prototype with given name exists
 
 			try {
 
@@ -35,6 +34,7 @@ public class UnitCreator {
 
 		}
 
+		// if exception occur
 		return null;
 	}
 

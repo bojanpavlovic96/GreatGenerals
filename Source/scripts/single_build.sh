@@ -1,9 +1,10 @@
 #!/bin/bash
+
 # used by ordered build
 
 build() {
 	
-	cd ./$1
+	cd $1
 	
 	output=$(mvn clean install | grep "BUILD SUCCESS")
 	

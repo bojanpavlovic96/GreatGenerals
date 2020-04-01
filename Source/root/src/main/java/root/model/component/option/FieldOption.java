@@ -9,21 +9,29 @@ public abstract class FieldOption implements Runnable {
 
 	protected Controller controller;
 
-	protected Field primary_field;
-	protected Field secondary_field;
+	protected Field primaryField;
+	protected Field secondaryField;
 
 	protected boolean enabled;
 
 	// constructors
 
-	public FieldOption(String option_name, boolean enabled, Controller controller, Field primary_field) {
+	public FieldOption(String optionName, Controller gameController) {
 		super();
 
-		this.name = option_name;
+		this.name = optionName;
+		this.controller = gameController;
+
+		this.enabled = false;
+	}
+
+	// note primary field will never be assigned from constructor
+	public FieldOption(String optionName, boolean enabled, Controller controller, Field primaryField) {
+		this(optionName, controller);
+
 		this.enabled = enabled;
 		this.controller = controller;
-		this.primary_field = primary_field;
-
+		this.primaryField = primaryField;
 	}
 
 	// methods
@@ -33,19 +41,19 @@ public abstract class FieldOption implements Runnable {
 	}
 
 	public Field getPrimaryField() {
-		return this.primary_field;
+		return this.primaryField;
 	}
 
 	public void setPrimaryField(Field primary_field) {
-		this.primary_field = primary_field;
+		this.primaryField = primary_field;
 	}
 
 	public Field getSocondaryField() {
-		return this.secondary_field;
+		return this.secondaryField;
 	}
 
 	public void setSecondaryField(Field secondary_field) {
-		this.secondary_field = secondary_field;
+		this.secondaryField = secondary_field;
 	}
 
 	public void disableOption() {

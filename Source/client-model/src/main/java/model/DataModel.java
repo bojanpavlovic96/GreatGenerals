@@ -50,8 +50,7 @@ public class DataModel implements Model {
 
 		this.unit_creator = new UnitCreator();
 
-		Unit basic_unit = new BasicUnit(new BasicMove(null, new AStar(this), this.executor), null,
-				null);
+		Unit basic_unit = new BasicUnit(new BasicMove(null, new AStar(this), this.executor), null, null);
 		this.unit_creator.addPrototype(basic_unit);
 
 		// TODO add some more units
@@ -138,9 +137,14 @@ public class DataModel implements Model {
 		Field field = this.fields.get(storage_position);
 		Unit unit = this.unit_creator.generateUnit(unit_name);
 
-		field.setUnit(unit);
+		if (unit != null) {
 
-		unit.setField(field);
+			field.setUnit(unit);
+			unit.setField(field);
+
+		} else {
+			System.out.println("Unit creator was unable to create requested unit " + unit_name);
+		}
 
 	}
 

@@ -1,16 +1,12 @@
 package app.launcher;
 
 import java.io.IOException;
-import java.net.URISyntaxException;
-import java.security.KeyManagementException;
-import java.security.NoSuchAlgorithmException;
 
 import com.rabbitmq.client.Channel;
 import com.rabbitmq.client.Connection;
 import com.rabbitmq.client.ConnectionFactory;
 
 import app.event.ConnectionEventHandler;
-import app.event.ConnectionReadyHandler;
 import root.ActiveComponent;
 
 public class ConnectionTask implements Runnable, ActiveComponent {
@@ -38,13 +34,35 @@ public class ConnectionTask implements Runnable, ActiveComponent {
 
 	}
 
+	// #region testing new connection
+
+	private BrokerInfo brokerInfo;
+
+	public ConnectionTask(BrokerInfo brokerInfo, ConnectionEventHandler connectionReadyHandler,
+			ConnectionEventHandler connectionFailedHandler) {
+
+		this.brokerInfo = brokerInfo;
+		this.connectionReadyHandler = connectionReadyHandler;
+		this.connectionFailedHandler = connectionFailedHandler;
+
+	}
+	// #endregion
+
 	public void run() {
 
 		this.conn_factory = new ConnectionFactory();
 
 		try {
 
-			this.conn_factory.setUri(this.connection_uri);
+			this.conn_factory.setUsername(this.brokerInfo.Username);
+			this.conn_factory.setPassword(this.brokerInfo.Password);
+			this.conn_factory.setHost(this.brokerInfo.Hostname);
+
+			// this.conn_factory.setUsername("gp_user");
+			// this.conn_factory.setPassword("gp_password");
+			// this.conn_factory.setHost("localhost");
+
+			// this.conn_factory.setUri(this.connection_uri);
 
 			// debug
 			System.out.println("Creating connection ... @ ConnectionTask.run");

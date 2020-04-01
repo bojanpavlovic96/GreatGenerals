@@ -11,6 +11,13 @@ import view.command.ClearFieldCommand;
 
 public class ClearPathFieldOption extends FieldOption {
 
+	public static final String Name = "clear-path-field-option";
+
+	public ClearPathFieldOption(Controller gameController) {
+		super(ClearPathFieldOption.Name, gameController);
+
+	}
+
 	public ClearPathFieldOption(boolean enabled, Controller controller, Field primary_field) {
 		super("clear-path-field-option", enabled, controller, primary_field);
 		// Auto-generated constructor stub
@@ -19,7 +26,7 @@ public class ClearPathFieldOption extends FieldOption {
 	@Override
 	public void run() {
 
-		List<Field> path = this.primary_field.getUnit().getMoveType().getPath();
+		List<Field> path = this.primaryField.getUnit().getMoveType().getPath();
 
 		if (path != null && !path.isEmpty()) {
 

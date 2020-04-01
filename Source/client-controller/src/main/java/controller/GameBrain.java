@@ -35,9 +35,9 @@ public class GameBrain implements Controller {
 
 	private ServerProxy server_proxy;
 
-	private ExecutorService server_command_executor;
-	private CommandProcessor server_command_processor;
-	private CommandQueue server_command_queue;
+	private ExecutorService serverCommandExecutor;
+	private CommandProcessor serverCommandProcessor;
+	private CommandQueue serverCommandQueue;
 
 	private View view;
 	private CommandQueue view_command_queue;
@@ -67,11 +67,11 @@ public class GameBrain implements Controller {
 
 		// --- connect serverProxy and controller
 
-		this.server_command_queue = ((CommandProducer) this.server_proxy).getConsumerQueue();
+		this.serverCommandQueue = ((CommandProducer) this.server_proxy).getConsumerQueue();
 
-		this.server_command_executor = Executors.newSingleThreadExecutor();
-		this.server_command_processor = new BasicCommandProcessor(this.server_command_executor, this);
-		this.server_command_queue.setCommandProcessor(this.server_command_processor);
+		this.serverCommandExecutor = Executors.newSingleThreadExecutor();
+		this.serverCommandProcessor = new BasicCommandProcessor(this.serverCommandExecutor, this);
+		this.serverCommandQueue.setCommandProcessor(this.serverCommandProcessor);
 
 		// --- done with serverProxy
 
@@ -171,9 +171,9 @@ public class GameBrain implements Controller {
 
 		this.field_options = new ArrayList<FieldOption>();
 
-		this.field_options.add(new SelectPathFieldOption(true, this, null));
-		this.field_options.add(new MoveFieldOption(true, this, null));
-		this.field_options.add(new AddToPathFieldOption(true, this, null));
+		this.field_options.add(new SelectPathFieldOption(this));
+		this.field_options.add(new MoveFieldOption(this));
+		this.field_options.add(new AddToPathFieldOption(this));
 
 	}
 
@@ -202,8 +202,8 @@ public class GameBrain implements Controller {
 	@Override
 	public void shutdown() {
 
-		if (this.server_command_executor != null && !this.server_command_executor.isShutdown()) {
-			this.server_command_executor.shutdown();
+		if (this.serverCommandExecutor != null && !this.serverCommandExecutor.isShutdown()) {
+			this.serverCommandExecutor.shutdown();
 		}
 
 		if (this.view != null) {
@@ -233,17 +233,17 @@ public class GameBrain implements Controller {
 
 	@Override
 	public CommandQueue getCommandQueue() {
-		return this.server_command_queue;
+		return this.serverCommandQueue;
 	}
 
 	@Override
 	public void setCommandQueue(CommandQueue new_queue) {
-		this.server_command_queue = new_queue;
+		this.serverCommandQueue = new_queue;
 	}
 
 	@Override
 	public CommandProcessor getCommandProcessor() {
-		return this.server_command_processor;
+		return this.serverCommandProcessor;
 	}
 
 	public void setConsumerQueue(CommandQueue consumer_queue) {

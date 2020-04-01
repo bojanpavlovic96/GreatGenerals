@@ -1,0 +1,10 @@
+FROM rabbitmq:3.8.3-management
+
+ADD init_script.sh /
+RUN chmod a+x /init_script.sh
+# RUN /init_script.sh
+CMD ["/init_script.sh"]
+
+# RUN rabbitmqctl await_startup
+# RUN rabbitmqctl add_user gg_user gg_password
+# RUN rabbitmqctl set_permissions gg_user --vhost / ".*" ".*" ".*"

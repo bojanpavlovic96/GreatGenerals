@@ -8,6 +8,12 @@ import root.model.component.option.FieldOption;
 
 public class MoveFieldOption extends FieldOption {
 
+	public static final String Name = "move-field-option";
+
+	public MoveFieldOption(Controller gameController) {
+		super(MoveFieldOption.Name, gameController);
+	}
+
 	public MoveFieldOption(boolean enabled, Controller controller, Field primary_field) {
 		super("move-field-option", enabled, controller, primary_field);
 
@@ -16,18 +22,18 @@ public class MoveFieldOption extends FieldOption {
 	@Override
 	public void run() {
 
-		List<Field> path = this.primary_field.getUnit().getMoveType().getPath();
+		List<Field> path = this.primaryField.getUnit().getMoveType().getPath();
 
 		if (path != null && !path.isEmpty()) {
-			this.primary_field.getUnit().getMoveType().move();
+			this.primaryField.getUnit().getMoveType().move();
 		} else {
 			SelectPathFieldOption select_path = new SelectPathFieldOption(true, this.controller,
-					this.primary_field);
-			select_path.setSecondaryField(this.secondary_field);
+					this.primaryField);
+			select_path.setSecondaryField(this.secondaryField);
 			select_path.run();
 			// path is calculated, set and selected
 
-			this.primary_field.getUnit().getMoveType().move();
+			this.primaryField.getUnit().getMoveType().move();
 
 		}
 	}
