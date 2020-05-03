@@ -111,20 +111,27 @@ public class ModelField implements Field {
 	@Override
 	public void adjustOptionsFor(Field second_field) {
 
-		// debug
-		System.out.println("ADJUSTING OPTOIONS ...");
-
 		for (FieldOption option : this.options) {
 			option.setSecondaryField(second_field);
 		}
 
-		// restore all disabled options if there are any
+		for (FieldOption singleOption : options) {
 
-		// check what is available
-		// save every disabled option
+			if (singleOption.isAdequateFor(this)) {
+
+				singleOption.enableOption();
+
+			} else {
+
+				singleOption.disableOption();
+
+			}
+		}
 
 	}
 
+	// e.g. disable building options if terrain on this field is mountain or
+	// something similar
 	// implement
 	private void selfOptionAdjust() {
 
@@ -133,17 +140,9 @@ public class ModelField implements Field {
 	@Override
 	public void addFieldOptions(List<FieldOption> newOptions) {
 
-		if (this.options == null) {
-			this.options = new ArrayList<FieldOption>();
+		for (FieldOption fieldOption : newOptions) {
+			this.addFieldOption(fieldOption);
 		}
-
-		for (FieldOption option : newOptions) {
-			option.setPrimaryField(this); // attention this line should be moved in to the selfOptionAdjust
-											 // maybe
-			this.options.add(option);
-		}
-
-		this.selfOptionAdjust();
 
 	}
 

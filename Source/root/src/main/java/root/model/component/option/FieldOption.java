@@ -21,11 +21,11 @@ public abstract class FieldOption implements Runnable {
 
 		this.name = optionName;
 		this.controller = gameController;
+		this.primaryField = null;
 
 		this.enabled = false;
 	}
 
-	// note primary field will never be assigned from constructor
 	public FieldOption(String optionName, boolean enabled, Controller controller, Field primaryField) {
 		this(optionName, controller);
 
@@ -70,5 +70,7 @@ public abstract class FieldOption implements Runnable {
 
 	// TODO maybe just cloneable
 	public abstract FieldOption getCopy();
+
+	public abstract boolean isAdequateFor(Field field);
 
 }

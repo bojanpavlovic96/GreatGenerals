@@ -1,7 +1,6 @@
 package view.component;
 
 import javafx.geometry.Point2D;
-import javafx.scene.paint.Color;
 import root.model.component.Field;
 import root.view.field.ViewField;
 

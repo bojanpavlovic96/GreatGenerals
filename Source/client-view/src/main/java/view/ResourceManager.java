@@ -1,9 +1,7 @@
 package view;
 
 import java.io.BufferedReader;
-import java.io.File;
 import java.io.FileNotFoundException;
-import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -34,8 +32,20 @@ public class ResourceManager {
 	static private final String UNIT_KEY_PREFIX = "unit-";
 	static private final String TERRAIN_KEY_PREFIX = "terrain-";
 
+	// #region singletonStuff
 	// instance
 	static private ResourceManager instance;
+
+	static public ResourceManager getInstance() {
+
+		if (ResourceManager.instance == null) {
+			ResourceManager.instance = new ResourceManager();
+		}
+
+		return ResourceManager.instance;
+	}
+
+	// #endregion singletonStuff
 
 	// type included
 	private String concrete_assets_path;
@@ -43,8 +53,8 @@ public class ResourceManager {
 	// unit/terrain-name-range <- key format
 	private Map<String, Image> assets;
 
-	private JSONArray units_list;
-	private JSONArray terrains_list;
+	private JSONArray unitsList;
+	private JSONArray terrainsList;
 
 	// methods
 
@@ -69,17 +79,17 @@ public class ResourceManager {
 
 		final String UNITS_PATH = ResourceManager.ASSETS_PATH + "/" + ResourceManager.ASSETS_TYPE + "/unit";
 
-		for (int index = 0; index < this.units_list.length(); index++) {
+		for (int index = 0; index < this.unitsList.length(); index++) {
 
-			unit = this.units_list.getJSONObject(index);
+			unit = this.unitsList.getJSONObject(index);
 
 			for (int range = unit.getInt("range-start"); range <= unit.getInt("range-end"); range++) {
 
 				this.assets.put(ResourceManager.UNIT_KEY_PREFIX + unit.getString("name"),
-								new Image("/" + UNITS_PATH
-											+ "/"
-											+ unit.getString("name")
-											+ unit.getString("extension")));
+						new Image("/" + UNITS_PATH
+								+ "/"
+								+ unit.getString("name")
+								+ unit.getString("extension")));
 
 			}
 
@@ -88,23 +98,23 @@ public class ResourceManager {
 		// load available terrains from terrains list
 
 		final String TERRAINS_PATH = ResourceManager.ASSETS_PATH + "/"
-										+ ResourceManager.ASSETS_TYPE
-										+ "/terrain";
+				+ ResourceManager.ASSETS_TYPE
+				+ "/terrain";
 
 		JSONObject terrain = null;
-		for (int index = 0; index < this.terrains_list.length(); index++) {
+		for (int index = 0; index < this.terrainsList.length(); index++) {
 
-			terrain = this.terrains_list.getJSONObject(index);
+			terrain = this.terrainsList.getJSONObject(index);
 
 			for (int range = terrain.getInt("range-start"); range <= terrain.getInt("range-end"); range++) {
 
 				this.assets.put(this.constructTerrainKey(terrain.getString("name"), range),
-								new Image("/" + TERRAINS_PATH
-											+ "/"
-											+ terrain.getString("name")
-											+ "-"
-											+ range
-											+ terrain.getString("extension")));
+						new Image("/" + TERRAINS_PATH
+								+ "/"
+								+ terrain.getString("name")
+								+ "-"
+								+ range
+								+ terrain.getString("extension")));
 			}
 
 		}
@@ -117,12 +127,12 @@ public class ResourceManager {
 		try {
 
 			String LOGICAL_LIST_PATH = ResourceManager.ASSETS_PATH + "/"
-										+ ResourceManager.ASSETS_TYPE
-										+ "/"
-										+ "terrain"
-										+ "/"
-										+ "terrain_list"
-										+ ResourceManager.CONFIG_SUFFIX;
+					+ ResourceManager.ASSETS_TYPE
+					+ "/"
+					+ "terrain"
+					+ "/"
+					+ "terrain_list"
+					+ ResourceManager.CONFIG_SUFFIX;
 
 			// String PHYSICAL_LIST_PATH =
 			// this.getClass().getClassLoader().getResource(LOGICAL_LIST_PATH).getPath();
@@ -142,7 +152,7 @@ public class ResourceManager {
 			stream_reader.close();
 			input_stream.close();
 
-			this.terrains_list = new JSONArray(buffer.toString());
+			this.terrainsList = new JSONArray(buffer.toString());
 
 		} catch (FileNotFoundException e) {
 			// Auto-generated catch block
@@ -160,12 +170,12 @@ public class ResourceManager {
 		try {
 
 			String LOGICAL_LIST_PATH = ResourceManager.ASSETS_PATH + "/"
-										+ ResourceManager.ASSETS_TYPE
-										+ "/"
-										+ "unit"
-										+ "/"
-										+ "unit_list"
-										+ ResourceManager.CONFIG_SUFFIX;
+					+ ResourceManager.ASSETS_TYPE
+					+ "/"
+					+ "unit"
+					+ "/"
+					+ "unit_list"
+					+ ResourceManager.CONFIG_SUFFIX;
 
 			// String PHYSICAL_LIST_PATH =
 			// this.getClass().getClassLoader().getResource(LOGICAL_LIST_PATH).getPath();
@@ -183,7 +193,7 @@ public class ResourceManager {
 
 			buff_reader.close();
 
-			this.units_list = new JSONArray(buffer.toString());
+			this.unitsList = new JSONArray(buffer.toString());
 
 		} catch (FileNotFoundException e) {
 			// Auto-generated catch block
@@ -193,19 +203,6 @@ public class ResourceManager {
 			e.printStackTrace();
 		}
 
-	}
-
-	static public ResourceManager getInstance() {
-
-		if (ResourceManager.instance == null) {
-			ResourceManager.instance = new ResourceManager();
-		}
-
-		return ResourceManager.instance;
-	}
-
-	static public void setAssetsType(String new_type) {
-		ResourceManager.ASSETS_TYPE = new_type;
 	}
 
 	static public String getAssetsType() {

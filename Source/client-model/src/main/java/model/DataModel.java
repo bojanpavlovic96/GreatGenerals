@@ -29,7 +29,7 @@ public class DataModel implements Model {
 	private ScheduledExecutorService executor;
 
 	// unique event handler (move, attack, build ... )
-	private ModelEventHandler event_handler;
+	private ModelEventHandler eventHandler;
 
 	// constructors
 
@@ -71,7 +71,7 @@ public class DataModel implements Model {
 
 			// event handlers passed from controller
 
-			field.setModelEventHandler(this.event_handler);
+			field.setModelEventHandler(this.eventHandler);
 
 			this.fields.put(field.getStoragePosition(), field);
 
@@ -150,7 +150,7 @@ public class DataModel implements Model {
 
 	@Override
 	public void setEventHandler(ModelEventHandler handler) {
-		this.event_handler = handler;
+		this.eventHandler = handler;
 	}
 
 	@Override

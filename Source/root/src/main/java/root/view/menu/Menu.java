@@ -1,6 +1,9 @@
 package root.view.menu;
 
+import java.util.List;
+
 import javafx.geometry.Point2D;
+import root.model.component.option.FieldOption;
 
 public interface Menu {
 
@@ -13,5 +16,13 @@ public interface Menu {
 	void setVisible(boolean visibility);
 
 	void setPosition(Point2D position);
+
+	double getMenuWidth();
+
+	double getMenuHeight();
+
+	boolean isDisplayed();
+
+	void populateWith(List<FieldOption> options);
 
 }

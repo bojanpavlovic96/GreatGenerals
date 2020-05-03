@@ -19,18 +19,19 @@ public class BasicMove extends MoveType {
 
 	protected int calculate_delay() {
 
+		// TODO move_delay is hardcoded
 		super.move_delay = 1000;
 		return super.move_delay;
 
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see root.model.action.move.MoveType#move()
 	 * 
-	 * this implementation only starts timer for move.
-	 * timer just raise MoveModelEvent
-	 * 
-	 * 
+	 * this implementation only starts timer for move. timer just raise
+	 * MoveModelEvent
 	 */
 	@Override
 	public void move() {
@@ -38,8 +39,8 @@ public class BasicMove extends MoveType {
 		if (this.path != null && !this.path.isEmpty()) {
 
 			// debug
-			System.out.println("move from : " + this.my_field.getStoragePosition());
-			System.out.println("move to: " + this.path.get(0).getStoragePosition());
+			System.out.println("move from : " + this.my_field.getStoragePosition() +
+					"->: " + this.path.get(0).getStoragePosition());
 
 			Field next_field = path.get(0);
 
@@ -52,8 +53,11 @@ public class BasicMove extends MoveType {
 			super.moving = true;
 
 			this.calculate_delay();
-
 			this.timer.schedule(this, this.move_delay, TimeUnit.MILLISECONDS);
+			// this will just raise event (at every move_delay second)
+			// that unit is ready to move
+			// this event is passed to the server and after confirmation from it's side
+			// controller is going to actually move unit using CtrlMoveCommand
 
 		} else {
 			// debug
@@ -76,7 +80,14 @@ public class BasicMove extends MoveType {
 	@Override
 	public void run() {
 		this.on_event.execute(new MoveModelEventArg(this.my_field.getPlayer().getUsername(),
-				this.my_field.getStoragePosition(), this.path.get(0).getStoragePosition()));
+				this.my_field.getStoragePosition(),
+				this.path.get(0).getStoragePosition()));
+	}
+
+	@Override
+	public void stopMoving() {
+		System.out.println("ERROR stop moving not implemented ... ");
+
 	}
 
 }

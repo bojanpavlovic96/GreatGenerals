@@ -66,4 +66,10 @@ public class AddToPathFieldOption extends FieldOption {
 
 	}
 
+	@Override
+	public boolean isAdequateFor(Field field) {
+		return (field.getUnit() != null &&
+				field.getUnit().getMoveType() != null);
+	}
+
 }

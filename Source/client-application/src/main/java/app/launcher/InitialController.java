@@ -85,13 +85,13 @@ public class InitialController implements GameReadyEventProducer, ConnectionUser
 
 						// debug
 						System.out.println("Publishing on: " + naming_manager.getConfig("login-exchange-name")
-											+ "\nfor: "
-											+ naming_manager.getConfig("login-routing-key"));
+								+ " for: "
+								+ naming_manager.getConfig("login-routing-key"));
 
-						channel.basicPublish(	naming_manager.getConfig("login-exchange-name"),
-												naming_manager.getConfig("login-routing-key"),
-												null,
-												(json_request.toString()).getBytes());
+						channel.basicPublish(naming_manager.getConfig("login-exchange-name"),
+								naming_manager.getConfig("login-routing-key"),
+								null,
+								(json_request.toString()).getBytes());
 
 						// debug
 						System.out.println("Calling on_game_ready event handler ... ");
@@ -218,34 +218,25 @@ public class InitialController implements GameReadyEventProducer, ConnectionUser
 		}
 
 		/**
-		 * implement 
-		 * declare queues&exchanges
+		 * implement declare queues&exchanges
 		 * 
-		 * implement
-		 * set adequate handlers for :
+		 * implement set adequate handlers for :
 		 * 
-		 *  login response
-		 *  	show adequate message
-		 *  	fill this.username and this.password
-		 *  	show roomForm	
-		 *  
-		 *  register response
-		 *  	show adequate message
-		 *  	fill initialPage.username and initialPage.password
-		 *  
-		 *  room create response
-				show adequate message
-			
-		 *  room join response
-		 *  	show adequate message
-		 *  	fill playerList
-		 *  
-		 *  startGame response
-		 *  	show adequate message
-		 *  	call gameReadyHandler
-		 * 	
-		 *  TODO use this.naming_manager for queue naming 
-		 *  TODO fill /resources/config/queue/default-queue-config.json with appropriate queue names
+		 * login response show adequate message fill this.username and this.password
+		 * show roomForm
+		 * 
+		 * register response show adequate message fill initialPage.username and
+		 * initialPage.password
+		 * 
+		 * room create response show adequate message
+		 * 
+		 * room join response show adequate message fill playerList
+		 * 
+		 * startGame response show adequate message call gameReadyHandler
+		 * 
+		 * TODO use this.naming_manager for queue naming TODO fill
+		 * /resources/config/queue/default-queue-config.json with appropriate queue
+		 * names
 		 */
 
 	}

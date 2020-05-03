@@ -6,6 +6,7 @@ import root.command.Command;
 import root.command.CommandDrivenComponent;
 import root.command.CommandProducer;
 import root.model.Model;
+import root.model.component.Field;
 import root.model.component.option.FieldOption;
 import root.model.event.ModelEventHandler;
 import root.view.View;
@@ -26,8 +27,12 @@ public interface Controller extends ModelEventHandler,
 
 	void setModel(Model new_model);
 
-	List<FieldOption> getFieldOptions();
+	List<FieldOption> getPossibleFieldOptions();
 
 	void enqueueForUndone(Command new_command);
+
+	Field getSelectedField();
+
+	void selectField(Field fieldToSelect);
 
 }

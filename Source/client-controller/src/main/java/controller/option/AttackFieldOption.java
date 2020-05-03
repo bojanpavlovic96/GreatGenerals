@@ -1,5 +1,7 @@
 package controller.option;
 
+import java.io.File;
+
 import root.controller.Controller;
 import root.model.component.Field;
 import root.model.component.option.FieldOption;
@@ -28,6 +30,12 @@ public class AttackFieldOption extends FieldOption {
 
 		return new AttackFieldOption(true, this.controller, null);
 
+	}
+
+	@Override
+	public boolean isAdequateFor(Field field) {
+		return (field.getUnit() != null &&
+				(field.getUnit().haveGroundAttack() || field.getUnit().haveAirAttack()));
 	}
 
 }

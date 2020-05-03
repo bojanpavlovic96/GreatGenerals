@@ -24,23 +24,24 @@ public class UnselectFieldCommand extends Command {
 	public void setTargetComponent(CommandDrivenComponent target) {
 		super.setTargetComponent(target);
 
-		this.view_field = ((View) super.target_component).convertToViewField(this.model_field);
+		this.view_field = ((View) super.targetComponent).convertToViewField(this.model_field);
 
 	}
 
 	public void run() {
 
-		GraphicsContext gc = ((View) this.target_component).getMainGraphicContext();
+		GraphicsContext gc = ((View) this.targetComponent).getMainGraphicContext();
 
 		this.view_field.clearField(gc);
 		this.view_field.drawOn(gc);
 
 		if (this.model_field.getUnit() != null
-			&& this.model_field.getUnit().getMoveType().getPath() != null) {
+				&& this.model_field.getUnit().getMoveType().getPath() != null) {
 
 			for (Field pathField : this.model_field.getUnit().getMoveType().getPath()) {
 
-				ViewField viewField = ((View) this.target_component).convertToViewField(pathField);
+				System.out.println("Unselecting path field ... ");
+				ViewField viewField = ((View) this.targetComponent).convertToViewField(pathField);
 
 				viewField.clearField(gc);
 				viewField.drawOn(gc);

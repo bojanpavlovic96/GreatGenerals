@@ -51,4 +51,12 @@ public class ClearPathFieldOption extends FieldOption {
 
 	}
 
+	@Override
+	public boolean isAdequateFor(Field field) {
+		return (field.getUnit() != null &&
+				field.getUnit().getMoveType() != null &&
+				field.getUnit().getMoveType().getPath() != null &&
+				field.getUnit().getMoveType().getPath().size() > 0);
+	}
+
 }

@@ -13,17 +13,15 @@ public interface Field {
 
 	Unit getUnit();
 
+	void setUnit(Unit new_unit);
+
 	Terrain getTerrain();
 
 	PlayerData getPlayer();
 
-	void setUnit(Unit new_unit);
-
 	Point2D getStoragePosition();
 
 	void setModelEventHandler(ModelEventHandler event_handler);
-
-	// TODO add something about battle
 
 	boolean isInBattle();
 
@@ -31,11 +29,6 @@ public interface Field {
 	void addFieldOptions(List<FieldOption> options);
 
 	void addFieldOption(FieldOption option);
-
-	// attention maybe also add remove field options, but this is already covered
-	// with enabled field in option
-
-	// void initializeFieldOptions(List<FieldOption> new_options);
 
 	List<FieldOption> getEnabledOptions();
 

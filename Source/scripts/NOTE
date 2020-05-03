@@ -1,0 +1,23 @@
+Scrips from this dir can still be used for clean, compile, build and run
+but in the future they may (probably) WON'T be updated.
+
+To build:
+cd to .../GreatGenerals/Source/
+mvn clean install
+
+To compile:
+cd to .../GreatGenerals/Source/
+mvn compile
+
+To run:
+build projects with above command
+
+For java 11+
+cd to .../GreatGenerals/Source/client-application
+mvn javafx:run
+
+for java 11-
+cd to .../GreatGenerals/Source/client-application
+java -cp ./target/client-application-0.0.1-SNAPSHOT-jar-with-dependencies.jar app.launcher.Launcher
+
+

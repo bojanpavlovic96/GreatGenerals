@@ -2,7 +2,6 @@ package view.command;
 
 import java.util.List;
 
-import javafx.application.Platform;
 import javafx.geometry.Point2D;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
@@ -18,76 +17,62 @@ import view.component.menu.OptionMenu;
 
 public class ShowFieldInfoCommand extends Command {
 
-	public static double INFO_WIDTH = 200;
+	public static double INFO_WIDTH = 400;
 	public static double INFO_HEIGHT = 100;
 
-	private Field selected_field;
-	private ViewField view_field;
+	private Field selectedField;
+	private ViewField viewField; // unused ? remove ?
 
-	private Field target_field;
-	private ViewField view_target;
+	private Field targetField;
+	private ViewField viewTarget;
 
 	public ShowFieldInfoCommand(Field selected_field, Field target_field) {
 		super("display-field-info-view-command");
 		// attention this is not the most appropriate name
 
-		this.selected_field = selected_field;
-		this.target_field = target_field;
-
+		this.selectedField = selected_field;
+		this.targetField = target_field;
 	}
 
 	@Override
 	public void setTargetComponent(CommandDrivenComponent target) {
 		super.setTargetComponent(target);
 
-		// TODO
-		// check if selected field is null
-		// if is null, target field is also selected field
+		this.viewField = ((View) super.targetComponent).convertToViewField(this.selectedField);
+		this.viewTarget = ((View) super.targetComponent).convertToViewField(this.targetField);
 
-		this.view_field = ((View) super.target_component).convertToViewField(this.selected_field);
-		this.view_target = ((View) super.target_component).convertToViewField(this.target_field);
+		if (this.selectedField == null) {
+			this.selectedField = this.targetField;
+		}
 
 	}
 
 	@Override
 	public void run() {
 
-		// get view menu
-		Menu menu = ((View) target_component).getOptionMenu();
+		View view = (View) targetComponent;
 
-		// clear previous options
+		Menu menu = view.getOptionMenu();
 		menu.clearOptions();
 
-		// disable some options
-		selected_field.adjustOptionsFor(target_field);
+		selectedField.adjustOptionsFor(targetField);
+		menu.populateWith(selectedField.getEnabledOptions());
 
-		// populate menu with new option
-		List<FieldOption> options = selected_field.getEnabledOptions();
-
-		for (FieldOption singleOption : options) {
-
-			singleOption.setSecondaryField(target_field);
-			menu.addOption(new Option(singleOption));
-
-		}
-
-		// set menu position
-		((View) target_component).setMenuPosition(new Point2D(view_target.getFieldCenter().getX(),
-				view_target.getFieldCenter().getY()));
-
-		// show menu
-		((View) target_component).setMenuVisibility(true);
+		view.setMenuPosition(
+				new Point2D(viewTarget.getFieldCenter().getX(),
+						viewTarget.getFieldCenter().getY()));
+		view.setMenuVisibility(true);
 
 		// draw field info
 
-		GraphicsContext gc = ((View) target_component).getTopLayerGraphicContext();
+		GraphicsContext gc = ((View) targetComponent).getTopLayerGraphicContext();
 		gc.save();
 
 		gc.setFill(Color.GRAY);
-		gc.fillRect(view_target.getFieldCenter().getX() + ((OptionMenu) menu).getWidth(),
-					view_target.getFieldCenter().getY(),
-					200,
-					ShowFieldInfoCommand.INFO_HEIGHT);
+		gc.fillRect(viewTarget.getFieldCenter().getX() + menu.getMenuWidth(),
+				viewTarget.getFieldCenter().getY(),
+				200,
+				ShowFieldInfoCommand.INFO_HEIGHT);
 
 		gc.restore();
 

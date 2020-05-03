@@ -22,12 +22,12 @@ public class DrawFieldCommand extends Command {
 	public void setTargetComponent(CommandDrivenComponent target) {
 		super.setTargetComponent(target);
 
-		this.view_Field = ((View) super.target_component).convertToViewField(this.model);
+		this.view_Field = ((View) super.targetComponent).convertToViewField(this.model);
 
 	}
 
 	public void run() {
-		this.view_Field.drawOn(((View) super.target_component).getMainGraphicContext());
+		this.view_Field.drawOn(((View) super.targetComponent).getMainGraphicContext());
 	}
 
 	@Override

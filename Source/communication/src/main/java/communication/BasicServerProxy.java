@@ -63,25 +63,25 @@ public class BasicServerProxy implements ServerProxy {
 		players.add(new PlayerModelData("user 2", Color.GREEN));
 		players.add(new PlayerModelData("user 3", Color.BLACK));
 
-		List<Field> field_models = new ArrayList<Field>();
+		List<Field> fieldModels = new ArrayList<Field>();
 
 		int left = 3;
 		int right = 17;
 
-		int player_counter = 0;
+		int playerCounter = 0;
 
 		for (int i = 1; i < 16; i++) {
 
 			for (int j = left; j < right; j++) {
 				if (i % 2 == 0 && j % 5 == 0)
-					field_models.add(new ModelField(new Point2D(j, i), players.get(player_counter), true,
+					fieldModels.add(new ModelField(new Point2D(j, i), players.get(playerCounter), true,
 							null, new Terrain("mountains", 1)));
 				else
-					field_models.add(new ModelField(new Point2D(j, i), players.get(player_counter), true,
+					fieldModels.add(new ModelField(new Point2D(j, i), players.get(playerCounter), true,
 							null, new Terrain("water", 1)));
 
-				player_counter++;
-				player_counter %= 3;
+				playerCounter++;
+				playerCounter %= 3;
 
 			}
 
@@ -89,7 +89,7 @@ public class BasicServerProxy implements ServerProxy {
 				left--;
 		}
 
-		this.command_queue.enqueue(new CtrlInitializeCommand(players, field_models));
+		this.command_queue.enqueue(new CtrlInitializeCommand(players, fieldModels));
 
 	}
 

@@ -1,10 +1,14 @@
 package controller.option;
 
+import java.util.List;
+
 import root.command.Command;
 import root.controller.Controller;
 import root.model.component.Field;
 import root.model.component.option.FieldOption;
+import view.command.ClearFieldCommand;
 import view.command.ClearTopLayerCommand;
+import view.command.DrawFieldCommand;
 import view.command.SelectFieldCommand;
 
 public class SelectPathFieldOption extends FieldOption {
@@ -23,6 +27,21 @@ public class SelectPathFieldOption extends FieldOption {
 	@Override
 	public void run() {
 
+		List<Field> unitPath = this.primaryField.getUnit().getMoveType().getPath();
+		if (unitPath != null && unitPath.size() > 0) {
+
+			for (Field singleField : unitPath) {
+
+				ClearFieldCommand clearFieldCmd = new ClearFieldCommand(singleField);
+				DrawFieldCommand drawFieldCommand = new DrawFieldCommand(singleField);
+
+				super.controller.getConsumerQueue().enqueue(clearFieldCmd);
+				super.controller.getConsumerQueue().enqueue(drawFieldCommand);
+
+			}
+
+		}
+
 		// second field must be without unit in order to calculate path
 		for (Field field : primaryField.getUnit().getMoveType().calculatePath(this.secondaryField)) {
 			Command select_command = new SelectFieldCommand(field);
@@ -39,6 +58,12 @@ public class SelectPathFieldOption extends FieldOption {
 
 		return new SelectPathFieldOption(true, this.controller, null);
 
+	}
+
+	@Override
+	public boolean isAdequateFor(Field field) {
+		return (field.getUnit() != null &&
+				field.getUnit().getMoveType() != null);
 	}
 
 }

@@ -14,14 +14,14 @@ public class ClearViewCommand extends Command {
 
 		// clear top layer
 		ClearTopLayerCommand clear_top_layer = new ClearTopLayerCommand();
-		clear_top_layer.setTargetComponent(this.target_component);
+		clear_top_layer.setTargetComponent(this.targetComponent);
 		clear_top_layer.run();
 
 		// clear main canvas
-		GraphicsContext gc = ((View) super.target_component).getMainGraphicContext();
+		GraphicsContext gc = ((View) super.targetComponent).getMainGraphicContext();
 		gc.save();
 
-		gc.setFill(((View) super.target_component).getBackgroundColor());
+		gc.setFill(((View) super.targetComponent).getBackgroundColor());
 
 		gc.fillRect(0, 0, gc.getCanvas().getWidth(), gc.getCanvas().getHeight());
 

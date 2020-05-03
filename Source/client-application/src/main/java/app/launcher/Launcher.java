@@ -1,6 +1,5 @@
 package app.launcher;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import com.rabbitmq.client.Channel;

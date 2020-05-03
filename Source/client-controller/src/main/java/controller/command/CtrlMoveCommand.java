@@ -10,6 +10,7 @@ import root.controller.Controller;
 import root.model.component.Field;
 import view.command.ClearFieldCommand;
 import view.command.DrawFieldCommand;
+import view.command.UnselectFieldCommand;
 
 public class CtrlMoveCommand extends Command {
 
@@ -31,40 +32,43 @@ public class CtrlMoveCommand extends Command {
 	public void setTargetComponent(CommandDrivenComponent target) {
 		super.setTargetComponent(target);
 
-		this.base_field = ((Controller) super.target_component).getModel().getField(this.start_field);
-		this.second_field = ((Controller) super.target_component).getModel().getField(this.next_field);
+		this.base_field = ((Controller) super.targetComponent).getModel().getField(this.start_field);
+		this.second_field = ((Controller) super.targetComponent).getModel().getField(this.next_field);
 
 	}
 
 	@Override
 	public void run() {
 
-		// move unit
+		Controller controller = (Controller) super.targetComponent;
+		CommandQueue view_command_queue = controller.getConsumerQueue();
+
 		this.base_field.getUnit().relocateTo(this.second_field);
-		// !!! unit is now on second field
 
-		// redraw both fields
-		CommandQueue view_command_queue = ((Controller) super.target_component).getConsumerQueue();
+		view_command_queue.enqueue(new UnselectFieldCommand(this.base_field));
+		view_command_queue.enqueue(new UnselectFieldCommand(this.second_field));
 
-		// clear both fields
 		view_command_queue.enqueue(new ClearFieldCommand(this.base_field));
-		view_command_queue.enqueue(new ClearFieldCommand(this.second_field));
-
-		// then draw them again
 		view_command_queue.enqueue(new DrawFieldCommand(this.base_field));
+
+		view_command_queue.enqueue(new ClearFieldCommand(this.second_field));
 		view_command_queue.enqueue(new DrawFieldCommand(this.second_field));
 
 		List<Field> unit_path = this.second_field.getUnit().getMoveType().getPath();
 
 		unit_path.remove(0);
 
-		// if path is not empty
-		// !!! unit is now on second field
+		// note: unit is now on second_field
 		if (!unit_path.isEmpty()) {
 			// continue moving
 
 			this.second_field.getUnit().getMoveType().move();
 			// trigger timer
+		}
+
+		if (this.base_field == controller.getSelectedField()) {
+
+			controller.selectField(second_field);
 
 		}
 

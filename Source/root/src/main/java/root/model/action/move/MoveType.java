@@ -32,12 +32,9 @@ public abstract class MoveType implements Cloneable, Runnable {
 		this.path_finder = path_finder;
 
 		this.path = null;
-
 	}
 
 	// methods
-
-	// implement calculate delay based on current terrain
 
 	public void addToPath(Field next_field) {
 		if (this.path != null) {
@@ -92,10 +89,17 @@ public abstract class MoveType implements Cloneable, Runnable {
 		return this.path_finder;
 	}
 
+	public boolean isMoving() {
+		return moving;
+	}
+
 	// abstract methods
 
 	public abstract void move();
 
+	public abstract void stopMoving();
+
+	// implement calculate delay based on current terrain
 	public abstract int calculateDelay();
 
 	public abstract void run();

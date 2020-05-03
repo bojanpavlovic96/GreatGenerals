@@ -2,7 +2,6 @@ package view.command;
 
 import java.util.List;
 
-import javafx.application.Platform;
 import javafx.geometry.Point2D;
 import root.command.Command;
 import root.model.component.Field;
@@ -21,14 +20,8 @@ public class LoadBoardCommand extends Command {
 
 	public void run() {
 
-		// Platform.runLater(new Runnable() {
-		// @Override
-		// public void run() {
-
-		DrawFieldCommand draw_hex_comm = null;
-
 		// hide canvas
-		((View) target_component).setCanvasVisibility(false);
+		((View) targetComponent).setCanvasVisibility(false);
 
 		int most_x = -10;
 		int most_y = -10;
@@ -43,25 +36,24 @@ public class LoadBoardCommand extends Command {
 
 		}
 
-		((View) target_component).adjustCanvasSize(new Point2D(most_x, most_y));
+		((View) targetComponent).adjustCanvasSize(new Point2D(most_x, most_y));
 
 		ClearViewCommand clear_command = new ClearViewCommand();
-		clear_command.setTargetComponent(target_component);
+		clear_command.setTargetComponent(targetComponent);
 		clear_command.run();
+
+		DrawFieldCommand draw_hex_comm = null;
 
 		for (Field field : models) {
 
 			draw_hex_comm = new DrawFieldCommand(field);
-			draw_hex_comm.setTargetComponent(target_component);
+			draw_hex_comm.setTargetComponent(targetComponent);
 			draw_hex_comm.run();
 
 		}
 
 		// show canvas
-		((View) target_component).setCanvasVisibility(true);
-
-		// }
-		// });
+		((View) targetComponent).setCanvasVisibility(true);
 
 	}
 

@@ -13,7 +13,7 @@ public class Option extends Button implements MenuItem {
 	private Runnable on_click;
 
 	public Option(FieldOption option) {
-		super(option.getName());
+		super(option.getName()); // button text
 
 		this.name = option.getName();
 
@@ -31,11 +31,6 @@ public class Option extends Button implements MenuItem {
 	}
 
 	@Override
-	public void setName(String item_name) {
-		this.name = item_name;
-	}
-
-	@Override
 	public Runnable getOnClickRunnable() {
 		return on_click;
 	}
@@ -50,7 +45,7 @@ public class Option extends Button implements MenuItem {
 			@Override
 			public void handle(ActionEvent event) {
 				// debug
-				System.out.println("On click event from menu option ... :");
+				System.out.println("On click event from menu option ... : " + name);
 
 				if (on_click != null) {
 					on_click.run();

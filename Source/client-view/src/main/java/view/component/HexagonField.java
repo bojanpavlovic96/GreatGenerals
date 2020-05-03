@@ -5,14 +5,10 @@ import java.util.List;
 
 import javafx.geometry.Point2D;
 import javafx.geometry.Point3D;
-import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.Image;
 import javafx.scene.paint.Color;
-import javafx.scene.shape.Line;
-import javafx.scene.shape.Path;
 import root.model.component.Field;
-import root.model.component.Unit;
 import root.view.field.ViewField;
 import view.ResourceManager;
 
@@ -60,8 +56,6 @@ public class HexagonField implements ViewField {
 
 		if (model.getUnit() != null)
 			this.unit = new ViewUnit(model.getUnit());
-
-		// TODO do something with battle
 
 		this.units_in_battle = new ArrayList<ViewUnit>();
 
@@ -243,10 +237,10 @@ public class HexagonField implements ViewField {
 
 	private void drawHiddenTerrain(GraphicsContext gc) {
 		if (this.terrain != null) {
-			this.terrain.drawHiddenTerrain(	gc,
-											this.hex_center,
-											this.calculateHexSideSize(hex_height),
-											this.border_width);
+			this.terrain.drawHiddenTerrain(gc,
+					this.hex_center,
+					this.calculateHexSideSize(hex_height),
+					this.border_width);
 		}
 	}
 
@@ -265,6 +259,8 @@ public class HexagonField implements ViewField {
 	// DrawableHexagon
 
 	public void drawOn(GraphicsContext gc) {
+
+		// System.out.println("Drawing hex. field ... ");
 
 		// every field has borders
 		this.drawBorders(gc);
@@ -329,11 +325,11 @@ public class HexagonField implements ViewField {
 
 		gc.save();
 
-		gc.drawImage(	image,
-						getFieldCenter().getX() - this.getSideSize() / 2,
-						getFieldCenter().getY() - this.getSideSize() / 2,
-						this.getSideSize(),
-						this.getSideSize());
+		gc.drawImage(image,
+				getFieldCenter().getX() - this.getSideSize() / 2,
+				getFieldCenter().getY() - this.getSideSize() / 2,
+				this.getSideSize(),
+				this.getSideSize());
 
 		gc.restore();
 

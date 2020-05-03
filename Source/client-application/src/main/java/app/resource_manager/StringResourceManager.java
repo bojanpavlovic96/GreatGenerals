@@ -1,13 +1,9 @@
 package app.resource_manager;
 
 import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.net.URL;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -45,7 +41,7 @@ public class StringResourceManager {
 	private void loadResources() {
 
 		String file_name = StringResourceManager.RESOURCE_PREFIX + StringResourceManager.language
-							+ StringResourceManager.RESOURCE_SUFFIX;
+				+ StringResourceManager.RESOURCE_SUFFIX;
 
 		System.out.println("Searching for: " + file_name);
 

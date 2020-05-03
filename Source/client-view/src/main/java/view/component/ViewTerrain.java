@@ -24,7 +24,7 @@ public class ViewTerrain {
 
 		if (image == null) {
 			System.out.println("Terrain image is null... " + this.terrain_name
-								+ "\t @ ViewTerrain.drawTerrain");
+					+ "\t @ ViewTerrain.drawTerrain");
 		}
 
 		double hex_width = (double) (Math.sqrt(3) * hex_side);
@@ -32,20 +32,20 @@ public class ViewTerrain {
 
 		gc.save();
 
-		gc.drawImage(	image,
-						hex_center.getX() - hex_width / 2 + border_width,
-						hex_center.getY() - hex_height / 2 + border_width,
-						hex_width - 2 * border_width,
-						hex_height - 2 * border_width);
+		gc.drawImage(image,
+				hex_center.getX() - hex_width / 2 + border_width,
+				hex_center.getY() - hex_height / 2 + border_width,
+				hex_width - 2 * border_width,
+				hex_height - 2 * border_width);
 
 		gc.restore();
 
 	}
 
-	public void drawHiddenTerrain(	GraphicsContext gc,
-									Point2D hex_center,
-									double hex_side,
-									double border_width) {
+	public void drawHiddenTerrain(GraphicsContext gc,
+			Point2D hex_center,
+			double hex_side,
+			double border_width) {
 
 		String old_terrain_name = this.terrain_name;
 		this.terrain_name = "fog";

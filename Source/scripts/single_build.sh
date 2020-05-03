@@ -24,23 +24,26 @@ else
 	
 	for project in $@
 	do
-		echo "BUILDING: " $project
+		build_start_time=`date +%s`
+		printf "Building started: %s" $project
 		output=$(build $project)
 		
 		if [ $output == "1" ]
 		then 
-			
-			echo "BUILD SUCCESS: " $project
-			echo ""
-			
+			printf " -> -SUCCESS- \n"
 		else
-		
-			echo "BUILD FAILURE: " $project 
-			echo ""
+			printf " -> -FAILURE- \n"
+			failure_moment=`date +%s`
+			failure_time=$((failure_moment-build_start_time))
+			printf "Build fail after: %d seconds\n" $failure_time
+			 
 			exit 1
-			
 		fi
-		
+
+		build_end_time=`date +%s`
+		build_time=$((build_end_time-build_start_time))
+		printf "Build done after: %d seconds\n" $build_time
+		echo ""
 	done
 
 fi

@@ -1,5 +1,7 @@
 package view.command;
 
+import javax.swing.DebugGraphics;
+
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
 import root.command.Command;
@@ -31,23 +33,25 @@ public class SelectFieldCommand extends Command {
 	public void setTargetComponent(CommandDrivenComponent target) {
 		super.setTargetComponent(target);
 
-		this.view_field = ((View) super.target_component).convertToViewField(this.modelField);
+		this.view_field = ((View) super.targetComponent).convertToViewField(this.modelField);
 
 	}
 
 	public void run() {
 
-		GraphicsContext gc = ((View) target_component).getMainGraphicContext();
+		GraphicsContext gc = ((View) targetComponent).getMainGraphicContext();
 
 		gc.save();
 
-		((View) target_component).convertToViewField(modelField).paintField(gc, filter_color);
+		((View) targetComponent).convertToViewField(modelField).paintField(gc, filter_color);
 
-		if (this.modelField.getUnit() != null && this.modelField.getUnit().getMoveType().getPath() != null) {
+		if (this.modelField.getUnit() != null &&
+				this.modelField.getUnit().getMoveType().getPath() != null) {
 
 			for (Field pathField : this.modelField.getUnit().getMoveType().getPath()) {
 
-				((View) target_component).convertToViewField(pathField).paintField(gc, filter_color);
+				System.out.println("Selecting path field ... ");
+				((View) targetComponent).convertToViewField(pathField).paintField(gc, filter_color);
 
 			}
 		}

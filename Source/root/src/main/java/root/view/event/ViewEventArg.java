@@ -5,6 +5,7 @@ import javafx.geometry.Point2D;
 
 public class ViewEventArg {
 
+	// TODO remove this dependency to javafx
 	private Event event;
 
 	private Point2D position;

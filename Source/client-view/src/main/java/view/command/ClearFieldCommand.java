@@ -22,18 +22,17 @@ public class ClearFieldCommand extends Command {
 	public void setTargetComponent(CommandDrivenComponent target) {
 		super.setTargetComponent(target);
 
-		this.view_field = ((View) super.target_component).convertToViewField(this.model);
+		this.view_field = ((View) super.targetComponent).convertToViewField(this.model);
 
 	}
 
 	public void run() {
-		this.view_field.clearField(((View) super.target_component).getMainGraphicContext());
+		this.view_field.clearField(((View) super.targetComponent).getMainGraphicContext());
 	}
-
 
 	@Override
 	public Command getAntiCommand() {
-		return null;
+		return new DrawFieldCommand(this.model);
 	}
 
 }

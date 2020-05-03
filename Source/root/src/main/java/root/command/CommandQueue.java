@@ -3,24 +3,22 @@ package root.command;
 import java.util.LinkedList;
 import java.util.Queue;
 
-import root.ActiveComponent;
-
 public class CommandQueue {
 
 	private Queue<Command> queue;
 
-	private CommandProcessor on_enqueue = null;
+	private CommandProcessor onEnqueue = null;
 
 	public CommandQueue() {
 		this.queue = new LinkedList<Command>();
 	}
 
-	public void enqueue(Command new_command) {
-		this.queue.add(new_command);
+	public void enqueue(Command newCommand) {
+		this.queue.add(newCommand);
 
-		if (this.on_enqueue != null) {
+		if (this.onEnqueue != null) {
 
-			this.on_enqueue.execute(this);
+			this.onEnqueue.execute(this);
 
 		}
 
@@ -39,18 +37,18 @@ public class CommandQueue {
 		return this.queue.isEmpty();
 	}
 
-	public void setCommandProcessor(CommandProcessor command_processor) {
+	public void setCommandProcessor(CommandProcessor commandProcessor) {
 
-		this.on_enqueue = command_processor;
+		this.onEnqueue = commandProcessor;
 
 		// attention if queue wasn't empty when processor is set
 		// attention nonintuitive
-		this.on_enqueue.execute(this);
+		this.onEnqueue.execute(this);
 
 	}
 
 	public CommandProcessor getCommandProcessor() {
-		return this.on_enqueue;
+		return this.onEnqueue;
 	}
 
 }

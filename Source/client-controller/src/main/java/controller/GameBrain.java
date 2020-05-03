@@ -25,7 +25,7 @@ import root.model.event.ModelEventArg;
 import root.view.View;
 import root.view.event.ViewEventArg;
 import root.view.event.ViewEventHandler;
-
+import root.view.menu.Menu;
 import view.command.SelectFieldCommand;
 import view.command.ShowFieldInfoCommand;
 import view.command.ZoomInCommand;
@@ -40,14 +40,15 @@ public class GameBrain implements Controller {
 	private CommandQueue serverCommandQueue;
 
 	private View view;
-	private CommandQueue view_command_queue;
+	private CommandQueue viewCommandQueue;
 
 	private Model model;
 
-	private Field selected_field;
-	private List<Command> to_undo;
+	private Field selectedField;
+	private Field focusedField;
+	private List<Command> toUndo;
 
-	private List<FieldOption> field_options;
+	private List<FieldOption> fieldOptions;
 
 	// constructors
 	public GameBrain(ServerProxy server_proxy, View view, Model model) {
@@ -57,7 +58,7 @@ public class GameBrain implements Controller {
 		this.model = model;
 		this.server_proxy = server_proxy;
 
-		this.to_undo = new ArrayList<Command>();
+		this.toUndo = new ArrayList<Command>();
 
 		// attention let's say that every controller implementations has its own
 		// ModelEventHandler (maybe this isn't the best approach)
@@ -75,7 +76,7 @@ public class GameBrain implements Controller {
 
 		// --- done with serverProxy
 
-		this.view_command_queue = this.view.getCommandQueue();
+		this.viewCommandQueue = this.view.getCommandQueue();
 
 		// view events, click, key press ...
 		this.initViewEventHandlers();
@@ -97,20 +98,21 @@ public class GameBrain implements Controller {
 				if (focused_field != null) {
 
 					// undo all previous commands
-					if (!to_undo.isEmpty()) {
-						for (int i = (to_undo.size() - 1); i >= 0; i--) {
-							view_command_queue.enqueue(to_undo.get(i).getAntiCommand());
+					if (!toUndo.isEmpty()) {
+						for (int i = (toUndo.size() - 1); i >= 0; i--) {
+							viewCommandQueue.enqueue(toUndo.get(i).getAntiCommand());
 						}
 					}
-					to_undo.clear();
+					toUndo.clear();
 
 					// execute new command
 					Command select_command = new SelectFieldCommand(focused_field);
-					view_command_queue.enqueue(select_command);
+					viewCommandQueue.enqueue(select_command);
 
-					to_undo.add(select_command);
+					toUndo.add(select_command);
 
-					selected_field = focused_field;
+					selectedField = focused_field;
+					focusedField = null;// note focusedField != focused_field
 
 				}
 
@@ -122,30 +124,45 @@ public class GameBrain implements Controller {
 
 			public void execute(ViewEventArg arg) {
 
-				Field focused_field = model.getField(arg.getFieldPosition());
+				focusedField = model.getField(arg.getFieldPosition());
 
 				// valid click
-				if (focused_field != null) {
-					Command show_menu = new ShowFieldInfoCommand(selected_field, focused_field);
-					view_command_queue.enqueue(show_menu);
-					to_undo.add(show_menu);
+				if (focusedField != null) {
+
+					Command showMenuCommand;
+					if (selectedField != null) {
+						showMenuCommand = new ShowFieldInfoCommand(selectedField, focusedField);
+					} else {
+						showMenuCommand = new ShowFieldInfoCommand(focusedField, focusedField);
+					}
+
+					viewCommandQueue.enqueue(showMenuCommand);
+
+					toUndo.add(showMenuCommand);
+
 				}
 
 			}
 
 		});
 
+		// TODO maybe for the purpose of redrawing redraeing path and similar options
+		// add additional list of command which are "stateless" and which execution wont
+		// do any damage to the current state if they are executed more than once
+
 		this.view.addEventHandler("key-event-char-1", new ViewEventHandler() {
 
 			public void execute(ViewEventArg arg) {
 
 				ZoomInCommand command = new ZoomInCommand(model.getFields());
-				view_command_queue.enqueue(command);
+				viewCommandQueue.enqueue(command);
 
-				// reset old state
-				for (Command prev_command : to_undo) {
-					view_command_queue.enqueue(prev_command);
-				}
+				// this wont be valid in situation when attacak and build commands get
+				// implemented
+				// // reset old state
+				// for (Command prev_command : toUndo) {
+				// viewCommandQueue.enqueue(prev_command);
+				// }
 
 			}
 		});
@@ -155,12 +172,13 @@ public class GameBrain implements Controller {
 			public void execute(ViewEventArg arg) {
 
 				ZoomOutCommand command = new ZoomOutCommand(model.getFields());
-				view_command_queue.enqueue(command);
+				viewCommandQueue.enqueue(command);
 
-				// reset old state
-				for (Command prev_command : to_undo) {
-					view_command_queue.enqueue(prev_command);
-				}
+				// this wont be valid in sitation when attack and build command get implemented
+				// // reset old state
+				// for (Command prev_command : toUndo) {
+				// viewCommandQueue.enqueue(prev_command);
+				// }
 
 			}
 		});
@@ -169,11 +187,11 @@ public class GameBrain implements Controller {
 
 	private void initFieldOptions() {
 
-		this.field_options = new ArrayList<FieldOption>();
+		this.fieldOptions = new ArrayList<FieldOption>();
 
-		this.field_options.add(new SelectPathFieldOption(this));
-		this.field_options.add(new MoveFieldOption(this));
-		this.field_options.add(new AddToPathFieldOption(this));
+		this.fieldOptions.add(new SelectPathFieldOption(this));
+		this.fieldOptions.add(new MoveFieldOption(this));
+		this.fieldOptions.add(new AddToPathFieldOption(this));
 
 	}
 
@@ -247,22 +265,41 @@ public class GameBrain implements Controller {
 	}
 
 	public void setConsumerQueue(CommandQueue consumer_queue) {
-		this.view_command_queue = consumer_queue;
+		this.viewCommandQueue = consumer_queue;
 	}
 
 	@Override
 	public CommandQueue getConsumerQueue() {
-		return this.view_command_queue;
+		return this.viewCommandQueue;
 	}
 
 	@Override
-	public List<FieldOption> getFieldOptions() {
-		return this.field_options;
+	public List<FieldOption> getPossibleFieldOptions() {
+		return this.fieldOptions;
 	}
 
 	@Override
 	public void enqueueForUndone(Command new_command) {
-		this.to_undo.add(new_command);
+		this.toUndo.add(new_command);
+	}
+
+	@Override
+	public Field getSelectedField() {
+		return this.selectedField;
+	}
+
+	@Override
+	public void selectField(Field fieldToSelect) {
+
+		this.selectedField = fieldToSelect;
+		viewCommandQueue.enqueue(new SelectFieldCommand(this.selectedField));
+
+		Menu fieldMenu = view.getOptionMenu();
+		if (fieldMenu.isDisplayed()) {
+			selectedField.adjustOptionsFor(focusedField);
+			fieldMenu.populateWith(selectedField.getEnabledOptions());
+		}
+
 	}
 
 }

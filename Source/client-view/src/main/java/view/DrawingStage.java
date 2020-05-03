@@ -5,7 +5,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 
 import javafx.event.EventHandler;
 import javafx.geometry.Point2D;
@@ -22,7 +21,6 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.paint.Color;
 import javafx.stage.Screen;
 import javafx.stage.Stage;
-import root.command.BasicCommandProcessor;
 import root.command.CommandProcessor;
 import root.command.CommandQueue;
 import root.model.component.Field;

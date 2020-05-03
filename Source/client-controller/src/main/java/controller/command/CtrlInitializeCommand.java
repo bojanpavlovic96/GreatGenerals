@@ -29,9 +29,9 @@ public class CtrlInitializeCommand extends Command {
 	@Override
 	public void run() {
 
-		Model model = ((Controller) super.target_component).getModel();
+		Model model = ((Controller) super.targetComponent).getModel();
 
-		List<FieldOption> options = ((Controller) super.target_component).getFieldOptions();
+		List<FieldOption> options = ((Controller) super.targetComponent).getPossibleFieldOptions();
 
 		for (Field field : this.fields) {
 
@@ -39,7 +39,8 @@ public class CtrlInitializeCommand extends Command {
 				field.addFieldOption(oldOption.getCopy());
 			}
 
-//			field.addFieldOptions(((Controller) super.target_component).getFieldOptions());
+			// field.addFieldOptions(((Controller)
+			// super.target_component).getFieldOptions());
 
 		}
 
@@ -55,8 +56,8 @@ public class CtrlInitializeCommand extends Command {
 		ClearViewCommand clear_command = new ClearViewCommand();
 		LoadBoardCommand view_command = new LoadBoardCommand(this.fields);
 		System.out.println("Load board command enqueue ... @ CtrlInitializeCommand.run");
-		((Controller) super.target_component).getConsumerQueue().enqueue(clear_command);
-		((Controller) super.target_component).getConsumerQueue().enqueue(view_command);
+		((Controller) super.targetComponent).getConsumerQueue().enqueue(clear_command);
+		((Controller) super.targetComponent).getConsumerQueue().enqueue(view_command);
 
 	}
 
