@@ -37,7 +37,6 @@ public class GameBrain implements Controller {
 
 	private ServerProxy serverProxy;
 
-	private ExecutorService serverCommandExecutor;
 	private CommandProcessor serverCommandProcessor;
 	private CommandQueue serverCommandQueue;
 
@@ -72,13 +71,8 @@ public class GameBrain implements Controller {
 
 		// connect serverProxy and controller
 		this.serverCommandQueue = ((CommandProducer) this.serverProxy).getConsumerQueue();
-
-		// command queue should be active component
-		// that whay command executor would be stored only inside command queue
-		// and shutDown also from the inside of command queue
-		this.serverCommandExecutor = Executors.newSingleThreadExecutor();
 		this.serverCommandProcessor = new BasicCommandProcessor(
-				this.serverCommandExecutor,
+				Executors.newSingleThreadExecutor(),
 				(CommandDrivenComponent) this);
 		this.serverCommandQueue.setCommandProcessor(this.serverCommandProcessor);
 
@@ -226,9 +220,8 @@ public class GameBrain implements Controller {
 	@Override
 	public void shutdown() {
 
-		if (this.serverCommandExecutor != null
-				&& !this.serverCommandExecutor.isShutdown()) {
-			this.serverCommandExecutor.shutdown();
+		if (this.serverCommandProcessor != null) {
+			((ActiveComponent) this.serverCommandProcessor).shutdown();
 		}
 
 		if (this.view != null) {

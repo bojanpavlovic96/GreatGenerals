@@ -38,4 +38,9 @@ public class FxCommandProcessor implements CommandProcessor {
 
 	}
 
+	@Override
+	public void shutdown() {
+		// shutdown of this component is done by javafx itself
+	}
+
 }

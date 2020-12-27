@@ -8,6 +8,8 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledThreadPoolExecutor;
 
+import javax.rmi.ssl.SslRMIClientSocketFactory;
+
 import javafx.geometry.Point2D;
 import model.component.unit.BasicMove;
 import model.component.unit.BasicUnit;
@@ -162,7 +164,9 @@ public class DataModel implements Model {
 
 		// attention this could possibly throw some exceptions if some tasks are still
 		// running or waiting
-		if (this.executor != null && !this.executor.isShutdown()) {
+		if (this.executor != null
+				&& !this.executor.isShutdown()) {
+
 			// this shutdown cancels all running and waiting tasks
 			this.executor.shutdownNow();
 		}

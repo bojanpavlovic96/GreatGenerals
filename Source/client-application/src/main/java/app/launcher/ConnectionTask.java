@@ -95,17 +95,12 @@ public class ConnectionTask implements Runnable, ActiveComponent {
 	public void shutdown() {
 
 		try {
-
 			// close connection
 			if (this.getConnection() != null && this.getConnection().isOpen()) {
 				this.getConnection().close();
-
-				// debug
-				System.out.println("Closing connection ... @ ConnectionTask.shutdown");
 			}
 
 			// this thread is free from this moment
-
 		} catch (IOException e) {
 			e.printStackTrace();
 			System.out.println("Exceptionin closing broker connection ... ");

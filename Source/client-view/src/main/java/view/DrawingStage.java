@@ -4,8 +4,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.ExecutorService;
 
+import javafx.application.Platform;
 import javafx.event.EventHandler;
 import javafx.geometry.Point2D;
 import javafx.scene.Group;
@@ -21,6 +21,7 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.paint.Color;
 import javafx.stage.Screen;
 import javafx.stage.Stage;
+import javafx.stage.WindowEvent;
 import root.command.CommandDrivenComponent;
 import root.command.CommandProcessor;
 import root.command.CommandQueue;
@@ -63,7 +64,6 @@ public class DrawingStage extends Stage implements View {
 
 	// connection with controller
 	private CommandQueue commandQueue;
-	private ExecutorService executor;
 	private CommandProcessor commandProcessor;
 
 	private Map<String, List<ViewEventHandler>> handlersMap;
@@ -75,6 +75,16 @@ public class DrawingStage extends Stage implements View {
 
 	public DrawingStage(ViewFieldManager field_converter) {
 		super();
+
+		this.setOnCloseRequest(new EventHandler<WindowEvent>() {
+
+			@Override
+			public void handle(WindowEvent event) {
+				System.out.println("Requesting close ... ");
+				Platform.exit();
+			}
+
+		});
 
 		this.fieldManager = field_converter;
 
@@ -298,8 +308,6 @@ public class DrawingStage extends Stage implements View {
 
 	@Override
 	public void shutdown() {
-
-		this.executor.shutdown();
 
 	}
 
