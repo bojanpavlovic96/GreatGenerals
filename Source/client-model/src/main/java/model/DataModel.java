@@ -50,7 +50,11 @@ public class DataModel implements Model {
 
 		this.unit_creator = new UnitCreator();
 
-		Unit basic_unit = new BasicUnit(new BasicMove(null, new AStar(this), this.executor), null, null);
+		Unit basic_unit = new BasicUnit(
+				new BasicMove(null, new AStar(this), this.executor),
+				null,
+				null);
+
 		this.unit_creator.addPrototype(basic_unit);
 
 		// TODO add some more units
@@ -132,10 +136,10 @@ public class DataModel implements Model {
 		return neighbours;
 	}
 
-	public void setUnit(Point2D storage_position, String unit_name) {
+	public void setUnit(Point2D storagePosition, String unitName) {
 
-		Field field = this.fields.get(storage_position);
-		Unit unit = this.unit_creator.generateUnit(unit_name);
+		Field field = this.fields.get(storagePosition);
+		Unit unit = this.unit_creator.generateUnit(unitName);
 
 		if (unit != null) {
 
@@ -143,7 +147,7 @@ public class DataModel implements Model {
 			unit.setField(field);
 
 		} else {
-			System.out.println("Unit creator was unable to create requested unit " + unit_name);
+			System.out.println("Unit creator was unable to create requested unit " + unitName);
 		}
 
 	}

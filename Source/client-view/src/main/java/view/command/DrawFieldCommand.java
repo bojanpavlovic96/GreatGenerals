@@ -27,6 +27,8 @@ public class DrawFieldCommand extends Command {
 	}
 
 	public void run() {
+		// TODO this looks like a good spot to pass resource/asset manager
+		// to the viewField (resource manager will load images or "assets")
 		this.view_Field.drawOn(((View) super.targetComponent).getMainGraphicContext());
 	}
 

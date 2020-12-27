@@ -14,7 +14,7 @@ public class DefaultModelEventHandler implements ModelEventHandler {
 		this.controller = controller;
 	}
 
-	public void execute(ModelEventArg arg) {
+	public void handleModelEvent(ModelEventArg arg) {
 
 		this.controller.getServerProxy().sendIntention(arg);
 

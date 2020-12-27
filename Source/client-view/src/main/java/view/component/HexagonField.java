@@ -266,7 +266,7 @@ public class HexagonField implements ViewField {
 		this.drawBorders(gc);
 
 		// not every field is visible
-		// enemy field are hidden with fog
+		// enemy field are hidden with "fog"
 		if (this.visibility) {
 			// if field is visible draw terrain and unit
 

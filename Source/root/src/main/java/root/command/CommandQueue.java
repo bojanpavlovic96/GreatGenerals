@@ -7,7 +7,7 @@ public class CommandQueue {
 
 	private Queue<Command> queue;
 
-	private CommandProcessor onEnqueue = null;
+	private CommandProcessor commandProcessor = null;
 
 	public CommandQueue() {
 		this.queue = new LinkedList<Command>();
@@ -16,9 +16,9 @@ public class CommandQueue {
 	public void enqueue(Command newCommand) {
 		this.queue.add(newCommand);
 
-		if (this.onEnqueue != null) {
+		if (this.commandProcessor != null) {
 
-			this.onEnqueue.execute(this);
+			this.commandProcessor.execute(this);
 
 		}
 
@@ -30,7 +30,6 @@ public class CommandQueue {
 		}
 
 		return null;
-
 	}
 
 	public boolean isEmpty() {
@@ -39,16 +38,16 @@ public class CommandQueue {
 
 	public void setCommandProcessor(CommandProcessor commandProcessor) {
 
-		this.onEnqueue = commandProcessor;
+		this.commandProcessor = commandProcessor;
 
 		// attention if queue wasn't empty when processor is set
 		// attention nonintuitive
-		this.onEnqueue.execute(this);
+		this.commandProcessor.execute(this);
 
 	}
 
 	public CommandProcessor getCommandProcessor() {
-		return this.onEnqueue;
+		return this.commandProcessor;
 	}
 
 }

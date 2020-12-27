@@ -6,52 +6,58 @@ import root.view.field.ViewField;
 
 public class HexFieldManager implements ViewFieldManager {
 
-	private double field_height;
-	private double field_width;
-	private double field_border_width;
+	private double fieldHeight;
+	private double fieldWidth;
+	private double fieldBorderWidth;
 
 	// constructors
 
-	public HexFieldManager(double field_height, double field_width, double field_border_width) {
+	public HexFieldManager(double field_height,
+			double field_width,
+			double field_border_width) {
+
 		super();
-		this.field_height = field_height;
-		this.field_width = field_width;
-		this.field_border_width = field_border_width;
+		this.fieldHeight = field_height;
+		this.fieldWidth = field_width;
+		this.fieldBorderWidth = field_border_width;
 	}
 
 	// methods
 
-	public ViewField getViewField(Field model) {
-		return new HexagonField(model, this.field_width, this.field_height, this.field_border_width);
+	public ViewField getViewField(Field fieldModel) {
+		return new HexagonField(fieldModel,
+				this.fieldWidth,
+				this.fieldHeight,
+				this.fieldBorderWidth);
 	}
 
 	public Point2D calcStoragePosition(Point2D position) {
 
-		return HexagonField.calcStoragePosition(position, this.field_width, this.field_height);
+		return HexagonField.calcStoragePosition(position, this.fieldWidth, this.fieldHeight);
 
 	}
 
 	@Override
 	public Point2D calcRealPosition(Point2D storage_position) {
-		return HexagonField.calcRealPosition(storage_position, this.field_height / 2);
+		return HexagonField.calcRealPosition(storage_position, this.fieldHeight / 2);
 	}
 
 	public double getHeight() {
-		return this.field_height;
+		return this.fieldHeight;
 	}
 
 	public double getWidth() {
-		return this.field_width;
+		return this.fieldWidth;
 	}
 
 	public double getBorderWidth() {
-		return this.field_border_width;
+		return this.fieldBorderWidth;
 	}
 
 	public boolean zoomIn() {
-		if (this.field_height < 200) {
-			this.field_height += this.field_height * 0.2;
-			this.field_width += this.field_width * 0.2;
+		if (this.fieldHeight < 200) {
+			this.fieldHeight += this.fieldHeight * 0.2;
+			this.fieldWidth += this.fieldWidth * 0.2;
 			// this.field_border_width *= this.field_border_width * 0.2;
 
 			return true;
@@ -61,10 +67,10 @@ public class HexFieldManager implements ViewFieldManager {
 	}
 
 	public boolean zoomOut() {
-		if (this.field_height > 50) {
+		if (this.fieldHeight > 50) {
 
-			this.field_height -= this.field_height * 0.2;
-			this.field_width -= this.field_width * 0.2;
+			this.fieldHeight -= this.fieldHeight * 0.2;
+			this.fieldWidth -= this.fieldWidth * 0.2;
 			// this.field_border_width -= this.field_border_width * 0.2;
 
 			return true;

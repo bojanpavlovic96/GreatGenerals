@@ -36,22 +36,22 @@ public class HeaderForm extends VBox implements MessageDisplay, HasLabels {
 	// Norasi Italic
 	// Un Pilgi
 
-	private StringResourceManager string_manager;
+	private StringResourceManager stringManager;
 
-	private Label status_message;
+	private Label statusMessage;
 	private String status_name;
 
-	private Label info_message;
+	private Label infoMessage;
 	private String info_name;
 	private PauseTransition info_message_timer;
 
-	private double image_width;
-	private double image_height;
+	private double imageWidth;
+	private double imageHeight;
 	private ImageView image;
 
 	private Label title;
 
-	private Font title_font;
+	private Font titleFont;
 	private Font message_font;
 
 	// methods
@@ -59,22 +59,22 @@ public class HeaderForm extends VBox implements MessageDisplay, HasLabels {
 	public HeaderForm(double img_width, double img_height) {
 		super();
 
-		image_width = img_width;
-		image_height = img_height;
+		imageWidth = img_width;
+		imageHeight = img_height;
 
-		this.string_manager = StringResourceManager.getInstance();
+		this.stringManager = StringResourceManager.getInstance();
 
 		this.info_message_timer = new PauseTransition(Duration.seconds(2));
 		this.info_message_timer.setOnFinished(new EventHandler<ActionEvent>() {
 
 			public void handle(ActionEvent event) {
-				info_message.setVisible(false);
+				infoMessage.setVisible(false);
 				info_name = null;
 			}
 
 		});
 
-		this.title_font = new Font(this.TITLE_FONT_NAME, this.TITLE_FONT_SIZE);
+		this.titleFont = new Font(this.TITLE_FONT_NAME, this.TITLE_FONT_SIZE);
 		this.message_font = new Font(this.MESSAGE_FONT_NAME, this.MESSAGE_FONT_SIZE);
 
 		this.initForm();
@@ -89,30 +89,34 @@ public class HeaderForm extends VBox implements MessageDisplay, HasLabels {
 		// up-right-down-left
 		this.setPadding(new Insets(5, 5, 5, 5));
 
-		FormMessage first_message = this.string_manager.getMessage("waiting-for-server");
+		FormMessage firstMessage = this.stringManager.getMessage("waiting-for-server");
 
-		this.status_message = new Label(first_message.getMessage());
-		this.status_message.setStyle("-fx-background-color: " + first_message.getColor());
-		this.status_message.setFont(this.message_font);
+		this.statusMessage = new Label(firstMessage.getMessage());
+		this.statusMessage.setStyle("-fx-background-color: "
+				+ firstMessage.getColor());
+		this.statusMessage.setFont(this.message_font);
 
-		this.info_message = new Label();
-		this.info_message.setFont(this.message_font);
+		this.infoMessage = new Label();
+		this.infoMessage.setFont(this.message_font);
 
 		this.image = new ImageView(
-				new Image(this.IMG_PATH, this.image_width, this.image_height, false, false));
-		this.image.setFitWidth(this.image_width);
-		this.image.setFitHeight(this.image_height);
+				new Image(this.IMG_PATH,
+						this.imageWidth,
+						this.imageHeight,
+						false,
+						false));
+		this.image.setFitWidth(this.imageWidth);
+		this.image.setFitHeight(this.imageHeight);
 
-		// TODO change title bar font
-		this.title = new Label(this.string_manager.getString("title"));
-		this.title.setFont(this.title_font);
+		this.title = new Label(this.stringManager.getString("title"));
+		this.title.setFont(this.titleFont);
 
-		this.getChildren().add(this.status_message);
-		this.getChildren().add(this.info_message);
+		this.getChildren().add(this.statusMessage);
+		this.getChildren().add(this.infoMessage);
 		this.getChildren().add(this.image);
 		this.getChildren().add(this.title);
 
-		VBox.setMargin(this.info_message, new Insets(2, 0, 0, 0));
+		VBox.setMargin(this.infoMessage, new Insets(2, 0, 0, 0));
 
 		VBox.setMargin(this.image, new Insets(5, 0, 0, 0));
 
@@ -121,26 +125,26 @@ public class HeaderForm extends VBox implements MessageDisplay, HasLabels {
 	// MessageDisplay interface
 
 	public String getCurrentStatusMessage() {
-		return this.status_message.getText();
+		return this.statusMessage.getText();
 	}
 
 	public String getCurrentInfoMessage() {
-		return this.info_message.getText();
+		return this.infoMessage.getText();
 	}
 
 	public void showStatusMessage(String status_message_name) {
 
 		this.status_name = status_message_name;
 
-		FormMessage message = this.string_manager.getMessage(status_message_name);
+		FormMessage message = this.stringManager.getMessage(status_message_name);
 
 		if (message != null) {
-			this.status_message.setText(message.getMessage());
-			this.status_message.setStyle("-fx-background-color: " + message.getColor() + this.ALPHA_VALUE);
+			this.statusMessage.setText(message.getMessage());
+			this.statusMessage.setStyle("-fx-background-color: " + message.getColor() + this.ALPHA_VALUE);
 		} else {
 			// just passed message with white background
-			this.status_message.setText(status_message_name);
-			this.status_message.setStyle("-fx-background-color: #111111" + this.ALPHA_VALUE + ";\n");
+			this.statusMessage.setText(status_message_name);
+			this.statusMessage.setStyle("-fx-background-color: #111111" + this.ALPHA_VALUE + ";\n");
 		}
 
 	}
@@ -149,19 +153,19 @@ public class HeaderForm extends VBox implements MessageDisplay, HasLabels {
 
 		this.info_name = info_message_name;
 
-		FormMessage message = this.string_manager.getMessage(info_message_name);
+		FormMessage message = this.stringManager.getMessage(info_message_name);
 
-		if (!this.info_message.isVisible()) {
-			this.info_message.setVisible(true);
+		if (!this.infoMessage.isVisible()) {
+			this.infoMessage.setVisible(true);
 		}
 
 		if (message != null) {
-			this.info_message.setText(message.getMessage());
-			this.info_message.setStyle("-fx-background-color: " + message.getColor() + this.ALPHA_VALUE);
+			this.infoMessage.setText(message.getMessage());
+			this.infoMessage.setStyle("-fx-background-color: " + message.getColor() + this.ALPHA_VALUE);
 		} else {
 			// just passed message with white background
-			this.info_message.setText("Unknown: " + info_message_name);
-			this.info_message.setStyle("-fx-background-color: #aacc91" + this.ALPHA_VALUE);
+			this.infoMessage.setText("Unknown: " + info_message_name);
+			this.infoMessage.setStyle("-fx-background-color: #aacc91" + this.ALPHA_VALUE);
 		}
 
 		this.info_message_timer.stop();
@@ -173,12 +177,12 @@ public class HeaderForm extends VBox implements MessageDisplay, HasLabels {
 
 	public void reloadLabels() {
 
-		this.string_manager = StringResourceManager.getInstance();
+		this.stringManager = StringResourceManager.getInstance();
 
-		this.status_message.setText(this.status_name);
+		this.statusMessage.setText(this.status_name);
 
 		// start new 2s with info in new language
-		if (this.info_message.isVisible()) {
+		if (this.infoMessage.isVisible()) {
 			this.showInfoMessage(this.info_name);
 		}
 

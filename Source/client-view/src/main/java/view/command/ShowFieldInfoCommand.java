@@ -1,19 +1,14 @@
 package view.command;
 
-import java.util.List;
-
 import javafx.geometry.Point2D;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
 import root.command.Command;
 import root.command.CommandDrivenComponent;
 import root.model.component.Field;
-import root.model.component.option.FieldOption;
 import root.view.View;
 import root.view.field.ViewField;
 import root.view.menu.Menu;
-import view.component.menu.Option;
-import view.component.menu.OptionMenu;
 
 public class ShowFieldInfoCommand extends Command {
 
@@ -21,7 +16,7 @@ public class ShowFieldInfoCommand extends Command {
 	public static double INFO_HEIGHT = 100;
 
 	private Field selectedField;
-	private ViewField viewField; // unused ? remove ?
+	// private ViewField viewField; // unused ? remove ?
 
 	private Field targetField;
 	private ViewField viewTarget;
@@ -38,8 +33,10 @@ public class ShowFieldInfoCommand extends Command {
 	public void setTargetComponent(CommandDrivenComponent target) {
 		super.setTargetComponent(target);
 
-		this.viewField = ((View) super.targetComponent).convertToViewField(this.selectedField);
-		this.viewTarget = ((View) super.targetComponent).convertToViewField(this.targetField);
+		// this.viewField = ((View)
+		// super.targetComponent).convertToViewField(this.selectedField);
+		this.viewTarget = ((View) super.targetComponent)
+				.convertToViewField(this.targetField);
 
 		if (this.selectedField == null) {
 			this.selectedField = this.targetField;

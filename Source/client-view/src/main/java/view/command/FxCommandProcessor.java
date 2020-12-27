@@ -8,11 +8,11 @@ import root.command.CommandQueue;
 
 public class FxCommandProcessor implements CommandProcessor {
 
-	private CommandDrivenComponent command_target;
+	private CommandDrivenComponent commandTarget;
 
-	public FxCommandProcessor(CommandDrivenComponent command_target) {
+	public FxCommandProcessor(CommandDrivenComponent commandTarget) {
 
-		this.command_target = command_target;
+		this.commandTarget = commandTarget;
 
 	}
 
@@ -20,22 +20,20 @@ public class FxCommandProcessor implements CommandProcessor {
 	public void execute(CommandQueue command_queue) {
 
 		/*
-		 * attention maybe whole while should be inside platform.runlater
-		 * From runLater declatration:
+		 * attention maybe whole while should be inside platform.runlater From runLater
+		 * declatration:
 		 * 
-		 * NOTE: applications should avoid flooding JavaFX with too many
-		 * pending Runnables. Otherwise, the application may become unresponsive.
-		 * Applications are encouraged to batch up multiple operations into fewer
-		 * runLater calls.
+		 * NOTE: applications should avoid flooding JavaFX with too many pending
+		 * Runnables. Otherwise, the application may become unresponsive. Applications
+		 * are encouraged to batch up multiple operations into fewer runLater calls.
 		 * 
 		 */
 		while (!command_queue.isEmpty()) {
 
 			Command command = command_queue.dequeue();
-			command.setTargetComponent(this.command_target);
+			command.setTargetComponent(this.commandTarget);
 
 			Platform.runLater((Runnable) command);
-
 		}
 
 	}

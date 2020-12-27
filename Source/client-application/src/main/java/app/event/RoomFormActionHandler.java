@@ -2,6 +2,6 @@ package app.event;
 
 public interface RoomFormActionHandler {
 
-	void execute(String room_name, String room_password);
+	void handleFormAction(String room_name, String room_password);
 
 }

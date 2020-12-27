@@ -2,6 +2,6 @@ package root.model.event;
 
 public interface ModelEventHandler {
 
-	void execute(ModelEventArg event_argument);
+	void handleModelEvent(ModelEventArg event_argument);
 
 }

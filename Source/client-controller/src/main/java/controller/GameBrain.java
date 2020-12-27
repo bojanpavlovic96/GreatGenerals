@@ -5,7 +5,6 @@ import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-import controller.action.DefaultModelEventHandler;
 import controller.option.AddToPathFieldOption;
 import controller.option.MoveFieldOption;
 import controller.option.SelectPathFieldOption;
@@ -13,6 +12,7 @@ import controller.option.SelectPathFieldOption;
 import root.ActiveComponent;
 import root.command.BasicCommandProcessor;
 import root.command.Command;
+import root.command.CommandDrivenComponent;
 import root.command.CommandProcessor;
 import root.command.CommandProducer;
 import root.command.CommandQueue;
@@ -22,10 +22,12 @@ import root.model.Model;
 import root.model.component.Field;
 import root.model.component.option.FieldOption;
 import root.model.event.ModelEventArg;
+import root.model.event.ModelEventHandler;
 import root.view.View;
 import root.view.event.ViewEventArg;
 import root.view.event.ViewEventHandler;
 import root.view.menu.Menu;
+import view.command.PopulateMenuCommand;
 import view.command.SelectFieldCommand;
 import view.command.ShowFieldInfoCommand;
 import view.command.ZoomInCommand;
@@ -33,7 +35,7 @@ import view.command.ZoomOutCommand;
 
 public class GameBrain implements Controller {
 
-	private ServerProxy server_proxy;
+	private ServerProxy serverProxy;
 
 	private ExecutorService serverCommandExecutor;
 	private CommandProcessor serverCommandProcessor;
@@ -46,7 +48,7 @@ public class GameBrain implements Controller {
 
 	private Field selectedField;
 	private Field focusedField;
-	private List<Command> toUndo;
+	private List<Command> undoStack;
 
 	private List<FieldOption> fieldOptions;
 
@@ -56,25 +58,29 @@ public class GameBrain implements Controller {
 
 		this.view = view;
 		this.model = model;
-		this.server_proxy = server_proxy;
+		this.serverProxy = server_proxy;
 
-		this.toUndo = new ArrayList<Command>();
+		this.undoStack = new ArrayList<Command>();
 
 		// attention let's say that every controller implementations has its own
 		// ModelEventHandler (maybe this isn't the best approach)
-		this.model.setEventHandler(new DefaultModelEventHandler(this));
+
+		// this.model.setEventHandler(new DefaultModelEventHandler(this));
+		this.model.setEventHandler((ModelEventHandler) this);
 
 		this.initFieldOptions();
 
-		// --- connect serverProxy and controller
+		// connect serverProxy and controller
+		this.serverCommandQueue = ((CommandProducer) this.serverProxy).getConsumerQueue();
 
-		this.serverCommandQueue = ((CommandProducer) this.server_proxy).getConsumerQueue();
-
+		// command queue should be active component
+		// that whay command executor would be stored only inside command queue
+		// and shutDown also from the inside of command queue
 		this.serverCommandExecutor = Executors.newSingleThreadExecutor();
-		this.serverCommandProcessor = new BasicCommandProcessor(this.serverCommandExecutor, this);
+		this.serverCommandProcessor = new BasicCommandProcessor(
+				this.serverCommandExecutor,
+				(CommandDrivenComponent) this);
 		this.serverCommandQueue.setCommandProcessor(this.serverCommandProcessor);
-
-		// --- done with serverProxy
 
 		this.viewCommandQueue = this.view.getCommandQueue();
 
@@ -98,18 +104,18 @@ public class GameBrain implements Controller {
 				if (focused_field != null) {
 
 					// undo all previous commands
-					if (!toUndo.isEmpty()) {
-						for (int i = (toUndo.size() - 1); i >= 0; i--) {
-							viewCommandQueue.enqueue(toUndo.get(i).getAntiCommand());
+					if (!undoStack.isEmpty()) {
+						for (int i = (undoStack.size() - 1); i >= 0; i--) {
+							viewCommandQueue.enqueue(undoStack.get(i).getAntiCommand());
 						}
 					}
-					toUndo.clear();
+					undoStack.clear();
 
 					// execute new command
 					Command select_command = new SelectFieldCommand(focused_field);
 					viewCommandQueue.enqueue(select_command);
 
-					toUndo.add(select_command);
+					undoStack.add(select_command);
 
 					selectedField = focused_field;
 					focusedField = null;// note focusedField != focused_field
@@ -138,7 +144,7 @@ public class GameBrain implements Controller {
 
 					viewCommandQueue.enqueue(showMenuCommand);
 
-					toUndo.add(showMenuCommand);
+					undoStack.add(showMenuCommand);
 
 				}
 
@@ -146,7 +152,7 @@ public class GameBrain implements Controller {
 
 		});
 
-		// TODO maybe for the purpose of redrawing redraeing path and similar options
+		// TODO maybe for the purpose of redrawing path and similar options
 		// add additional list of command which are "stateless" and which execution wont
 		// do any damage to the current state if they are executed more than once
 
@@ -220,7 +226,8 @@ public class GameBrain implements Controller {
 	@Override
 	public void shutdown() {
 
-		if (this.serverCommandExecutor != null && !this.serverCommandExecutor.isShutdown()) {
+		if (this.serverCommandExecutor != null
+				&& !this.serverCommandExecutor.isShutdown()) {
 			this.serverCommandExecutor.shutdown();
 		}
 
@@ -235,18 +242,18 @@ public class GameBrain implements Controller {
 	}
 
 	@Override
-	public void execute(ModelEventArg event_argument) {
-		this.server_proxy.sendIntention(event_argument);
+	public void handleModelEvent(ModelEventArg event_argument) {
+		this.serverProxy.sendIntention(event_argument);
 	}
 
 	@Override
 	public ServerProxy getServerProxy() {
-		return this.server_proxy;
+		return this.serverProxy;
 	}
 
 	@Override
 	public void setServerProxy(root.communication.ServerProxy new_proxy) {
-		this.server_proxy = new_proxy;
+		this.serverProxy = new_proxy;
 	}
 
 	@Override
@@ -280,7 +287,7 @@ public class GameBrain implements Controller {
 
 	@Override
 	public void enqueueForUndone(Command new_command) {
-		this.toUndo.add(new_command);
+		this.undoStack.add(new_command);
 	}
 
 	@Override
@@ -297,7 +304,7 @@ public class GameBrain implements Controller {
 		Menu fieldMenu = view.getOptionMenu();
 		if (fieldMenu.isDisplayed()) {
 			selectedField.adjustOptionsFor(focusedField);
-			fieldMenu.populateWith(selectedField.getEnabledOptions());
+			viewCommandQueue.enqueue(new PopulateMenuCommand(selectedField.getEnabledOptions()));
 		}
 
 	}

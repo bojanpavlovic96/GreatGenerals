@@ -21,6 +21,7 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.paint.Color;
 import javafx.stage.Screen;
 import javafx.stage.Stage;
+import root.command.CommandDrivenComponent;
 import root.command.CommandProcessor;
 import root.command.CommandQueue;
 import root.model.component.Field;
@@ -61,21 +62,21 @@ public class DrawingStage extends Stage implements View {
 	private Color background_color = Color.GRAY;
 
 	// connection with controller
-	private CommandQueue command_queue;
+	private CommandQueue commandQueue;
 	private ExecutorService executor;
-	private CommandProcessor command_processor;
+	private CommandProcessor commandProcessor;
 
-	private Map<String, List<ViewEventHandler>> handlers_map;
+	private Map<String, List<ViewEventHandler>> handlersMap;
 
 	// holds info about view fields and conversion methods
-	private ViewFieldManager field_manager;
+	private ViewFieldManager fieldManager;
 
 	// constructors
 
 	public DrawingStage(ViewFieldManager field_converter) {
 		super();
 
-		this.field_manager = field_converter;
+		this.fieldManager = field_converter;
 
 		this.initStage();
 
@@ -154,21 +155,21 @@ public class DrawingStage extends Stage implements View {
 
 	private void initCommandQueue() {
 
-		this.command_queue = new CommandQueue();
-		this.command_processor = new FxCommandProcessor(this);
+		this.commandQueue = new CommandQueue();
+		this.commandProcessor = new FxCommandProcessor((CommandDrivenComponent) this);
 
-		this.command_queue.setCommandProcessor(this.command_processor);
+		this.commandQueue.setCommandProcessor(this.commandProcessor);
 
 	}
 
 	private void initEventHandlers() {
 
-		this.handlers_map = new HashMap<String, List<ViewEventHandler>>();
+		this.handlersMap = new HashMap<String, List<ViewEventHandler>>();
 
 		EventHandler<MouseEvent> eventHandler = new EventHandler<MouseEvent>() {
 
 			public void handle(MouseEvent arg) {
-				Point2D field_position = field_manager
+				Point2D field_position = fieldManager
 						.calcStoragePosition(new Point2D(arg.getX(), arg.getY()));
 
 				String event_name = "";
@@ -181,7 +182,7 @@ public class DrawingStage extends Stage implements View {
 					event_name = "mouse-click-event";
 				}
 
-				List<ViewEventHandler> handlers_list = handlers_map.get(event_name);
+				List<ViewEventHandler> handlers_list = handlersMap.get(event_name);
 				if (handlers_list != null) {
 
 					for (ViewEventHandler handler : handlers_list) {
@@ -201,7 +202,7 @@ public class DrawingStage extends Stage implements View {
 
 				String key = event.getCharacter();
 
-				List<ViewEventHandler> handlers = handlers_map.get("key-event-char-" + key);
+				List<ViewEventHandler> handlers = handlersMap.get("key-event-char-" + key);
 				if (handlers != null) {
 
 					for (ViewEventHandler handler : handlers) {
@@ -221,22 +222,22 @@ public class DrawingStage extends Stage implements View {
 
 	// public methods
 
-	// CommandDrivernComponent methods
+	// CommandDrivenComponent methods
 
 	@Override
 	public CommandQueue getCommandQueue() {
-		return this.command_queue;
+		return this.commandQueue;
 	}
 
 	@Override
 	public void setCommandQueue(CommandQueue command_queue) {
-		this.command_queue = command_queue;
+		this.commandQueue = command_queue;
 	}
 
 	@Override
 	public void addEventHandler(String event_name, ViewEventHandler event_handler) {
 
-		List<ViewEventHandler> handlers = this.handlers_map.get(event_name);
+		List<ViewEventHandler> handlers = this.handlersMap.get(event_name);
 
 		if (handlers != null) {
 
@@ -247,7 +248,7 @@ public class DrawingStage extends Stage implements View {
 			handlers = new ArrayList<ViewEventHandler>();
 			handlers.add(event_handler);
 
-			this.handlers_map.put(event_name, handlers);
+			this.handlersMap.put(event_name, handlers);
 		}
 
 	}
@@ -256,13 +257,13 @@ public class DrawingStage extends Stage implements View {
 
 	@Override
 	public List<ViewEventHandler> getEventHandlers(String event_name) {
-		return this.handlers_map.get(event_name);
+		return this.handlersMap.get(event_name);
 	}
 
 	@Override
 	public ViewEventHandler getSingleEventHandler(String event_name, String handler_name) {
 
-		List<ViewEventHandler> handlers = this.handlers_map.get(event_name);
+		List<ViewEventHandler> handlers = this.handlersMap.get(event_name);
 
 		for (ViewEventHandler handler : handlers) {
 			if (((NamedEventHandler) handler).getName().equals(handler_name))
@@ -276,7 +277,7 @@ public class DrawingStage extends Stage implements View {
 	@Override
 	public ViewEventHandler removeEventHandler(String event_name, String handler_name) {
 
-		List<ViewEventHandler> handlers = this.handlers_map.get(event_name);
+		List<ViewEventHandler> handlers = this.handlersMap.get(event_name);
 
 		int index = 0;
 		for (ViewEventHandler handler : handlers) {
@@ -292,7 +293,7 @@ public class DrawingStage extends Stage implements View {
 
 	@Override
 	public List<ViewEventHandler> removeAllEventHandlers(String event_name) {
-		return this.handlers_map.remove(event_name);
+		return this.handlersMap.remove(event_name);
 	}
 
 	@Override
@@ -313,12 +314,12 @@ public class DrawingStage extends Stage implements View {
 
 	@Override
 	public boolean zoomIn() {
-		return this.field_manager.zoomIn();
+		return this.fieldManager.zoomIn();
 	}
 
 	@Override
 	public boolean zoomOut() {
-		return this.field_manager.zoomOut();
+		return this.fieldManager.zoomOut();
 	}
 
 	@Override
@@ -330,23 +331,23 @@ public class DrawingStage extends Stage implements View {
 	@Override
 	public ViewField convertToViewField(Field model) {
 
-		return this.field_manager.getViewField(model);
+		return this.fieldManager.getViewField(model);
 
 	}
 
 	@Override
 	public double getFieldHeight() {
-		return this.field_manager.getHeight();
+		return this.fieldManager.getHeight();
 	}
 
 	@Override
 	public double getFieldWidth() {
-		return this.field_manager.getWidth();
+		return this.fieldManager.getWidth();
 	}
 
 	@Override
 	public double getFieldBorderWidth() {
-		return this.field_manager.getBorderWidth();
+		return this.fieldManager.getBorderWidth();
 	}
 
 	@Override
@@ -373,7 +374,7 @@ public class DrawingStage extends Stage implements View {
 
 	@Override
 	public CommandProcessor getCommandProcessor() {
-		return this.command_processor;
+		return this.commandProcessor;
 	}
 
 	@Override
@@ -392,7 +393,7 @@ public class DrawingStage extends Stage implements View {
 	@Override
 	public void adjustCanvasSize(Point2D point) {
 
-		Point2D real_position = this.field_manager
+		Point2D real_position = this.fieldManager
 				.calcRealPosition(new Point2D(point.getX() + 1, point.getY() + 1));
 
 		if (real_position.getX() > this.STAGE_WIDTH)

@@ -21,15 +21,15 @@ public interface Controller extends ModelEventHandler,
 
 	View getView();
 
-	void setView(View new_view);
+	void setView(View newView);
 
 	Model getModel();
 
-	void setModel(Model new_model);
+	void setModel(Model newModel);
 
 	List<FieldOption> getPossibleFieldOptions();
 
-	void enqueueForUndone(Command new_command);
+	void enqueueForUndone(Command newCommand);
 
 	Field getSelectedField();
 

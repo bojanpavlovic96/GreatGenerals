@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry kind="src" path="client-application/src/main/java"/>
+	<classpathentry kind="src" path="client-controller/src/main/java"/>
+	<classpathentry kind="src" path="client-model/src/main/java"/>
+	<classpathentry kind="src" path="client-server/src/main/java"/>
+	<classpathentry kind="src" path="client-view/src/main/java"/>
+	<classpathentry kind="src" path="communication/src/main/java"/>
+	<classpathentry kind="src" path="javafxtest/src"/>
+	<classpathentry kind="src" path="root/src/main/java"/>
+	<classpathentry kind="src" path="server/src/main/java"/>
+	<classpathentry kind="lib" path="client-application/target/client-application-0.0.1-SNAPSHOT-jar-with-dependencies.jar"/>
+	<classpathentry kind="lib" path="client-application/target/client-application-0.0.1-SNAPSHOT.jar"/>
+	<classpathentry kind="lib" path="client-controller/target/client-controller-0.0.1-SNAPSHOT-jar-with-dependencies.jar"/>
+	<classpathentry kind="lib" path="client-controller/target/client-controller-0.0.1-SNAPSHOT.jar"/>
+	<classpathentry kind="lib" path="client-model/target/client-model-0.0.1-SNAPSHOT-jar-with-dependencies.jar"/>
+	<classpathentry kind="lib" path="client-model/target/client-model-0.0.1-SNAPSHOT.jar"/>
+	<classpathentry kind="lib" path="client-view/target/client-view-0.0.1-SNAPSHOT-jar-with-dependencies.jar"/>
+	<classpathentry kind="lib" path="client-view/target/client-view-0.0.1-SNAPSHOT.jar"/>
+	<classpathentry kind="lib" path="communication/target/communication-0.0.1-SNAPSHOT.jar"/>
+	<classpathentry kind="lib" path="mysql-connector-java-5.1.18.jar"/>
+	<classpathentry kind="lib" path="root/target/root-0.0.1-SNAPSHOT.jar"/>
+	<classpathentry kind="lib" path="server/target/server-0.0.1-SNAPSHOT-jar-with-dependencies.jar"/>
+	<classpathentry kind="lib" path="server/target/server-0.0.1-SNAPSHOT.jar"/>
+	<classpathentry kind="output" path="client-application/target/classes"/>
+</classpath>

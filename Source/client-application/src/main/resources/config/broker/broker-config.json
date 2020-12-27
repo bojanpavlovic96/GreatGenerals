@@ -1,0 +1,24 @@
+{
+	"stage": "dev",
+	"dev": {
+		"address": "localhost",
+		"port": "5672",
+		"username": "gg_user",
+		"password": "gg_password",
+		"vhost": "gg_host",
+		"queues": {
+			"loginExchange": "login-exc",
+			"loginRoutingKey": "login-request"
+		}
+	},
+	"prod": {
+		"address": "raven.rmq.cloudamqp.com",
+		"port": "5672",
+		"username": "wdvozwsr",
+		"password": "lzMIQ5SJvR083poynUF6Rc8T_QPNUJow",
+		"queues": {
+			"loginExchange": "login-exc",
+			"loginRoutingKey": "login-request"
+		}
+	}
+}

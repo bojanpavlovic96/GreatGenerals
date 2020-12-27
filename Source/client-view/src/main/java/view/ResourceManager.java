@@ -13,8 +13,8 @@ import org.json.JSONObject;
 
 import javafx.scene.image.Image;
 
-// attention this thing is mess ... do something 
-// should be populated with resources that comes from the server ... maybe
+// attention this thing is a mess ... do something 
+// should be populated with resources "downloaded" from the server ... maybe
 
 public class ResourceManager {
 
@@ -48,7 +48,7 @@ public class ResourceManager {
 	// #endregion singletonStuff
 
 	// type included
-	private String concrete_assets_path;
+	private String concreteAssetsPath;
 
 	// unit/terrain-name-range <- key format
 	private Map<String, Image> assets;
@@ -66,7 +66,9 @@ public class ResourceManager {
 
 	private void loadResources() {
 
-		this.concrete_assets_path = ResourceManager.ASSETS_PATH + "/" + ResourceManager.ASSETS_TYPE;
+		this.concreteAssetsPath = ResourceManager.ASSETS_PATH
+				+ "/"
+				+ ResourceManager.ASSETS_TYPE;
 
 		this.loadTerrainsList();
 		this.loadUnitsList();
@@ -77,7 +79,10 @@ public class ResourceManager {
 
 		this.assets = new HashMap<String, Image>();
 
-		final String UNITS_PATH = ResourceManager.ASSETS_PATH + "/" + ResourceManager.ASSETS_TYPE + "/unit";
+		final String UNITS_PATH = ResourceManager.ASSETS_PATH
+				+ "/"
+				+ ResourceManager.ASSETS_TYPE
+				+ "/unit";
 
 		for (int index = 0; index < this.unitsList.length(); index++) {
 
@@ -137,7 +142,9 @@ public class ResourceManager {
 			// String PHYSICAL_LIST_PATH =
 			// this.getClass().getClassLoader().getResource(LOGICAL_LIST_PATH).getPath();
 
-			InputStream input_stream = this.getClass().getClassLoader().getResourceAsStream(LOGICAL_LIST_PATH);
+			InputStream input_stream = this.getClass()
+					.getClassLoader()
+					.getResourceAsStream(LOGICAL_LIST_PATH);
 			InputStreamReader stream_reader = new InputStreamReader(input_stream);
 			BufferedReader buff_reader = new BufferedReader(stream_reader);
 

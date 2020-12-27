@@ -17,8 +17,8 @@ import javafx.stage.Stage;
 
 public class StartForm extends Stage implements InitialPage {
 
-	// attention height may be unused
 	private double WIDTH = 200;
+	// attention height may be unused
 	// attention hard-coded, find better solution for height
 	private double HEIGHT = 640;
 
@@ -139,6 +139,7 @@ public class StartForm extends Stage implements InitialPage {
 				StringResourceManager.setLanguage(new_language);
 
 				// TODO platform.runLater maybe
+				// not sure from which thread is this gonna be called
 
 				((HasLabels) header_form).reloadLabels();
 				((HasLabels) user_form).reloadLabels();

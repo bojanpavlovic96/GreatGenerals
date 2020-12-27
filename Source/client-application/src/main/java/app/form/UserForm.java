@@ -14,7 +14,9 @@ import javafx.scene.control.TextField;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Font;
 
-public class UserForm extends VBox implements FormMessageProducer, HasLabels {
+public class UserForm
+		extends VBox
+		implements FormMessageProducer, HasLabels {
 
 	// Noto Sans CJK TC Black
 	// Un Dotum Bold
@@ -37,11 +39,11 @@ public class UserForm extends VBox implements FormMessageProducer, HasLabels {
 	private Label password_lb;
 	private PasswordField password_pf;
 
-	private Button login_btn;
-	private Button register_btn;
+	private Button loginBtn;
+	private Button registerBtn;
 
-	private UserFormActionHandler on_login;
-	private UserFormActionHandler on_register;
+	private UserFormActionHandler onLogin;
+	private UserFormActionHandler onRegister;
 
 	private FormMessageHandler on_info_message;
 	private FormMessageHandler on_status_message;
@@ -75,11 +77,11 @@ public class UserForm extends VBox implements FormMessageProducer, HasLabels {
 		this.password_lb.setFont(this.font);
 		this.password_pf = new PasswordField();
 
-		this.login_btn = new Button(this.string_manager.getString("login"));
-		this.login_btn.setFont(this.font);
+		this.loginBtn = new Button(this.string_manager.getString("login"));
+		this.loginBtn.setFont(this.font);
 
-		this.register_btn = new Button(this.string_manager.getString("register"));
-		this.register_btn.setFont(this.font);
+		this.registerBtn = new Button(this.string_manager.getString("register"));
+		this.registerBtn.setFont(this.font);
 
 		this.getChildren().add(this.username_lb);
 		this.getChildren().add(this.username_tf);
@@ -87,8 +89,8 @@ public class UserForm extends VBox implements FormMessageProducer, HasLabels {
 		this.getChildren().add(this.password_lb);
 		this.getChildren().add(this.password_pf);
 
-		this.getChildren().add(this.login_btn);
-		this.getChildren().add(this.register_btn);
+		this.getChildren().add(this.loginBtn);
+		this.getChildren().add(this.registerBtn);
 
 		// up-right-down-left
 		this.setPadding(new Insets(10, 5, 10, 5));
@@ -96,31 +98,36 @@ public class UserForm extends VBox implements FormMessageProducer, HasLabels {
 		VBox.setMargin(this.username_tf, new Insets(2, 0, 5, 0));
 		VBox.setMargin(this.password_pf, new Insets(2, 0, 5, 0));
 
-		VBox.setMargin(this.login_btn, new Insets(10, 0, 5, 0));
+		VBox.setMargin(this.loginBtn, new Insets(10, 0, 5, 0));
 
 	}
 
 	private void setHandlers() {
-		this.login_btn.setOnAction(new EventHandler<ActionEvent>() {
+		this.loginBtn.setOnAction(new EventHandler<ActionEvent>() {
 
 			public void handle(ActionEvent event) {
-				if (on_login != null) {
-					on_login.execute(username_tf.getText(), password_pf.getText());
+				if (onLogin != null) {
+					onLogin.handleFormAction(
+							username_tf.getText(),
+							password_pf.getText());
 				} else {
-					System.out.println("on_login handler is not set ..." + "\t@ UserForm.loginBtnAction ...");
+					System.out.println("on_login handler is not set ..."
+							+ "\t@ UserForm.loginBtnAction ...");
 				}
 			}
 
 		});
 
-		this.register_btn.setOnAction(new EventHandler<ActionEvent>() {
+		this.registerBtn.setOnAction(new EventHandler<ActionEvent>() {
 
 			public void handle(ActionEvent event) {
-				if (on_register != null) {
-					on_register.execute(username_tf.getText(), password_pf.getText());
+				if (onRegister != null) {
+					onRegister.handleFormAction(
+							username_tf.getText(),
+							password_pf.getText());
 				} else {
 					System.out.println("on_register handler is not set ..."
-										+ "\t@ UserForm.registerBtnAction ...");
+							+ "\t@ UserForm.registerBtnAction ...");
 				}
 
 			}
@@ -146,18 +153,18 @@ public class UserForm extends VBox implements FormMessageProducer, HasLabels {
 	// login/register handlers
 
 	public void setOnLoginHandler(UserFormActionHandler handler) {
-		this.on_login = handler;
+		this.onLogin = handler;
 	}
 
 	public void setOnRegisterHandler(UserFormActionHandler handler) {
-		on_register = handler;
+		onRegister = handler;
 
 	}
 
 	// messages handlers
 
-	public void setStatusMessageHandler(FormMessageHandler hanlder) {
-		on_status_message = hanlder;
+	public void setStatusMessageHandler(FormMessageHandler handler) {
+		on_status_message = handler;
 	}
 
 	public void setInfoMessageHandler(FormMessageHandler handler) {
@@ -180,9 +187,9 @@ public class UserForm extends VBox implements FormMessageProducer, HasLabels {
 
 		this.password_lb.setText(this.string_manager.getString("password"));
 
-		this.login_btn.setText(this.string_manager.getString("login"));
+		this.loginBtn.setText(this.string_manager.getString("login"));
 
-		this.register_btn.setText(this.string_manager.getString("register"));
+		this.registerBtn.setText(this.string_manager.getString("register"));
 
 	}
 

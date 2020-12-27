@@ -29,6 +29,9 @@ public class CtrlInitializeCommand extends Command {
 	@Override
 	public void run() {
 
+		// ATTENTION
+		// this implementation is hardcoded for testing purpose
+
 		Model model = ((Controller) super.targetComponent).getModel();
 
 		List<FieldOption> options = ((Controller) super.targetComponent).getPossibleFieldOptions();

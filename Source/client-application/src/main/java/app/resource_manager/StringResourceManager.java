@@ -40,28 +40,29 @@ public class StringResourceManager {
 
 	private void loadResources() {
 
-		String file_name = StringResourceManager.RESOURCE_PREFIX + StringResourceManager.language
+		String fileName = StringResourceManager.RESOURCE_PREFIX
+				+ StringResourceManager.language
 				+ StringResourceManager.RESOURCE_SUFFIX;
 
-		System.out.println("Searching for: " + file_name);
+		System.out.println("Searching for: " + fileName);
 
 		ClassLoader loader = getClass().getClassLoader();
 
-		InputStream input_stream = loader.getResourceAsStream(file_name);
-		InputStreamReader stream_reder = new InputStreamReader(input_stream);
-		BufferedReader buff_reader = new BufferedReader(stream_reder);
+		InputStream inputStream = loader.getResourceAsStream(fileName);
+		InputStreamReader streamReader = new InputStreamReader(inputStream);
+		BufferedReader buffReader = new BufferedReader(streamReader);
 
 		StringBuilder content = new StringBuilder();
 		String line = "";
 		try {
 
-			while ((line = buff_reader.readLine()) != null) {
+			while ((line = buffReader.readLine()) != null) {
 				content.append(line + "\n");
 			}
 
-			buff_reader.close();
-			stream_reder.close();
-			input_stream.close();
+			buffReader.close();
+			streamReader.close();
+			inputStream.close();
 
 			// transform plain text in JSONObject
 			this.resources = new JSONObject(content.toString());

@@ -31,11 +31,14 @@ public class ModelField implements Field {
 
 	private List<FieldOption> options;
 
-	private ModelEventHandler event_handler;
+	private ModelEventHandler eventHandler;
 
 	// constructors
 
-	public ModelField(Point2D storage_position, PlayerData player, boolean visibility, Unit unit,
+	public ModelField(Point2D storage_position,
+			PlayerData player,
+			boolean visibility,
+			Unit unit,
 			Terrain terrain) {
 		super();
 
@@ -68,7 +71,7 @@ public class ModelField implements Field {
 		// if method is used for inserting (not removing) unit
 		if (this.unit != null) {
 			// update unit event handler (modelEventHandler)
-			this.unit.setEventHandler(this.event_handler);
+			this.unit.setEventHandler(this.eventHandler);
 			// update reference to field
 			this.unit.setField(this);
 		}
@@ -93,7 +96,7 @@ public class ModelField implements Field {
 
 	@Override
 	public void setModelEventHandler(ModelEventHandler handler) {
-		this.event_handler = handler;
+		this.eventHandler = handler;
 	}
 
 	@Override

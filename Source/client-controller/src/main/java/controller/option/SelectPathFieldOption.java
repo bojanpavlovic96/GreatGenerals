@@ -20,7 +20,7 @@ public class SelectPathFieldOption extends FieldOption {
 	}
 
 	public SelectPathFieldOption(boolean enabled, Controller controller, Field primary_field) {
-		super("select-path-field-option", enabled, controller, primary_field);
+		super(SelectPathFieldOption.Name, enabled, controller, primary_field);
 		// Auto-generated constructor stub
 	}
 

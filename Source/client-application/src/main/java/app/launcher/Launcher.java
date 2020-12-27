@@ -1,13 +1,12 @@
 package app.launcher;
 
-import java.util.List;
-
 import com.rabbitmq.client.Channel;
 
 import app.event.ConnectionEventHandler;
 import app.event.GameReadyHandler;
 import app.form.ConnectionUser;
 import app.form.StartForm;
+import app.resource_manager.BrokerConfig;
 import communication.BasicServerProxy;
 import communication.translator.JSONMessageTranslator;
 import controller.GameBrain;
@@ -24,29 +23,14 @@ import view.component.HexFieldManager;
 
 public class Launcher extends Application {
 
-	private final static BrokerInfo CloudBroker = new BrokerInfo(
-			"wdvozwsr",
-			"lzMIQ5SJvR083poynUF6Rc8T_QPNUJow",
-			"raven.rmq.cloudamqp.com");
-	private final static BrokerInfo LocalDockerBroker = new BrokerInfo(
-			"gg_user",
-			"gg_password",
-			"localhost");
-	private final static BrokerInfo LocalDefaultBroker = new BrokerInfo(
-			"guest",
-			"guest",
-			"localhost");
-
-	private BrokerInfo TargetBroker = CloudBroker; // this field is initialized in resolveUri
-
-	private InitialController initial_controller;
+	private StartPageController startPageController;
 
 	// TODO leave this application thread as the main game thread
-	private Thread connection_thread;
-	private ConnectionTask connection_task;
+	private Thread connectionThread;
+	private ConnectionTask connectionTask;
 
 	// controller thread is main application thread
-	private Controller controller;
+	private Controller gameController;
 
 	// METHODS
 
@@ -62,116 +46,104 @@ public class Launcher extends Application {
 	public void start(Stage primaryStage) throws Exception {
 		// ignore generated primaryStage
 
-		// take default uri or one provided with the application arguments
-		this.resolveUri();
+		BrokerConfig brokerConfig = BrokerConfig.loadConfig();
+		if (brokerConfig != null) {
+			System.out.println("Using broker config: \n" + brokerConfig.toString());
+		} else {
+			System.out.println("Was not able to read broker config file ... \n"
+					+ "Exiting ... ");
+			return;
+		}
 
-		this.initial_controller = new InitialController(new StartForm());
+		this.startPageController = new StartPageController(
+				new StartForm(),
+				brokerConfig.queues,
+				new GameReadyHandler() {
+					public void execute(String username, String roomName) {
+						// debug
+						System.out.println("Starting game ... ");
 
-		this.initial_controller.setOnGameReadyHandler(new GameReadyHandler() {
+						ServerProxy serverProxy = new BasicServerProxy(
+								connectionTask.getChannel(),
+								new JSONMessageTranslator(),
+								username, roomName);
 
-			public void execute(String username, String room_name) {
+						// TODO somehow initialize resource manager
+						// resources could be obtained from the server
+						// values passed to the hexFieldManager should also be extracted from
+						// configuration
+						View view = new DrawingStage(new HexFieldManager(80, 30, 2));
 
-				// debug
-				System.out.println("Creating game controller ... @ Launcher.onGameReadyEvent "
-						+ "-> called from intial controller");
+						// attention controller still null at this moment
+						// modelEventHandler is set from controller constructor
+						// this is empty model (only timer and unit creator)
+						Model model = new DataModel();
 
-				ServerProxy server_proxy = new BasicServerProxy(
-						connection_task.getChannel(), new JSONMessageTranslator(),
-						username, room_name);
+						// debug
+						System.out.println("\thiding first_stage ... @ Launcher.onGameReadyEvent");
+						// hide login & room page
+						startPageController.hideInitialPage();
 
-				// TODO somehow initialize resource manager
-				// resources could be obtained from the server
-				// values passed to the hexFieldManager should also be extracted from
-				// configuration
-				View view = new DrawingStage(new HexFieldManager(80, 30, 2));
+						// debug
+						System.out.println("\tCreating controller ... @ Launcher.onGameReadyEvent");
+						gameController = new GameBrain(serverProxy, view, model);
 
-				// attention controller still null at this moment
-				// modelEventHandler is set from controller constructor
-				// this is empty model (only timer and unit creator)
-				Model model = new DataModel();
+						// debug
+						System.out.println("\tShowing game view ... @ Launcher.onGameReadyEvent");
+						gameController.getView().show();
 
-				// debug
-				System.out.println("\thiding first_stage ... @ Launcher.onGameReadyEvent");
-				// hide login & room page
-				initial_controller.hideInitialPage();
+					}
+				});
 
-				// debug
-				System.out.println("\tCreating controller ... @ Launcher.onGameReadyEvent");
-				controller = new GameBrain(server_proxy, view, model);
-
-				// debug
-				System.out.println("\tShowing game view ... @ Launcher.onGameReadyEvent");
-				controller.getView().show();
-
-			}
-
-		});
-		this.initial_controller.showInitialPage();
+		this.startPageController.showInitialPage();
 
 		System.out.println("Creating connection thread ... @ Launcher.start");
-		this.connection_task = new ConnectionTask(this.TargetBroker, new ConnectionEventHandler() {
+		this.connectionTask = new ConnectionTask(brokerConfig,
+				new ConnectionEventHandler() {
 
-			// connection ready handler
-			@Override
-			public void execute(ConnectionTask connectionTask) {
+					// connection ready handler
+					@Override
+					public void execute(ConnectionTask connectionTask) {
 
-				// debug
-				System.out.println("\tconnection ready ... @ Launcher.init - connectionTask.onConnecionReady");
+						// debug
+						System.out.println("\tconnection ready ... @ Launcher.init - connectionTask.onConnecionReady");
 
-				// debug
-				System.out.println("\tfirst stage channel set call ... @ Launcher.init");
-				Channel channel = connectionTask.getChannel();
-				if (channel != null && channel.isOpen()) {
-					initial_controller.setCommunicationChannel(connectionTask.getChannel());
-				} else {
+						Channel channel = connectionTask.getChannel();
+						if (channel != null && channel.isOpen()) {
+							startPageController.setCommunicationChannel(connectionTask.getChannel());
+						} else {
 
-					// null is returned only if exception occurred in .getChannel function
-					// in that case connection failed handler is called (inside catch block)
-					// so this case is covered, just continue with execution
+							// null is returned only if exception occurred in .getChannel function
+							// in that case connection failed handler is called (inside catch block)
+							// so this case is covered, just continue with execution
 
-				}
+						}
 
-			}
-			// connection failed handler
-		}, new ConnectionEventHandler() {
+					}
+					// connection failed handler
+				},
+				new ConnectionEventHandler() {
 
-			@Override
-			public void execute(ConnectionTask connectionTask) {
+					@Override
+					public void execute(ConnectionTask connectionTask) {
 
-				// debug
-				System.out.println("Connection failed for some reason ... @ ConnectionEventHandler");
+						// debug
+						System.out.println("Connection failed for some reason ... @ ConnectionEventHandler");
 
-				ConnectionUser connectionUser = (ConnectionUser) initial_controller;
-				if (connectionUser != null) {
-					connectionUser.handleConnectionFailure();
-				}
+						ConnectionUser connectionUser = (ConnectionUser) startPageController;
+						if (connectionUser != null) {
+							connectionUser.handleConnectionFailure();
+						}
 
-			}
-		});
+					}
 
-		this.connection_thread = new Thread(this.connection_task);
-		this.connection_thread.start();
+				});
+
+		this.connectionThread = new Thread(this.connectionTask);
+		this.connectionThread.start();
 
 		// debug
 		System.out.println("Connection thread started ... @ Launcher.init");
-
-	}
-
-	private void resolveUri() {
-
-		System.out.println("Resolving uri ... @ Launcher.resolveUri");
-		List<String> args = this.getParameters().getRaw();
-		System.out.println("Reading cli arguments not implemented ... ");
-
-		if (args.size() > 1) {
-			System.out.println("\tUri initialized from arguments ...");
-			this.TargetBroker = new BrokerInfo(args.get(1));
-		} else {
-			System.out.println("\tUri initialized from default values ...");
-			this.TargetBroker = Launcher.LocalDefaultBroker;
-		}
-
-		System.out.println("Uri resolved to: " + TargetBroker.GetUri() + " ... @ Launcher.start");
 
 	}
 
@@ -182,19 +154,19 @@ public class Launcher extends Application {
 		System.out.println("Calling application stop ... @ Launcher.start");
 
 		// close connection on shutdown
-		if (this.connection_task != null) {
+		if (this.connectionTask != null) {
 			System.out.println("Closing connection ... @ Launcher.stop");
-			((ActiveComponent) this.connection_task).shutdown();
+			((ActiveComponent) this.connectionTask).shutdown();
 		}
 
-		if (this.controller != null) {
+		if (this.gameController != null) {
 			System.out.println("Shutting down controller ... @ Launcher.stop");
-			((ActiveComponent) this.controller).shutdown();
+			((ActiveComponent) this.gameController).shutdown();
 		}
 
-		if (this.initial_controller != null) {
+		if (this.startPageController != null) {
 			System.out.println("Shutting down initial controller ... @ Launcher.stop");
-			((ActiveComponent) this.initial_controller).shutdown();
+			((ActiveComponent) this.startPageController).shutdown();
 		}
 
 	}

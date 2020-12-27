@@ -7,99 +7,72 @@ import com.rabbitmq.client.Connection;
 import com.rabbitmq.client.ConnectionFactory;
 
 import app.event.ConnectionEventHandler;
+import app.resource_manager.BrokerConfig;
 import root.ActiveComponent;
 
 public class ConnectionTask implements Runnable, ActiveComponent {
 
-	private String connection_uri;
+	private BrokerConfig brokerConfig;
 
-	private ConnectionFactory conn_factory;
+	private ConnectionFactory connFactory;
 	private Connection connection;
 
 	private ConnectionEventHandler connectionReadyHandler;
 	private ConnectionEventHandler connectionFailedHandler;
 
-	public ConnectionTask(String uri) {
-
-		this.connection_uri = uri;
-
-	}
-
-	public ConnectionTask(String uri, ConnectionEventHandler connectionReadyHandler,
+	public ConnectionTask(BrokerConfig brokerConfig,
+			ConnectionEventHandler connectionReadyHandler,
 			ConnectionEventHandler connectionFailedHandler) {
-		this(uri);
 
+		this.brokerConfig = brokerConfig;
 		this.connectionReadyHandler = connectionReadyHandler;
 		this.connectionFailedHandler = connectionFailedHandler;
 
 	}
-
-	// #region testing new connection
-
-	private BrokerInfo brokerInfo;
-
-	public ConnectionTask(BrokerInfo brokerInfo, ConnectionEventHandler connectionReadyHandler,
-			ConnectionEventHandler connectionFailedHandler) {
-
-		this.brokerInfo = brokerInfo;
-		this.connectionReadyHandler = connectionReadyHandler;
-		this.connectionFailedHandler = connectionFailedHandler;
-
-	}
-	// #endregion
 
 	public void run() {
 
-		this.conn_factory = new ConnectionFactory();
+		this.connFactory = new ConnectionFactory();
 
 		try {
 
-			this.conn_factory.setUsername(this.brokerInfo.Username);
-			this.conn_factory.setPassword(this.brokerInfo.Password);
-			this.conn_factory.setHost(this.brokerInfo.Hostname);
+			this.connFactory.setUsername(this.brokerConfig.username);
+			this.connFactory.setPassword(this.brokerConfig.password);
+			this.connFactory.setHost(this.brokerConfig.address);
 
-			// this.conn_factory.setUsername("gp_user");
-			// this.conn_factory.setPassword("gp_password");
-			// this.conn_factory.setHost("localhost");
-
-			// this.conn_factory.setUri(this.connection_uri);
+			this.connFactory.setVirtualHost(this.brokerConfig.vhost);
 
 			// debug
 			System.out.println("Creating connection ... @ ConnectionTask.run");
-			this.connection = this.conn_factory.newConnection();
+			this.connection = this.connFactory.newConnection();
 
 			if (this.connection != null && this.connection.isOpen()) {
 
 				// debug
-				System.out.println("Connection established ...");
-				System.out.println("MQ address: " + this.connection.getAddress());
+				System.out.println("Broker connection established ...");
 
 				if (this.connectionReadyHandler != null) {
-
-					System.out.println("Executing connection ready handler ... @ Launcher.ConnectionThread");
 
 					this.connectionReadyHandler.execute(this);
 
 				}
 
 			} else {
+				System.out.println("Connection failed ... @ Launcher.ConnectionThread");
+
 				if (this.getConnectionFailedHandler() != null) {
-					System.out.println("Connection failed ... @ Launcher.ConnectionThread");
 					this.getConnectionFailedHandler().execute(this);
 				}
 			}
 		} catch (Exception e) {
-
-			// only Exception is catch because there is no special handling for every single
-			// exception
-			// just print stack trace and call connection failed handler
 
 			// TODO maybe add some logic for retrying to connect
 			// maybe list of broker addresses or something like that
 
 			e.printStackTrace();
 
-			System.out.println("Connection failed ... @ Launcher.ConnectionThread");
+			System.out.println("Exception in broker connection ..."
+					+ " @ Launcher.ConnectionThread");
 
 			if (this.getConnectionFailedHandler() != null) {
 				this.getConnectionFailedHandler().execute(this);
@@ -116,13 +89,6 @@ public class ConnectionTask implements Runnable, ActiveComponent {
 		// e.printStackTrace();
 		// } catch (IOException e) {
 		// e.printStackTrace();
-		// } finally {
-		//
-		// System.out.println("Connection failed ... @ Launcher.ConnectionThread");
-		// if (this.getConnectionFailedHandler() != null) {
-		// this.getConnectionFailedHandler().execute(this);
-		// }
-		//
 		// }
 	}
 
@@ -142,6 +108,7 @@ public class ConnectionTask implements Runnable, ActiveComponent {
 
 		} catch (IOException e) {
 			e.printStackTrace();
+			System.out.println("Exceptionin closing broker connection ... ");
 		}
 
 	}
@@ -159,6 +126,8 @@ public class ConnectionTask implements Runnable, ActiveComponent {
 		} catch (IOException e) {
 
 			e.printStackTrace();
+
+			System.out.println("Exception in creating new channel ... ");
 
 			if (this.getConnectionFailedHandler() != null) {
 				this.getConnectionFailedHandler().execute(this);

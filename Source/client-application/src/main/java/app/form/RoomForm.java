@@ -171,7 +171,7 @@ public class RoomForm extends VBox implements FormMessageProducer, HasLabels {
 			public void handle(ActionEvent event) {
 
 				if (on_create_room != null) {
-					on_create_room.execute(getRoomName(), getRoomPassword());
+					on_create_room.handleFormAction(getRoomName(), getRoomPassword());
 				}
 
 			}
@@ -183,7 +183,7 @@ public class RoomForm extends VBox implements FormMessageProducer, HasLabels {
 			public void handle(ActionEvent event) {
 
 				if (on_join_room != null) {
-					on_join_room.execute(getRoomName(), getRoomPassword());
+					on_join_room.handleFormAction(getRoomName(), getRoomPassword());
 				}
 
 			}

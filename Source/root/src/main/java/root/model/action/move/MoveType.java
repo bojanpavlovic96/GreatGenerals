@@ -11,7 +11,7 @@ public abstract class MoveType implements Cloneable, Runnable {
 	// this is "timer"
 	protected ScheduledExecutorService timer;
 
-	protected Field my_field;
+	protected Field myField;
 	protected Field destination_field;
 
 	protected PathFinder path_finder;
@@ -20,7 +20,7 @@ public abstract class MoveType implements Cloneable, Runnable {
 
 	protected int move_delay;
 
-	protected ModelEventHandler on_event;
+	protected ModelEventHandler onEvent;
 
 	// constructors
 
@@ -28,7 +28,7 @@ public abstract class MoveType implements Cloneable, Runnable {
 		super();
 
 		this.timer = executor;
-		this.my_field = my_field;
+		this.myField = my_field;
 		this.path_finder = path_finder;
 
 		this.path = null;
@@ -56,11 +56,11 @@ public abstract class MoveType implements Cloneable, Runnable {
 	}
 
 	public void setField(Field new_field) {
-		this.my_field = new_field;
+		this.myField = new_field;
 	}
 
 	public void setEventHandler(ModelEventHandler event_handler) {
-		this.on_event = event_handler;
+		this.onEvent = event_handler;
 	}
 
 	@Override
@@ -80,7 +80,7 @@ public abstract class MoveType implements Cloneable, Runnable {
 	public List<Field> calculatePath(Field target_field) {
 
 		this.destination_field = target_field;
-		this.path = this.path_finder.findPath(this.my_field, target_field);
+		this.path = this.path_finder.findPath(this.myField, target_field);
 
 		return this.path;
 	}

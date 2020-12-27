@@ -17,7 +17,7 @@ public class BottomForm extends HBox implements LanguageSwitcher {
 
 	private final String color = "#993300";
 
-	private StringResourceManager string_manager;
+	private StringResourceManager stringManager;
 
 	private Label text;
 
@@ -27,7 +27,7 @@ public class BottomForm extends HBox implements LanguageSwitcher {
 
 	public BottomForm() {
 
-		this.string_manager = StringResourceManager.getInstance();
+		this.stringManager = StringResourceManager.getInstance();
 
 		this.initForm();
 
@@ -39,7 +39,7 @@ public class BottomForm extends HBox implements LanguageSwitcher {
 		this.setPadding(new Insets(2, 2, 5, 2));
 		this.setStyle("-fx-background-color:" + this.color + this.ALPHA_VALUE);
 
-		this.text = new Label(this.string_manager.getString("bottom-text"));
+		this.text = new Label(this.stringManager.getString("bottom-text"));
 
 		this.lang_box = new ComboBox<String>();
 

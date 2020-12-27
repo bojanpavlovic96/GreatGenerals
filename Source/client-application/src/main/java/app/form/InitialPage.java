@@ -35,8 +35,8 @@ public interface InitialPage extends MessageDisplay {
 	
 	public String getPassword();
 	
-	void show(); // expose show from stage
+	void show(); // expose show from javafx stage 
 
-	void hide(); // expose hide from stage
+	void hide(); // expose hide from javafx stage
 
 }

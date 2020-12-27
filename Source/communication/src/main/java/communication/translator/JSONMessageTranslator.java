@@ -22,7 +22,6 @@ public class JSONMessageTranslator implements MessageTranslator {
 		super();
 
 		this.initializeTranslatorMap();
-
 	}
 
 	// methods
@@ -67,6 +66,7 @@ public class JSONMessageTranslator implements MessageTranslator {
 				return new CtrlMoveCommand(first_postition, second_position);
 
 			}
+			
 		});
 
 	}

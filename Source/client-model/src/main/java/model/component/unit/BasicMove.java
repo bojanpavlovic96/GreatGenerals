@@ -39,7 +39,7 @@ public class BasicMove extends MoveType {
 		if (this.path != null && !this.path.isEmpty()) {
 
 			// debug
-			System.out.println("move from : " + this.my_field.getStoragePosition() +
+			System.out.println("move from : " + this.myField.getStoragePosition() +
 					"->: " + this.path.get(0).getStoragePosition());
 
 			Field next_field = path.get(0);
@@ -47,7 +47,7 @@ public class BasicMove extends MoveType {
 			if (next_field.getUnit() != null) {
 				// debug
 				System.out.println("Recalculating path ...");
-				this.path = this.path_finder.findPath(this.my_field, this.destination_field);
+				this.path = this.path_finder.findPath(this.myField, this.destination_field);
 			}
 
 			super.moving = true;
@@ -79,9 +79,11 @@ public class BasicMove extends MoveType {
 
 	@Override
 	public void run() {
-		this.on_event.execute(new MoveModelEventArg(this.my_field.getPlayer().getUsername(),
-				this.my_field.getStoragePosition(),
-				this.path.get(0).getStoragePosition()));
+		this.onEvent.handleModelEvent(
+				new MoveModelEventArg(
+						this.myField.getPlayer().getUsername(),
+						this.myField.getStoragePosition(),
+						this.path.get(0).getStoragePosition()));
 	}
 
 	@Override

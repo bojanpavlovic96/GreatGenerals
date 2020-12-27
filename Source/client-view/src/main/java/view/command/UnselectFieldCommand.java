@@ -40,7 +40,6 @@ public class UnselectFieldCommand extends Command {
 
 			for (Field pathField : this.model_field.getUnit().getMoveType().getPath()) {
 
-				System.out.println("Unselecting path field ... ");
 				ViewField viewField = ((View) this.targetComponent).convertToViewField(pathField);
 
 				viewField.clearField(gc);

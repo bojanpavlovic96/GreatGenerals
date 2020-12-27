@@ -50,7 +50,6 @@ public class SelectFieldCommand extends Command {
 
 			for (Field pathField : this.modelField.getUnit().getMoveType().getPath()) {
 
-				System.out.println("Selecting path field ... ");
 				((View) targetComponent).convertToViewField(pathField).paintField(gc, filter_color);
 
 			}
