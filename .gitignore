@@ -45,8 +45,19 @@ local.properties
 # Annotation Processing
 .apt_generated/
 
-#indelliJ
+# indelliJ
 .idea/
 out/
 .idea_modules/
 atlassian-ide-plugin.xml
+
+# vscode gitignore
+.vscode/*
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
+!.vscode/extensions.json
+*.code-workspace
+
+# Local History for Visual Studio Code
+.history/

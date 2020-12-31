@@ -21,7 +21,6 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.paint.Color;
 import javafx.stage.Screen;
 import javafx.stage.Stage;
-import javafx.stage.WindowEvent;
 import root.command.CommandDrivenComponent;
 import root.command.CommandProcessor;
 import root.command.CommandQueue;
@@ -40,7 +39,9 @@ import view.component.menu.OptionMenu;
 // attention 
 // (somehow lost later in development... )
 
-public class DrawingStage extends Stage implements View {
+public class DrawingStage
+		extends Stage
+		implements View {
 
 	private double STAGE_WIDTH;
 	private double STAGE_HEIGHT;
@@ -76,16 +77,6 @@ public class DrawingStage extends Stage implements View {
 	public DrawingStage(ViewFieldManager field_converter) {
 		super();
 
-		this.setOnCloseRequest(new EventHandler<WindowEvent>() {
-
-			@Override
-			public void handle(WindowEvent event) {
-				System.out.println("Requesting close ... ");
-				Platform.exit();
-			}
-
-		});
-
 		this.fieldManager = field_converter;
 
 		this.initStage();
@@ -93,7 +84,6 @@ public class DrawingStage extends Stage implements View {
 		this.initCommandQueue();
 
 		this.initEventHandlers();
-
 	}
 
 	// only stage specific things
@@ -308,7 +298,9 @@ public class DrawingStage extends Stage implements View {
 
 	@Override
 	public void shutdown() {
-
+		// got there from CommandDrivenComponent
+		// in Controller command processing is done using threadPool
+		// in this case command processing is done using Platform.runLater
 	}
 
 	// view interface

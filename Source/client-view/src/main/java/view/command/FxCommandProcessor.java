@@ -17,20 +17,18 @@ public class FxCommandProcessor implements CommandProcessor {
 	}
 
 	@Override
-	public void execute(CommandQueue command_queue) {
+	public void execute(CommandQueue commandQueue) {
 
-		/*
-		 * attention maybe whole while should be inside platform.runlater From runLater
-		 * declatration:
-		 * 
-		 * NOTE: applications should avoid flooding JavaFX with too many pending
-		 * Runnables. Otherwise, the application may become unresponsive. Applications
-		 * are encouraged to batch up multiple operations into fewer runLater calls.
-		 * 
-		 */
-		while (!command_queue.isEmpty()) {
+		// attention maybe whole while should be inside platform.runlater
+		// From runLater doc. :
 
-			Command command = command_queue.dequeue();
+		// NOTE: applications should avoid flooding JavaFX with too many pending
+		// Runnables. Otherwise, the application may become unresponsive. Applications
+		// are encouraged to batch up multiple operations into fewer runLater calls.
+
+		while (!commandQueue.isEmpty()) {
+
+			Command command = commandQueue.dequeue();
 			command.setTargetComponent(this.commandTarget);
 
 			Platform.runLater((Runnable) command);

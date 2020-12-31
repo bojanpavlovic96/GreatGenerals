@@ -17,12 +17,14 @@ import app.form.InitialPage;
 import app.form.MessageDisplay;
 import app.resource_manager.QueuesConfig;
 import root.ActiveComponent;
+import root.communication.messages.LoginRequest;
 
 public class StartPageController
 		implements GameReadyEventProducer,
 		ConnectionUser,
 		ActiveComponent {
 
+	// this is some kind of user application id ...
 	private int id;
 
 	private QueuesConfig queuesConfig;
@@ -60,9 +62,6 @@ public class StartPageController
 
 		this.initialPage = initial_page;
 
-		// get default queue naming manager
-		// this.naming_manager = CommunicationNamingManager.getInstance("default");
-
 		this.showInitialPage();
 
 		this.initPageActionHandlers();
@@ -84,6 +83,10 @@ public class StartPageController
 						if (channel != null) {
 
 							try {
+
+								LoginRequest request = new LoginRequest(
+										username,
+										password);
 
 								// TODO replace this 'justJson' with proper class
 								JSONObject json_request = new JSONObject();
@@ -121,11 +124,9 @@ public class StartPageController
 						}
 
 					}
-
 				});
 
 		this.initialPage.setOnRegisterHandler(new UserFormActionHandler() {
-
 			public void handleFormAction(String username, String password) {
 
 				// debug
@@ -139,9 +140,7 @@ public class StartPageController
 				} else {
 					((MessageDisplay) initialPage).showInfoMessage("please-wait-for-connection");
 				}
-
 			}
-
 		});
 
 		// implement
