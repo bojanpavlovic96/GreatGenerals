@@ -1,41 +1,27 @@
 package app.launcher;
 
-import java.io.IOException;
 import java.util.List;
 import java.util.Random;
-
-import org.json.JSONObject;
-
-import com.rabbitmq.client.Channel;
 
 import app.event.GameReadyHandler;
 import app.event.RoomFormActionHandler;
 import app.event.UserFormActionHandler;
-import app.form.ConnectionUser;
 import app.form.GameReadyEventProducer;
 import app.form.InitialPage;
 import app.form.MessageDisplay;
-import app.resource_manager.QueuesConfig;
 import root.ActiveComponent;
+import root.communication.LoginServerProxy;
+import root.communication.LoginServerResponseHandler;
 import root.communication.messages.LoginRequest;
+import root.communication.messages.LoginServerResponse;
+import root.communication.messages.LoginServerResponseStatus;
+import root.communication.messages.RegisterRequest;
 
-public class StartPageController
-		implements GameReadyEventProducer,
-		ConnectionUser,
-		ActiveComponent {
-
-	// this is some kind of user application id ...
-	private int id;
-
-	private QueuesConfig queuesConfig;
-
-	private Channel channel;
+public class StartPageController implements GameReadyEventProducer {
 
 	private InitialPage initialPage;
 
 	private GameReadyHandler onGameReady;
-
-	private String responseQueue;
 
 	// game data
 	// user
@@ -43,152 +29,84 @@ public class StartPageController
 	private String password;
 	private boolean loggedIn;
 	// room
-	private String room_name;
+	private String roomName;
 	private String roomPassword;
 	// also room
 	private List<String> players;
 
+	private LoginServerProxy loginServer;
+
 	// methods
 
 	public StartPageController(InitialPage initial_page,
-			QueuesConfig queuesConfig,
+			LoginServerProxy loginServer,
 			GameReadyHandler onGameReady) {
 
-		this.queuesConfig = queuesConfig;
-		this.onGameReady = onGameReady;
-
-		// TODO something better than this, maybe mac-address
-		this.id = (new Random()).nextInt();
-
 		this.initialPage = initial_page;
+		this.loginServer = loginServer;
+		this.onGameReady = onGameReady;
 
 		this.showInitialPage();
 
-		this.initPageActionHandlers();
+		this.initialPage.setOnLoginHandler(this::loginActionHandler);
+		this.initialPage.setOnRegisterHandler(this::registerActionHandler);
+
+		// TODO implement handlers for other actions
 
 	}
 
-	private void initPageActionHandlers() {
+	private void loginActionHandler(String _username, String _password) {
+		System.out.println("Handling login action ... @ InitialController");
 
-		this.initialPage.setOnLoginHandler(
-				new UserFormActionHandler() {
-					public void handleFormAction(String _username, String _password) {
+		username = _username;
+		password = _password;
 
-						// debug
-						System.out.println("Handling login event ... @ InitialController");
+		if (loginServer != null && loginServer.isReady()) {
+			loginServer.login(
+					new LoginRequest(username, password),
+					(response) -> {
+						if (response.getStatus() == LoginServerResponseStatus.SUCCESS) {
+							if (onGameReady != null) {
 
-						username = _username;
-						password = _password;
-
-						if (channel != null) {
-
-							try {
-
-								LoginRequest request = new LoginRequest(
-										username,
-										password);
-
-								// TODO replace this 'justJson' with proper class
-								JSONObject json_request = new JSONObject();
-								json_request.put("id", id);
-								json_request.put("username", username);
-								json_request.put("password", password);
-
-								// debug
-								System.out.println("Publishing on: "
-										+ queuesConfig.loginExchange
-										+ " for: "
-										+ queuesConfig.loginRoutingKey);
-
-								channel.basicPublish(
-										queuesConfig.loginExchange,
-										queuesConfig.loginRoutingKey,
-										null,
-										(json_request.toString()).getBytes());
-
-								// debug
-								System.out.println("Calling on_game_ready event handler ... ");
-
-								// attention. called here just for testing purpose
-								onGameReady.execute(username, room_name);
-
-							} catch (IOException e) {
-								// Auto-generated catch block
-								e.printStackTrace();
+								// TODO this should switch form to room page/form
+								onGameReady.execute(
+										response.getUsername(),
+										"randomRoomName");
 							}
+						}
+					});
+			((MessageDisplay) initialPage).showInfoMessage("login-request-sent");
+		} else {
+			((MessageDisplay) initialPage).showInfoMessage("please-wait-for-connection");
+		}
 
-							((MessageDisplay) initialPage).showInfoMessage("login-request-sent");
+	}
 
-						} else {
-							((MessageDisplay) initialPage).showInfoMessage("please-wait-for-connection");
+	private void registerActionHandler(String username, String password) {
+		System.out.println("Handling register action ... @ InitialController");
+
+		if (loginServer != null && loginServer.isReady()) {
+			loginServer.register(
+					new RegisterRequest(username, password),
+					new LoginServerResponseHandler() {
+
+						@Override
+						public void handleResponse(LoginServerResponse response) {
+							if (response.getStatus() == LoginServerResponseStatus.SUCCESS) {
+								if (onGameReady != null) {
+									// TODO this should switch form to login page/form
+									onGameReady.execute(
+											response.getUsername(),
+											"randomRoomName");
+								}
+							}
 						}
 
-					}
-				});
-
-		this.initialPage.setOnRegisterHandler(new UserFormActionHandler() {
-			public void handleFormAction(String username, String password) {
-
-				// debug
-				System.out.println("Handling register event ... @ InitialController");
-
-				if (channel != null) {
-					// TODO send register request using channel
-
-					((MessageDisplay) initialPage).showInfoMessage("register-request-sent");
-
-				} else {
-					((MessageDisplay) initialPage).showInfoMessage("please-wait-for-connection");
-				}
-			}
-		});
-
-		// implement
-		this.initialPage.setOnLogoutHandler();
-		// just send logout request ... no need for response i gues
-
-		this.initialPage.setOnCreateRoomHandler(new RoomFormActionHandler() {
-
-			public void handleFormAction(String room_name, String room_password) {
-
-				// debug
-				System.out.println("Handling create room event ... @ InitialController");
-
-				if (channel != null) {
-
-					((MessageDisplay) initialPage).showInfoMessage("create-request-sent");
-
-				} else {
-					((MessageDisplay) initialPage).showInfoMessage("please-wait-for-connection");
-				}
-
-			}
-
-		});
-
-		this.initialPage.setOnJoinRoomHandler(new RoomFormActionHandler() {
-
-			public void handleFormAction(String room_name, String room_password) {
-
-				// debug
-				System.out.println("Handling join room event ... @ InitialController");
-
-				if (channel != null) {
-					// TODO send join room request
-
-					((MessageDisplay) initialPage).showInfoMessage("join-request-sent");
-
-				} else {
-					((MessageDisplay) initialPage).showInfoMessage("please-wait-for-connection");
-				}
-
-			}
-
-		});
-
-		this.initialPage.setOnStartGameHandler();
-		// check number of players
-		// (there should be 3 of them)
+					});
+			((MessageDisplay) initialPage).showInfoMessage("register-request-sent");
+		} else {
+			((MessageDisplay) initialPage).showInfoMessage("please-wait-for-connection");
+		}
 
 	}
 
@@ -200,97 +118,15 @@ public class StartPageController
 		this.initialPage.show();
 	}
 
-	public void setCommunicationChannel(Channel channel) {
-
-		this.channel = channel;
-
-		this.initialPage.showStatusMessage("connection-established");
-
-		this.initChannel();
-
-	}
-
-	// implement
-	private void initChannel() {
-
-		try {
-
-			this.channel.exchangeDeclare(this.queuesConfig.loginExchange, "topic");
-
-			this.responseQueue = this.channel.queueDeclare().getQueue();
-
-		} catch (IOException e) {
-			// Auto-generated catch block
-			e.printStackTrace();
-		}
-
-		/**
-		 * implement declare queues&exchanges
-		 * 
-		 * implement set adequate handlers for :
-		 * 
-		 * login response show adequate message fill this.username and this.password
-		 * show roomForm
-		 * 
-		 * register response show adequate message fill initialPage.username and
-		 * initialPage.password
-		 * 
-		 * room create response show adequate message
-		 * 
-		 * room join response show adequate message fill playerList
-		 * 
-		 * startGame response show adequate message call gameReadyHandler
-		 * 
-		 */
-
-	}
-
+	// GameReadyEventProducer interface
 	@Override
-	public Channel getCommunicationChannel() {
-		return this.channel;
-	}
-
-	@Override
-	public void shutdown() {
-
-		if (this.channel != null && this.channel.isOpen()) {
-			try {
-
-				this.channel.close();
-
-			} catch (IOException e) {
-				// Auto-generated catch block
-				e.printStackTrace();
-			}
-		}
-
-	}
-
-	// game initiator interface
-
 	public void setOnGameReadyHandler(GameReadyHandler handler) {
 		this.onGameReady = handler;
 	}
 
+	@Override
 	public GameReadyHandler getGameReadyHandler() {
 		return this.onGameReady;
-	}
-
-	// from connection user
-	@Override
-	public void handleConnectionFailure() {
-
-		if (this.channel != null && this.channel.isOpen()) {
-			try {
-				this.channel.close();
-			} catch (IOException e) {
-				// Auto-generated catch block
-				e.printStackTrace();
-			}
-		}
-
-		this.initialPage.showStatusMessage("server-unreachable");
-
 	}
 
 }

@@ -73,6 +73,15 @@
 			<version>2.12.0</version>
 		</dependency>
 
+		<!-- used for reading txt resource -->
+		<!-- https://mvnrepository.com/artifact/com.google.guava/guava -->
+		<dependency>
+			<groupId>com.google.guava</groupId>
+			<artifactId>guava</artifactId>
+			<version>30.1-jre</version>
+		</dependency>
+
+
 		<!-- TODO next dep. should be removed after jackson is fully implemented -->
 
 		<!-- https://mvnrepository.com/artifact/org.json/json -->

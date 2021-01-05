@@ -1,9 +1,6 @@
 package app.resource_manager;
 
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
 
@@ -12,18 +9,17 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.json.JsonMapper;
 import com.google.common.io.Resources;
 
-public class BrokerConfig {
+public class RestLoginServerConfig {
 
-	private static final String CONFIG_PATH = "config/broker-config.json";
+	private static final String CONFIG_PATH = "config/rest-login-config.json";
 	private static final String STAGE_FIELD = "stage";
 
-	private static BrokerConfig configCache;
+	private static RestLoginServerConfig configCache;
 
-	public static BrokerConfig loadConfig() {
+	public static RestLoginServerConfig loadConfig() {
 
-		if (BrokerConfig.configCache == null) {
+		if (RestLoginServerConfig.configCache == null) {
 
-			// com.google.guava
 			URL url = Resources.getResource(CONFIG_PATH);
 			String txtConfig = "";
 			try {
@@ -42,13 +38,15 @@ public class BrokerConfig {
 					JsonNode rawJsonConfig = mapper.readTree(txtConfig);
 
 					String targetStage = rawJsonConfig
-							.get(BrokerConfig.STAGE_FIELD)
+							.get(RestLoginServerConfig.STAGE_FIELD)
 							.asText();
 
 					JsonNode stageConfig = rawJsonConfig.get(targetStage);
-					BrokerConfig.configCache = mapper.treeToValue(stageConfig, BrokerConfig.class);
+					RestLoginServerConfig.configCache = mapper.treeToValue(
+							stageConfig,
+							RestLoginServerConfig.class);
 
-					BrokerConfig.configCache.stage = targetStage;
+					RestLoginServerConfig.configCache.stage = targetStage;
 
 				} catch (JsonProcessingException e) {
 					System.out.println("Error in parsing broker config file ... ");
@@ -59,26 +57,23 @@ public class BrokerConfig {
 
 			} else {
 				System.out.println("ERROR: Found empty config file on path:" +
-						BrokerConfig.CONFIG_PATH + " ... ");
+						RestLoginServerConfig.CONFIG_PATH + " ... ");
 				return null;
 			}
 
 		}
 
-		return BrokerConfig.configCache;
+		return RestLoginServerConfig.configCache;
 	}
 
-	// json mapped configuration fields
+	// mapped fields
 
-	public String stage; // development || production
+	public String stage;
 
 	public String address;
-	public int port;
-	public String username;
-	public String password;
-	public String vhost;
-
-	public QueuesConfig queues;
+	public String port;
+	public String loginPath;
+	public String registerPath;
 
 	public String toString() {
 
@@ -91,12 +86,6 @@ public class BrokerConfig {
 		}
 
 		return txtObj;
-	}
-
-	public String constructUri() {
-		return "amqp://" + this.username + ":" + password
-				+ "@" + address + ":" + this.port
-				+ "/" + vhost;
 	}
 
 }

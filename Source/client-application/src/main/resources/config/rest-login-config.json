@@ -1,0 +1,15 @@
+{
+	"stage": "dev",
+	"dev": {
+		"address": "localhost",
+		"port": "8080",
+		"loginPath": "login",
+		"registerPath": "register"
+	},
+	"prod": {
+		"address": "localhost",
+		"port": "8080",
+		"loginPath": "login",
+		"registerPath": "register"
+	}
+}

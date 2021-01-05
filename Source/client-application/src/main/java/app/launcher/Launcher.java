@@ -1,20 +1,17 @@
 package app.launcher;
 
-import com.rabbitmq.client.Channel;
-
-import app.event.ConnectionEventHandler;
-import app.event.GameReadyHandler;
-import app.form.ConnectionUser;
 import app.form.StartForm;
 import app.resource_manager.BrokerConfig;
-import communication.BasicServerProxy;
+import app.server.MockupLoginServerProxy;
+import app.server.RabbitLoginServerProxy;
+import communication.RabbitGameServerProxy;
 import communication.translator.JSONMessageTranslator;
 import controller.GameBrain;
 import javafx.application.Application;
 import javafx.stage.Stage;
 import model.DataModel;
 import root.ActiveComponent;
-import root.communication.ServerProxy;
+import root.communication.GameServerProxy;
 import root.controller.Controller;
 import root.model.Model;
 import root.view.View;
@@ -26,8 +23,9 @@ public class Launcher extends Application {
 	private StartPageController startPageController;
 
 	// TODO leave this application thread as the main game thread
+	// pretty sure this is already done ...
 	private Thread connectionThread;
-	private ConnectionTask connectionTask;
+	private RabbitConnectionTask connectionTask;
 
 	// controller thread is main application thread
 	private Controller gameController;
@@ -50,100 +48,49 @@ public class Launcher extends Application {
 		if (brokerConfig != null) {
 			System.out.println("Using broker config: \n" + brokerConfig.toString());
 		} else {
-			System.out.println("Was not able to read broker config file ... \n"
-					+ "Exiting ... ");
+			System.out.println("Exiting ... ");
+
 			return;
 		}
 
+		this.connectionTask = new RabbitConnectionTask(brokerConfig);
+
 		this.startPageController = new StartPageController(
 				new StartForm(),
-				brokerConfig.queues,
-				new GameReadyHandler() {
-					public void execute(String username, String roomName) {
-						// debug
-						System.out.println("Starting game ... ");
+				new MockupLoginServerProxy(),
+				// new RabbitLoginServerProxy(this.connectionTask, brokerConfig.queues),
+				(String username, String roomName) -> { // game ready handler
 
-						ServerProxy serverProxy = new BasicServerProxy(
-								connectionTask.getChannel(),
-								new JSONMessageTranslator(),
-								username, roomName);
+					GameServerProxy serverProxy = new RabbitGameServerProxy(
+							connectionTask.getChannel(),
+							new JSONMessageTranslator(),
+							username,
+							roomName);
 
-						// TODO somehow initialize resource manager
-						// resources could be obtained from the server
-						// values passed to the hexFieldManager should also be extracted from
-						// configuration
-						View view = new DrawingStage(new HexFieldManager(80, 30, 2));
+					// TODO somehow initialize resource manager
+					// resources could be obtained from the server
+					// values passed to the hexFieldManager should also be extracted from
+					// configuration
+					View view = new DrawingStage(new HexFieldManager(80, 30, 2));
 
-						// attention controller still null at this moment
-						// modelEventHandler is set from controller constructor
-						// this is empty model (only timer and unit creator)
-						Model model = new DataModel();
+					// attention controller still null at this moment
+					// modelEventHandler is set from controller constructor
+					// this is empty model (only timer and unit creator)
+					Model model = new DataModel();
 
-						// debug
-						System.out.println("\thiding first_stage ... @ Launcher.onGameReadyEvent");
-						// hide login & room page
-						startPageController.hideInitialPage();
+					// hide login & room page
+					startPageController.hideInitialPage();
 
-						// debug
-						System.out.println("\tCreating controller ... @ Launcher.onGameReadyEvent");
-						gameController = new GameBrain(serverProxy, view, model);
+					gameController = new GameBrain(serverProxy, view, model);
 
-						// debug
-						System.out.println("\tShowing game view ... @ Launcher.onGameReadyEvent");
-						gameController.getView().show();
-
-					}
-				});
-
-		this.startPageController.showInitialPage();
-
-		System.out.println("Creating connection thread ... @ Launcher.start");
-		this.connectionTask = new ConnectionTask(brokerConfig,
-				new ConnectionEventHandler() {
-
-					// connection ready handler
-					@Override
-					public void execute(ConnectionTask connectionTask) {
-
-						// debug
-						System.out.println("\tconnection ready ... @ Launcher.init - connectionTask.onConnecionReady");
-
-						Channel channel = connectionTask.getChannel();
-						if (channel != null && channel.isOpen()) {
-							startPageController.setCommunicationChannel(connectionTask.getChannel());
-						} else {
-
-							// null is returned only if exception occurred in .getChannel function
-							// in that case connection failed handler is called (inside catch block)
-							// so this case is covered, just continue with execution
-
-						}
-
-					}
-					// connection failed handler
-				},
-				new ConnectionEventHandler() {
-
-					@Override
-					public void execute(ConnectionTask connectionTask) {
-
-						// debug
-						System.out.println("Connection failed for some reason ... @ ConnectionEventHandler");
-
-						ConnectionUser connectionUser = (ConnectionUser) startPageController;
-						if (connectionUser != null) {
-							connectionUser.handleConnectionFailure();
-						}
-
-					}
+					gameController.getView().show();
 
 				});
 
 		this.connectionThread = new Thread(this.connectionTask);
 		this.connectionThread.start();
 
-		// debug
-		System.out.println("Connection thread started ... @ Launcher.init");
+		this.startPageController.showInitialPage();
 
 	}
 
@@ -164,10 +111,12 @@ public class Launcher extends Application {
 			((ActiveComponent) this.gameController).shutdown();
 		}
 
-		if (this.startPageController != null) {
-			System.out.println("Shutting down initial controller ... @ Launcher.stop");
-			((ActiveComponent) this.startPageController).shutdown();
-		}
+		// startPageController is not active compontent
+		// since the loginServerProxy is implemented
+		// if (this.startPageController != null) {
+		// System.out.println("Shutting down initial controller ... @ Launcher.stop");
+		// ((ActiveComponent) this.startPageController).shutdown();
+		// }
 
 	}
 

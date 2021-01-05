@@ -1,11 +1,11 @@
 package root.controller;
 
-import root.communication.ServerProxy;
+import root.communication.GameServerProxy;
 
 public interface ServerSlave {
 
-	ServerProxy getServerProxy();
+	GameServerProxy getServerProxy();
 
-	void setServerProxy(ServerProxy new_proxy);
+	void setServerProxy(GameServerProxy new_proxy);
 
 }

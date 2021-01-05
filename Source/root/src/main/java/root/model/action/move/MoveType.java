@@ -24,7 +24,9 @@ public abstract class MoveType implements Cloneable, Runnable {
 
 	// constructors
 
-	public MoveType(Field my_field, PathFinder path_finder, ScheduledExecutorService executor) {
+	public MoveType(Field my_field,
+			PathFinder path_finder,
+			ScheduledExecutorService executor) {
 		super();
 
 		this.timer = executor;

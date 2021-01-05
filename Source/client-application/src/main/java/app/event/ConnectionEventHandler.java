@@ -1,9 +1,12 @@
 package app.event;
 
-import app.launcher.ConnectionTask;
+import app.launcher.RabbitConnectionEventType;
+import app.launcher.RabbitConnectionTask;
 
 public interface ConnectionEventHandler {
 
-	void execute(ConnectionTask connectionTask);
+	void handleConnectionEvent(
+			RabbitConnectionTask connectionTask,
+			RabbitConnectionEventType eventType);
 
 }

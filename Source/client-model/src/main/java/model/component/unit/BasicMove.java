@@ -39,8 +39,10 @@ public class BasicMove extends MoveType {
 		if (this.path != null && !this.path.isEmpty()) {
 
 			// debug
-			System.out.println("move from : " + this.myField.getStoragePosition() +
-					"->: " + this.path.get(0).getStoragePosition());
+			System.out.println("move from : "
+					+ this.myField.getStoragePosition() +
+					"->: "
+					+ this.path.get(0).getStoragePosition());
 
 			Field next_field = path.get(0);
 

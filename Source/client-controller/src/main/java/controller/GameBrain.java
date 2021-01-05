@@ -2,7 +2,6 @@ package controller;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 import controller.option.AddToPathFieldOption;
@@ -16,7 +15,7 @@ import root.command.CommandDrivenComponent;
 import root.command.CommandProcessor;
 import root.command.CommandProducer;
 import root.command.CommandQueue;
-import root.communication.ServerProxy;
+import root.communication.GameServerProxy;
 import root.controller.Controller;
 import root.model.Model;
 import root.model.component.Field;
@@ -35,7 +34,7 @@ import view.command.ZoomOutCommand;
 
 public class GameBrain implements Controller {
 
-	private ServerProxy serverProxy;
+	private GameServerProxy serverProxy;
 
 	private CommandProcessor serverCommandProcessor;
 	private CommandQueue serverCommandQueue;
@@ -52,7 +51,7 @@ public class GameBrain implements Controller {
 	private List<FieldOption> fieldOptions;
 
 	// constructors
-	public GameBrain(ServerProxy server_proxy, View view, Model model) {
+	public GameBrain(GameServerProxy server_proxy, View view, Model model) {
 		super();
 
 		this.view = view;
@@ -240,12 +239,12 @@ public class GameBrain implements Controller {
 	}
 
 	@Override
-	public ServerProxy getServerProxy() {
+	public GameServerProxy getServerProxy() {
 		return this.serverProxy;
 	}
 
 	@Override
-	public void setServerProxy(root.communication.ServerProxy new_proxy) {
+	public void setServerProxy(root.communication.GameServerProxy new_proxy) {
 		this.serverProxy = new_proxy;
 	}
 
@@ -264,6 +263,7 @@ public class GameBrain implements Controller {
 		return this.serverCommandProcessor;
 	}
 
+	@Override
 	public void setConsumerQueue(CommandQueue consumer_queue) {
 		this.viewCommandQueue = consumer_queue;
 	}
