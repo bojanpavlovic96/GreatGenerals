@@ -44,7 +44,11 @@ public class HexagonField implements ViewField {
 
 	// constructors
 
-	public HexagonField(Field model, double field_width, double field_height, double border_width) {
+	public HexagonField(
+			Field model,
+			double field_width,
+			double field_height,
+			double border_width) {
 
 		this.storage_position = model.getStoragePosition();
 
@@ -188,7 +192,7 @@ public class HexagonField implements ViewField {
 		return position;
 	}
 
-	// TODO borders are overwriting
+	// TODO fix borders overwriting (or don't ... )
 	private void drawBorders(GraphicsContext gc) {
 
 		gc.save();

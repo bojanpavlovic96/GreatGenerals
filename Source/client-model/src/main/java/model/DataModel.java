@@ -59,8 +59,6 @@ public class DataModel implements Model {
 
 		this.unit_creator.addPrototype(basic_unit);
 
-		// TODO add some more units
-
 	}
 
 	// methods

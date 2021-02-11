@@ -22,22 +22,22 @@ public class StartForm extends Stage implements InitialPage {
 	// attention hard-coded, find better solution for height
 	private double HEIGHT = 640;
 
-	private VBox main_containter;
-	private Scene main_scene;
+	private VBox mainContainer;
+	private Scene mainScene;
 
 	// page forms
 
 	// messages, image and title
-	private HeaderForm header_form;
+	private HeaderForm headerForm;
 
 	// username, password, login, register
-	private UserForm user_form;
+	private UserForm userForm;
 
 	// logout, roomName, roomPassword, createRoom, joinRoom, startGame,
 	// listOfPlayers
-	private RoomForm room_form;
+	private RoomForm roomForm;
 	// version number, language
-	private BottomForm bottom_form;
+	private BottomForm bottomForm;
 
 	// methods
 
@@ -53,58 +53,63 @@ public class StartForm extends Stage implements InitialPage {
 
 		this.initBottomForm();
 
-		this.room_form.setVisible(false);
+		this.roomForm.setVisible(false);
 		// this.user_form.setVisible(false);
 
-		this.setScene(this.main_scene);
+		this.setScene(this.mainScene);
 
 	}
 
 	private void initStage() {
 
-		this.main_containter = new VBox();
-		this.main_scene = new Scene(this.main_containter);
+		this.mainContainer = new VBox();
+		this.mainScene = new Scene(this.mainContainer);
 
-		// TODO commented just for testing, uncomment
 		this.setTitle("Great generals");
 		// next line removes title bar
 		// this.initStyle(StageStyle.UNDECORATED);
 
 		this.setResizable(false);
 
-		this.main_containter.setAlignment(Pos.TOP_CENTER);
+		this.mainContainer.setAlignment(Pos.TOP_CENTER);
 		Dimension dimension = Toolkit.getDefaultToolkit().getScreenSize();
+
+		System.out.println("Display dimensions: \n"
+				+ "width: " + dimension.getWidth() + "\n"
+				+ "height: " + dimension.getHeight() + "\n");
 
 		this.setWidth(this.WIDTH);
 		// this.setHeight(this.HEIGHT);
 
 		this.setX(dimension.getWidth() / 2 - this.WIDTH / 2);
-		// TODO find better value
+		// using dimension.getHeight() / 2 wont really work great
+		// i don't know which display/monitor is gonna be used
+		// sometimes it uses dimension of one and display on another ...
 		this.setY(200);
 
-		VBox.setVgrow(this.main_containter, Priority.NEVER);
+		VBox.setVgrow(this.mainContainer, Priority.NEVER);
 
 	}
 
 	private void initHeader() {
 
-		this.header_form = new HeaderForm(this.WIDTH, 125);
-		this.main_containter.getChildren().add(this.header_form);
-		this.header_form.managedProperty();
+		this.headerForm = new HeaderForm(this.WIDTH, 125);
+		this.mainContainer.getChildren().add(this.headerForm);
+		this.headerForm.managedProperty();
 
 	}
 
 	private void initUserForm() {
-		this.user_form = new UserForm();
+		this.userForm = new UserForm();
 
-		// both handlers only call appropriate method from initial page (show
-		// info/status message)
-		FormMessageProducer messageProducer = (FormMessageProducer) this.user_form;
+		// both handlers only call appropriate method from initial page
+		// (show info/status message)
+		FormMessageProducer messageProducer = (FormMessageProducer) this.userForm;
 		messageProducer.setInfoMessageHandler(new FormMessageHandler() {
 
-			public void execute(String message_name) {
+			public void execute(String messageName) {
 
-				showInfoMessage(message_name);
+				showInfoMessage(messageName);
 
 			}
 
@@ -119,37 +124,31 @@ public class StartForm extends Stage implements InitialPage {
 			}
 		});
 
-		this.main_containter.getChildren().add(this.user_form);
+		this.mainContainer.getChildren().add(this.userForm);
 	}
 
 	private void initRoomForm() {
-		this.room_form = new RoomForm();
+		this.roomForm = new RoomForm();
 
-		this.main_containter.getChildren().add(this.room_form);
+		this.mainContainer.getChildren().add(this.roomForm);
 	}
 
 	private void initBottomForm() {
 
-		this.bottom_form = new BottomForm();
+		this.bottomForm = new BottomForm();
 
-		this.bottom_form.setLanguageEventHandler(new LanguageEvent() {
+		this.bottomForm.setLanguageSwitchHandler((newLanguage) -> {
 
-			public void execute(String new_language) {
+			StringResourceManager.setLanguage(newLanguage);
 
-				StringResourceManager.setLanguage(new_language);
+			((HasLabels) headerForm).reloadLabels();
+			((HasLabels) userForm).reloadLabels();
+			((HasLabels) roomForm).reloadLabels();
+			((HasLabels) bottomForm).reloadLabels();
 
-				// TODO platform.runLater maybe
-				// not sure from which thread is this gonna be called
-
-				((HasLabels) header_form).reloadLabels();
-				((HasLabels) user_form).reloadLabels();
-				((HasLabels) room_form).reloadLabels();
-				((HasLabels) bottom_form).reloadLabels();
-
-			}
 		});
 
-		this.main_containter.getChildren().add(this.bottom_form);
+		this.mainContainer.getChildren().add(this.bottomForm);
 
 	}
 
@@ -157,61 +156,51 @@ public class StartForm extends Stage implements InitialPage {
 
 	// messageDisplay interface
 
-	public void showInfoMessage(final String message_name) {
+	@Override
+	public void showInfoMessage(final String messageName) {
 
-		Platform.runLater(new Runnable() {
-
-			public void run() {
-
-				((MessageDisplay) header_form).showInfoMessage(message_name);
-
-			}
-		});
+		((MessageDisplay) headerForm).showInfoMessage(messageName);
 
 	}
 
-	public void showStatusMessage(final String message_name) {
+	@Override
+	public void showStatusMessage(final String messageName) {
 
-		Platform.runLater(new Runnable() {
-
-			public void run() {
-
-				((MessageDisplay) header_form).showStatusMessage(message_name);
-
-			}
-		});
+		((MessageDisplay) headerForm).showStatusMessage(messageName);
 
 	}
 
+	@Override
 	public String getCurrentStatusMessage() {
-		return ((MessageDisplay) this.header_form).getCurrentStatusMessage();
+		return ((MessageDisplay) this.headerForm).getCurrentStatusMessage();
 	}
 
+	@Override
 	public String getCurrentInfoMessage() {
-		return ((MessageDisplay) this.header_form).getCurrentInfoMessage();
+		return ((MessageDisplay) this.headerForm).getCurrentInfoMessage();
 	}
 
 	// initial page interface
 
 	// implement
-	public void setOnLogoutHandler() {
+	public void setOnLogoutHandler(UserFormActionHandler handler) {
 
 	}
 
 	public void setOnLoginHandler(UserFormActionHandler handler) {
-		this.user_form.setOnLoginHandler(handler);
+		this.userForm.setOnLoginHandler(handler);
 	}
 
 	public void setOnRegisterHandler(UserFormActionHandler handler) {
-		this.user_form.setOnRegisterHandler(handler);
+		this.userForm.setOnRegisterHandler(handler);
 	}
 
 	public void setOnCreateRoomHandler(RoomFormActionHandler handler) {
-		this.room_form.setOnCreateGroupHandler(handler);
+		this.roomForm.setOnCreateGroupHandler(handler);
 	}
 
 	public void setOnJoinRoomHandler(RoomFormActionHandler handler) {
-		this.room_form.setOnJoinGroupHandler(handler);
+		this.roomForm.setOnJoinGroupHandler(handler);
 	}
 
 	// implement
@@ -220,37 +209,37 @@ public class StartForm extends Stage implements InitialPage {
 	}
 
 	public void showUserForm() {
-		this.user_form.setVisible(true);
+		this.userForm.setVisible(true);
 	}
 
 	public void hideUserForm() {
-		this.user_form.setVisible(false);
+		this.userForm.setVisible(false);
 	}
 
 	public void showRoomForm() {
-		this.room_form.setVisible(true);
+		this.roomForm.setVisible(true);
 	}
 
 	public void hideRoomForm() {
-		this.room_form.setVisible(false);
+		this.roomForm.setVisible(false);
 	}
 
 	public void setUsername(String username) {
-		this.user_form.setUsername(username);
+		this.userForm.setUsername(username);
 	}
 
 	public void setUserPassword(String password) {
-		this.user_form.setUserPassword(password);
+		this.userForm.setUserPassword(password);
 	}
 
 	@Override
 	public String getUsername() {
-		return this.user_form.getUsername();
+		return this.userForm.getUsername();
 	}
 
 	@Override
 	public String getPassword() {
-		return this.user_form.getPassword();
+		return this.userForm.getPassword();
 	}
 
 }

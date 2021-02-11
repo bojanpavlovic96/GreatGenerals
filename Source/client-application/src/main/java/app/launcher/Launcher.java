@@ -2,6 +2,7 @@ package app.launcher;
 
 import app.form.StartForm;
 import app.resource_manager.BrokerConfig;
+import app.resource_manager.RestLoginServerConfig;
 import app.server.MockupLoginServerProxy;
 import app.server.RabbitLoginServerProxy;
 import communication.RabbitGameServerProxy;
@@ -20,14 +21,11 @@ import view.component.HexFieldManager;
 
 public class Launcher extends Application {
 
-	private StartPageController startPageController;
-
-	// TODO leave this application thread as the main game thread
-	// pretty sure this is already done ...
 	private Thread connectionThread;
 	private RabbitConnectionTask connectionTask;
 
-	// controller thread is main application thread
+	private StartPageController startPageController;
+
 	private Controller gameController;
 
 	// METHODS

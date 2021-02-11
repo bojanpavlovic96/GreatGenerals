@@ -2,6 +2,7 @@ package app.form;
 
 import app.resource_manager.StringResourceManager;
 import javafx.animation.PauseTransition;
+import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
@@ -43,7 +44,7 @@ public class HeaderForm extends VBox implements MessageDisplay, HasLabels {
 
 	private Label infoMessage;
 	private String info_name;
-	private PauseTransition info_message_timer;
+	private PauseTransition infoMessageTImer;
 
 	private double imageWidth;
 	private double imageHeight;
@@ -64,8 +65,8 @@ public class HeaderForm extends VBox implements MessageDisplay, HasLabels {
 
 		this.stringManager = StringResourceManager.getInstance();
 
-		this.info_message_timer = new PauseTransition(Duration.seconds(2));
-		this.info_message_timer.setOnFinished(new EventHandler<ActionEvent>() {
+		this.infoMessageTImer = new PauseTransition(Duration.seconds(2));
+		this.infoMessageTImer.setOnFinished(new EventHandler<ActionEvent>() {
 
 			public void handle(ActionEvent event) {
 				infoMessage.setVisible(false);
@@ -138,14 +139,16 @@ public class HeaderForm extends VBox implements MessageDisplay, HasLabels {
 
 		FormMessage message = this.stringManager.getMessage(status_message_name);
 
-		if (message != null) {
-			this.statusMessage.setText(message.getMessage());
-			this.statusMessage.setStyle("-fx-background-color: " + message.getColor() + this.ALPHA_VALUE);
-		} else {
-			// just passed message with white background
-			this.statusMessage.setText(status_message_name);
-			this.statusMessage.setStyle("-fx-background-color: #111111" + this.ALPHA_VALUE + ";\n");
-		}
+		Platform.runLater(() -> {
+			if (message != null) {
+				this.statusMessage.setText(message.getMessage());
+				this.statusMessage.setStyle("-fx-background-color: " + message.getColor() + this.ALPHA_VALUE);
+			} else {
+				// just passed message with white background
+				this.statusMessage.setText(status_message_name);
+				this.statusMessage.setStyle("-fx-background-color: #111111" + this.ALPHA_VALUE + ";\n");
+			}
+		});
 
 	}
 
@@ -154,23 +157,23 @@ public class HeaderForm extends VBox implements MessageDisplay, HasLabels {
 		this.info_name = info_message_name;
 
 		FormMessage message = this.stringManager.getMessage(info_message_name);
+		Platform.runLater(() -> {
+			if (!this.infoMessage.isVisible()) {
+				this.infoMessage.setVisible(true);
+			}
 
-		if (!this.infoMessage.isVisible()) {
-			this.infoMessage.setVisible(true);
-		}
+			if (message != null) {
+				this.infoMessage.setText(message.getMessage());
+				this.infoMessage.setStyle("-fx-background-color: " + message.getColor() + this.ALPHA_VALUE);
+			} else {
+				// just passed message with white background
+				this.infoMessage.setText("Unknown: " + info_message_name);
+				this.infoMessage.setStyle("-fx-background-color: #aacc91" + this.ALPHA_VALUE);
+			}
+			this.infoMessageTImer.stop();
+			this.infoMessageTImer.play();
 
-		if (message != null) {
-			this.infoMessage.setText(message.getMessage());
-			this.infoMessage.setStyle("-fx-background-color: " + message.getColor() + this.ALPHA_VALUE);
-		} else {
-			// just passed message with white background
-			this.infoMessage.setText("Unknown: " + info_message_name);
-			this.infoMessage.setStyle("-fx-background-color: #aacc91" + this.ALPHA_VALUE);
-		}
-
-		this.info_message_timer.stop();
-		this.info_message_timer.play();
-
+		});
 	}
 
 	// HasLabels interface
@@ -179,12 +182,16 @@ public class HeaderForm extends VBox implements MessageDisplay, HasLabels {
 
 		this.stringManager = StringResourceManager.getInstance();
 
-		this.statusMessage.setText(this.status_name);
+		Platform.runLater(() -> {
 
-		// start new 2s with info in new language
-		if (this.infoMessage.isVisible()) {
-			this.showInfoMessage(this.info_name);
-		}
+			this.statusMessage.setText(this.status_name);
+
+			// start new 2s with info in new language
+			if (this.infoMessage.isVisible()) {
+				this.showInfoMessage(this.info_name);
+			}
+
+		});
 
 	}
 

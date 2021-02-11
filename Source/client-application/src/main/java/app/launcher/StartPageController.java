@@ -17,6 +17,7 @@ import root.communication.messages.LoginServerResponse;
 import root.communication.messages.LoginServerResponseStatus;
 import root.communication.messages.RegisterRequest;
 
+/* Used for handling user actions from login/register/createRoom/joinRoom form */
 public class StartPageController implements GameReadyEventProducer {
 
 	private InitialPage initialPage;
@@ -68,7 +69,7 @@ public class StartPageController implements GameReadyEventProducer {
 						if (response.getStatus() == LoginServerResponseStatus.SUCCESS) {
 							if (onGameReady != null) {
 
-								// TODO this should switch form to room page/form
+								// this should just switch to roomForm
 								onGameReady.execute(
 										response.getUsername(),
 										"randomRoomName");
@@ -94,7 +95,8 @@ public class StartPageController implements GameReadyEventProducer {
 						public void handleResponse(LoginServerResponse response) {
 							if (response.getStatus() == LoginServerResponseStatus.SUCCESS) {
 								if (onGameReady != null) {
-									// TODO this should switch form to login page/form
+
+									// this should just switch back to login form
 									onGameReady.execute(
 											response.getUsername(),
 											"randomRoomName");

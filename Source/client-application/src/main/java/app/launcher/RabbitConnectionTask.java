@@ -68,9 +68,6 @@ public class RabbitConnectionTask implements Runnable, ActiveComponent {
 			}
 		} catch (Exception e) {
 
-			// TODO maybe add some logic for retrying to connect
-			// maybe list of broker addresses or something like that
-
 			e.printStackTrace();
 
 			System.out.println("Exception in broker connection ..."

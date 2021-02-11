@@ -18,6 +18,8 @@ public class JSONMessageTranslator implements MessageTranslator {
 
 	// constructors
 
+	// TODO this class should be implemented as simple jsonSerialization
+	// using jckson i guess ...
 	public JSONMessageTranslator() {
 		super();
 
@@ -57,16 +59,16 @@ public class JSONMessageTranslator implements MessageTranslator {
 
 				JSONObject json = new JSONObject(new String(source));
 
-				Point2D first_postition = new Point2D(	json.getDouble("source_field_x"),
-														json.getDouble("source_field_y"));
+				Point2D first_postition = new Point2D(json.getDouble("source_field_x"),
+						json.getDouble("source_field_y"));
 
-				Point2D second_position = new Point2D(	json.getDouble("destination_field_x"),
-														json.getDouble("destination_field_y"));
+				Point2D second_position = new Point2D(json.getDouble("destination_field_x"),
+						json.getDouble("destination_field_y"));
 
 				return new CtrlMoveCommand(first_postition, second_position);
 
 			}
-			
+
 		});
 
 	}

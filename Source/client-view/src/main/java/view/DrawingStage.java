@@ -5,7 +5,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import javafx.application.Platform;
 import javafx.event.EventHandler;
 import javafx.geometry.Point2D;
 import javafx.scene.Group;
@@ -53,7 +52,7 @@ public class DrawingStage
 	private Scene main_scene;
 
 	private Canvas board_canvas;
-	private Canvas second_layer_canvas;
+	private Canvas secondLayerCanvas;
 
 	private ScrollPane menu_scroll;
 	private OptionMenu field_menu;
@@ -124,13 +123,13 @@ public class DrawingStage
 		this.root.getChildren().add(this.board_canvas);
 
 		// second canvas on top of the first one used for animations and field options
-		this.second_layer_canvas = new Canvas();
+		this.secondLayerCanvas = new Canvas();
 
 		// width and height same as the board canvas
-		this.second_layer_canvas.setWidth(this.canvas_width);
-		this.second_layer_canvas.setHeight(this.canvas_height);
+		this.secondLayerCanvas.setWidth(this.canvas_width);
+		this.secondLayerCanvas.setHeight(this.canvas_height);
 
-		this.root.getChildren().add(this.second_layer_canvas);
+		this.root.getChildren().add(this.secondLayerCanvas);
 
 		System.out.println("Initial canvas width: " + this.canvas_width);
 		System.out.println("Initial canvas heigth: " + this.canvas_height);
@@ -169,54 +168,51 @@ public class DrawingStage
 		EventHandler<MouseEvent> eventHandler = new EventHandler<MouseEvent>() {
 
 			public void handle(MouseEvent arg) {
-				Point2D field_position = fieldManager
+				Point2D fieldPosition = fieldManager
 						.calcStoragePosition(new Point2D(arg.getX(), arg.getY()));
 
-				String event_name = "";
+				String eventName = "";
 
 				if (arg.getButton() == MouseButton.PRIMARY) {
-					event_name = "left-mouse-click-event";
+					eventName = "left-mouse-click-event";
 				} else if (arg.getButton() == MouseButton.SECONDARY) {
-					event_name = "right-mouse-click-event";
+					eventName = "right-mouse-click-event";
 				} else {
-					event_name = "mouse-click-event";
+					eventName = "mouse-click-event";
 				}
 
-				List<ViewEventHandler> handlers_list = handlersMap.get(event_name);
-				if (handlers_list != null) {
+				List<ViewEventHandler> handlersList = handlersMap.get(eventName);
+				if (handlersList != null) {
 
-					for (ViewEventHandler handler : handlers_list) {
-						handler.execute(new ViewEventArg(arg, field_position));
+					for (ViewEventHandler handler : handlersList) {
+						handler.execute(new ViewEventArg(fieldPosition));
 					}
 
 				}
 			}
 		};
-		this.second_layer_canvas.addEventHandler(MouseEvent.MOUSE_CLICKED, eventHandler);
+		this.secondLayerCanvas.addEventHandler(MouseEvent.MOUSE_CLICKED, eventHandler);
 
 		// key event handler name format
 		// key-event-char-k - 'k' pressed button
-		this.addEventHandler(KeyEvent.KEY_TYPED, new EventHandler<KeyEvent>() {
+		this.addEventHandler(KeyEvent.KEY_TYPED,
+				(event) -> {
 
-			public void handle(KeyEvent event) {
+					String key = event.getCharacter();
 
-				String key = event.getCharacter();
+					List<ViewEventHandler> handlers = handlersMap.get("key-event-char-" + key);
+					if (handlers != null) {
 
-				List<ViewEventHandler> handlers = handlersMap.get("key-event-char-" + key);
-				if (handlers != null) {
+						for (ViewEventHandler handler : handlers) {
+							// argument of the execute method is never used for key pressed event...
+							// it is ok to be null
+							// TODO make null disappear
+							handler.execute(null);
+						}
 
-					for (ViewEventHandler handler : handlers) {
-						// argument of the execute method is never used for key pressed event...
-						// it is ok to be null
-						// TODO make null disappear
-						handler.execute(null);
 					}
 
-				}
-
-			}
-
-		});
+				});
 
 	}
 
@@ -325,14 +321,12 @@ public class DrawingStage
 	@Override
 	public void setCanvasVisibility(boolean visibilibity) {
 		this.board_canvas.setVisible(visibilibity);
-		this.second_layer_canvas.setVisible(visibilibity);
+		this.secondLayerCanvas.setVisible(visibilibity);
 	}
 
 	@Override
 	public ViewField convertToViewField(Field model) {
-
 		return this.fieldManager.getViewField(model);
-
 	}
 
 	@Override
@@ -357,7 +351,7 @@ public class DrawingStage
 
 	@Override
 	public GraphicsContext getTopLayerGraphicContext() {
-		return this.second_layer_canvas.getGraphicsContext2D();
+		return this.secondLayerCanvas.getGraphicsContext2D();
 	}
 
 	@Override
@@ -407,10 +401,10 @@ public class DrawingStage
 			this.canvas_height = this.STAGE_HEIGHT;
 
 		this.board_canvas.setWidth(this.canvas_width);
-		this.second_layer_canvas.setWidth(this.canvas_width);
+		this.secondLayerCanvas.setWidth(this.canvas_width);
 
 		this.board_canvas.setHeight(this.canvas_height);
-		this.second_layer_canvas.setHeight(this.canvas_height);
+		this.secondLayerCanvas.setHeight(this.canvas_height);
 
 	}
 

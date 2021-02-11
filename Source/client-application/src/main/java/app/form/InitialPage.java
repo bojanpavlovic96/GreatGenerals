@@ -5,13 +5,11 @@ import app.event.UserFormActionHandler;
 
 public interface InitialPage extends MessageDisplay {
 
-	// TODO appropriate handler for each method
-
 	void setOnLoginHandler(UserFormActionHandler handler);
 
-	void setOnRegisterHandler(UserFormActionHandler hander);
+	void setOnRegisterHandler(UserFormActionHandler handler);
 
-	void setOnLogoutHandler();
+	void setOnLogoutHandler(UserFormActionHandler handler);
 
 	void setOnCreateRoomHandler(RoomFormActionHandler handler);
 
@@ -30,12 +28,12 @@ public interface InitialPage extends MessageDisplay {
 	public void setUsername(String username);
 
 	public void setUserPassword(String password);
-	
+
 	public String getUsername();
-	
+
 	public String getPassword();
-	
-	void show(); // expose show from javafx stage 
+
+	void show(); // expose show from javafx stage
 
 	void hide(); // expose hide from javafx stage
 

@@ -21,7 +21,7 @@ public class BottomForm extends HBox implements LanguageSwitcher {
 
 	private Label text;
 
-	private ComboBox<String> lang_box;
+	private ComboBox<String> langBox;
 
 	private LanguageEvent on_language_change;
 
@@ -41,31 +41,24 @@ public class BottomForm extends HBox implements LanguageSwitcher {
 
 		this.text = new Label(this.stringManager.getString("bottom-text"));
 
-		this.lang_box = new ComboBox<String>();
+		this.langBox = new ComboBox<String>();
 
 		this.getChildren().add(this.text);
-		this.getChildren().add(this.lang_box);
-
-		HBox.setMargin(this.lang_box, new Insets(0, 0, 0, this.LANG_MARGIN));
+		this.getChildren().add(this.langBox);
 
 		// before stage.show() all dimensions are 0 ...
-		Platform.runLater(new Runnable() {
+		HBox.setMargin(this.langBox, new Insets(0, 0, 0, this.LANG_MARGIN));
 
-			public void run() {
-				text.setPrefWidth(getWidth() - lang_box.getWidth() - LANG_MARGIN * 3);
-			}
-
+		// if this is not wrapped with runLater text is not displayed properly ...
+		Platform.runLater(() -> {
+			text.setPrefWidth(getWidth() - langBox.getWidth() - LANG_MARGIN * 3);
 		});
 
-		// TODO set handler on language change
-		/**
-		 * {if(this.onlanguage!=null) this.onlanguage.execute(language) }
-		 *
-		 */
+		// TODO set handler on language switch
 
 	}
 
-	public void setLanguageEventHandler(LanguageEvent handler) {
+	public void setLanguageSwitchHandler(LanguageEvent handler) {
 		this.on_language_change = handler;
 	}
 

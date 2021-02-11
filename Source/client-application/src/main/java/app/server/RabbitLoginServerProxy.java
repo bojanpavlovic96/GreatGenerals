@@ -82,7 +82,6 @@ public class RabbitLoginServerProxy
 			RabbitConnectionTask connectionTask,
 			RabbitConnectionEventType eventType) {
 
-		// TODO "dont forget" to handle reconnection
 		if (eventType == RabbitConnectionEventType.CONNECTION) {
 			this.initChannels();
 		} else {

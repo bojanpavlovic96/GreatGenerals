@@ -7,6 +7,7 @@ import java.net.http.HttpResponse;
 import java.net.http.HttpRequest.BodyPublishers;
 import java.net.http.HttpResponse.BodyHandlers;
 
+import app.resource_manager.RestLoginServerConfig;
 import root.communication.LoginServerProxy;
 import root.communication.LoginServerResponseHandler;
 import root.communication.messages.LoginRequest;
@@ -15,12 +16,15 @@ import root.communication.messages.RegisterRequest;
 
 public class RestLoginServerProxy implements LoginServerProxy {
 
+	private RestLoginServerConfig config;
+
 	public RestLoginServerProxy() {
 
 	}
 
 	@Override
-	public void login(LoginRequest requestObj, LoginServerResponseHandler handler) {
+	public void login(LoginRequest requestObj,
+			LoginServerResponseHandler handler) {
 
 		URI uri = URI.create("http://127.0.0.1:8080/login");
 		String payload = "{\"name\":\"some_name\",\"password\":\"some_password\"}";
@@ -41,7 +45,6 @@ public class RestLoginServerProxy implements LoginServerProxy {
 
 	@Override
 	public void register(RegisterRequest request, LoginServerResponseHandler handler) {
-		// TODO Auto-generated method stub
 
 	}
 
@@ -52,7 +55,7 @@ public class RestLoginServerProxy implements LoginServerProxy {
 
 	@Override
 	public boolean isReady() {
-		// TODO Auto-generated method stub
+		System.out.println("REST SERVER IS READY IS NOT IMPLEMENTED ... ");
 		return false;
 	}
 

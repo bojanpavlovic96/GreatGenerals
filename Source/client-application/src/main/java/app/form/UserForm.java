@@ -45,8 +45,8 @@ public class UserForm
 	private UserFormActionHandler onLogin;
 	private UserFormActionHandler onRegister;
 
-	private FormMessageHandler on_info_message;
-	private FormMessageHandler on_status_message;
+	private FormMessageHandler onInfoMessage;
+	private FormMessageHandler onStatusMessage;
 
 	private Font font;
 
@@ -164,19 +164,19 @@ public class UserForm
 	// messages handlers
 
 	public void setStatusMessageHandler(FormMessageHandler handler) {
-		on_status_message = handler;
+		onStatusMessage = handler;
 	}
 
 	public void setInfoMessageHandler(FormMessageHandler handler) {
-		on_info_message = handler;
+		onInfoMessage = handler;
 	}
 
 	public FormMessageHandler getStatusMessageHandler() {
-		return this.on_status_message;
+		return this.onStatusMessage;
 	}
 
 	public FormMessageHandler getInfoMessageHanlder() {
-		return this.on_info_message;
+		return this.onInfoMessage;
 	}
 
 	public void reloadLabels() {
