@@ -1,6 +1,6 @@
 {
 	"stage": "dev",
-	"dev": {
+	"development": {
 		"address": "localhost",
 		"port": "5672",
 		"username": "gg_user",
@@ -11,7 +11,7 @@
 			"loginRoutingKey": "login-request"
 		}
 	},
-	"prod": {
+	"production": {
 		"address": "raven.rmq.cloudamqp.com",
 		"port": "5672",
 		"username": "wdvozwsr",

@@ -2,9 +2,7 @@ package app.launcher;
 
 import app.form.StartForm;
 import app.resource_manager.BrokerConfig;
-import app.resource_manager.RestLoginServerConfig;
 import app.server.MockupLoginServerProxy;
-import app.server.RabbitLoginServerProxy;
 import communication.RabbitGameServerProxy;
 import communication.translator.JSONMessageTranslator;
 import controller.GameBrain;
@@ -42,7 +40,7 @@ public class Launcher extends Application {
 	public void start(Stage primaryStage) throws Exception {
 		// ignore generated primaryStage
 
-		BrokerConfig brokerConfig = BrokerConfig.loadConfig();
+		var brokerConfig = BrokerConfig.getConfig();
 		if (brokerConfig != null) {
 			System.out.println("Using broker config: \n" + brokerConfig.toString());
 		} else {
@@ -58,6 +56,12 @@ public class Launcher extends Application {
 				new MockupLoginServerProxy(),
 				// new RabbitLoginServerProxy(this.connectionTask, brokerConfig.queues),
 				(String username, String roomName) -> { // game ready handler
+
+					if (!connectionTask.isConnected()) {
+						connectionTask.subscribeForEvents((connTask, eventType) -> {
+
+						});
+					}
 
 					GameServerProxy serverProxy = new RabbitGameServerProxy(
 							connectionTask.getChannel(),
@@ -76,11 +80,9 @@ public class Launcher extends Application {
 					// this is empty model (only timer and unit creator)
 					Model model = new DataModel();
 
-					// hide login & room page
-					startPageController.hideInitialPage();
-
 					gameController = new GameBrain(serverProxy, view, model);
 
+					startPageController.hideInitialPage();
 					gameController.getView().show();
 
 				});
@@ -89,7 +91,6 @@ public class Launcher extends Application {
 		this.connectionThread.start();
 
 		this.startPageController.showInitialPage();
-
 	}
 
 	@Override

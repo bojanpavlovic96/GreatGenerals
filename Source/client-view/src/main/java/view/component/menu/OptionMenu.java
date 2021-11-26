@@ -2,35 +2,43 @@ package view.component.menu;
 
 import java.util.List;
 
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.geometry.Point2D;
 import javafx.scene.control.Button;
-import javafx.scene.layout.VBox;
+import javafx.scene.control.ListView;
 import root.model.component.option.FieldOption;
 import root.view.menu.Menu;
 import root.view.menu.MenuItem;
 
-public class OptionMenu extends VBox implements Menu {
+public class OptionMenu extends ListView<MenuItem> implements Menu {
+
+	private ObservableList<MenuItem> menuItems;
 
 	public OptionMenu(double menu_width, double menu_height) {
-		super.setWidth(menu_width);
-		super.setHeight(menu_height);
+		super.setPrefWidth(menu_width);
+		super.setPrefHeight(menu_height);
+
+		this.menuItems = FXCollections.observableArrayList();
+
+		super.setItems(this.menuItems);
 	}
 
 	@Override
-	public void addOption(MenuItem new_option) {
-
-		this.getChildren().add((Button) new_option);
-
+	public void addOption(MenuItem newOption) {
+		this.menuItems.add(newOption);
 	}
 
 	@Override
-	public void removeOption(String option_name) {
-		this.getChildren().removeIf(option -> ((MenuItem) option).getName().equals(option_name));
+	public void removeOption(String optionName) {
+		this.menuItems.removeIf(option -> ((MenuItem) option)
+				.getName()
+				.equals(optionName));
 	}
 
 	@Override
 	public void clearOptions() {
-		this.getChildren().clear();
+		this.menuItems.clear();
 	}
 
 	@Override

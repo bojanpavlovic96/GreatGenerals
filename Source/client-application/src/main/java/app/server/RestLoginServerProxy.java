@@ -8,6 +8,7 @@ import java.net.http.HttpRequest.BodyPublishers;
 import java.net.http.HttpResponse.BodyHandlers;
 
 import app.resource_manager.RestLoginServerConfig;
+import app.resource_manager.RestLoginServerConfigFields;
 import root.communication.LoginServerProxy;
 import root.communication.LoginServerResponseHandler;
 import root.communication.messages.LoginRequest;
@@ -16,17 +17,22 @@ import root.communication.messages.RegisterRequest;
 
 public class RestLoginServerProxy implements LoginServerProxy {
 
-	private RestLoginServerConfig config;
+	private RestLoginServerConfigFields config;
 
-	public RestLoginServerProxy() {
-
+	public RestLoginServerProxy(RestLoginServerConfigFields config) {
+		this.config = config;
 	}
 
 	@Override
 	public void login(LoginRequest requestObj,
 			LoginServerResponseHandler handler) {
 
-		URI uri = URI.create("http://127.0.0.1:8080/login");
+		String strUri = String.format("https://%s:%d/%s",
+				config.address,
+				config.port,
+				config.loginPath);
+
+		URI uri = URI.create(strUri);
 		String payload = "{\"name\":\"some_name\",\"password\":\"some_password\"}";
 
 		HttpRequest request = HttpRequest.newBuilder(uri)
@@ -37,7 +43,7 @@ public class RestLoginServerProxy implements LoginServerProxy {
 		HttpClient.newHttpClient()
 				.sendAsync(request, BodyHandlers.ofString())
 				.thenApply(HttpResponse::body)
-				.thenApply(RestLoginServerProxy::responsePareser)
+				.thenApply(RestLoginServerProxy::responseParser)
 				.thenAccept(handler::handleResponse)
 				.join();
 
@@ -48,7 +54,7 @@ public class RestLoginServerProxy implements LoginServerProxy {
 
 	}
 
-	private static LoginServerResponse responsePareser(String strObj) {
+	private static LoginServerResponse responseParser(String strObj) {
 
 		return null;
 	}

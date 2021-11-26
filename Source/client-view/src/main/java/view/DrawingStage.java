@@ -54,7 +54,6 @@ public class DrawingStage
 	private Canvas board_canvas;
 	private Canvas secondLayerCanvas;
 
-	private ScrollPane menu_scroll;
 	private OptionMenu field_menu;
 
 	private double canvas_width;
@@ -132,21 +131,16 @@ public class DrawingStage
 		this.root.getChildren().add(this.secondLayerCanvas);
 
 		System.out.println("Initial canvas width: " + this.canvas_width);
-		System.out.println("Initial canvas heigth: " + this.canvas_height);
+		System.out.println("Initial canvas height: " + this.canvas_height);
 
-		// attention adjust size
-		this.field_menu = new OptionMenu(100, 100);
-		// scroll wrapper
-		this.menu_scroll = new ScrollPane(this.field_menu);
-		this.menu_scroll.setPrefSize(100, 200);
-		this.menu_scroll.setStyle("-fx-background-color: gray;");
+		// TODO extract this values in config file maybe
+		this.field_menu = new OptionMenu(200, 299);
 
 		this.field_menu.setLayoutX(100);
 		this.field_menu.setLayoutY(100);
 		this.field_menu.setVisible(true);
 
 		this.root.getChildren().add(this.field_menu);
-		this.root.getChildren().add(this.menu_scroll);
 
 		this.setScene(this.main_scene);
 
@@ -319,9 +313,9 @@ public class DrawingStage
 	}
 
 	@Override
-	public void setCanvasVisibility(boolean visibilibity) {
-		this.board_canvas.setVisible(visibilibity);
-		this.secondLayerCanvas.setVisible(visibilibity);
+	public void setCanvasVisibility(boolean visibility) {
+		this.board_canvas.setVisible(visibility);
+		this.secondLayerCanvas.setVisible(visibility);
 	}
 
 	@Override
@@ -357,8 +351,8 @@ public class DrawingStage
 	@Override
 	public void setMenuVisibility(boolean visibility) {
 		// with next line, vbox throws some outOfBoundsException: -1 ... don't touch it
-		// this.field_menu.setVisible(visibility);
-		this.menu_scroll.setVisible(visibility);
+		// not anymore, but I will leave above comment ... just in case
+		this.field_menu.setVisible(visibility);
 	}
 
 	@Override
@@ -379,9 +373,6 @@ public class DrawingStage
 	@Override
 	public void setMenuPosition(Point2D position) {
 		this.field_menu.setPosition(position);
-
-		this.menu_scroll.setLayoutX(position.getX());
-		this.menu_scroll.setLayoutY(position.getY());
 	}
 
 	@Override

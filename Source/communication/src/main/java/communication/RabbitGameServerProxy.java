@@ -143,15 +143,14 @@ public class RabbitGameServerProxy implements GameServerProxy {
 				+ action.getEventName()
 				+ "@ BasicServeProxy.sendIntention");
 
-		byte[] message = this.translator.translate(action);
+		byte[] message = this.translator.toByte(action);
 
-		Command received_command = this.translator.translate(message);
+		Command received_command = this.translator.toCommand(message);
 
 		this.commandQueue.enqueue(received_command);
 
 		// TODO somehow send it through channel
 
 	}
-
 
 }

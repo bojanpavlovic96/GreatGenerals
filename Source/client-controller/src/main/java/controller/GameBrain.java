@@ -26,6 +26,7 @@ import root.view.View;
 import root.view.event.ViewEventArg;
 import root.view.event.ViewEventHandler;
 import root.view.menu.Menu;
+import view.command.ClearTopLayerCommand;
 import view.command.PopulateMenuCommand;
 import view.command.SelectFieldCommand;
 import view.command.ShowFieldInfoCommand;
@@ -44,7 +45,9 @@ public class GameBrain implements Controller {
 
 	private Model model;
 
+	// selected is the highlighted one
 	private Field selectedField;
+	// focused is clicked one
 	private Field focusedField;
 	private List<Command> undoStack;
 
@@ -93,7 +96,6 @@ public class GameBrain implements Controller {
 			public void execute(ViewEventArg arg) {
 
 				Field focused_field = model.getField(arg.getFieldPosition());
-
 				if (focused_field != null) {
 
 					// undo all previous commands
@@ -128,6 +130,8 @@ public class GameBrain implements Controller {
 				// valid click
 				if (focusedField != null) {
 
+					var clearCommand = new ClearTopLayerCommand();
+
 					Command showMenuCommand;
 					if (selectedField != null) {
 						showMenuCommand = new ShowFieldInfoCommand(selectedField, focusedField);
@@ -135,6 +139,7 @@ public class GameBrain implements Controller {
 						showMenuCommand = new ShowFieldInfoCommand(focusedField, focusedField);
 					}
 
+					viewCommandQueue.enqueue(clearCommand);
 					viewCommandQueue.enqueue(showMenuCommand);
 
 					undoStack.add(showMenuCommand);

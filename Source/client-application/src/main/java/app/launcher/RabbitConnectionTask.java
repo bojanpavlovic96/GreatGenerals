@@ -7,21 +7,23 @@ import java.util.List;
 import com.rabbitmq.client.Channel;
 import com.rabbitmq.client.Connection;
 import com.rabbitmq.client.ConnectionFactory;
+import com.rabbitmq.client.ShutdownSignalException;
 
 import app.event.ConnectionEventHandler;
 import app.resource_manager.BrokerConfig;
+import app.resource_manager.BrokerConfigFields;
 import root.ActiveComponent;
 
 public class RabbitConnectionTask implements Runnable, ActiveComponent {
 
-	private BrokerConfig brokerConfig;
+	private BrokerConfigFields brokerConfig;
 
 	private ConnectionFactory connFactory;
 	private Connection connection;
 
 	private List<ConnectionEventHandler> eventSubscribers;
 
-	public RabbitConnectionTask(BrokerConfig brokerConfig) {
+	public RabbitConnectionTask(BrokerConfigFields brokerConfig) {
 
 		this.eventSubscribers = new ArrayList<ConnectionEventHandler>();
 
@@ -56,6 +58,8 @@ public class RabbitConnectionTask implements Runnable, ActiveComponent {
 							RabbitConnectionEventType.CONNECTION);
 				}
 
+				this.connection.addShutdownListener(this::shutdownHandler);
+
 			} else {
 				System.out.println("Connection failed ... @ Launcher.ConnectionThread");
 
@@ -68,10 +72,11 @@ public class RabbitConnectionTask implements Runnable, ActiveComponent {
 			}
 		} catch (Exception e) {
 
-			e.printStackTrace();
+			// e.printStackTrace();
 
 			System.out.println("Exception in broker connection ..."
-					+ " @ Launcher.ConnectionThread");
+					+ " @ Launcher.ConnectionThread -> "
+					+ "Error: " + e.getMessage());
 
 			for (ConnectionEventHandler connectionEventHandler : eventSubscribers) {
 				connectionEventHandler.handleConnectionEvent(
@@ -83,10 +88,18 @@ public class RabbitConnectionTask implements Runnable, ActiveComponent {
 
 		// possible exceptions
 		// KeyManagementException
-		// NoSuchAlhoritmException
+		// NoSuchAlgorithmException
 		// URISyntaxException
 		// IOException
 
+	}
+
+	private void shutdownHandler(ShutdownSignalException cause) {
+		for (var connectionEventHandler : eventSubscribers) {
+			connectionEventHandler.handleConnectionEvent(
+					this,
+					RabbitConnectionEventType.DISCONNECTION);
+		}
 	}
 
 	public void shutdown() {
@@ -111,21 +124,25 @@ public class RabbitConnectionTask implements Runnable, ActiveComponent {
 
 	public Channel getChannel() {
 
-		try {
+		if (this.isConnected()) {
 
-			return this.connection.createChannel();
+			try {
+				return this.connection.createChannel();
 
-		} catch (IOException e) {
-			e.printStackTrace();
-			System.out.println("Exception in creating new channel ... ");
+			} catch (IOException e) {
+				e.printStackTrace();
+				System.out.println("Exception in creating new channel ... ");
 
-			return null;
+				return null;
+			}
+
 		}
 
+		return null;
 	}
 
 	public boolean isConnected() {
-		return this.isConnected();
+		return (this.connection != null && this.connection.isOpen());
 	}
 
 	public void subscribeForEvents(ConnectionEventHandler newSub) {

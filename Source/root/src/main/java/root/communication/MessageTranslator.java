@@ -5,8 +5,8 @@ import root.model.event.ModelEventArg;
 
 public interface MessageTranslator {
 
-	Command translate(byte[] source);
+	Command toCommand(byte[] source);
 
-	byte[] translate(ModelEventArg model_action);
+	byte[] toByte(ModelEventArg model_action);
 
 }

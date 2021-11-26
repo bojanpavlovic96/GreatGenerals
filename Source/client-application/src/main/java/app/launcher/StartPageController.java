@@ -1,15 +1,11 @@
 package app.launcher;
 
 import java.util.List;
-import java.util.Random;
 
 import app.event.GameReadyHandler;
-import app.event.RoomFormActionHandler;
-import app.event.UserFormActionHandler;
 import app.form.GameReadyEventProducer;
 import app.form.InitialPage;
 import app.form.MessageDisplay;
-import root.ActiveComponent;
 import root.communication.LoginServerProxy;
 import root.communication.LoginServerResponseHandler;
 import root.communication.messages.LoginRequest;
@@ -59,10 +55,10 @@ public class StartPageController implements GameReadyEventProducer {
 	private void loginActionHandler(String _username, String _password) {
 		System.out.println("Handling login action ... @ InitialController");
 
-		username = _username;
-		password = _password;
+		this.username = _username;
+		this.password = _password;
 
-		if (loginServer != null && loginServer.isReady()) {
+		if (this.loginServer != null && this.loginServer.isReady()) {
 			loginServer.login(
 					new LoginRequest(username, password),
 					(response) -> {

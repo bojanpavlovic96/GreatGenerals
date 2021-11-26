@@ -37,7 +37,7 @@ public class JSONMessageTranslator implements MessageTranslator {
 		this.message_translators.put("move-model-event", new MessageTranslator() {
 
 			@Override
-			public byte[] translate(ModelEventArg model_action) {
+			public byte[] toByte(ModelEventArg model_action) {
 
 				MoveModelEventArg move_event = (MoveModelEventArg) model_action;
 
@@ -55,7 +55,7 @@ public class JSONMessageTranslator implements MessageTranslator {
 			}
 
 			@Override
-			public Command translate(byte[] source) {
+			public Command toCommand(byte[] source) {
 
 				JSONObject json = new JSONObject(new String(source));
 
@@ -77,17 +77,17 @@ public class JSONMessageTranslator implements MessageTranslator {
 
 	// attention this method should return ctrlCommand
 	@Override
-	public Command translate(byte[] source) {
+	public Command toCommand(byte[] source) {
 
 		JSONObject json = new JSONObject(new String(source));
 
-		return this.message_translators.get(json.get("event_name")).translate(source);
+		return this.message_translators.get(json.get("event_name")).toCommand(source);
 	}
 
 	@Override
-	public byte[] translate(ModelEventArg model_event) {
+	public byte[] toByte(ModelEventArg model_event) {
 
-		return this.message_translators.get(model_event.getEventName()).translate(model_event);
+		return this.message_translators.get(model_event.getEventName()).toByte(model_event);
 
 	}
 

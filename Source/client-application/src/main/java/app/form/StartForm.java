@@ -4,11 +4,9 @@ import java.awt.Dimension;
 import java.awt.Toolkit;
 
 import app.event.FormMessageHandler;
-import app.event.LanguageEvent;
 import app.event.RoomFormActionHandler;
 import app.event.UserFormActionHandler;
 import app.resource_manager.StringResourceManager;
-import javafx.application.Platform;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.layout.Priority;

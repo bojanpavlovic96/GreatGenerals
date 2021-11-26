@@ -13,7 +13,7 @@ import root.view.menu.Menu;
 public class ShowFieldInfoCommand extends Command {
 
 	public static double INFO_WIDTH = 400;
-	public static double INFO_HEIGHT = 100;
+	public static double INFO_HEIGHT = 200;
 
 	private Field selectedField;
 	// private ViewField viewField; // unused ? remove ?
@@ -55,9 +55,9 @@ public class ShowFieldInfoCommand extends Command {
 		selectedField.adjustOptionsFor(targetField);
 		menu.populateWith(selectedField.getEnabledOptions());
 
-		view.setMenuPosition(
-				new Point2D(viewTarget.getFieldCenter().getX(),
-						viewTarget.getFieldCenter().getY()));
+		view.setMenuPosition(new Point2D(
+				viewTarget.getFieldCenter().getX(),
+				viewTarget.getFieldCenter().getY()));
 		view.setMenuVisibility(true);
 
 		// draw field info
@@ -66,9 +66,10 @@ public class ShowFieldInfoCommand extends Command {
 		gc.save();
 
 		gc.setFill(Color.GRAY);
+
 		gc.fillRect(viewTarget.getFieldCenter().getX() + menu.getMenuWidth(),
 				viewTarget.getFieldCenter().getY(),
-				200,
+				ShowFieldInfoCommand.INFO_WIDTH,
 				ShowFieldInfoCommand.INFO_HEIGHT);
 
 		gc.restore();

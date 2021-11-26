@@ -12,6 +12,7 @@
 	</properties>
 
 	<modules>
+		<module>json-util</module>
 		<module>client-application</module>
 		<module>client-view</module>
 		<module>client-model</module>
