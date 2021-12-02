@@ -1,6 +1,5 @@
 package controller.option;
 
-import java.beans.FeatureDescriptor;
 import java.util.List;
 
 import root.controller.Controller;
@@ -16,8 +15,10 @@ public class MoveFieldOption extends FieldOption {
 		super(MoveFieldOption.Name, gameController);
 	}
 
-	public MoveFieldOption(boolean enabled, Controller controller, Field primary_field) {
-		super("move-field-option", enabled, controller, primary_field);
+	public MoveFieldOption(boolean enabled,
+			Controller controller,
+			Field primary_field) {
+		super(MoveFieldOption.Name, enabled, controller, primary_field);
 
 	}
 
@@ -29,20 +30,23 @@ public class MoveFieldOption extends FieldOption {
 		if (path != null && !path.isEmpty()) {
 			this.primaryField.getUnit().getMoveType().move();
 		} else {
-			SelectPathFieldOption select_path = new SelectPathFieldOption(true,
+			// this will never be executed because this command is not adequate
+			// if paths == null -> isAdequateFor method
+			var selectPathOption = new SelectPathFieldOption(
+					true,
 					this.controller,
 					this.primaryField);
 
-			select_path.setSecondaryField(this.secondaryField);
-			select_path.run();
+			selectPathOption.setSecondaryField(this.secondaryField);
+			selectPathOption.run();
 			// path is calculated, set and selected
 
 			this.primaryField.getUnit().getMoveType().move();
 
 		}
 
+		// just remove menu after click
 		super.controller.getConsumerQueue().enqueue(new ClearTopLayerCommand());
-
 	}
 
 	@Override

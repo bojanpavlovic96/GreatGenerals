@@ -8,11 +8,11 @@
 		<version>2.4.1</version>
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
+
 	<groupId>greatgenerals.server</groupId>
 	<artifactId>rabbit-login</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<name>rabbit-login</name>
-	<description>Demo project for Spring Boot</description>
 
 	<properties>
 		<java.version>11</java.version>

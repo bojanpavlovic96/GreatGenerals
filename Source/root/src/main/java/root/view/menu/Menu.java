@@ -25,4 +25,6 @@ public interface Menu {
 
 	void populateWith(List<FieldOption> options);
 
+	void addOptionsDelimiter(String label);
+
 }

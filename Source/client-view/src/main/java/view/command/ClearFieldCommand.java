@@ -9,7 +9,7 @@ import root.view.field.ViewField;
 public class ClearFieldCommand extends Command {
 
 	private Field model;
-	private ViewField view_field;
+	private ViewField viewField;
 
 	public ClearFieldCommand(Field model) {
 		super("clear-field-view-command");
@@ -22,12 +22,12 @@ public class ClearFieldCommand extends Command {
 	public void setTargetComponent(CommandDrivenComponent target) {
 		super.setTargetComponent(target);
 
-		this.view_field = ((View) super.targetComponent).convertToViewField(this.model);
+		this.viewField = ((View) super.targetComponent).convertToViewField(this.model);
 
 	}
 
 	public void run() {
-		this.view_field.clearField(((View) super.targetComponent).getMainGraphicContext());
+		this.viewField.clearField(((View) super.targetComponent).getMainGraphicContext());
 	}
 
 	@Override

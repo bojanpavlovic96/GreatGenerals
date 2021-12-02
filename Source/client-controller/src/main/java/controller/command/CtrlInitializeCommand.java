@@ -34,7 +34,7 @@ public class CtrlInitializeCommand extends Command {
 
 		Model model = ((Controller) super.targetComponent).getModel();
 
-		List<FieldOption> options = ((Controller) super.targetComponent).getPossibleFieldOptions();
+		var options = ((Controller) super.targetComponent).getPossibleFieldOptions();
 
 		for (Field field : this.fields) {
 

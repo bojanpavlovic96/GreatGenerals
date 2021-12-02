@@ -1,67 +1,61 @@
 package view.command;
 
-import javax.swing.DebugGraphics;
-
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
 import root.command.Command;
 import root.command.CommandDrivenComponent;
 import root.model.component.Field;
-import root.view.View;
 import root.view.field.ViewField;
+import root.view.View;
 
 public class SelectFieldCommand extends Command {
 
-	private Color filter_color;
+	public static final String commandName = "simple-select-field-view-command";
+
+	private Color filterColor;
 
 	private Field modelField;
-	private ViewField view_field;
+	private ViewField viewField;
 
-	// attention extract from configuration
-	private static Color default_filter_color = Color.rgb(100, 10, 10, 0.5);
+	// TODO this should be read from some manager or config
+	private static Color defaultFilterColor = Color.rgb(100, 10, 10, 0.5);
 
-	public SelectFieldCommand(Field modelField) {
-		super("select-field-view-command");
-
-		this.filter_color = SelectFieldCommand.default_filter_color;
+	public SelectFieldCommand(Field modelField, Color highlightColor) {
+		super(SelectFieldCommand.commandName);
 
 		this.modelField = modelField;
+		this.filterColor = highlightColor;
+	}
 
+	public SelectFieldCommand(Field modelField) {
+		this(modelField, SelectFieldCommand.defaultFilterColor);
 	}
 
 	@Override
 	public void setTargetComponent(CommandDrivenComponent target) {
 		super.setTargetComponent(target);
 
-		this.view_field = ((View) super.targetComponent).convertToViewField(this.modelField);
-
+		this.viewField = ((View) super.targetComponent)
+				.convertToViewField(this.modelField);
 	}
 
+	@Override
 	public void run() {
-
 		GraphicsContext gc = ((View) targetComponent).getMainGraphicContext();
 
-		gc.save();
-
-		((View) targetComponent).convertToViewField(modelField).paintField(gc, filter_color);
-
-		if (this.modelField.getUnit() != null &&
-				this.modelField.getUnit().getMoveType().getPath() != null) {
-
-			for (Field pathField : this.modelField.getUnit().getMoveType().getPath()) {
-
-				((View) targetComponent).convertToViewField(pathField).paintField(gc, filter_color);
-
-			}
-		}
-
-		gc.restore();
+		((View) targetComponent)
+				.convertToViewField(modelField)
+				.paintField(gc, filterColor);
 
 	}
 
 	@Override
 	public Command getAntiCommand() {
 		return new UnselectFieldCommand(this.modelField);
+	}
+
+	public Field getField() {
+		return this.modelField;
 	}
 
 }

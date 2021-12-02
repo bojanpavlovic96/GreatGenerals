@@ -14,11 +14,11 @@ public abstract class MoveType implements Cloneable, Runnable {
 	protected Field myField;
 	protected Field destination_field;
 
-	protected PathFinder path_finder;
+	protected PathFinder pathFinder;
 	protected List<Field> path;
 	protected boolean moving;
 
-	protected int move_delay;
+	protected int moveDelay;
 
 	protected ModelEventHandler onEvent;
 
@@ -31,7 +31,7 @@ public abstract class MoveType implements Cloneable, Runnable {
 
 		this.timer = executor;
 		this.myField = my_field;
-		this.path_finder = path_finder;
+		this.pathFinder = path_finder;
 
 		this.path = null;
 	}
@@ -52,9 +52,9 @@ public abstract class MoveType implements Cloneable, Runnable {
 
 	public int getDelay() {
 
-		this.move_delay = this.calculateDelay();
+		this.moveDelay = this.calculateDelay();
 
-		return this.move_delay;
+		return this.moveDelay;
 	}
 
 	public void setField(Field new_field) {
@@ -79,20 +79,40 @@ public abstract class MoveType implements Cloneable, Runnable {
 		return this.path;
 	}
 
-	public List<Field> calculatePath(Field target_field) {
+	public List<Field> calculatePath(Field targetField) {
 
-		this.destination_field = target_field;
-		this.path = this.path_finder.findPath(this.myField, target_field);
+		this.destination_field = targetField;
+		this.path = this.pathFinder.findPath(this.myField, targetField);
 
 		return this.path;
 	}
 
 	public PathFinder getPathFinder() {
-		return this.path_finder;
+		return this.pathFinder;
 	}
 
 	public boolean isMoving() {
 		return moving;
+	}
+
+	public boolean isOnPath(Field field) {
+		var fieldPos = field.getStoragePosition();
+
+		if (this.path == null || this.path.size() == 0) {
+			return false;
+		}
+
+		for (Field pathField : this.path) {
+			var pathFieldPos = pathField.getStoragePosition();
+
+			if (fieldPos.getX() == pathFieldPos.getX()
+					&& fieldPos.getY() == pathFieldPos.getY()) {
+				return true;
+			}
+
+		}
+
+		return false;
 	}
 
 	// abstract methods

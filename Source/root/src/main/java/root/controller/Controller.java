@@ -29,7 +29,10 @@ public interface Controller extends ModelEventHandler,
 
 	List<FieldOption> getPossibleFieldOptions();
 
+	// TODO replace this with getUndoneStack
 	void enqueueForUndone(Command newCommand);
+
+	CommandStack getUndoStack();
 
 	Field getSelectedField();
 

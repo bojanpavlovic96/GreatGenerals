@@ -112,25 +112,18 @@ public class ModelField implements Field {
 
 	// implement
 	@Override
-	public void adjustOptionsFor(Field second_field) {
+	public void adjustOptionsFor(Field secondField) {
 
 		for (FieldOption option : this.options) {
-			option.setSecondaryField(second_field);
-		}
+			option.setSecondaryField(secondField);
 
-		for (FieldOption singleOption : options) {
-
-			if (singleOption.isAdequateFor(this)) {
-
-				singleOption.enableOption();
-
+			if (option.isAdequateFor(this)) {
+				option.enableOption();
 			} else {
-
-				singleOption.disableOption();
-
+				option.disableOption();
 			}
-		}
 
+		}
 	}
 
 	// e.g. disable building options if terrain on this field is mountain or

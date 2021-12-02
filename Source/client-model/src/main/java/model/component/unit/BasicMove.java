@@ -10,18 +10,21 @@ import root.model.component.Field;
 
 public class BasicMove extends MoveType {
 
-	public BasicMove(Field my_field, PathFinder path_finder, ScheduledExecutorService executor) {
+	public BasicMove(Field my_field,
+			PathFinder path_finder,
+			ScheduledExecutorService executor) {
+
 		super(my_field, path_finder, executor);
 
-		this.move_delay = this.calculate_delay();
+		this.moveDelay = this.calculate_delay();
 
 	}
 
 	protected int calculate_delay() {
 
 		// TODO move_delay is hardcoded
-		super.move_delay = 1000;
-		return super.move_delay;
+		super.moveDelay = 2000;
+		return super.moveDelay;
 
 	}
 
@@ -49,13 +52,13 @@ public class BasicMove extends MoveType {
 			if (next_field.getUnit() != null) {
 				// debug
 				System.out.println("Recalculating path ...");
-				this.path = this.path_finder.findPath(this.myField, this.destination_field);
+				this.path = this.pathFinder.findPath(this.myField, this.destination_field);
 			}
 
 			super.moving = true;
 
 			this.calculate_delay();
-			this.timer.schedule(this, this.move_delay, TimeUnit.MILLISECONDS);
+			this.timer.schedule(this, this.moveDelay, TimeUnit.MILLISECONDS);
 			// this will just raise event (at every move_delay second)
 			// that unit is ready to move
 			// this event is passed to the server and after confirmation from it's side

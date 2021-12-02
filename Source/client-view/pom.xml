@@ -4,6 +4,11 @@
 	<artifactId>client-view</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 
+	<properties>
+		<maven.compiler.source>13</maven.compiler.source>
+		<maven.compiler.target>13</maven.compiler.target>
+	</properties>
+
 	<dependencies>
 
 		<dependency>
@@ -11,10 +16,6 @@
 			<artifactId>root</artifactId>
 			<version>0.0.1-SNAPSHOT</version>
 		</dependency>
-
-		<!-- https://mvnrepository.com/artifact/org.openjfx/javafx-controls -->
-		<!-- <dependency> <groupId>org.openjfx</groupId> <artifactId>javafx-controls</artifactId> 
-			<version>11</version> </dependency> -->
 
 		<dependency>
 			<groupId>org.openjfx</groupId>
@@ -65,7 +66,7 @@
 				</executions>
 			</plugin>
 
-			<plugin>
+			<!-- <plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-compiler-plugin</artifactId>
 				<version>3.8.0</version>
@@ -73,7 +74,7 @@
 					<source>1.8</source>
 					<target>1.8</target>
 				</configuration>
-			</plugin>
+			</plugin> -->
 
 		</plugins>
 	</build>

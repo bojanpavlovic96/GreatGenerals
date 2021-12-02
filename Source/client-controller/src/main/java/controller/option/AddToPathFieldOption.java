@@ -9,6 +9,7 @@ import root.model.action.move.PathFinder;
 import root.model.component.Field;
 import root.model.component.option.FieldOption;
 import view.command.ClearTopLayerCommand;
+import view.command.ComplexSelectFieldCommand;
 import view.command.SelectFieldCommand;
 
 public class AddToPathFieldOption extends FieldOption {
@@ -47,16 +48,16 @@ public class AddToPathFieldOption extends FieldOption {
 
 		}
 
-		for (Field field : pathToAdd) {
+		for (Field pathField : pathToAdd) {
 
-			Command select_command = new SelectFieldCommand(field);
-			super.controller.getConsumerQueue().enqueue(select_command);
-			super.controller.enqueueForUndone(select_command);
+			var selectCommand = new SelectFieldCommand(pathField);
+			// Command selectCommand = new ComplexSelectFieldCommand(field);
+			super.controller.getConsumerQueue().enqueue(selectCommand);
+			super.controller.enqueueForUndone(selectCommand);
 
 		}
 
 		super.controller.getConsumerQueue().enqueue(new ClearTopLayerCommand());
-
 	}
 
 	@Override

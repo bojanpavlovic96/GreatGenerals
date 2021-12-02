@@ -13,7 +13,7 @@ import javax.rmi.ssl.SslRMIClientSocketFactory;
 import javafx.geometry.Point2D;
 import model.component.unit.BasicMove;
 import model.component.unit.BasicUnit;
-import model.component.unit.UnitCreator;
+import model.component.unit.UnitFactory;
 import model.path.AStar;
 import root.model.Model;
 import root.model.PlayerData;
@@ -26,7 +26,7 @@ public class DataModel implements Model {
 	private Map<Point2D, Field> fields;
 	private Map<String, PlayerData> players;
 
-	private UnitCreator unit_creator;
+	private UnitFactory unitFactory;
 
 	private ScheduledExecutorService executor;
 
@@ -39,7 +39,7 @@ public class DataModel implements Model {
 
 		// this is timer...
 		this.executor = Executors.newScheduledThreadPool(3);
-		// remove task from waiting queue after it is canceled
+		// remove task from waiting queue after it is cancelled
 		((ScheduledThreadPoolExecutor) this.executor).setRemoveOnCancelPolicy(true);
 
 		this.initUnitCreator();
@@ -50,14 +50,14 @@ public class DataModel implements Model {
 
 	private void initUnitCreator() {
 
-		this.unit_creator = new UnitCreator();
+		this.unitFactory = new UnitFactory();
 
-		Unit basic_unit = new BasicUnit(
+		Unit basicUnit = new BasicUnit(
 				new BasicMove(null, new AStar(this), this.executor),
 				null,
 				null);
 
-		this.unit_creator.addPrototype(basic_unit);
+		this.unitFactory.addPrototype(basicUnit);
 
 	}
 
@@ -139,7 +139,7 @@ public class DataModel implements Model {
 	public void setUnit(Point2D storagePosition, String unitName) {
 
 		Field field = this.fields.get(storagePosition);
-		Unit unit = this.unit_creator.generateUnit(unitName);
+		Unit unit = this.unitFactory.generateUnit(unitName);
 
 		if (unit != null) {
 
@@ -173,7 +173,7 @@ public class DataModel implements Model {
 
 	@Override
 	public Unit generateUnit(String unit_name) {
-		return this.unit_creator.generateUnit(unit_name);
+		return this.unitFactory.generateUnit(unit_name);
 	}
 
 }

@@ -10,6 +10,8 @@ import view.command.ClearFieldCommand;
 import view.command.ClearTopLayerCommand;
 import view.command.DrawFieldCommand;
 import view.command.SelectFieldCommand;
+import view.command.UnselectFieldCommand;
+import view.command.ComplexSelectFieldCommand;
 
 public class SelectPathFieldOption extends FieldOption {
 
@@ -30,23 +32,31 @@ public class SelectPathFieldOption extends FieldOption {
 		List<Field> unitPath = this.primaryField.getUnit().getMoveType().getPath();
 		if (unitPath != null && unitPath.size() > 0) {
 
-			for (Field singleField : unitPath) {
+			for (Field pathField : unitPath) {
 
-				ClearFieldCommand clearFieldCmd = new ClearFieldCommand(singleField);
-				DrawFieldCommand drawFieldCommand = new DrawFieldCommand(singleField);
+				var unselectCommand = new UnselectFieldCommand(pathField);
+				super.controller.getConsumerQueue().enqueue(unselectCommand);
 
-				super.controller.getConsumerQueue().enqueue(clearFieldCmd);
-				super.controller.getConsumerQueue().enqueue(drawFieldCommand);
+				// ClearFieldCommand clearFieldCmd = new ClearFieldCommand(pathField);
+				// DrawFieldCommand drawFieldCommand = new DrawFieldCommand(pathField);
+
+				// super.controller.getConsumerQueue().enqueue(clearFieldCmd);
+				// super.controller.getConsumerQueue().enqueue(drawFieldCommand);
 
 			}
 
 		}
 
 		// second field must be without unit in order to calculate path
-		for (Field field : primaryField.getUnit().getMoveType().calculatePath(this.secondaryField)) {
-			Command select_command = new SelectFieldCommand(field);
-			super.controller.getConsumerQueue().enqueue(select_command);
-			super.controller.enqueueForUndone(select_command);
+		for (Field pathField : primaryField
+				.getUnit()
+				.getMoveType()
+				.calculatePath(this.secondaryField)) {
+
+			var selectCommand = new SelectFieldCommand(pathField);
+			// Command select_command = new ComplexSelectFieldCommand(field);
+			super.controller.getConsumerQueue().enqueue(selectCommand);
+			super.controller.enqueueForUndone(selectCommand);
 		}
 
 		super.controller.getConsumerQueue().enqueue(new ClearTopLayerCommand());

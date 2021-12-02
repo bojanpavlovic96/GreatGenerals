@@ -12,7 +12,7 @@ public interface Model extends ActiveComponent {
 
 	List<Field> getFields();
 
-	List<Field> getFreeNeighbours(Field curren_field);
+	List<Field> getFreeNeighbours(Field currentField);
 
 	Field getField(Point2D storage_position);
 

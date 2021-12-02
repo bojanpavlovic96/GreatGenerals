@@ -73,4 +73,9 @@ public class OptionMenu extends ListView<MenuItem> implements Menu {
 
 	}
 
+	@Override
+	public void addOptionsDelimiter(String label) {
+		addOption(new OptionsDelimiter(label));
+	}
+
 }

@@ -5,11 +5,11 @@ import java.util.Map;
 
 import root.model.component.Unit;
 
-public class UnitCreator {
+public class UnitFactory {
 
 	private Map<String, Unit> prototypes;
 
-	public UnitCreator() {
+	public UnitFactory() {
 
 		this.prototypes = new HashMap<String, Unit>();
 
@@ -38,9 +38,9 @@ public class UnitCreator {
 		return null;
 	}
 
-	public void addPrototype(Unit unit_prototype) {
+	public void addPrototype(Unit newPrototype) {
 
-		this.prototypes.put(unit_prototype.getUnitName(), unit_prototype);
+		this.prototypes.put(newPrototype.getUnitName(), newPrototype);
 
 	}
 

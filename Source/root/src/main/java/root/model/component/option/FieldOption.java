@@ -26,7 +26,11 @@ public abstract class FieldOption implements Runnable {
 		this.enabled = false;
 	}
 
-	public FieldOption(String optionName, boolean enabled, Controller controller, Field primaryField) {
+	public FieldOption(String optionName,
+			boolean enabled,
+			Controller controller,
+			Field primaryField) {
+				
 		this(optionName, controller);
 
 		this.enabled = enabled;
@@ -44,16 +48,16 @@ public abstract class FieldOption implements Runnable {
 		return this.primaryField;
 	}
 
-	public void setPrimaryField(Field primary_field) {
-		this.primaryField = primary_field;
+	public void setPrimaryField(Field field) {
+		this.primaryField = field;
 	}
 
-	public Field getSocondaryField() {
+	public Field getSecondaryField() {
 		return this.secondaryField;
 	}
 
-	public void setSecondaryField(Field secondary_field) {
-		this.secondaryField = secondary_field;
+	public void setSecondaryField(Field field) {
+		this.secondaryField = field;
 	}
 
 	public void disableOption() {

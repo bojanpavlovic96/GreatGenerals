@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.Executors;
 
+import controller.command.UndoStack;
 import controller.option.AddToPathFieldOption;
 import controller.option.MoveFieldOption;
 import controller.option.SelectPathFieldOption;
@@ -16,6 +17,7 @@ import root.command.CommandProcessor;
 import root.command.CommandProducer;
 import root.command.CommandQueue;
 import root.communication.GameServerProxy;
+import root.controller.CommandStack;
 import root.controller.Controller;
 import root.model.Model;
 import root.model.component.Field;
@@ -28,8 +30,9 @@ import root.view.event.ViewEventHandler;
 import root.view.menu.Menu;
 import view.command.ClearTopLayerCommand;
 import view.command.PopulateMenuCommand;
-import view.command.SelectFieldCommand;
+import view.command.ComplexSelectFieldCommand;
 import view.command.ShowFieldInfoCommand;
+import view.command.SelectFieldCommand;
 import view.command.ZoomInCommand;
 import view.command.ZoomOutCommand;
 
@@ -45,11 +48,14 @@ public class GameBrain implements Controller {
 
 	private Model model;
 
-	// selected is the highlighted one
+	// selected item is the highlighted one
+	// focused item is the right-clicked one
+
 	private Field selectedField;
-	// focused is clicked one
 	private Field focusedField;
-	private List<Command> undoStack;
+
+	private UndoStack undoStack;
+	// private List<Command> undoStack;
 
 	private List<FieldOption> fieldOptions;
 
@@ -61,12 +67,11 @@ public class GameBrain implements Controller {
 		this.model = model;
 		this.serverProxy = server_proxy;
 
-		this.undoStack = new ArrayList<Command>();
+		// this.undoStack = new ArrayList<Command>();
+		this.undoStack = new UndoStack();
 
 		// attention let's say that every controller implementations has its own
 		// ModelEventHandler (maybe this isn't the best approach)
-
-		// this.model.setEventHandler(new DefaultModelEventHandler(this));
 		this.model.setEventHandler((ModelEventHandler) this);
 
 		this.initFieldOptions();
@@ -90,30 +95,49 @@ public class GameBrain implements Controller {
 	// methods
 
 	private void initViewEventHandlers() {
-
 		this.view.addEventHandler("left-mouse-click-event", new ViewEventHandler() {
 
 			public void execute(ViewEventArg arg) {
 
-				Field focused_field = model.getField(arg.getFieldPosition());
-				if (focused_field != null) {
+				Field clickedField = model.getField(arg.getFieldPosition());
+				if (clickedField != null) {
 
 					// undo all previous commands
-					if (!undoStack.isEmpty()) {
-						for (int i = (undoStack.size() - 1); i >= 0; i--) {
-							viewCommandQueue.enqueue(undoStack.get(i).getAntiCommand());
-						}
+					Command doneCommand = null;
+					while ((doneCommand = undoStack.pop()) != null) {
+						var antiCommand = doneCommand.getAntiCommand();
+						viewCommandQueue.enqueue(antiCommand);
 					}
-					undoStack.clear();
 
 					// execute new command
-					Command select_command = new SelectFieldCommand(focused_field);
-					viewCommandQueue.enqueue(select_command);
+					var selectField = new SelectFieldCommand(clickedField);
 
-					undoStack.add(select_command);
+					viewCommandQueue.enqueue(selectField);
+					undoStack.push(selectField);
 
-					selectedField = focused_field;
-					focusedField = null;// note focusedField != focused_field
+					if (clickedField.getUnit() != null
+							&& clickedField.getUnit().getMoveType() != null
+							&& clickedField.getUnit().getMoveType().getPath() != null) {
+
+						for (Field pathField : clickedField
+								.getUnit()
+								.getMoveType()
+								.getPath()) {
+
+							var pathSelect = new SelectFieldCommand(pathField);
+
+							viewCommandQueue.enqueue(pathSelect);
+							undoStack.push(pathSelect);
+						}
+
+					}
+
+					// remove
+					// var selectCommand = new ComplexSelectFieldCommand(clickedField);
+					// viewCommandQueue.enqueue(selectCommand);
+
+					selectedField = clickedField;
+					focusedField = null;
 
 				}
 
@@ -142,7 +166,7 @@ public class GameBrain implements Controller {
 					viewCommandQueue.enqueue(clearCommand);
 					viewCommandQueue.enqueue(showMenuCommand);
 
-					undoStack.add(showMenuCommand);
+					undoStack.push(showMenuCommand);
 
 				}
 
@@ -161,7 +185,7 @@ public class GameBrain implements Controller {
 				ZoomInCommand command = new ZoomInCommand(model.getFields());
 				viewCommandQueue.enqueue(command);
 
-				// this wont be valid in situation when attacak and build commands get
+				// this wont be valid in situation when attack and build commands get
 				// implemented
 				// // reset old state
 				// for (Command prev_command : toUndo) {
@@ -178,7 +202,7 @@ public class GameBrain implements Controller {
 				ZoomOutCommand command = new ZoomOutCommand(model.getFields());
 				viewCommandQueue.enqueue(command);
 
-				// this wont be valid in sitation when attack and build command get implemented
+				// this wont be valid in situation when attack and build command get implemented
 				// // reset old state
 				// for (Command prev_command : toUndo) {
 				// viewCommandQueue.enqueue(prev_command);
@@ -239,8 +263,8 @@ public class GameBrain implements Controller {
 	}
 
 	@Override
-	public void handleModelEvent(ModelEventArg event_argument) {
-		this.serverProxy.sendIntention(event_argument);
+	public void handleModelEvent(ModelEventArg eventArg) {
+		this.serverProxy.sendIntention(eventArg);
 	}
 
 	@Override
@@ -249,8 +273,8 @@ public class GameBrain implements Controller {
 	}
 
 	@Override
-	public void setServerProxy(root.communication.GameServerProxy new_proxy) {
-		this.serverProxy = new_proxy;
+	public void setServerProxy(GameServerProxy newProxy) {
+		this.serverProxy = newProxy;
 	}
 
 	@Override
@@ -285,7 +309,7 @@ public class GameBrain implements Controller {
 
 	@Override
 	public void enqueueForUndone(Command new_command) {
-		this.undoStack.add(new_command);
+		this.undoStack.push(new_command);
 	}
 
 	@Override
@@ -297,7 +321,20 @@ public class GameBrain implements Controller {
 	public void selectField(Field fieldToSelect) {
 
 		this.selectedField = fieldToSelect;
-		viewCommandQueue.enqueue(new SelectFieldCommand(this.selectedField));
+		var fieldSelect = new SelectFieldCommand(this.selectedField);
+		this.viewCommandQueue.enqueue(fieldSelect);
+		if (this.selectedField.getUnit() != null
+				&& this.selectedField.getUnit().getMoveType() != null
+				&& this.selectedField.getUnit().getMoveType().getPath() != null) {
+			for (Field pathField : this.selectedField
+					.getUnit()
+					.getMoveType()
+					.getPath()) {
+				var selectPathField = new SelectFieldCommand(pathField);
+
+				viewCommandQueue.enqueue(selectPathField);
+			}
+		}
 
 		Menu fieldMenu = view.getOptionMenu();
 		if (fieldMenu.isDisplayed()) {
@@ -305,6 +342,11 @@ public class GameBrain implements Controller {
 			viewCommandQueue.enqueue(new PopulateMenuCommand(selectedField.getEnabledOptions()));
 		}
 
+	}
+
+	@Override
+	public CommandStack getUndoStack() {
+		return this.undoStack;
 	}
 
 }

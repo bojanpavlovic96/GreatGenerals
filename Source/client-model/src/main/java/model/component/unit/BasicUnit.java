@@ -7,7 +7,7 @@ import root.model.event.ModelEventHandler;
 
 public class BasicUnit implements Unit {
 
-	private Field my_field;
+	private Field myField;
 
 	private final String unit_name = "basic-unit";
 
@@ -17,7 +17,7 @@ public class BasicUnit implements Unit {
 
 	private MoveType movementType;
 	// attention air and ground attack could be the same thing with different range
-	private UnitAttack air_attack;
+	private UnitAttack airAttack;
 	private UnitAttack groundAttack;
 
 	private ModelEventHandler eventHandler;
@@ -29,14 +29,13 @@ public class BasicUnit implements Unit {
 		// protected is better solution than public
 	}
 
-	public BasicUnit(MoveType move_ctrl,
-			UnitAttack air_attack_ctrl,
-			UnitAttack ground_attack_ctrl) {
+	public BasicUnit(MoveType moveCtrl,
+			UnitAttack airAttachCtrl,
+			UnitAttack groundAttackCtrl) {
 
-		this.movementType = move_ctrl;
-		this.air_attack = air_attack_ctrl;
-		this.groundAttack = ground_attack_ctrl;
-
+		this.movementType = moveCtrl;
+		this.airAttack = airAttachCtrl;
+		this.groundAttack = groundAttackCtrl;
 	}
 
 	public String getUnitId() {
@@ -56,7 +55,7 @@ public class BasicUnit implements Unit {
 	}
 
 	public boolean haveAirAttack() {
-		return this.air_attack != null;
+		return this.airAttack != null;
 	}
 
 	public boolean haveGroundAttack() {
@@ -77,16 +76,16 @@ public class BasicUnit implements Unit {
 		return clone;
 	}
 
-	public void relocateTo(Field next_field) {
+	public void relocateTo(Field nextField) {
 
 		// remove from current field
-		this.my_field.setUnit(null);
+		this.myField.setUnit(null);
 		// set on next field
-		next_field.setUnit(this);
+		nextField.setUnit(this);
 
 		// update units reference to field
 		// and also movement type reference
-		this.setField(next_field);
+		this.setField(nextField);
 
 	}
 
@@ -102,15 +101,15 @@ public class BasicUnit implements Unit {
 	}
 
 	public Field getField() {
-		return this.my_field;
+		return this.myField;
 	}
 
-	public void setField(Field field) {
+	public void setField(Field newField) {
 
-		this.my_field = field;
+		this.myField = newField;
 
 		if (this.canMove()) {
-			this.movementType.setField(field);
+			this.movementType.setField(newField);
 		}
 
 		// TODO do the same thing for attack

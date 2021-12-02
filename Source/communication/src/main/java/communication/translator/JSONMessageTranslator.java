@@ -14,12 +14,13 @@ import root.model.event.ModelEventArg;
 
 public class JSONMessageTranslator implements MessageTranslator {
 
-	private Map<String, MessageTranslator> message_translators;
+	private Map<String, MessageTranslator> messageTranslator;
 
 	// constructors
 
 	// TODO this class should be implemented as simple jsonSerialization
-	// using jckson i guess ...
+	//
+	// yes ... com.google.guava should replace this class
 	public JSONMessageTranslator() {
 		super();
 
@@ -32,9 +33,9 @@ public class JSONMessageTranslator implements MessageTranslator {
 
 		// map all events to appropriate event translators
 
-		this.message_translators = new HashMap<String, MessageTranslator>();
+		this.messageTranslator = new HashMap<String, MessageTranslator>();
 
-		this.message_translators.put("move-model-event", new MessageTranslator() {
+		this.messageTranslator.put("move-model-event", new MessageTranslator() {
 
 			@Override
 			public byte[] toByte(ModelEventArg model_action) {
@@ -59,13 +60,13 @@ public class JSONMessageTranslator implements MessageTranslator {
 
 				JSONObject json = new JSONObject(new String(source));
 
-				Point2D first_postition = new Point2D(json.getDouble("source_field_x"),
+				Point2D firstPosition = new Point2D(json.getDouble("source_field_x"),
 						json.getDouble("source_field_y"));
 
-				Point2D second_position = new Point2D(json.getDouble("destination_field_x"),
+				Point2D secondPosition = new Point2D(json.getDouble("destination_field_x"),
 						json.getDouble("destination_field_y"));
 
-				return new CtrlMoveCommand(first_postition, second_position);
+				return new CtrlMoveCommand(firstPosition, secondPosition);
 
 			}
 
@@ -81,13 +82,13 @@ public class JSONMessageTranslator implements MessageTranslator {
 
 		JSONObject json = new JSONObject(new String(source));
 
-		return this.message_translators.get(json.get("event_name")).toCommand(source);
+		return this.messageTranslator.get(json.get("event_name")).toCommand(source);
 	}
 
 	@Override
-	public byte[] toByte(ModelEventArg model_event) {
+	public byte[] toByte(ModelEventArg modelEvent) {
 
-		return this.message_translators.get(model_event.getEventName()).toByte(model_event);
+		return this.messageTranslator.get(modelEvent.getEventName()).toByte(modelEvent);
 
 	}
 
