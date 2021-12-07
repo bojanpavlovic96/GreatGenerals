@@ -1,0 +1,4 @@
+- updated field options to use selected field from controller and not the one passed to them on right click
+- created timer class by encapsulating ScheduledThreadPoolExecutor inside Timer class
+
+

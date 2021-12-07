@@ -9,7 +9,7 @@ public abstract class FieldOption implements Runnable {
 
 	protected Controller controller;
 
-	protected Field primaryField;
+	// protected Field primaryField;
 	protected Field secondaryField;
 
 	protected boolean enabled;
@@ -21,7 +21,7 @@ public abstract class FieldOption implements Runnable {
 
 		this.name = optionName;
 		this.controller = gameController;
-		this.primaryField = null;
+		// this.primaryField = null;
 
 		this.enabled = false;
 	}
@@ -30,12 +30,12 @@ public abstract class FieldOption implements Runnable {
 			boolean enabled,
 			Controller controller,
 			Field primaryField) {
-				
+
 		this(optionName, controller);
 
 		this.enabled = enabled;
 		this.controller = controller;
-		this.primaryField = primaryField;
+		// this.primaryField = primaryField;
 	}
 
 	// methods
@@ -45,12 +45,16 @@ public abstract class FieldOption implements Runnable {
 	}
 
 	public Field getPrimaryField() {
-		return this.primaryField;
+		if (this.controller == null) {
+			return null;
+		}
+
+		return this.controller.getSelectedField();
 	}
 
-	public void setPrimaryField(Field field) {
-		this.primaryField = field;
-	}
+	// public void setPrimaryField(Field field) {
+	// this.primaryField = field;
+	// }
 
 	public Field getSecondaryField() {
 		return this.secondaryField;

@@ -12,7 +12,7 @@ public abstract class MoveType implements Cloneable, Runnable {
 	protected ScheduledExecutorService timer;
 
 	protected Field myField;
-	protected Field destination_field;
+	protected Field destinationField;
 
 	protected PathFinder pathFinder;
 	protected List<Field> path;
@@ -81,7 +81,7 @@ public abstract class MoveType implements Cloneable, Runnable {
 
 	public List<Field> calculatePath(Field targetField) {
 
-		this.destination_field = targetField;
+		this.destinationField = targetField;
 		this.path = this.pathFinder.findPath(this.myField, targetField);
 
 		return this.path;

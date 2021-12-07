@@ -26,7 +26,12 @@ public class ClearPathFieldOption extends FieldOption {
 	@Override
 	public void run() {
 
-		List<Field> path = this.primaryField.getUnit().getMoveType().getPath();
+		var primaryField = this.getPrimaryField();
+		if (primaryField == null) {
+			return;
+		}
+
+		List<Field> path = primaryField.getUnit().getMoveType().getPath();
 
 		if (path != null && !path.isEmpty()) {
 

@@ -1,6 +1,7 @@
 package controller.command;
 
 import java.util.List;
+import java.util.function.Function;
 
 import javafx.geometry.Point2D;
 import root.command.Command;
@@ -43,15 +44,6 @@ public class CtrlMoveCommand extends Command {
 
 		this.startField.getUnit().relocateTo(this.secondField);
 
-		/**
-		 * unselect firstField redraw secondField
-		 * 
-		 * if this.field is selected select secondField // path is still selected remove
-		 * selectFirstField from undoStack else if has unit and unit has path if
-		 * firstField on that path select first field
-		 * 
-		 */
-
 		var unselectFirst = new UnselectFieldCommand(this.startField);
 		var redrawSecond = new DrawFieldCommand(this.secondField);
 
@@ -59,62 +51,33 @@ public class CtrlMoveCommand extends Command {
 		viewCommandQueue.enqueue(redrawSecond);
 
 		if (this.startField == controller.getSelectedField()) {
+			
 			var selectSecond = new SelectFieldCommand(this.secondField);
 			viewCommandQueue.enqueue(selectSecond);
 
-			// remove selectFirstField from undoStack
 			var undoStack = controller.getUndoStack();
-			int index = 0;
-			Command targetCommand = null;
-			var firstPosition = this.startField.getStoragePosition();
-			while ((targetCommand = undoStack.get(index)) != null) {
-				if (targetCommand.getName() == SelectFieldCommand.commandName) {
-					var selCommand = (SelectFieldCommand) targetCommand;
-					var selPosition = selCommand.getField().getStoragePosition();
+			undoStack.removeFirstMatch(this.getCommanddMatchLambda(this.startField));
 
-					if (selPosition.getX() == firstPosition.getX()
-							&& selPosition.getY() == firstPosition.getY()) {
-
-						undoStack.remove(index);
-						break; // break while loop
-					}
-
-				}
-				index++;
-			}
+			controller.setSelectedField(secondField);
 
 		} else {
 			// if startField is on currently selected field's path select startField
 			var selField = controller.getSelectedField();
 			if (selField.getUnit() != null
-					&& selField.getUnit().getMoveType() != null
-					&& selField.getUnit().getMoveType().isOnPath(this.startField)) {
+					&& selField.getUnit().getMoveType() != null) {
 
-				var selFirst = new SelectFieldCommand(this.startField);
-				viewCommandQueue.enqueue(selFirst);
+				if (selField.getUnit().getMoveType().isOnPath(this.startField)) {
+					var selFirst = new SelectFieldCommand(this.startField);
+					viewCommandQueue.enqueue(selFirst);
+				}
+
+				if (selField.getUnit().getMoveType().isOnPath(this.secondField)) {
+					var selSecond = new SelectFieldCommand(this.secondField);
+					viewCommandQueue.enqueue(selSecond);
+				}
+
 			}
 		}
-
-		// viewCommandQueue.enqueue(new ComplexUnselectFieldCommand(this.startField));
-
-		// // draw second field with the unit on it
-		// viewCommandQueue.enqueue(new ClearFieldCommand(this.secondField));
-		// viewCommandQueue.enqueue(new DrawFieldCommand(this.secondField));
-
-		// if (this.startField == controller.getSelectedField()) {
-
-		// viewCommandQueue.enqueue(new ComplexUnselectFieldCommand(this.secondField));
-		// controller.selectField(secondField);
-
-		// // viewCommandQueue.enqueue(new SelectFieldCommand(this.secondField));
-
-		// // viewCommandQueue.enqueue(new ClearFieldCommand(this.startField));
-		// // viewCommandQueue.enqueue(new DrawFieldCommand(this.startField));
-
-		// // viewCommandQueue.enqueue(new ClearFieldCommand(this.secondField));
-		// // viewCommandQueue.enqueue(new DrawFieldCommand(this.secondField));
-
-		// }
 
 		List<Field> unitPath = this.secondField.getUnit().getMoveType().getPath();
 
@@ -129,10 +92,28 @@ public class CtrlMoveCommand extends Command {
 		}
 
 		return;
-		// if (this.startField == controller.getSelectedField()) {
-		// controller.selectField(secondField);
-		// }
 
+	}
+
+	private Function<Command, Boolean> getCommanddMatchLambda(Field targetField) {
+		var targetPosition = targetField.getStoragePosition();
+
+		return (Command currentCommand) -> {
+
+			if (currentCommand.getName().equals(SelectFieldCommand.commandName)) {
+				var currentPos = ((SelectFieldCommand) currentCommand)
+						.getField()
+						.getStoragePosition();
+
+				if (currentPos.getX() == targetPosition.getX()
+						&& currentPos.getY() == targetPosition.getY()) {
+
+					return true;
+				}
+			}
+
+			return false;
+		};
 	}
 
 	public Point2D getSecondPosition() {

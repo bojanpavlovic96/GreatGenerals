@@ -2,14 +2,12 @@ package controller.option;
 
 import java.util.List;
 
-import root.command.Command;
 import root.controller.Controller;
 import root.model.action.move.MoveType;
 import root.model.action.move.PathFinder;
 import root.model.component.Field;
 import root.model.component.option.FieldOption;
 import view.command.ClearTopLayerCommand;
-import view.command.ComplexSelectFieldCommand;
 import view.command.SelectFieldCommand;
 
 public class AddToPathFieldOption extends FieldOption {
@@ -29,7 +27,12 @@ public class AddToPathFieldOption extends FieldOption {
 	@Override
 	public void run() {
 
-		MoveType moveType = this.primaryField.getUnit().getMoveType();
+		var primaryField = this.getPrimaryField();
+		if (primaryField == null) {
+			return;
+		}
+
+		MoveType moveType = primaryField.getUnit().getMoveType();
 		List<Field> oldPath = moveType.getPath();
 
 		List<Field> pathToAdd = null;

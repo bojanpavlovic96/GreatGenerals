@@ -8,7 +8,7 @@ import controller.command.UndoStack;
 import controller.option.AddToPathFieldOption;
 import controller.option.MoveFieldOption;
 import controller.option.SelectPathFieldOption;
-
+import controller.option.StopMovingFieldOption;
 import root.ActiveComponent;
 import root.command.BasicCommandProcessor;
 import root.command.Command;
@@ -30,7 +30,6 @@ import root.view.event.ViewEventHandler;
 import root.view.menu.Menu;
 import view.command.ClearTopLayerCommand;
 import view.command.PopulateMenuCommand;
-import view.command.ComplexSelectFieldCommand;
 import view.command.ShowFieldInfoCommand;
 import view.command.SelectFieldCommand;
 import view.command.ZoomInCommand;
@@ -109,7 +108,6 @@ public class GameBrain implements Controller {
 						viewCommandQueue.enqueue(antiCommand);
 					}
 
-					// execute new command
 					var selectField = new SelectFieldCommand(clickedField);
 
 					viewCommandQueue.enqueue(selectField);
@@ -124,10 +122,10 @@ public class GameBrain implements Controller {
 								.getMoveType()
 								.getPath()) {
 
-							var pathSelect = new SelectFieldCommand(pathField);
+							var selectPathField = new SelectFieldCommand(pathField);
 
-							viewCommandQueue.enqueue(pathSelect);
-							undoStack.push(pathSelect);
+							viewCommandQueue.enqueue(selectPathField);
+							undoStack.push(selectPathField);
 						}
 
 					}
@@ -220,6 +218,7 @@ public class GameBrain implements Controller {
 		this.fieldOptions.add(new SelectPathFieldOption(this));
 		this.fieldOptions.add(new MoveFieldOption(this));
 		this.fieldOptions.add(new AddToPathFieldOption(this));
+		this.fieldOptions.add(new StopMovingFieldOption(this));
 
 	}
 
@@ -318,11 +317,18 @@ public class GameBrain implements Controller {
 	}
 
 	@Override
+	public void setSelectedField(Field newField) {
+		this.selectedField = newField;
+	}
+
+	@Override
 	public void selectField(Field fieldToSelect) {
 
 		this.selectedField = fieldToSelect;
-		var fieldSelect = new SelectFieldCommand(this.selectedField);
-		this.viewCommandQueue.enqueue(fieldSelect);
+
+		var selectField = new SelectFieldCommand(this.selectedField);
+		this.viewCommandQueue.enqueue(selectField);
+
 		if (this.selectedField.getUnit() != null
 				&& this.selectedField.getUnit().getMoveType() != null
 				&& this.selectedField.getUnit().getMoveType().getPath() != null) {
@@ -333,9 +339,11 @@ public class GameBrain implements Controller {
 				var selectPathField = new SelectFieldCommand(pathField);
 
 				viewCommandQueue.enqueue(selectPathField);
+				this.undoStack.equals(selectPathField);
 			}
 		}
 
+		// TODO feel like this is useless
 		Menu fieldMenu = view.getOptionMenu();
 		if (fieldMenu.isDisplayed()) {
 			selectedField.adjustOptionsFor(focusedField);
@@ -346,6 +354,8 @@ public class GameBrain implements Controller {
 
 	@Override
 	public CommandStack getUndoStack() {
+		// debug
+		System.out.println("STACK SIZE: "+((UndoStack)this.undoStack).getSize() );
 		return this.undoStack;
 	}
 

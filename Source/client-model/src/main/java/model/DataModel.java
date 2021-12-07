@@ -8,8 +8,6 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledThreadPoolExecutor;
 
-import javax.rmi.ssl.SslRMIClientSocketFactory;
-
 import javafx.geometry.Point2D;
 import model.component.unit.BasicMove;
 import model.component.unit.BasicUnit;

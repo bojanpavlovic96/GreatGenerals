@@ -145,9 +145,9 @@ public class RabbitGameServerProxy implements GameServerProxy {
 
 		byte[] message = this.translator.toByte(action);
 
-		Command received_command = this.translator.toCommand(message);
+		Command rcvCommand = this.translator.toCommand(message);
 
-		this.commandQueue.enqueue(received_command);
+		this.commandQueue.enqueue(rcvCommand);
 
 		// TODO somehow send it through channel
 

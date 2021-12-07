@@ -10,20 +10,21 @@ import root.view.View;
 import root.view.field.ViewField;
 import root.view.menu.Menu;
 
+// TODO rename this to showFieldMenuCommand
 public class ShowFieldInfoCommand extends Command {
+
+	public static final String commandName = "display-field-info-view-command";
 
 	public static double INFO_WIDTH = 400;
 	public static double INFO_HEIGHT = 200;
 
 	private Field selectedField;
-	// private ViewField viewField; // unused ? remove ?
 
 	private Field targetField;
 	private ViewField viewTarget;
 
 	public ShowFieldInfoCommand(Field selected_field, Field target_field) {
-		super("display-field-info-view-command");
-		// attention this is not the most appropriate name
+		super(ShowFieldInfoCommand.commandName);
 
 		this.selectedField = selected_field;
 		this.targetField = target_field;

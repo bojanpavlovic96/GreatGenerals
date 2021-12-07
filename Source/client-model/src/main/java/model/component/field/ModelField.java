@@ -126,9 +126,9 @@ public class ModelField implements Field {
 		}
 	}
 
+	// TODO implement
 	// e.g. disable building options if terrain on this field is mountain or
 	// something similar
-	// implement
 	private void selfOptionAdjust() {
 
 	}
@@ -149,7 +149,7 @@ public class ModelField implements Field {
 			this.options = new ArrayList<FieldOption>();
 		}
 
-		newOption.setPrimaryField(this);
+		// newOption.setPrimaryField(this);
 		this.options.add(newOption);
 
 		this.selfOptionAdjust();

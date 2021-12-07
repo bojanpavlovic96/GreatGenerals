@@ -3,6 +3,7 @@ package controller.option;
 import root.controller.Controller;
 import root.model.component.Field;
 import root.model.component.option.FieldOption;
+import view.command.ClearTopLayerCommand;
 
 public class StopMovingFieldOption extends FieldOption {
 
@@ -14,7 +15,20 @@ public class StopMovingFieldOption extends FieldOption {
 
 	@Override
 	public void run() {
-		
+
+		var primaryField = this.getPrimaryField();
+		if (primaryField == null) {
+			return;
+		}
+
+		if (primaryField.getUnit() != null &&
+				primaryField.getUnit().getMoveType() != null &&
+				primaryField.getUnit().getMoveType().isMoving()) {
+
+			primaryField.getUnit().getMoveType().stopMoving();
+		}
+
+		super.controller.getConsumerQueue().enqueue(new ClearTopLayerCommand());
 	}
 
 	@Override

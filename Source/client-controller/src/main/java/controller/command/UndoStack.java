@@ -2,6 +2,7 @@ package controller.command;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Function;
 
 import root.command.Command;
 import root.controller.CommandStack;
@@ -50,4 +51,28 @@ public class UndoStack implements CommandStack {
 	public boolean isEmpty() {
 		return (this.stack.size() == 0);
 	}
+
+	@Override
+	public boolean removeFirstMatch(Function<Command, Boolean> matchMethod) {
+
+		int index = 0;
+
+		Command currentCommand = null;
+		while ((currentCommand = this.get(index)) != null) {
+			if (matchMethod.apply(currentCommand)) {
+
+				this.remove(index);
+
+				return true;
+			}
+			index++;
+		}
+
+		return false;
+	}
+
+	public int getSize(){
+		return this.stack.size();
+	}
+
 }

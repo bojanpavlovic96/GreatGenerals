@@ -20,7 +20,7 @@ public class JSONMessageTranslator implements MessageTranslator {
 
 	// TODO this class should be implemented as simple jsonSerialization
 	//
-	// yes ... com.google.guava should replace this class
+	// yes ... com.google.guava or jackson should replace this class
 	public JSONMessageTranslator() {
 		super();
 
@@ -38,19 +38,19 @@ public class JSONMessageTranslator implements MessageTranslator {
 		this.messageTranslator.put("move-model-event", new MessageTranslator() {
 
 			@Override
-			public byte[] toByte(ModelEventArg model_action) {
+			public byte[] toByte(ModelEventArg modelAction) {
 
-				MoveModelEventArg move_event = (MoveModelEventArg) model_action;
+				MoveModelEventArg moveEvent = (MoveModelEventArg) modelAction;
 
 				JSONObject json = new JSONObject();
 
-				json.put("event_name", move_event.getEventName());
-				json.put("player_name", move_event.getPlayerName());
+				json.put("event_name", moveEvent.getEventName());
+				json.put("player_name", moveEvent.getPlayerName());
 
-				json.put("source_field_x", move_event.getSourceField().getX());
-				json.put("source_field_y", move_event.getSourceField().getY());
-				json.put("destination_field_x", move_event.getDestinationField().getX());
-				json.put("destination_field_y", move_event.getDestinationField().getY());
+				json.put("source_field_x", moveEvent.getSourceField().getX());
+				json.put("source_field_y", moveEvent.getSourceField().getY());
+				json.put("destination_field_x", moveEvent.getDestinationField().getX());
+				json.put("destination_field_y", moveEvent.getDestinationField().getY());
 
 				return json.toString().getBytes();
 			}

@@ -36,6 +36,8 @@ public interface Controller extends ModelEventHandler,
 
 	Field getSelectedField();
 
+	void setSelectedField(Field newField);
+
 	void selectField(Field fieldToSelect);
 
 }

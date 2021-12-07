@@ -10,32 +10,18 @@ import root.model.component.Field;
 
 public class BasicMove extends MoveType {
 
-	public BasicMove(Field my_field,
-			PathFinder path_finder,
-			ScheduledExecutorService executor) {
+	public BasicMove(Field myField,
+			PathFinder pathFinder,
+			ScheduledExecutorService timer) {
 
-		super(my_field, path_finder, executor);
+		super(myField, pathFinder, timer);
 
-		this.moveDelay = this.calculate_delay();
-
-	}
-
-	protected int calculate_delay() {
-
-		// TODO move_delay is hardcoded
-		super.moveDelay = 2000;
-		return super.moveDelay;
+		this.moveDelay = this.calculateDelay();
 
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see root.model.action.move.MoveType#move()
-	 * 
-	 * this implementation only starts timer for move. timer just raise
-	 * MoveModelEvent
-	 */
+	// this implementation only starts timer for move. timer just raise
+	// MoveModelEvent
 	@Override
 	public void move() {
 
@@ -47,17 +33,19 @@ public class BasicMove extends MoveType {
 					"->: "
 					+ this.path.get(0).getStoragePosition());
 
-			Field next_field = path.get(0);
+			Field nextField = path.get(0);
 
-			if (next_field.getUnit() != null) {
+			if (nextField.getUnit() != null) {
 				// debug
 				System.out.println("Recalculating path ...");
-				this.path = this.pathFinder.findPath(this.myField, this.destination_field);
+				this.path = this.pathFinder.findPath(
+						this.myField,
+						this.destinationField);
 			}
 
 			super.moving = true;
 
-			this.calculate_delay();
+			this.calculateDelay();
 			this.timer.schedule(this, this.moveDelay, TimeUnit.MILLISECONDS);
 			// this will just raise event (at every move_delay second)
 			// that unit is ready to move
@@ -79,7 +67,7 @@ public class BasicMove extends MoveType {
 	// implement calculate delay based on current terrain
 	@Override
 	public int calculateDelay() {
-		return 1000;
+		return 2500;
 	}
 
 	@Override
@@ -93,8 +81,7 @@ public class BasicMove extends MoveType {
 
 	@Override
 	public void stopMoving() {
-		System.out.println("ERROR stop moving not implemented ... ");
-
+		
 	}
 
 }

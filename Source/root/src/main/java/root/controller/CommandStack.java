@@ -1,5 +1,7 @@
 package root.controller;
 
+import java.util.function.Function;
+
 import root.command.Command;
 
 public interface CommandStack {
@@ -13,5 +15,7 @@ public interface CommandStack {
 	Command remove(int ind);
 
 	boolean isEmpty();
+
+	boolean removeFirstMatch(Function<Command, Boolean> matchMethod);
 
 }

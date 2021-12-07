@@ -8,10 +8,8 @@ import root.model.component.Field;
 import root.model.component.option.FieldOption;
 import view.command.ClearFieldCommand;
 import view.command.ClearTopLayerCommand;
-import view.command.DrawFieldCommand;
 import view.command.SelectFieldCommand;
 import view.command.UnselectFieldCommand;
-import view.command.ComplexSelectFieldCommand;
 
 public class SelectPathFieldOption extends FieldOption {
 
@@ -29,7 +27,12 @@ public class SelectPathFieldOption extends FieldOption {
 	@Override
 	public void run() {
 
-		List<Field> unitPath = this.primaryField.getUnit().getMoveType().getPath();
+		var primaryField = this.getPrimaryField();
+		if (primaryField == null) {
+			return;
+		}
+
+		List<Field> unitPath = primaryField.getUnit().getMoveType().getPath();
 		if (unitPath != null && unitPath.size() > 0) {
 
 			for (Field pathField : unitPath) {

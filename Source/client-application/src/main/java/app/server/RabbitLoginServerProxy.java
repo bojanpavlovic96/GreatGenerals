@@ -54,7 +54,7 @@ public class RabbitLoginServerProxy
 
 				ObjectMapper mapper = new ObjectMapper();
 				String strRequest = mapper.writeValueAsString(request);
-
+				
 				channel.basicPublish(
 						queuesConfig.loginExchange,
 						queuesConfig.loginRoutingKey,
