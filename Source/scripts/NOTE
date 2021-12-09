@@ -1,23 +1,73 @@
 Scrips from this dir can still be used for clean, compile, build and run
 but in the future they may (probably) WON'T be updated.
 
-To build:
+
+> TO BUILD:
 cd to .../GreatGenerals/Source/
 mvn clean install
 
-To compile:
+
+> TO COMPILE: 
 cd to .../GreatGenerals/Source/
 mvn compile
+// not that usefull, in order to run the whole application every project
+// has to be build/packaged in jar (done with 'mvn install' or 'mvn package') 
+// so that other projects can use it as dependency
 
-To run:
+
+> TO RUN:
 build projects with above command
 
 For java 11+
 cd to .../GreatGenerals/Source/client-application
 mvn javafx:run
+    or 
+mvn exec:java
 
 for java 11-
 cd to .../GreatGenerals/Source/client-application
 java -cp ./target/client-application-0.0.1-SNAPSHOT-jar-with-dependencies.jar app.launcher.Launcher
 
+
+> TO DEBUG (in visualStudioCode):
+cd to .../GreatGenerals/Sourece/client-application
+mvnDebug exec:java -Djavafx.run.jvmArguments=-agentlib:jdwp=transport=dt_socket,server=y,suspend=y,address=8000
+
+make sure that port 8000 is not in use if it is in use just pick some other
+but don't forget to update launch.json as well 
+
+in 'launch.json' add next config
+{
+
+    "type": "java",
+    "name": "attach to mvnDebug",
+    "request": "attach",
+    "hostName": "localhost",
+    "port": 8000
+}
+
+'launch.json' example:
+{
+	"version": "0.2.0",
+	"configurations": [
+		{
+			"type": "java",
+			"name": "Debug (Launch)-Launcher<client-application>",
+			"request": "launch",
+			"mainClass": "app.launcher.Launcher",
+			"projectName": "client-application"
+		},
+	    {
+
+			"type": "java",
+			"name": "attach to mvnDebug",
+			"request": "attach",
+			"hostName": "localhost",
+			"port": 8000
+		  }
+	]
+}
+
+in vsCode run > Debug: Select and Start Debugging
+select 'attach to mvnDebug'
 

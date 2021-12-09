@@ -27,7 +27,7 @@
 		{
 
 			"type": "java",
-			"name": "Debug (Attach)",
+			"name": "attach to mvnDebug",
 			"request": "attach",
 			"hostName": "localhost",
 			"port": 8000

@@ -94,7 +94,7 @@ public class GameBrain implements Controller {
 	// methods
 
 	private void initViewEventHandlers() {
-		
+
 		this.view.addEventHandler("left-mouse-click-event", new ViewEventHandler() {
 
 			public void execute(ViewEventArg arg) {
