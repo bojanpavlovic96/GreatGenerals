@@ -51,7 +51,7 @@ public class CtrlMoveCommand extends Command {
 		viewCommandQueue.enqueue(redrawSecond);
 
 		if (this.startField == controller.getSelectedField()) {
-			
+
 			var selectSecond = new SelectFieldCommand(this.secondField);
 			viewCommandQueue.enqueue(selectSecond);
 

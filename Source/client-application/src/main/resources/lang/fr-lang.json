@@ -1,28 +1,28 @@
 {
 	"langIconPath": "/lang/icon/en-icon.png",
-	"title": "Great generals",
-	"username": "Username",
-	"password": "Password",
-	"login": "Login",
-	"register": "Register",
-	"logout": "Logout",
-	"roomName": "Room name",
-	"roomPassword": "Room password",
-	"createRoom": "Create room",
-	"joinRoom": "Join room",
-	"startGame": "Start game",
-	"playersInRoom": "Players in room",
-	"bottomText": "version 0.2 ",
+	"title": "FR Great generals",
+	"username": "FR Username",
+	"password": "FR Password",
+	"login": "FR Login",
+	"register": "FR Register",
+	"logout": "FR Logout",
+	"roomName": "FR Room name",
+	"roomPassword": "FR Room password",
+	"createRoom": "FR Create room",
+	"joinRoom": "FR Join room",
+	"startGame": "FR Start game",
+	"playersInRoom": "FR Players in room",
+	"bottomText": "FR version 0.2 ",
 	"waitingForServer": {
-		"message": "Waiting for server",
+		"message": "FR Waiting for server",
 		"color": "#ffcc66"
 	},
 	"connectionEstablished": {
-		"message": "Connection established",
+		"message": "FR Connection established",
 		"color": "#2eb82e"
 	},
 	"serverUnreachable": {
-		"message": "Server unreachable ",
+		"message": "FR Server unreachable ",
 		"color": "#b30059"
 	},
 	"pleaseWaitForConnection": {

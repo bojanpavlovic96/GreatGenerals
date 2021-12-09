@@ -29,15 +29,13 @@ public interface Controller extends ModelEventHandler,
 
 	List<FieldOption> getPossibleFieldOptions();
 
-	// TODO replace this with getUndoneStack
-	void enqueueForUndone(Command newCommand);
-
 	CommandStack getUndoStack();
 
 	Field getSelectedField();
 
 	void setSelectedField(Field newField);
 
+	// TODO this is useless i think
 	void selectField(Field fieldToSelect);
 
 }

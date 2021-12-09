@@ -1,0 +1,14 @@
+{
+	"languages": [
+		"en",
+		"fr",
+		"gr"
+	],
+	"defaultLanguage": "en",
+	"headerImagePath": "/battle_draw.jpg",
+	"titleFontSize": 20,
+	"titleFont": "Tlwg Typewriter Bold",
+	"messageFontSize": 14,
+	"messageFont": "Tlwg Typewriter Bold Oblique",
+	"headerAlphaValue": 75
+}

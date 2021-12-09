@@ -1,5 +1,7 @@
 package app.form;
 
+import app.resource_manager.Language;
+import app.resource_manager.MainConfig;
 import app.resource_manager.StringResourceManager;
 import javafx.animation.PauseTransition;
 import javafx.application.Platform;
@@ -16,17 +18,6 @@ import javafx.util.Duration;
 
 public class HeaderForm extends VBox implements MessageDisplay, HasLabels {
 
-	// path relative to resources
-	// TODO load path from some configuration file (or something like that) somehow
-	private final String IMG_PATH = "/battle_draw.jpg";
-	private final int TITLE_FONT_SIZE = 20;
-	private final String TITLE_FONT_NAME = "Tlwg Typewriter Bold";
-
-	private final int MESSAGE_FONT_SIZE = 14;
-	private final String MESSAGE_FONT_NAME = "Tlwg Typewriter Bold Oblique";
-
-	private final String ALPHA_VALUE = "75";
-
 	// Noto Sans CJK TC Black
 	// Un Dotum Bold
 	// Tlwg Typewriter Bold Oblique
@@ -37,14 +28,14 @@ public class HeaderForm extends VBox implements MessageDisplay, HasLabels {
 	// Norasi Italic
 	// Un Pilgi
 
-	private StringResourceManager stringManager;
+	private Language language;
 
 	private Label statusMessage;
-	private String status_name;
+	private Language.MessageType statusName;
 
 	private Label infoMessage;
-	private String info_name;
-	private PauseTransition infoMessageTImer;
+	private Language.MessageType infoName;
+	private PauseTransition infoMessageTimer;
 
 	private double imageWidth;
 	private double imageHeight;
@@ -53,7 +44,7 @@ public class HeaderForm extends VBox implements MessageDisplay, HasLabels {
 	private Label title;
 
 	private Font titleFont;
-	private Font message_font;
+	private Font messageFont;
 
 	// methods
 
@@ -63,20 +54,20 @@ public class HeaderForm extends VBox implements MessageDisplay, HasLabels {
 		imageWidth = img_width;
 		imageHeight = img_height;
 
-		this.stringManager = StringResourceManager.getInstance();
+		this.language = StringResourceManager.getLanguage();
 
-		this.infoMessageTImer = new PauseTransition(Duration.seconds(2));
-		this.infoMessageTImer.setOnFinished(new EventHandler<ActionEvent>() {
+		this.infoMessageTimer = new PauseTransition(Duration.seconds(2));
+		this.infoMessageTimer.setOnFinished(new EventHandler<ActionEvent>() {
 
 			public void handle(ActionEvent event) {
 				infoMessage.setVisible(false);
-				info_name = null;
+				infoName = null;
 			}
 
 		});
-
-		this.titleFont = new Font(this.TITLE_FONT_NAME, this.TITLE_FONT_SIZE);
-		this.message_font = new Font(this.MESSAGE_FONT_NAME, this.MESSAGE_FONT_SIZE);
+		var config = MainConfig.getInstance();
+		this.titleFont = new Font(config.titleFont, config.titleFontSize);
+		this.messageFont = new Font(config.messageFont, config.messageFontSize);
 
 		this.initForm();
 	}
@@ -90,18 +81,17 @@ public class HeaderForm extends VBox implements MessageDisplay, HasLabels {
 		// up-right-down-left
 		this.setPadding(new Insets(5, 5, 5, 5));
 
-		FormMessage firstMessage = this.stringManager.getMessage("waiting-for-server");
+		this.statusMessage = new Label();
+		this.statusMessage.setFont(this.messageFont);
 
-		this.statusMessage = new Label(firstMessage.getMessage());
-		this.statusMessage.setStyle("-fx-background-color: "
-				+ firstMessage.getColor());
-		this.statusMessage.setFont(this.message_font);
+		this.showStatusMessage(Language.MessageType.WaitingForServer);
 
 		this.infoMessage = new Label();
-		this.infoMessage.setFont(this.message_font);
+		this.infoMessage.setFont(this.messageFont);
 
+		var imagePath = MainConfig.getInstance().headerImagePath;
 		this.image = new ImageView(
-				new Image(this.IMG_PATH,
+				new Image(imagePath,
 						this.imageWidth,
 						this.imageHeight,
 						false,
@@ -109,7 +99,7 @@ public class HeaderForm extends VBox implements MessageDisplay, HasLabels {
 		this.image.setFitWidth(this.imageWidth);
 		this.image.setFitHeight(this.imageHeight);
 
-		this.title = new Label(this.stringManager.getString("title"));
+		this.title = new Label(this.language.title);
 		this.title.setFont(this.titleFont);
 
 		this.getChildren().add(this.statusMessage);
@@ -121,6 +111,7 @@ public class HeaderForm extends VBox implements MessageDisplay, HasLabels {
 
 		VBox.setMargin(this.image, new Insets(5, 0, 0, 0));
 
+		StringResourceManager.subscribeForLanguageChange(this);
 	}
 
 	// MessageDisplay interface
@@ -133,62 +124,70 @@ public class HeaderForm extends VBox implements MessageDisplay, HasLabels {
 		return this.infoMessage.getText();
 	}
 
-	public void showStatusMessage(String status_message_name) {
+	public void showStatusMessage(Language.MessageType statMessage) {
 
-		this.status_name = status_message_name;
+		this.statusName = statMessage;
 
-		FormMessage message = this.stringManager.getMessage(status_message_name);
+		var messageObj = this.language.getMessage(statMessage);
 
 		Platform.runLater(() -> {
-			if (message != null) {
-				this.statusMessage.setText(message.getMessage());
-				this.statusMessage.setStyle("-fx-background-color: " + message.getColor() + this.ALPHA_VALUE);
+			if (messageObj != null) {
+				this.statusMessage.setText(messageObj.message);
+				this.statusMessage.setStyle("-fx-background-color: "
+						+ messageObj.color
+						+ MainConfig.getInstance().headerAlphaValue);
 			} else {
 				// just passed message with white background
-				this.statusMessage.setText(status_message_name);
-				this.statusMessage.setStyle("-fx-background-color: #111111" + this.ALPHA_VALUE + ";\n");
+				this.statusMessage.setText("unknown - " + this.statusName);
+				this.statusMessage.setStyle("-fx-background-color: #111111"
+						+ MainConfig.getInstance().headerAlphaValue
+						+ ";\n");
 			}
 		});
 
 	}
 
-	public void showInfoMessage(String info_message_name) {
+	public void showInfoMessage(Language.MessageType infoMessageName) {
 
-		this.info_name = info_message_name;
+		this.infoName = infoMessageName;
+		var messageObj = this.language.getMessage(infoMessageName);
 
-		FormMessage message = this.stringManager.getMessage(info_message_name);
 		Platform.runLater(() -> {
 			if (!this.infoMessage.isVisible()) {
 				this.infoMessage.setVisible(true);
 			}
 
-			if (message != null) {
-				this.infoMessage.setText(message.getMessage());
-				this.infoMessage.setStyle("-fx-background-color: " + message.getColor() + this.ALPHA_VALUE);
+			if (messageObj != null) {
+				this.infoMessage.setText(messageObj.message);
+				this.infoMessage.setStyle("-fx-background-color: "
+						+ messageObj.color
+						+ MainConfig.getInstance().headerAlphaValue);
 			} else {
 				// just passed message with white background
-				this.infoMessage.setText("Unknown: " + info_message_name);
-				this.infoMessage.setStyle("-fx-background-color: #aacc91" + this.ALPHA_VALUE);
+				this.infoMessage.setText("unknown - " + this.infoName);
+				this.infoMessage.setStyle("-fx-background-color: #aacc91"
+						+ MainConfig.getInstance().headerAlphaValue);
 			}
-			this.infoMessageTImer.stop();
-			this.infoMessageTImer.play();
+
+			this.infoMessageTimer.stop();
+			this.infoMessageTimer.play();
 
 		});
 	}
 
-	// HasLabels interface
+	@Override
+	public void loadLabels(Language newLanguage) {
 
-	public void reloadLabels() {
-
-		this.stringManager = StringResourceManager.getInstance();
+		this.language = newLanguage;
 
 		Platform.runLater(() -> {
-
-			this.statusMessage.setText(this.status_name);
+			if (this.statusName != null) {
+				this.showStatusMessage(this.statusName);
+			}
 
 			// start new 2s with info in new language
-			if (this.infoMessage.isVisible()) {
-				this.showInfoMessage(this.info_name);
+			if (this.infoMessage.isVisible() && this.infoName != null) {
+				this.showInfoMessage(this.infoName);
 			}
 
 		});

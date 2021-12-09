@@ -1,7 +1,9 @@
 package app.event;
 
+import app.resource_manager.Language;
+
 public interface FormMessageHandler {
 
-	void execute(String message_name);
+	void execute(Language.MessageType messageType);
 
 }

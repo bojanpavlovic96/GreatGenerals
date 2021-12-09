@@ -6,6 +6,7 @@ import app.event.GameReadyHandler;
 import app.form.GameReadyEventProducer;
 import app.form.InitialPage;
 import app.form.MessageDisplay;
+import app.resource_manager.Language;
 import root.communication.LoginServerProxy;
 import root.communication.LoginServerResponseHandler;
 import root.communication.messages.LoginRequest;
@@ -72,9 +73,11 @@ public class StartPageController implements GameReadyEventProducer {
 							}
 						}
 					});
-			((MessageDisplay) initialPage).showInfoMessage("login-request-sent");
+			((MessageDisplay) initialPage)
+					.showInfoMessage(Language.MessageType.LoginRequestSent);
 		} else {
-			((MessageDisplay) initialPage).showInfoMessage("please-wait-for-connection");
+			((MessageDisplay) initialPage)
+					.showInfoMessage(Language.MessageType.PleaseWaitForConnection);
 		}
 
 	}
@@ -101,9 +104,11 @@ public class StartPageController implements GameReadyEventProducer {
 						}
 
 					});
-			((MessageDisplay) initialPage).showInfoMessage("register-request-sent");
+			((MessageDisplay) initialPage)
+					.showInfoMessage(Language.MessageType.RegisterRequestSent);
 		} else {
-			((MessageDisplay) initialPage).showInfoMessage("please-wait-for-connection");
+			((MessageDisplay) initialPage)
+					.showInfoMessage(Language.MessageType.PleaseWaitForConnection);
 		}
 
 	}

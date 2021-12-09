@@ -57,9 +57,8 @@ public class SelectPathFieldOption extends FieldOption {
 				.calculatePath(this.secondaryField)) {
 
 			var selectCommand = new SelectFieldCommand(pathField);
-			// Command select_command = new ComplexSelectFieldCommand(field);
 			super.controller.getConsumerQueue().enqueue(selectCommand);
-			super.controller.enqueueForUndone(selectCommand);
+			super.controller.getUndoStack().push(selectCommand);
 		}
 
 		super.controller.getConsumerQueue().enqueue(new ClearTopLayerCommand());

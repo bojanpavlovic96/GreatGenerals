@@ -71,7 +71,7 @@ public class UndoStack implements CommandStack {
 		return false;
 	}
 
-	public int getSize(){
+	public int getSize() {
 		return this.stack.size();
 	}
 

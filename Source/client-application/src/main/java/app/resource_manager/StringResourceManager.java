@@ -1,104 +1,61 @@
 package app.resource_manager;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
+import java.util.ArrayList;
+import java.util.List;
 
-import org.json.JSONArray;
-import org.json.JSONObject;
-
-import app.form.FormMessage;
+import app.form.HasLabels;
 
 public class StringResourceManager {
 
 	static private final String RESOURCE_PREFIX = "lang/";
 	static private final String RESOURCE_SUFFIX = "-lang.json";
 
-	// default language
-	static private String language = "en";
+	static private String currentLangName = "";
+	static private Language currentLanguage;
 
-	static private StringResourceManager instance;
+	private static List<HasLabels> languageConsumers;
 
-	private JSONObject resources;
-	private JSONArray messages;
+	public static Language getLanguage() {
 
-	// methods
-	public static StringResourceManager getInstance() {
-
-		if (StringResourceManager.instance == null)
-			StringResourceManager.instance = new StringResourceManager();
-
-		return StringResourceManager.instance;
-	}
-
-	private StringResourceManager() {
-
-		this.loadResources();
-
-	}
-
-	private void loadResources() {
-
-		String fileName = StringResourceManager.RESOURCE_PREFIX
-				+ StringResourceManager.language
-				+ StringResourceManager.RESOURCE_SUFFIX;
-
-		System.out.println("Searching for: " + fileName);
-
-		ClassLoader loader = getClass().getClassLoader();
-
-		InputStream inputStream = loader.getResourceAsStream(fileName);
-		InputStreamReader streamReader = new InputStreamReader(inputStream);
-		BufferedReader buffReader = new BufferedReader(streamReader);
-
-		StringBuilder content = new StringBuilder();
-		String line = "";
-		try {
-
-			while ((line = buffReader.readLine()) != null) {
-				content.append(line + "\n");
+		if (StringResourceManager.currentLanguage == null) {
+			if (currentLangName.equals("")) {
+				currentLangName = MainConfig.getInstance().defaultLanguage;
 			}
 
-			buffReader.close();
-			streamReader.close();
-			inputStream.close();
-
-			// transform plain text in JSONObject
-			this.resources = new JSONObject(content.toString());
-
-			// extract array of messages from JSONObject
-			this.messages = this.resources.getJSONArray("messages");
-
-		} catch (IOException e) {
-			e.printStackTrace();
+			var langPath = getLanguagePath(currentLangName);
+			currentLanguage = ConfigLoader.load(langPath, Language.class);
 		}
 
+		return StringResourceManager.currentLanguage;
+
+	}
+
+	private static String getLanguagePath(String lang) {
+		return StringResourceManager.RESOURCE_PREFIX
+				+ lang
+				+ StringResourceManager.RESOURCE_SUFFIX;
 	}
 
 	static public void setLanguage(String language) {
-		// change language
-		StringResourceManager.language = language;
 
-		// create new instance with provided language
-		StringResourceManager.instance = new StringResourceManager();
+		var newLangPath = getLanguagePath(language);
+		currentLanguage = ConfigLoader.load(newLangPath, Language.class);
 
-	}
-
-	public String getString(String name) {
-		return this.resources.getString(name);
-	}
-
-	public FormMessage getMessage(String message) {
-
-		JSONObject json_message = null;
-		for (int i = 0; i < messages.length(); i++) {
-			json_message = this.messages.getJSONObject(i);
-			if (json_message.getString("name").equals(message))
-				return new FormMessage(json_message.getString("message"), json_message.getString("color"));
+		// notify consumers
+		if (languageConsumers != null) {
+			for (var consumer : languageConsumers) {
+				consumer.loadLabels(currentLanguage);
+			}
 		}
 
-		return null;
+	}
+
+	static public void subscribeForLanguageChange(HasLabels newConsumer) {
+		if (languageConsumers == null) {
+			languageConsumers = new ArrayList<HasLabels>();
+		}
+
+		languageConsumers.add(newConsumer);
 	}
 
 }

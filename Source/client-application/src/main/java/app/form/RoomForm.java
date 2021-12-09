@@ -4,6 +4,7 @@ import java.util.function.Predicate;
 
 import app.event.FormMessageHandler;
 import app.event.RoomFormActionHandler;
+import app.resource_manager.Language;
 import app.resource_manager.StringResourceManager;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
@@ -35,25 +36,25 @@ public class RoomForm
 	private final String FONT_NAME = "Tlwg Typewriter Bold";
 	private final int FONT_SIZE = 15;
 
-	private StringResourceManager stringManager;
+	private Language language;
 
-	private Button logout_btn;
+	private Button logoutBtn;
 
-	private Label room_name_lb;
+	private Label toomNameLb;
 	private TextField room_name_tf;
 
-	private Label room_password_lb;
+	private Label roomPasswordLb;
 	private PasswordField room_password_pf;
 
-	private Button create_room_btn;
-	private Button join_room_btn;
+	private Button createRoomBtn;
+	private Button joinRoomBtn;
 
-	private Label players_lb;
+	private Label playersLb;
 
-	private ScrollPane players_scroll_pane;
-	private VBox players_vb;
+	private ScrollPane playersScrollPane;
+	private VBox playersVb;
 
-	private Button start_game_btn;
+	private Button startGameBtn;
 
 	private FormMessageHandler onStatusMessage;
 	private FormMessageHandler onInfoMessage;
@@ -65,7 +66,7 @@ public class RoomForm
 
 	public RoomForm() {
 
-		this.stringManager = StringResourceManager.getInstance();
+		this.language = StringResourceManager.getLanguage();
 
 		this.setAlignment(Pos.TOP_CENTER);
 
@@ -86,40 +87,40 @@ public class RoomForm
 
 		// buttons & inputs specific
 
-		this.logout_btn = new Button(this.stringManager.getString("logout"));
-		this.logout_btn.setFont(this.font);
+		this.logoutBtn = new Button(this.language.logout);
+		this.logoutBtn.setFont(this.font);
 
-		this.room_name_lb = new Label(this.stringManager.getString("room-name"));
-		this.room_name_lb.setFont(this.font);
+		this.toomNameLb = new Label(this.language.roomName);
+		this.toomNameLb.setFont(this.font);
 		this.room_name_tf = new TextField();
 
-		this.room_password_lb = new Label(this.stringManager.getString("room-password"));
-		this.room_password_lb.setFont(this.font);
+		this.roomPasswordLb = new Label(this.language.roomPassword);
+		this.roomPasswordLb.setFont(this.font);
 		this.room_password_pf = new PasswordField();
 
-		this.create_room_btn = new Button(this.stringManager.getString("create-room"));
-		this.create_room_btn.setFont(this.font);
+		this.createRoomBtn = new Button(this.language.createRoom);
+		this.createRoomBtn.setFont(this.font);
 
-		this.join_room_btn = new Button(this.stringManager.getString("join-room"));
-		this.join_room_btn.setFont(this.font);
+		this.joinRoomBtn = new Button(this.language.joinRoom);
+		this.joinRoomBtn.setFont(this.font);
 
-		this.players_lb = new Label(this.stringManager.getString("players"));
-		this.players_lb.setFont(this.font);
+		this.playersLb = new Label(this.language.playersInRoom);
+		this.playersLb.setFont(this.font);
 
-		this.players_vb = new VBox();
+		this.playersVb = new VBox();
 		// attention next line is ignored
-		this.players_vb.setAlignment(Pos.TOP_CENTER);
-		this.players_vb.setPadding(new Insets(5, 0, 0, 10));
+		this.playersVb.setAlignment(Pos.TOP_CENTER);
+		this.playersVb.setPadding(new Insets(5, 0, 0, 10));
 
-		this.players_scroll_pane = new ScrollPane(this.players_vb);
+		this.playersScrollPane = new ScrollPane(this.playersVb);
 		// next line actually aligns content horizontally
-		this.players_scroll_pane.setFitToWidth(true);
-		this.players_scroll_pane.setMinHeight(70);
-		this.players_scroll_pane.setMaxHeight(70);
+		this.playersScrollPane.setFitToWidth(true);
+		this.playersScrollPane.setMinHeight(70);
+		this.playersScrollPane.setMaxHeight(70);
 
-		this.start_game_btn = new Button(this.stringManager.getString("start-game"));
-		this.start_game_btn.setFont(this.font);
-		this.start_game_btn.managedProperty().bind(this.start_game_btn.visibleProperty());
+		this.startGameBtn = new Button(this.language.startGame);
+		this.startGameBtn.setFont(this.font);
+		this.startGameBtn.managedProperty().bind(this.startGameBtn.visibleProperty());
 
 		// test labels (start)
 
@@ -133,22 +134,22 @@ public class RoomForm
 
 		// add components to container in the right order
 
-		this.getChildren().add(this.logout_btn);
+		this.getChildren().add(this.logoutBtn);
 
-		this.getChildren().add(this.room_name_lb);
+		this.getChildren().add(this.toomNameLb);
 		this.getChildren().add(this.room_name_tf);
 
-		this.getChildren().add(this.room_password_lb);
+		this.getChildren().add(this.roomPasswordLb);
 		this.getChildren().add(this.room_password_pf);
 
-		this.getChildren().add(this.create_room_btn);
-		this.getChildren().add(this.join_room_btn);
+		this.getChildren().add(this.createRoomBtn);
+		this.getChildren().add(this.joinRoomBtn);
 
-		this.getChildren().add(this.players_lb);
+		this.getChildren().add(this.playersLb);
 
-		this.getChildren().add(this.players_scroll_pane);
+		this.getChildren().add(this.playersScrollPane);
 
-		this.getChildren().add(this.start_game_btn);
+		this.getChildren().add(this.startGameBtn);
 
 		// disable starting game
 		// enable it after server response about creating new room
@@ -159,15 +160,17 @@ public class RoomForm
 
 		VBox.setMargin(this.room_password_pf, new Insets(2, 0, 5, 0));
 
-		VBox.setMargin(this.create_room_btn, new Insets(5, 0, 5, 0));
+		VBox.setMargin(this.createRoomBtn, new Insets(5, 0, 5, 0));
 
-		VBox.setMargin(this.players_lb, new Insets(10, 0, 0, 0));
+		VBox.setMargin(this.playersLb, new Insets(10, 0, 0, 0));
 
-		VBox.setMargin(this.start_game_btn, new Insets(10, 0, 0, 5));
+		VBox.setMargin(this.startGameBtn, new Insets(10, 0, 0, 5));
+		
+		StringResourceManager.subscribeForLanguageChange(this);
 	}
 
 	private void setHandlers() {
-		this.create_room_btn.setOnAction(new EventHandler<ActionEvent>() {
+		this.createRoomBtn.setOnAction(new EventHandler<ActionEvent>() {
 
 			public void handle(ActionEvent event) {
 
@@ -179,7 +182,7 @@ public class RoomForm
 
 		});
 
-		this.join_room_btn.setOnAction(new EventHandler<ActionEvent>() {
+		this.joinRoomBtn.setOnAction(new EventHandler<ActionEvent>() {
 
 			public void handle(ActionEvent event) {
 
@@ -191,9 +194,10 @@ public class RoomForm
 		});
 	}
 
-	// this is not "wrapped" in interface because startForm already extends javafx.Stage
+	// this is not "wrapped" in interface because startForm already extends
+	// javafx.Stage
 	// (startForm contains user and room form)
-	// so it is already bound to specific implementation (javafx) ... 
+	// so it is already bound to specific implementation (javafx) ...
 	// this high abstraction is not really required
 
 	// public methods
@@ -209,12 +213,12 @@ public class RoomForm
 		Label new_label = new Label(new_player);
 		new_label.setFont(this.font);
 
-		this.players_vb.getChildren().add(new_label);
+		this.playersVb.getChildren().add(new_label);
 
 	}
 
 	public void removePlayer(final String player) {
-		this.players_vb.getChildren().removeIf(new Predicate<Node>() {
+		this.playersVb.getChildren().removeIf(new Predicate<Node>() {
 			public boolean test(Node single_label) {
 				return ((Label) single_label).getText().equals(player);
 			}
@@ -222,11 +226,11 @@ public class RoomForm
 	}
 
 	public void disableStartingGame() {
-		this.start_game_btn.setVisible(false);
+		this.startGameBtn.setVisible(false);
 	}
 
 	public void enableStartingGame() {
-		this.start_game_btn.setVisible(true);
+		this.startGameBtn.setVisible(true);
 	}
 
 	// action handlers
@@ -252,23 +256,17 @@ public class RoomForm
 
 	// hasLabels interface
 
-	public void reloadLabels() {
+	public void loadLabels(Language newLanguage) {
 
-		this.stringManager = StringResourceManager.getInstance();
+		this.language = newLanguage;
 
-		this.logout_btn.setText(this.stringManager.getString("logout"));
-
-		this.room_name_lb.setText(this.stringManager.getString("room-name"));
-
-		this.room_password_lb.setText(this.stringManager.getString("room-password"));
-
-		this.create_room_btn.setText(this.stringManager.getString("create-room"));
-
-		this.join_room_btn.setText(this.stringManager.getString("join-room"));
-
-		this.players_lb.setText(this.stringManager.getString("players"));
-
-		this.start_game_btn.setText(this.stringManager.getString("start-game"));
+		this.logoutBtn.setText(this.language.logout);
+		this.toomNameLb.setText(this.language.roomName);
+		this.roomPasswordLb.setText(this.language.roomPassword);
+		this.createRoomBtn.setText(this.language.createRoom);
+		this.joinRoomBtn.setText(this.language.joinRoom);
+		this.playersLb.setText(this.language.playersInRoom);
+		this.startGameBtn.setText(this.language.startGame);
 
 	}
 

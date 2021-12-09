@@ -1,12 +1,14 @@
 package app.form;
 
+import app.resource_manager.Language;
+
 public interface MessageDisplay {
 
-	public void showStatusMessage(String message_name);
+	public void showStatusMessage(Language.MessageType statusName);
 
 	public String getCurrentStatusMessage();
 
-	public void showInfoMessage(String message_name);
+	public void showInfoMessage(Language.MessageType infoName);
 
 	public String getCurrentInfoMessage();
 

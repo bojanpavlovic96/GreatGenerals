@@ -2,6 +2,7 @@ package app.form;
 
 import app.event.FormMessageHandler;
 import app.event.UserFormActionHandler;
+import app.resource_manager.Language;
 import app.resource_manager.StringResourceManager;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
@@ -31,12 +32,12 @@ public class UserForm
 	private final String FONT_NAME = "Tlwg Typewriter Bold";
 	private final int FONT_SIZE = 15;
 
-	private StringResourceManager string_manager;
+	private Language language;
 
-	private Label username_lb;
+	private Label usernameLb;
 	private TextField username_tf;
 
-	private Label password_lb;
+	private Label passwordLb;
 	private PasswordField password_pf;
 
 	private Button loginBtn;
@@ -54,7 +55,7 @@ public class UserForm
 
 	public UserForm() {
 
-		this.string_manager = StringResourceManager.getInstance();
+		this.language = StringResourceManager.getLanguage();
 
 		this.setAlignment(Pos.TOP_CENTER);
 
@@ -69,24 +70,24 @@ public class UserForm
 
 		this.managedProperty().bind(this.visibleProperty());
 
-		this.username_lb = new Label(this.string_manager.getString("username"));
-		this.username_lb.setFont(this.font);
+		this.usernameLb = new Label(this.language.username);
+		this.usernameLb.setFont(this.font);
 		this.username_tf = new TextField();
 
-		this.password_lb = new Label(this.string_manager.getString("password"));
-		this.password_lb.setFont(this.font);
+		this.passwordLb = new Label(this.language.password);
+		this.passwordLb.setFont(this.font);
 		this.password_pf = new PasswordField();
 
-		this.loginBtn = new Button(this.string_manager.getString("login"));
+		this.loginBtn = new Button(this.language.login);
 		this.loginBtn.setFont(this.font);
 
-		this.registerBtn = new Button(this.string_manager.getString("register"));
+		this.registerBtn = new Button(this.language.register);
 		this.registerBtn.setFont(this.font);
 
-		this.getChildren().add(this.username_lb);
+		this.getChildren().add(this.usernameLb);
 		this.getChildren().add(this.username_tf);
 
-		this.getChildren().add(this.password_lb);
+		this.getChildren().add(this.passwordLb);
 		this.getChildren().add(this.password_pf);
 
 		this.getChildren().add(this.loginBtn);
@@ -100,6 +101,7 @@ public class UserForm
 
 		VBox.setMargin(this.loginBtn, new Insets(10, 0, 5, 0));
 
+		StringResourceManager.subscribeForLanguageChange(this);
 	}
 
 	private void setHandlers() {
@@ -179,17 +181,15 @@ public class UserForm
 		return this.onInfoMessage;
 	}
 
-	public void reloadLabels() {
+	@Override
+	public void loadLabels(Language newLanguage) {
 
-		this.string_manager = StringResourceManager.getInstance();
+		this.language = newLanguage;
 
-		this.username_lb.setText(this.string_manager.getString("username"));
-
-		this.password_lb.setText(this.string_manager.getString("password"));
-
-		this.loginBtn.setText(this.string_manager.getString("login"));
-
-		this.registerBtn.setText(this.string_manager.getString("register"));
+		this.usernameLb.setText(this.language.username);
+		this.passwordLb.setText(this.language.password);
+		this.loginBtn.setText(this.language.login);
+		this.registerBtn.setText(this.language.register);
 
 	}
 

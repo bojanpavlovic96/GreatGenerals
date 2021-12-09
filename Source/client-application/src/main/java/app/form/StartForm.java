@@ -6,7 +6,7 @@ import java.awt.Toolkit;
 import app.event.FormMessageHandler;
 import app.event.RoomFormActionHandler;
 import app.event.UserFormActionHandler;
-import app.resource_manager.StringResourceManager;
+import app.resource_manager.Language;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.layout.Priority;
@@ -102,24 +102,12 @@ public class StartForm extends Stage implements InitialPage {
 
 		// both handlers only call appropriate method from initial page
 		// (show info/status message)
-		FormMessageProducer messageProducer = (FormMessageProducer) this.userForm;
-		messageProducer.setInfoMessageHandler(new FormMessageHandler() {
-
-			public void execute(String messageName) {
-
-				showInfoMessage(messageName);
-
-			}
-
+		this.userForm.setInfoMessageHandler((Language.MessageType message) -> {
+			showInfoMessage(message);
 		});
 
-		messageProducer.setStatusMessageHandler(new FormMessageHandler() {
-
-			public void execute(String message_name) {
-
-				showStatusMessage(message_name);
-
-			}
+		this.userForm.setStatusMessageHandler((Language.MessageType message) -> {
+			showStatusMessage(message);
 		});
 
 		this.mainContainer.getChildren().add(this.userForm);
@@ -135,17 +123,6 @@ public class StartForm extends Stage implements InitialPage {
 
 		this.bottomForm = new BottomForm();
 
-		this.bottomForm.setLanguageSwitchHandler((newLanguage) -> {
-
-			StringResourceManager.setLanguage(newLanguage);
-
-			((HasLabels) headerForm).reloadLabels();
-			((HasLabels) userForm).reloadLabels();
-			((HasLabels) roomForm).reloadLabels();
-			((HasLabels) bottomForm).reloadLabels();
-
-		});
-
 		this.mainContainer.getChildren().add(this.bottomForm);
 
 	}
@@ -155,14 +132,14 @@ public class StartForm extends Stage implements InitialPage {
 	// messageDisplay interface
 
 	@Override
-	public void showInfoMessage(final String messageName) {
+	public void showInfoMessage(Language.MessageType messageName) {
 
 		((MessageDisplay) headerForm).showInfoMessage(messageName);
 
 	}
 
 	@Override
-	public void showStatusMessage(final String messageName) {
+	public void showStatusMessage(Language.MessageType messageName) {
 
 		((MessageDisplay) headerForm).showStatusMessage(messageName);
 

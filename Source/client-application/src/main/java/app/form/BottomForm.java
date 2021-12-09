@@ -1,15 +1,19 @@
 package app.form;
 
 import app.event.LanguageEvent;
+import app.resource_manager.Language;
+import app.resource_manager.MainConfig;
 import app.resource_manager.StringResourceManager;
 import javafx.application.Platform;
+import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
+import javafx.scene.control.ListCell;
 import javafx.scene.layout.HBox;
 
-public class BottomForm extends HBox implements LanguageSwitcher {
+public class BottomForm extends HBox implements HasLabels {
 
 	private final String ALPHA_VALUE = "a2";
 
@@ -17,33 +21,26 @@ public class BottomForm extends HBox implements LanguageSwitcher {
 
 	private final String color = "#993300";
 
-	private StringResourceManager stringManager;
-
-	private Label text;
-
+	private Label versionLabel;
 	private ComboBox<String> langBox;
-
-	private LanguageEvent on_language_change;
 
 	public BottomForm() {
 
-		this.stringManager = StringResourceManager.getInstance();
-
 		this.initForm();
-
 	}
 
 	private void initForm() {
 
 		this.setAlignment(Pos.BASELINE_LEFT);
 		this.setPadding(new Insets(2, 2, 5, 2));
-		this.setStyle("-fx-background-color:" + this.color + this.ALPHA_VALUE);
-
-		this.text = new Label(this.stringManager.getString("bottom-text"));
+		this.setStyle("-fx-background-color:"
+				+ this.color
+				+ this.ALPHA_VALUE);
 
 		this.langBox = new ComboBox<String>();
 
-		this.getChildren().add(this.text);
+		this.versionLabel = new Label("");
+		this.getChildren().add(this.versionLabel);
 		this.getChildren().add(this.langBox);
 
 		// before stage.show() all dimensions are 0 ...
@@ -51,15 +48,44 @@ public class BottomForm extends HBox implements LanguageSwitcher {
 
 		// if this is not wrapped with runLater text is not displayed properly ...
 		Platform.runLater(() -> {
-			text.setPrefWidth(getWidth() - langBox.getWidth() - LANG_MARGIN * 3);
+			versionLabel.setPrefWidth(getWidth() - langBox.getWidth() - LANG_MARGIN * 3);
 		});
 
-		// TODO set handler on language switch
+		// this is the only way to set onMousePressed handler ...
+		this.langBox.setCellFactory(listView -> {
+			var cell = new ListCell<String>() {
+				@Override
+				protected void updateItem(String item, boolean empty) {
+					super.updateItem(item, empty);
+
+					setText(empty ? null : item);
+				}
+			};
+
+			cell.setOnMousePressed(e -> {
+				if (!cell.isEmpty()) {
+					System.out.println("Language switched to: " + cell.getText());
+					StringResourceManager.setLanguage(cell.getText());
+				}
+			});
+
+			return cell;
+		});
+
+		this.langBox.getItems().addAll(MainConfig.getInstance().languages);
+		this.langBox.setValue(MainConfig.getInstance().defaultLanguage);
+
+		this.loadLabels(StringResourceManager.getLanguage());
+
+		StringResourceManager.subscribeForLanguageChange(this);
 
 	}
 
-	public void setLanguageSwitchHandler(LanguageEvent handler) {
-		this.on_language_change = handler;
+	@Override
+	public void loadLabels(Language newLanguage) {
+		Platform.runLater(() -> {
+			this.versionLabel.setText(newLanguage.bottomText);
+		});
 	}
 
 }

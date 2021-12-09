@@ -94,6 +94,7 @@ public class GameBrain implements Controller {
 	// methods
 
 	private void initViewEventHandlers() {
+		
 		this.view.addEventHandler("left-mouse-click-event", new ViewEventHandler() {
 
 			public void execute(ViewEventArg arg) {
@@ -172,6 +173,7 @@ public class GameBrain implements Controller {
 
 		});
 
+		// i don't understand this comment 9.12.2021
 		// TODO maybe for the purpose of redrawing path and similar options
 		// add additional list of command which are "stateless" and which execution wont
 		// do any damage to the current state if they are executed more than once
@@ -292,23 +294,18 @@ public class GameBrain implements Controller {
 	}
 
 	@Override
-	public void setConsumerQueue(CommandQueue consumer_queue) {
-		this.viewCommandQueue = consumer_queue;
-	}
-
-	@Override
 	public CommandQueue getConsumerQueue() {
 		return this.viewCommandQueue;
 	}
 
 	@Override
-	public List<FieldOption> getPossibleFieldOptions() {
-		return this.fieldOptions;
+	public void setConsumerQueue(CommandQueue consumer_queue) {
+		this.viewCommandQueue = consumer_queue;
 	}
 
 	@Override
-	public void enqueueForUndone(Command new_command) {
-		this.undoStack.push(new_command);
+	public List<FieldOption> getPossibleFieldOptions() {
+		return this.fieldOptions;
 	}
 
 	@Override
@@ -321,6 +318,7 @@ public class GameBrain implements Controller {
 		this.selectedField = newField;
 	}
 
+	// TODO this should be removed ...
 	@Override
 	public void selectField(Field fieldToSelect) {
 
@@ -354,8 +352,6 @@ public class GameBrain implements Controller {
 
 	@Override
 	public CommandStack getUndoStack() {
-		// debug
-		System.out.println("STACK SIZE: "+((UndoStack)this.undoStack).getSize() );
 		return this.undoStack;
 	}
 

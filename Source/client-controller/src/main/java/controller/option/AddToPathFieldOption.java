@@ -54,9 +54,8 @@ public class AddToPathFieldOption extends FieldOption {
 		for (Field pathField : pathToAdd) {
 
 			var selectCommand = new SelectFieldCommand(pathField);
-			// Command selectCommand = new ComplexSelectFieldCommand(field);
 			super.controller.getConsumerQueue().enqueue(selectCommand);
-			super.controller.enqueueForUndone(selectCommand);
+			super.controller.getUndoStack().push(selectCommand);
 
 		}
 
