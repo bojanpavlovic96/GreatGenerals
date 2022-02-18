@@ -30,11 +30,11 @@ public class BasicUnit implements Unit {
 	}
 
 	public BasicUnit(MoveType moveCtrl,
-			UnitAttack airAttachCtrl,
+			UnitAttack airAttackCtrl,
 			UnitAttack groundAttackCtrl) {
 
 		this.movementType = moveCtrl;
-		this.airAttack = airAttachCtrl;
+		this.airAttack = airAttackCtrl;
 		this.groundAttack = groundAttackCtrl;
 	}
 
@@ -70,7 +70,7 @@ public class BasicUnit implements Unit {
 		clone.movementType = this.movementType.clone();
 
 		/*
-		 * to do same for air and ground attack
+		 * TODO same for air and ground attack
 		 */
 
 		return clone;

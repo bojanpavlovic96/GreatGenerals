@@ -2,7 +2,7 @@ package app.form;
 
 import app.event.LanguageEvent;
 import app.resource_manager.Language;
-import app.resource_manager.MainConfig;
+import app.resource_manager.AppConfig;
 import app.resource_manager.StringResourceManager;
 import javafx.application.Platform;
 import javafx.event.EventHandler;
@@ -72,8 +72,8 @@ public class BottomForm extends HBox implements HasLabels {
 			return cell;
 		});
 
-		this.langBox.getItems().addAll(MainConfig.getInstance().languages);
-		this.langBox.setValue(MainConfig.getInstance().defaultLanguage);
+		this.langBox.getItems().addAll(AppConfig.getInstance().languages);
+		this.langBox.setValue(AppConfig.getInstance().defaultLanguage);
 
 		this.loadLabels(StringResourceManager.getLanguage());
 

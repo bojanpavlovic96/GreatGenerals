@@ -3,10 +3,11 @@ package utils;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonSyntaxException;
 
-public class JsonUtil {
+public interface StaticParser {
 
 	public static String ToString(Object obj) {
 		var builder = new GsonBuilder();
+		builder.setPrettyPrinting();
 		var gson = builder.create();
 
 		return gson.toJson(obj);
@@ -26,5 +27,4 @@ public class JsonUtil {
 
 		return result;
 	}
-
 }

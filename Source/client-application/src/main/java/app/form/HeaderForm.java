@@ -1,7 +1,7 @@
 package app.form;
 
 import app.resource_manager.Language;
-import app.resource_manager.MainConfig;
+import app.resource_manager.AppConfig;
 import app.resource_manager.StringResourceManager;
 import javafx.animation.PauseTransition;
 import javafx.application.Platform;
@@ -65,7 +65,7 @@ public class HeaderForm extends VBox implements MessageDisplay, HasLabels {
 			}
 
 		});
-		var config = MainConfig.getInstance();
+		var config = AppConfig.getInstance();
 		this.titleFont = new Font(config.titleFont, config.titleFontSize);
 		this.messageFont = new Font(config.messageFont, config.messageFontSize);
 
@@ -89,7 +89,7 @@ public class HeaderForm extends VBox implements MessageDisplay, HasLabels {
 		this.infoMessage = new Label();
 		this.infoMessage.setFont(this.messageFont);
 
-		var imagePath = MainConfig.getInstance().headerImagePath;
+		var imagePath = AppConfig.getInstance().headerImagePath;
 		this.image = new ImageView(
 				new Image(imagePath,
 						this.imageWidth,
@@ -135,12 +135,12 @@ public class HeaderForm extends VBox implements MessageDisplay, HasLabels {
 				this.statusMessage.setText(messageObj.message);
 				this.statusMessage.setStyle("-fx-background-color: "
 						+ messageObj.color
-						+ MainConfig.getInstance().headerAlphaValue);
+						+ AppConfig.getInstance().headerAlphaValue);
 			} else {
 				// just passed message with white background
 				this.statusMessage.setText("unknown - " + this.statusName);
 				this.statusMessage.setStyle("-fx-background-color: #111111"
-						+ MainConfig.getInstance().headerAlphaValue
+						+ AppConfig.getInstance().headerAlphaValue
 						+ ";\n");
 			}
 		});
@@ -161,12 +161,12 @@ public class HeaderForm extends VBox implements MessageDisplay, HasLabels {
 				this.infoMessage.setText(messageObj.message);
 				this.infoMessage.setStyle("-fx-background-color: "
 						+ messageObj.color
-						+ MainConfig.getInstance().headerAlphaValue);
+						+ AppConfig.getInstance().headerAlphaValue);
 			} else {
 				// just passed message with white background
 				this.infoMessage.setText("unknown - " + this.infoName);
 				this.infoMessage.setStyle("-fx-background-color: #aacc91"
-						+ MainConfig.getInstance().headerAlphaValue);
+						+ AppConfig.getInstance().headerAlphaValue);
 			}
 
 			this.infoMessageTimer.stop();

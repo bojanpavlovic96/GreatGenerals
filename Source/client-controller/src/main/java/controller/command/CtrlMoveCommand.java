@@ -56,7 +56,7 @@ public class CtrlMoveCommand extends Command {
 			viewCommandQueue.enqueue(selectSecond);
 
 			var undoStack = controller.getUndoStack();
-			undoStack.removeFirstMatch(this.getCommanddMatchLambda(this.startField));
+			undoStack.removeFirstMatch(getCommandMatchLambda(this.startField));
 
 			controller.setSelectedField(secondField);
 
@@ -95,7 +95,7 @@ public class CtrlMoveCommand extends Command {
 
 	}
 
-	private Function<Command, Boolean> getCommanddMatchLambda(Field targetField) {
+	private Function<Command, Boolean> getCommandMatchLambda(Field targetField) {
 		var targetPosition = targetField.getStoragePosition();
 
 		return (Command currentCommand) -> {

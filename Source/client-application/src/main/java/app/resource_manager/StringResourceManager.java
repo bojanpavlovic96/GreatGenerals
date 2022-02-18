@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import app.form.HasLabels;
+import root.ConfigLoader;
 
 public class StringResourceManager {
 
@@ -19,7 +20,7 @@ public class StringResourceManager {
 
 		if (StringResourceManager.currentLanguage == null) {
 			if (currentLangName.equals("")) {
-				currentLangName = MainConfig.getInstance().defaultLanguage;
+				currentLangName = AppConfig.getInstance().defaultLanguage;
 			}
 
 			var langPath = getLanguagePath(currentLangName);

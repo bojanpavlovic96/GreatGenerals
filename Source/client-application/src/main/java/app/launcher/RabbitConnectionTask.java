@@ -10,7 +10,6 @@ import com.rabbitmq.client.ConnectionFactory;
 import com.rabbitmq.client.ShutdownSignalException;
 
 import app.event.ConnectionEventHandler;
-import app.resource_manager.BrokerConfig;
 import app.resource_manager.BrokerConfigFields;
 import root.ActiveComponent;
 

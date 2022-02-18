@@ -13,6 +13,12 @@
 	<dependencies>
 
 		<dependency>
+			<groupId>great-generals</groupId>
+			<artifactId>json-util</artifactId>
+			<version>1.0-SNAPSHOT</version>
+		</dependency>
+
+		<dependency>
 			<groupId>org.openjfx</groupId>
 			<artifactId>javafx-controls</artifactId>
 			<version>11</version>
@@ -22,6 +28,13 @@
 			<groupId>com.rabbitmq</groupId>
 			<artifactId>amqp-client</artifactId>
 			<version>3.3.4</version>
+		</dependency>
+
+		<!-- used for reading txt resource -->
+		<dependency>
+			<groupId>com.google.guava</groupId>
+			<artifactId>guava</artifactId>
+			<version>30.1-jre</version>
 		</dependency>
 
 	</dependencies>

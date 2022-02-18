@@ -45,11 +45,11 @@ public abstract class FieldOption implements Runnable {
 	}
 
 	public Field getPrimaryField() {
-		if (this.controller == null) {
+		if (controller == null) {
 			return null;
 		}
 
-		return this.controller.getSelectedField();
+		return controller.getSelectedField();
 	}
 
 	// public void setPrimaryField(Field field) {

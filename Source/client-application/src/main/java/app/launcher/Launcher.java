@@ -1,7 +1,7 @@
 package app.launcher;
 
 import app.form.StartForm;
-import app.resource_manager.BrokerConfig;
+import app.resource_manager.AppConfig;
 import app.server.MockupLoginServerProxy;
 import communication.RabbitGameServerProxy;
 import communication.translator.JSONMessageTranslator;
@@ -26,8 +26,6 @@ public class Launcher extends Application {
 
 	private Controller gameController;
 
-	// METHODS
-
 	// init() is not on main (UI) thread
 	// constructor -> init() -> start()
 	@Override
@@ -40,7 +38,7 @@ public class Launcher extends Application {
 	public void start(Stage primaryStage) throws Exception {
 		// ignore generated primaryStage
 
-		var brokerConfig = BrokerConfig.getConfig();
+		var brokerConfig = AppConfig.getInstance().brokerConfig.getActive();
 		if (brokerConfig != null) {
 			System.out.println("Using broker config: \n" + brokerConfig.toString());
 		} else {
@@ -49,9 +47,9 @@ public class Launcher extends Application {
 			return;
 		}
 
-		this.connectionTask = new RabbitConnectionTask(brokerConfig);
+		connectionTask = new RabbitConnectionTask(brokerConfig);
 
-		this.startPageController = new StartPageController(
+		startPageController = new StartPageController(
 				new StartForm(),
 				new MockupLoginServerProxy(),
 				// new RabbitLoginServerProxy(this.connectionTask, brokerConfig.queues),
@@ -73,7 +71,9 @@ public class Launcher extends Application {
 					// resources could be obtained from the server
 					// values passed to the hexFieldManager should also be extracted from
 					// configuration
-					View view = new DrawingStage(new HexFieldManager(80, 30, 2));
+					View view = new DrawingStage(
+							new HexFieldManager(80, 30, 2),
+							AppConfig.getInstance().viewConfig);
 
 					// attention controller still null at this moment
 					// modelEventHandler is set from controller constructor

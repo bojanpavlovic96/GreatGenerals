@@ -1,8 +1,9 @@
 package app.resource_manager;
 
-import utils.JsonUtil;
+import utils.StaticParser;
 
 public class BrokerConfigFields {
+
 	public String address;
 	public int port;
 	public String username;
@@ -10,6 +11,10 @@ public class BrokerConfigFields {
 	public String vhost;
 
 	public QueuesConfig queues;
+
+	public BrokerConfigFields() {
+
+	}
 
 	public BrokerConfigFields(String address,
 			int port,
@@ -25,8 +30,9 @@ public class BrokerConfigFields {
 		this.queues = queues;
 	}
 
+	@Override
 	public String toString() {
-		return JsonUtil.ToString(this);
+		return StaticParser.ToString(this);
 	}
 
 }

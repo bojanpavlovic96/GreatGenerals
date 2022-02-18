@@ -25,6 +25,7 @@ import root.command.CommandProcessor;
 import root.command.CommandQueue;
 import root.model.component.Field;
 import root.view.View;
+import root.view.ViewConfig;
 import root.view.event.ViewEventArg;
 import root.view.event.ViewEventHandler;
 import root.view.field.ViewField;
@@ -47,19 +48,21 @@ public class DrawingStage
 
 	private double CANVAS_PADDING = 20;
 
+	private ViewConfig config;
+
 	private Group root;
 	private ScrollPane scroll;
-	private Scene main_scene;
+	private Scene mainScene;
 
-	private Canvas board_canvas;
+	private Canvas boardCanvas;
 	private Canvas secondLayerCanvas;
 
-	private OptionMenu field_menu;
+	private OptionMenu fieldMenu;
 
-	private double canvas_width;
-	private double canvas_height;
+	private double canvasWitdth;
+	private double canvasHeight;
 
-	private Color background_color = Color.GRAY;
+	private Color backgroundColor = Color.GRAY;
 
 	// connection with controller
 	private CommandQueue commandQueue;
@@ -72,10 +75,12 @@ public class DrawingStage
 
 	// constructors
 
-	public DrawingStage(ViewFieldManager field_converter) {
+	public DrawingStage(ViewFieldManager fieldManager, ViewConfig config) {
 		super();
 
-		this.fieldManager = field_converter;
+		this.config = config;
+
+		this.fieldManager = fieldManager;
 
 		this.initStage();
 
@@ -98,7 +103,7 @@ public class DrawingStage
 		// Group is just container
 		this.root = new Group();
 		this.scroll = new ScrollPane(root);
-		this.main_scene = new Scene(scroll);
+		this.mainScene = new Scene(scroll);
 
 		// hide scroll bars
 		this.scroll.setHbarPolicy(ScrollBarPolicy.NEVER);
@@ -109,40 +114,41 @@ public class DrawingStage
 		this.STAGE_HEIGHT = Screen.getPrimary().getBounds().getHeight();
 
 		// match canvas size with stage (windows) size
-		this.canvas_width = this.STAGE_WIDTH;
-		this.canvas_height = this.STAGE_HEIGHT;
+		this.canvasWitdth = this.STAGE_WIDTH;
+		this.canvasHeight = this.STAGE_HEIGHT;
 
 		// create canvas and add it to the root node
-		this.board_canvas = new Canvas();
+		this.boardCanvas = new Canvas();
 
 		// set canvas width/height to match stage size
-		this.board_canvas.setWidth(this.canvas_width);
-		this.board_canvas.setHeight(this.canvas_height);
+		this.boardCanvas.setWidth(this.canvasWitdth);
+		this.boardCanvas.setHeight(this.canvasHeight);
 
-		this.root.getChildren().add(this.board_canvas);
+		this.root.getChildren().add(this.boardCanvas);
 
 		// second canvas on top of the first one used for animations and field options
 		this.secondLayerCanvas = new Canvas();
 
 		// width and height same as the board canvas
-		this.secondLayerCanvas.setWidth(this.canvas_width);
-		this.secondLayerCanvas.setHeight(this.canvas_height);
+		this.secondLayerCanvas.setWidth(this.canvasWitdth);
+		this.secondLayerCanvas.setHeight(this.canvasHeight);
 
 		this.root.getChildren().add(this.secondLayerCanvas);
 
-		System.out.println("Initial canvas width: " + this.canvas_width);
-		System.out.println("Initial canvas height: " + this.canvas_height);
+		System.out.println("Initial canvas width: " + this.canvasWitdth);
+		System.out.println("Initial canvas height: " + this.canvasHeight);
 
-		// TODO extract this values in config file maybe
-		this.field_menu = new OptionMenu(200, 299);
+		this.fieldMenu = new OptionMenu(
+			config.fieldMenuWidth, 
+			config.fieldMenuHeight);
 
-		this.field_menu.setLayoutX(100);
-		this.field_menu.setLayoutY(100);
-		this.field_menu.setVisible(true);
+		this.fieldMenu.setLayoutX(100);
+		this.fieldMenu.setLayoutY(100);
+		this.fieldMenu.setVisible(true);
 
-		this.root.getChildren().add(this.field_menu);
+		this.root.getChildren().add(this.fieldMenu);
 
-		this.setScene(this.main_scene);
+		this.setScene(this.mainScene);
 
 	}
 
@@ -159,7 +165,7 @@ public class DrawingStage
 
 		this.handlersMap = new HashMap<String, List<ViewEventHandler>>();
 
-		EventHandler<MouseEvent> eventHandler = new EventHandler<MouseEvent>() {
+		var eventHandler = new EventHandler<MouseEvent>() {
 
 			public void handle(MouseEvent arg) {
 				Point2D fieldPosition = fieldManager
@@ -314,7 +320,7 @@ public class DrawingStage
 
 	@Override
 	public void setCanvasVisibility(boolean visibility) {
-		this.board_canvas.setVisible(visibility);
+		this.boardCanvas.setVisible(visibility);
 		this.secondLayerCanvas.setVisible(visibility);
 	}
 
@@ -340,7 +346,7 @@ public class DrawingStage
 
 	@Override
 	public GraphicsContext getMainGraphicContext() {
-		return this.board_canvas.getGraphicsContext2D();
+		return this.boardCanvas.getGraphicsContext2D();
 	}
 
 	@Override
@@ -352,12 +358,12 @@ public class DrawingStage
 	public void setMenuVisibility(boolean visibility) {
 		// with next line, vbox throws some outOfBoundsException: -1 ... don't touch it
 		// not anymore, but I will leave above comment ... just in case
-		this.field_menu.setVisible(visibility);
+		this.fieldMenu.setVisible(visibility);
 	}
 
 	@Override
 	public Color getBackgroundColor() {
-		return this.background_color;
+		return this.backgroundColor;
 	}
 
 	@Override
@@ -367,12 +373,12 @@ public class DrawingStage
 
 	@Override
 	public Menu getOptionMenu() {
-		return this.field_menu;
+		return this.fieldMenu;
 	}
 
 	@Override
 	public void setMenuPosition(Point2D position) {
-		this.field_menu.setPosition(position);
+		this.fieldMenu.setPosition(position);
 	}
 
 	@Override
@@ -382,20 +388,20 @@ public class DrawingStage
 				.calcRealPosition(new Point2D(point.getX() + 1, point.getY() + 1));
 
 		if (real_position.getX() > this.STAGE_WIDTH)
-			this.canvas_width = real_position.getX();
+			this.canvasWitdth = real_position.getX();
 		else
-			this.canvas_width = this.STAGE_WIDTH;
+			this.canvasWitdth = this.STAGE_WIDTH;
 
 		if (real_position.getY() > this.STAGE_HEIGHT)
-			this.canvas_height = real_position.getY();
+			this.canvasHeight = real_position.getY();
 		else
-			this.canvas_height = this.STAGE_HEIGHT;
+			this.canvasHeight = this.STAGE_HEIGHT;
 
-		this.board_canvas.setWidth(this.canvas_width);
-		this.secondLayerCanvas.setWidth(this.canvas_width);
+		this.boardCanvas.setWidth(this.canvasWitdth);
+		this.secondLayerCanvas.setWidth(this.canvasWitdth);
 
-		this.board_canvas.setHeight(this.canvas_height);
-		this.secondLayerCanvas.setHeight(this.canvas_height);
+		this.boardCanvas.setHeight(this.canvasHeight);
+		this.secondLayerCanvas.setHeight(this.canvasHeight);
 
 	}
 

@@ -12,10 +12,11 @@
 		}
 	},
 	"production": {
-		"address": "raven.rmq.cloudamqp.com",
+		"address": "localhost",
 		"port": "5672",
-		"username": "wdvozwsr",
-		"password": "lzMIQ5SJvR083poynUF6Rc8T_QPNUJow",
+		"username": "gg_user",
+		"password": "gg_password",
+		"vhost": "gg_host",
 		"queues": {
 			"loginExchange": "login-exc",
 			"loginRoutingKey": "login-request"

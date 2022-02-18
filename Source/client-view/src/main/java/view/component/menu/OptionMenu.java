@@ -15,9 +15,9 @@ public class OptionMenu extends ListView<MenuItem> implements Menu {
 
 	private ObservableList<MenuItem> menuItems;
 
-	public OptionMenu(double menu_width, double menu_height) {
-		super.setPrefWidth(menu_width);
-		super.setPrefHeight(menu_height);
+	public OptionMenu(double menuWidth, double menuHeight) {
+		super.setPrefWidth(menuWidth);
+		super.setPrefHeight(menuHeight);
 
 		this.menuItems = FXCollections.observableArrayList();
 

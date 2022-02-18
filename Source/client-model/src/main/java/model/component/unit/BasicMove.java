@@ -11,17 +11,16 @@ import root.model.component.Field;
 public class BasicMove extends MoveType {
 
 	public BasicMove(Field myField,
-			PathFinder pathFinder,
-			ScheduledExecutorService timer) {
+	PathFinder pathFinder,
+	ScheduledExecutorService timer) {
 
 		super(myField, pathFinder, timer);
 
 		this.moveDelay = this.calculateDelay();
-
 	}
 
-	// this implementation only starts timer for move. timer just raise
-	// MoveModelEvent
+	// this implementation only starts timer for move.
+	// timer will raise MoveModelEvent
 	@Override
 	public void move() {
 
@@ -45,9 +44,9 @@ public class BasicMove extends MoveType {
 
 			super.moving = true;
 
-			this.calculateDelay();
-			this.timer.schedule(this, this.moveDelay, TimeUnit.MILLISECONDS);
-			// this will just raise event (at every move_delay second)
+			calculateDelay();
+			this.timer.schedule(this, moveDelay, TimeUnit.MILLISECONDS);
+			// this will just raise event (at every moveDelay seconds)
 			// that unit is ready to move
 			// this event is passed to the server and after confirmation from it's side
 			// controller is going to actually move unit using CtrlMoveCommand
@@ -64,7 +63,7 @@ public class BasicMove extends MoveType {
 		return super.clone();
 	}
 
-	// implement calculate delay based on current terrain
+	// TODO implement calculate delay based on current terrain
 	@Override
 	public int calculateDelay() {
 		return 2500;
@@ -72,16 +71,15 @@ public class BasicMove extends MoveType {
 
 	@Override
 	public void run() {
-		this.onEvent.handleModelEvent(
-				new MoveModelEventArg(
-						this.myField.getPlayer().getUsername(),
-						this.myField.getStoragePosition(),
-						this.path.get(0).getStoragePosition()));
+		onEvent.handleModelEvent(new MoveModelEventArg(
+				myField.getPlayer().getUsername(),
+				myField.getStoragePosition(),
+				path.get(0).getStoragePosition()));
 	}
 
 	@Override
 	public void stopMoving() {
-		
+
 	}
 
 }

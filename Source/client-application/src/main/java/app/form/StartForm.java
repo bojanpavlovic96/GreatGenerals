@@ -3,7 +3,6 @@ package app.form;
 import java.awt.Dimension;
 import java.awt.Toolkit;
 
-import app.event.FormMessageHandler;
 import app.event.RoomFormActionHandler;
 import app.event.UserFormActionHandler;
 import app.resource_manager.Language;

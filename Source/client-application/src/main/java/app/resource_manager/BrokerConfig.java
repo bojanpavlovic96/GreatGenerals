@@ -1,44 +1,29 @@
 package app.resource_manager;
 
-import utils.JsonUtil;
+import utils.StaticParser;
 
 public class BrokerConfig {
-
-	private static final String CONFIG_PATH = "config/broker-config.json";
 
 	private static final String PROD_STAGE = "prod";
 	private static final String DEV_STAGE = "dev";
 
-	private static BrokerConfig cache;
+	public String stage; // development || production
 
-	public static BrokerConfigFields getConfig() {
+	public BrokerConfigFields development;
+	public BrokerConfigFields production;
 
-		if (BrokerConfig.cache == null) {
-			var config = ConfigLoader.load(CONFIG_PATH, BrokerConfig.class);
-			if (config != null) {
-				BrokerConfig.cache = config;
-			} else {
-				System.out.println("Failed to load broker config ... ");
+	public BrokerConfig() {
 
-				return null;
-			}
-		}
-
-		return BrokerConfig.cache.getTargetConfig();
 	}
 
-	// json mapped configuration fields
-
-	private String stage; // development || production
-
-	private BrokerConfigFields development;
-	private BrokerConfigFields production;
-
-	public String toString() {
-		return JsonUtil.ToString(this);
+	public String constructUri() {
+		var config = this.getActive();
+		return "amqp://" + config.username + ":" + config.password
+				+ "@" + config.address + ":" + config.port
+				+ "/" + config.vhost;
 	}
 
-	private BrokerConfigFields getTargetConfig() {
+	public BrokerConfigFields getActive() {
 		if (this.stage.equals(PROD_STAGE)) {
 			return this.production;
 		} else if (this.stage.equals(DEV_STAGE)) {
@@ -50,11 +35,9 @@ public class BrokerConfig {
 		}
 	}
 
-	public String constructUri() {
-		var config = this.getTargetConfig();
-		return "amqp://" + config.username + ":" + config.password
-				+ "@" + config.address + ":" + config.port
-				+ "/" + config.vhost;
+	@Override
+	public String toString() {
+		return StaticParser.ToString(this.getActive());
 	}
 
 }

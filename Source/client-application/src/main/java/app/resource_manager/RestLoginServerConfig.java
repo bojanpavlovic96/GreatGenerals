@@ -3,6 +3,8 @@ package app.resource_manager;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.json.JsonMapper;
 
+import root.ConfigLoader;
+
 public class RestLoginServerConfig {
 
 	private static final String CONFIG_PATH = "config/rest-login-config.json";

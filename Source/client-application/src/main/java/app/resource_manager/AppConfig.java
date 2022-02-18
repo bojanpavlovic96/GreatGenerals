@@ -2,22 +2,25 @@ package app.resource_manager;
 
 import java.util.List;
 
-public class MainConfig {
+import root.ConfigLoader;
+import root.view.ViewConfig;
 
-	static private final String CONFIG_PATH = "config/main-config.json";
+public class AppConfig {
 
-	static private MainConfig currentConfig;
+	static private final String CONFIG_PATH = "config/app-config.json";
 
-	static public MainConfig getInstance() {
+	static private AppConfig currentConfig;
+
+	static public AppConfig getInstance() {
 		if (currentConfig == null) {
-			currentConfig = ConfigLoader.load(CONFIG_PATH, MainConfig.class);
+			currentConfig = ConfigLoader.load(CONFIG_PATH, AppConfig.class);
 		}
 
 		return currentConfig;
 	}
 
-	// this has to be public in order to be srializable
-	public MainConfig() {
+	// this has to be public in order to be serializable
+	public AppConfig() {
 
 	}
 
@@ -39,5 +42,9 @@ public class MainConfig {
 	public String messageFont;
 
 	public int headerAlphaValue;
+
+	public ViewConfig viewConfig;
+
+	public BrokerConfig brokerConfig;
 
 }

@@ -4,6 +4,8 @@ public class QueuesConfig {
 
 	public String loginExchange;
 	public String loginRoutingKey;
-	
 
+	public QueuesConfig() {
+
+	}
 }

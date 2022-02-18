@@ -1,0 +1,48 @@
+{
+	"languages": [
+		"en",
+		"fr",
+		"gr"
+	],
+	"defaultLanguage": "en",
+	"headerImagePath": "/battle_draw.jpg",
+	"titleFontSize": 20,
+	"titleFont": "Tlwg Typewriter Bold",
+	"messageFontSize": 14,
+	"messageFont": "Tlwg Typewriter Bold Oblique",
+	"headerAlphaValue": 75,
+	"viewConfig": {
+		"selectColor": {
+			"red": 100,
+			"green": 10,
+			"blue": 10,
+			"opacity": 0.5
+		},
+		"fieldMenuWidth": 200,
+		"fieldMenuHeight": 299
+	},
+	"brokerConfig": {
+		"stage": "dev",
+		"development": {
+			"address": "localhost",
+			"port": "5672",
+			"username": "gg_user",
+			"password": "gg_password",
+			"vhost": "gg_host",
+			"queues": {
+				"loginExchange": "login-exc",
+				"loginRoutingKey": "login-request"
+			}
+		},
+		"production": {
+			"address": "raven.rmq.cloudamqp.com",
+			"port": "5672",
+			"username": "wdvozwsr",
+			"password": "lzMIQ5SJvR083poynUF6Rc8T_QPNUJow",
+			"queues": {
+				"loginExchange": "login-exc",
+				"loginRoutingKey": "login-request"
+			}
+		}
+	}
+}
