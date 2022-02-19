@@ -60,19 +60,16 @@ public class StartPageController implements GameReadyEventProducer {
 		this.password = _password;
 
 		if (this.loginServer != null && this.loginServer.isReady()) {
-			loginServer.login(
-					new LoginRequest(username, password),
-					(response) -> {
-						if (response.getStatus() == LoginServerResponseStatus.SUCCESS) {
-							if (onGameReady != null) {
 
-								// this should just switch to roomForm
-								onGameReady.execute(
-										response.getUsername(),
-										"randomRoomName");
-							}
-						}
-					});
+			loginServer.login(new LoginRequest(username, password), (response) -> {
+				if (response.getStatus() == LoginServerResponseStatus.SUCCESS) {
+					if (onGameReady != null) {
+
+						// this should just switch to roomForm
+						onGameReady.execute(response.getUsername(),"randomRoomName");
+					}
+				}
+			});
 			((MessageDisplay) initialPage)
 					.showInfoMessage(Language.MessageType.LoginRequestSent);
 		} else {

@@ -3,7 +3,7 @@ package root.communication.messages;
 public class LoginServerResponse {
 
 	private String username;
-	private String level;
+	private int level;
 	private int points;
 
 	private LoginServerResponseStatus status;
@@ -13,7 +13,7 @@ public class LoginServerResponse {
 	}
 
 	public LoginServerResponse(String username,
-			String level,
+			int level,
 			int points,
 			LoginServerResponseStatus status,
 			String message) {
@@ -32,11 +32,11 @@ public class LoginServerResponse {
 		this.username = username;
 	}
 
-	public String getLevel() {
+	public int getLevel() {
 		return this.level;
 	}
 
-	public void setLevel(String level) {
+	public void setLevel(int level) {
 		this.level = level;
 	}
 

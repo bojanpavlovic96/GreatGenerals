@@ -7,6 +7,7 @@
 		<version>2.4.1</version>
 		<relativePath /> <!-- lookup parent from repository -->
 	</parent>
+	
 	<groupId>great-generals.server</groupId>
 	<artifactId>rest-login</artifactId>
 	<version>0.0.1-SNAPSHOT</version>

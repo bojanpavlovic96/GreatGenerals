@@ -16,7 +16,7 @@ public abstract class MoveType implements Cloneable, Runnable {
 
 	protected PathFinder pathFinder;
 	protected List<Field> path;
-	protected boolean moving;
+	// protected boolean moving;
 
 	protected int moveDelay;
 
@@ -91,9 +91,7 @@ public abstract class MoveType implements Cloneable, Runnable {
 		return this.pathFinder;
 	}
 
-	public boolean isMoving() {
-		return moving;
-	}
+	public abstract boolean isMoving();
 
 	public boolean isOnPath(Field field) {
 		var fieldPos = field.getStoragePosition();

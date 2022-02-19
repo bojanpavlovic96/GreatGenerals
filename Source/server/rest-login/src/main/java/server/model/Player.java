@@ -16,13 +16,13 @@ public class Player {
 	private String name;
 	private String password;
 
-	private String level;
+	private int level;
 	private int points;
 
 	public Player() {
 	}
 
-	public Player(String name, String password, String level, int points) {
+	public Player(String name, String password, int level, int points) {
 		this.setLevel(level);
 		this.setPoints(points);
 		this.setName(name);
@@ -61,11 +61,11 @@ public class Player {
 		this.points = points;
 	}
 
-	public String getLevel() {
+	public int getLevel() {
 		return level;
 	}
 
-	public void setLevel(String level) {
+	public void setLevel(int level) {
 		this.level = level;
 	}
 

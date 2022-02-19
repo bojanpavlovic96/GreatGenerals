@@ -1,6 +1,8 @@
 package root.communication.messages;
 
-public class LoginRequest {
+import java.io.Serializable;
+
+public class LoginRequest implements Serializable {
 
 	private String username;
 	private String password;
@@ -29,12 +31,12 @@ public class LoginRequest {
 		this.username = username;
 	}
 
-	@Override
-	public String toString() {
-		return "{" +
-				" username='" + getUsername() + "'" +
-				", password='" + getPassword() + "'" +
-				"}";
-	}
+	// @Override
+	// public String toString() {
+	// 	return "{" +
+	// 			" username='" + getUsername() + "'" +
+	// 			", password='" + getPassword() + "'" +
+	// 			"}";
+	// }
 
 }
