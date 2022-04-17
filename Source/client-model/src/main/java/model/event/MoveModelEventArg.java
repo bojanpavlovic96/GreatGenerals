@@ -5,13 +5,15 @@ import root.model.event.ModelEventArg;
 
 public class MoveModelEventArg extends ModelEventArg {
 
+	public static final String name = "move-model-event";
+
 	private Point2D source_field; // move from
 	private Point2D destinatoin_field; // move to
 
 	// constructors
 
 	public MoveModelEventArg(String player_name, Point2D source_field, Point2D destination_field) {
-		super("move-model-event", player_name);
+		super(MoveModelEventArg.name , player_name);
 
 		this.setSourceField(source_field);
 		setDestinatoinField(destination_field);

@@ -2,7 +2,6 @@ package app.server;
 
 import java.io.IOException;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.rabbitmq.client.Channel;
 
 import app.event.ConnectionEventHandler;
@@ -13,30 +12,34 @@ import root.communication.LoginServerProxy;
 import root.communication.LoginServerResponseHandler;
 import root.communication.messages.LoginRequest;
 import root.communication.messages.RegisterRequest;
-
+import root.communication.parser.DataParser;
 public class RabbitLoginServerProxy
-		implements LoginServerProxy,
-		ConnectionEventHandler {
+
+		implements LoginServerProxy, ConnectionEventHandler {
 
 	private RabbitConnectionTask rabbitConnection;
 	private QueuesConfig queuesConfig;
 
 	private String responseQueue;
 
-	public RabbitLoginServerProxy(RabbitConnectionTask rabbitConnection,
-			QueuesConfig queuesConfig) {
+	private DataParser jsonParser;
+
+	public RabbitLoginServerProxy(
+			RabbitConnectionTask rabbitConnection,
+			QueuesConfig queuesConfig,
+			DataParser jsonParser) {
 
 		this.rabbitConnection = rabbitConnection;
 		this.queuesConfig = queuesConfig;
 
+		this.jsonParser = jsonParser;
+
 		this.rabbitConnection.subscribeForEvents(this);
 	}
 
-	// loign server proxy methods
-
 	@Override
 	public boolean isReady() {
-		return this.rabbitConnection.isConnected();
+		return rabbitConnection.isConnected();
 	}
 
 	@Override
@@ -52,9 +55,10 @@ public class RabbitLoginServerProxy
 						+ " for: "
 						+ queuesConfig.loginRoutingKey);
 
-				ObjectMapper mapper = new ObjectMapper();
-				String strRequest = mapper.writeValueAsString(request);
-				
+				// ObjectMapper mapper = new ObjectMapper();
+				// String strRequest = mapper.writeValueAsString(request);
+				String strRequest = jsonParser.ToString(request);
+
 				channel.basicPublish(
 						queuesConfig.loginExchange,
 						queuesConfig.loginRoutingKey,

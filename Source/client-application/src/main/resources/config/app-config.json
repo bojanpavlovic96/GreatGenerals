@@ -35,14 +35,23 @@
 			}
 		},
 		"production": {
-			"address": "raven.rmq.cloudamqp.com",
+			"address": "some.address.com",
 			"port": "5672",
-			"username": "wdvozwsr",
-			"password": "lzMIQ5SJvR083poynUF6Rc8T_QPNUJow",
+			"username": "rabbit_user",
+			"password": "rabbit_password",
 			"queues": {
 				"loginExchange": "login-exc",
 				"loginRoutingKey": "login-request"
 			}
 		}
+	},
+	"rabbitServerProxyConfig": {
+		"rabbitTopicExchangeKeyword": "topic",
+		"serverCommandsExchange": "server-commands-exc",
+		"serverCommandsQueue": "server-commands-queue",
+		"serverCommandsRoutePrefix": "server-command.",
+		"clientEventsExchange": "client-events-exc",
+		"clientEventsQueue": "client-events-queue",
+		"clientEventsRoutePrefix": "client-event."
 	}
 }

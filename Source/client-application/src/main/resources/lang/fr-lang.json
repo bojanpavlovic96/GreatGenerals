@@ -26,23 +26,39 @@
 		"color": "#b30059"
 	},
 	"pleaseWaitForConnection": {
-		"message": "Please wait for connection",
+		"message": "FR Please wait for connection",
 		"color": "#4da6ff"
 	},
 	"loginRequestSent": {
-		"message": "Login request sent",
+		"message": "FR Login request sent",
 		"color": "#99ff66"
 	},
 	"registerRequestSent": {
-		"message": "Register request sent",
+		"message": "FR Register request sent",
 		"color": "#3399ff"
 	},
 	"createRequestSent": {
-		"message": "Create request sent",
+		"message": "FR Create request sent",
 		"color": "#3399ff"
 	},
 	"joinRequestSent": {
-		"message": "Join request sent",
+		"message": "FR Join request sent",
 		"color": "#3399ff"
+	},
+	"loginSuccessful": {
+		"message": "FR Login successful",
+		"color": "#99ff66"
+	},
+	"loginfailed": {
+		"message": "FR Login failed",
+		"color": "#ff6666"
+	},
+	"registerSuccessful": {
+		"message": "FR Register successful",
+		"color": "#99ff66"
+	},
+	"registerfailed": {
+		"message": "FR Register failed",
+		"color": "#ff6666"
 	}
 }

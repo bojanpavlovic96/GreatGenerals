@@ -49,14 +49,14 @@
 		<dependency>
 			<groupId>great-generals</groupId>
 			<artifactId>communication</artifactId>
-			<version>0.0.1-SNAPSHOT</version>
+			<version>1.0-SNAPSHOT</version>
 		</dependency>
 
-		<dependency>
+		<!-- <dependency>
 			<groupId>great-generals</groupId>
 			<artifactId>json-util</artifactId>
 			<version>1.0-SNAPSHOT</version>
-		</dependency>
+		</dependency> -->
 
 		<!-- dependencies that are not from the GreatGenerals -->
 

@@ -2,6 +2,7 @@ package app.resource_manager;
 
 import java.util.List;
 
+import proxy.RabbitServerProxyConfig;
 import root.ConfigLoader;
 import root.view.ViewConfig;
 
@@ -47,4 +48,6 @@ public class AppConfig {
 
 	public BrokerConfig brokerConfig;
 
-}
+	public RabbitServerProxyConfig rabbitServerProxyConfig;
+
+}	

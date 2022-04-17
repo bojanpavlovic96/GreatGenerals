@@ -18,12 +18,11 @@ public class MockupLoginServerProxy implements LoginServerProxy {
 		System.out.println("MockupServer used for returning login response  ... ");
 		System.out.println("Requesting login: " + request.toString());
 
-		handler.handleResponse(new LoginServerResponse(
+		handler.handle(new LoginServerResponse(
 				request.getUsername(),
-				"expert",
+				10,
 				200,
-				LoginServerResponseStatus.SUCCESS,
-				""));
+				LoginServerResponseStatus.SUCCESS));
 	}
 
 	@Override
@@ -31,12 +30,11 @@ public class MockupLoginServerProxy implements LoginServerProxy {
 		System.out.println("MockupServer used for returning register response  ... ");
 		System.out.println("Requesting registration: " + request.toString());
 
-		handler.handleResponse(new LoginServerResponse(
+		handler.handle(new LoginServerResponse(
 				request.getUsername(),
-				"expert",
+				10,
 				200,
-				LoginServerResponseStatus.SUCCESS,
-				""));
+				LoginServerResponseStatus.SUCCESS));
 	}
 
 	@Override

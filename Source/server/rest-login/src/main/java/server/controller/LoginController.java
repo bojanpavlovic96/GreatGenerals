@@ -9,74 +9,59 @@ import root.communication.messages.LoginRequest;
 import root.communication.messages.LoginServerResponse;
 import root.communication.messages.LoginServerResponseStatus;
 import root.communication.messages.RegisterRequest;
-import server.model.Player;
-import server.model.PlayerRepository;
 import server.service.LoginResult;
 import server.service.LoginService;
+import server.service.LoginStatus;
 
+@RestController
 public class LoginController {
 
-	// @Autowired
-	// private final PlayerRepository playerRepo;
-
-	@Autowired
 	private final LoginService loginService;
 
-	// public LoginController(PlayerRepository playerRepo) {
-	// this.playerRepo = playerRepo;
-	// }
+	// if @Primary annotation is not used
+	// this is the only way to inject the bean if multiple impl. are provided
+	// also there is a xml way of doing this but ... it is xml
+	// @Autowired
+	// public LoginController(
+	// @Qualifier("MockupLoginService") LoginService loginService,
+	// @Qualifier("JpaPlayerRepository") PlayerRepository playerRepo) {
 
+	@Autowired
 	public LoginController(LoginService loginService) {
+
 		this.loginService = loginService;
 	}
 
 	@PostMapping("/login")
-	public LoginServerResponse checkCredentials(@RequestBody LoginRequest request) {
+	public LoginServerResponse login(@RequestBody LoginRequest request) {
 
-		LoginServerResponse response = new LoginServerResponse();
+		var response = new LoginServerResponse();
 		response.setUsername(request.getUsername());
 
-		loginService.login(
-				request.getUsername(),
-				request.getPassword(),
-				(result, player) -> {
-					if (result == LoginResult.Valid) {
-						response.setStatus(mapServiceResult(result));
-
-						response.setLevel(player.getLevel());
-						response.setPoints(player.getPoints());
-
-					} else {
-
-					}
-
-					return response;
-				});
-
-		if (record == null) {
-			response.setStatus(LoginServerResponseStatus.INVALID_NAME);
-			response.setMessage("Player with this username does not exist ... ");
-			// TODO read this string from configuration
-
-			return response;
+		LoginResult loginResult = null;
+		try {
+			loginResult = loginService.login(
+					request.getUsername(),
+					request.getPassword())
+					.get();
+		} catch (Exception e) {
+			// debug
+			System.out.println("Exception while useing login service... ");
+			System.out.println(e.getMessage());
 		}
 
-		if (!request.getPassword().equals(record.getPassword())) {
-			response.setStatus(LoginServerResponseStatus.INVALID_PASSWORD);
-			response.setMessage("Wrong password ... ");
-			// TODO read this string from configuration
+		if (loginResult == null || loginResult.getLoginStatus() != LoginStatus.Valid) {
+			response.setStatus(mapStatus(loginResult.getLoginStatus()));
+		} else {
+			// success
+			response.setStatus(mapStatus(loginResult.getLoginStatus()));
 
-			return response;
+			response.setLevel(loginResult.getPlayer().getLevel());
+			response.setPoints(loginResult.getPlayer().getPoints());
 		}
-
-		// user exists and the password is correct
-
-		response.setLevel(record.getLevel());
-		response.setPoints(record.getPoints());
-
-		response.setStatus(LoginServerResponseStatus.SUCCESS);
 
 		return response;
+
 	}
 
 	@PostMapping("/register")
@@ -85,116 +70,42 @@ public class LoginController {
 		LoginServerResponse response = new LoginServerResponse();
 		response.setUsername(request.getUsername());
 
-		System.out.println("Handling request: " + request.toString());
+		LoginResult result = null;
 
-		Player record = this.playerRepo.getByName(request.getUsername());
-
-		if (record != null) {
-			response.setStatus(LoginServerResponseStatus.INVALID_NAME);
-			response.setMessage("This username is already taken ... ");
-			// TODO read this string from configuration
-
-			return response;
+		try {
+			result = loginService.register(
+					request.getUsername(),
+					request.getPassword())
+					.get();
+		} catch (Exception e) {
+			System.out.println("Exception while useing login service... ");
+			System.out.println(e.getMessage());
 		}
 
-		Player newPlayer = new Player(
-				request.getUsername(),
-				request.getPassword(),
-				Player.translateToLevel(0),
-				0);
+		if (result == null || result.getLoginStatus() != LoginStatus.Valid) {
+			response.setStatus(mapStatus(result.getLoginStatus()));
+		} else {
+			response.setStatus(mapStatus(result.getLoginStatus()));
 
-		this.playerRepo.save(newPlayer);
-
-		response.setStatus(LoginServerResponseStatus.SUCCESS);
-		response.setLevel(newPlayer.getLevel());
-		response.setPoints(newPlayer.getPoints());
+			response.setLevel(result.getPlayer().getLevel());
+			response.setPoints(result.getPlayer().getPoints());
+		}
 
 		return response;
 	}
 
-	private LoginServerResponseStatus mapServiceResult(LoginResult loginResult) {
-		switch (loginResult) {
-		case Valid:
-			return LoginServerResponseStatus.SUCCESS;
-		case InvalidPassword:
-			return LoginServerResponseStatus.INVALID_PASSWORD;
-		case NoSuchUser:
-			return LoginServerResponseStatus.INVALID_NAME;
-		default:
-			return LoginServerResponseStatus.SERVER_ERROR;
+	private LoginServerResponseStatus mapStatus(LoginStatus loginStatus) {
+		switch (loginStatus) {
+			case Valid:
+				return LoginServerResponseStatus.SUCCESS;
+			case InvalidPassword:
+				return LoginServerResponseStatus.INVALID_PASSWORD;
+			case NoSuchUser:
+				return LoginServerResponseStatus.INVALID_NAME;
+			default:
+				return LoginServerResponseStatus.SERVER_ERROR;
 
 		}
 	}
-
-	// @PostMapping("/login")
-	// public LoginServerResponse checkCredentials(@RequestBody LoginRequest
-	// request) {
-
-	// LoginServerResponse response = new LoginServerResponse();
-	// response.setUsername(request.getUsername());
-
-	// System.out.println("Handling request for: " + request.getUsername());
-
-	// Player record = this.playerRepo.getByName(request.getUsername());
-
-	// if (record == null) {
-	// response.setStatus(LoginServerResponseStatus.INVALID_NAME);
-	// response.setMessage("Player with this username does not exist ... ");
-	// // TODO read this string from configuration
-
-	// return response;
-	// }
-
-	// if (!request.getPassword().equals(record.getPassword())) {
-	// response.setStatus(LoginServerResponseStatus.INVALID_PASSWORD);
-	// response.setMessage("Wrong password ... ");
-	// // TODO read this string from configuration
-
-	// return response;
-	// }
-
-	// // user exists and the password is correct
-
-	// response.setLevel(record.getLevel());
-	// response.setPoints(record.getPoints());
-
-	// response.setStatus(LoginServerResponseStatus.SUCCESS);
-
-	// return response;
-	// }
-
-	// @PostMapping("/register")
-	// public LoginServerResponse registerPlayer(@RequestBody RegisterRequest
-	// request) {
-
-	// LoginServerResponse response = new LoginServerResponse();
-	// response.setUsername(request.getUsername());
-
-	// System.out.println("Handling request: " + request.toString());
-
-	// Player record = this.playerRepo.getByName(request.getUsername());
-
-	// if (record != null) {
-	// response.setStatus(LoginServerResponseStatus.INVALID_NAME);
-	// response.setMessage("This username is already taken ... ");
-	// // TODO read this string from configuration
-
-	// return response;
-	// }
-
-	// Player newPlayer = new Player(
-	// request.getUsername(),
-	// request.getPassword(),
-	// Player.translateToLevel(0),
-	// 0);
-
-	// this.playerRepo.save(newPlayer);
-
-	// response.setStatus(LoginServerResponseStatus.SUCCESS);
-	// response.setLevel(newPlayer.getLevel());
-	// response.setPoints(newPlayer.getPoints());
-
-	// return response;
-	// }
 
 }

@@ -1,4 +1,0 @@
-password = "lzMIQ5SJvR083poynUF6Rc8T_QPNUJow";
-username = "wdvozwsr";
-hostname = "raven.rmq.cloudamqp.com";
-uri = "amqp://" + username + ":" + password + "@" + hostname + "/" + username;

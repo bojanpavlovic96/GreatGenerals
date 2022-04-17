@@ -1,6 +1,6 @@
 package app.resource_manager;
 
-import utils.StaticParser;
+import root.communication.parser.StaticParser;
 
 public class BrokerConfig {
 

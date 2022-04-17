@@ -1,13 +1,15 @@
 package server.service;
 
+import java.util.concurrent.CompletableFuture;
+
 public interface LoginService {
 
-	void validateUsername(String username, ValidationHandler handler);
+	CompletableFuture<ValidationResult> validateUsername(String username);
 
-	void validatePassword(String password, ValidationHandler handler);
+	CompletableFuture<ValidationResult> validatePassword(String password);
 
-	void register(String username, String password, LoginHandler handler);
+	CompletableFuture<LoginResult> register(String username, String password);
 
-	void login(String username, String password, LoginHandler handler);
+	CompletableFuture<LoginResult> login(String username, String password);
 
 }

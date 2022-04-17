@@ -44,5 +44,21 @@
 	"joinRequestSent": {
 		"message": "Join request sent",
 		"color": "#3399ff"
+	},
+	"loginSuccessful": {
+		"message": "Login successful",
+		"color": "#99ff66"
+	},
+	"loginfailed": {
+		"message": "Login failed",
+		"color": "#ff6666"
+	},
+	"registerSuccessful": {
+		"message": "Register successful",
+		"color": "#99ff66"
+	},
+	"registerfailed": {
+		"message": "Register failed",
+		"color": "#ff6666"
 	}
 }

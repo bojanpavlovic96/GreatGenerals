@@ -5,13 +5,15 @@ import root.model.event.ModelEventArg;
 
 public class AttackModelEventArg extends ModelEventArg {
 
+	public static final String name = "attack-model-event";
+
 	private Point2D source_field;
 	private Point2D destination_field;
 
 	// constructors
 
 	public AttackModelEventArg(String player_name, Point2D source_field, Point2D destination_field) {
-		super("attack-model-event", player_name);
+		super(AttackModelEventArg.name, player_name);
 
 		this.source_field = source_field;
 		this.destination_field = destination_field;

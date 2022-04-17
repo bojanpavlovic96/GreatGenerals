@@ -6,12 +6,12 @@ import java.nio.charset.StandardCharsets;
 
 import com.google.common.io.Resources;
 
-import utils.GsonJsonParser;
-import utils.JsonParser;
+import root.communication.parser.DataParser;
+import root.communication.parser.GsonJsonParser;
 
 public class ConfigLoader {
 
-	private static JsonParser jsonParser;
+	private static DataParser jsonParser;
 
 	public static <T> T load(String configPath, Class<T> configType) {
 

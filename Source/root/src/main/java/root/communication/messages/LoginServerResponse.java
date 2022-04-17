@@ -7,7 +7,6 @@ public class LoginServerResponse {
 	private int points;
 
 	private LoginServerResponseStatus status;
-	private String message;
 
 	public LoginServerResponse() {
 	}
@@ -15,13 +14,11 @@ public class LoginServerResponse {
 	public LoginServerResponse(String username,
 			int level,
 			int points,
-			LoginServerResponseStatus status,
-			String message) {
+			LoginServerResponseStatus status) {
 		this.username = username;
 		this.level = level;
 		this.points = points;
 		this.status = status;
-		this.setMessage(message);
 	}
 
 	public String getUsername() {
@@ -54,14 +51,6 @@ public class LoginServerResponse {
 
 	public void setStatus(LoginServerResponseStatus status) {
 		this.status = status;
-	}
-
-	public String getMessage() {
-		return message;
-	}
-
-	public void setMessage(String message) {
-		this.message = message;
 	}
 
 	@Override

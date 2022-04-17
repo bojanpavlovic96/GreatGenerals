@@ -13,16 +13,16 @@ import root.communication.LoginServerResponseHandler;
 import root.communication.messages.LoginRequest;
 import root.communication.messages.LoginServerResponse;
 import root.communication.messages.RegisterRequest;
-import utils.JsonParser;
+import root.communication.parser.DataParser;
 
 public class RestLoginServerProxy implements LoginServerProxy {
 
 	private RestLoginServerConfigFields config;
-	private JsonParser jsonParser;
+	private DataParser jsonParser;
 
 	public RestLoginServerProxy(
 			RestLoginServerConfigFields config,
-			JsonParser jsonParser) {
+			DataParser jsonParser) {
 
 		this.config = config;
 		this.jsonParser = jsonParser;
@@ -52,7 +52,7 @@ public class RestLoginServerProxy implements LoginServerProxy {
 				.sendAsync(request, BodyHandlers.ofString())
 				.thenApply(HttpResponse::body)
 				.thenApply(this::responseParser)
-				.thenAccept(handler::handleResponse)
+				.thenAccept(handler::handle)
 				.join();
 
 	}
@@ -76,7 +76,7 @@ public class RestLoginServerProxy implements LoginServerProxy {
 				.sendAsync(request, BodyHandlers.ofString())
 				.thenApply(HttpResponse::body)
 				.thenApply(this::responseParser)
-				.thenAccept(handler::handleResponse)
+				.thenAccept(handler::handle)
 				.join();
 	}
 

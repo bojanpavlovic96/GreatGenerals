@@ -31,12 +31,4 @@ public class LoginRequest implements Serializable {
 		this.username = username;
 	}
 
-	// @Override
-	// public String toString() {
-	// 	return "{" +
-	// 			" username='" + getUsername() + "'" +
-	// 			", password='" + getPassword() + "'" +
-	// 			"}";
-	// }
-
 }

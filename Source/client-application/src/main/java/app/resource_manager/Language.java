@@ -3,7 +3,19 @@ package app.resource_manager;
 public class Language {
 
 	public enum MessageType {
-		WaitingForServer, ConectionEstablished, ServerUnreachable, PleaseWaitForConnection, LoginRequestSent, RegisterRequestSent, CreateRequestSent, JoinRequestSent
+		WaitingForServer,
+		ConectionEstablished,
+		ServerUnreachable,
+		PleaseWaitForConnection,
+		LoginRequestSent,
+		RegisterRequestSent,
+		CreateRequestSent,
+		JoinRequestSent,
+		// bellow are new
+		LoginSuccessful,
+		LoginFailed,
+		RegisterSuccessful,
+		RegisterFailed
 	}
 
 	public static class Message {
@@ -35,6 +47,10 @@ public class Language {
 	public Language.Message registerRequestSent;
 	public Language.Message createRequestSent;
 	public Language.Message joinRequestSent;
+	public Language.Message loginSuccessful;
+	public Language.Message loginFailed;
+	public Language.Message registerSuccessful;
+	public Language.Message registerFailed;
 
 	public Language() {
 
@@ -58,6 +74,16 @@ public class Language {
 			return this.createRequestSent;
 		case JoinRequestSent:
 			return this.joinRequestSent;
+		case LoginFailed:
+			return this.loginFailed;
+		case LoginSuccessful:
+			return this.loginSuccessful;
+		case RegisterFailed:
+			return this.registerFailed;
+		case RegisterSuccessful:
+			return this.registerSuccessful;
+		default:
+			break;
 		}
 
 		return null;

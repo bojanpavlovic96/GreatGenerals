@@ -14,13 +14,15 @@ import view.command.LoadBoardCommand;
 
 public class CtrlInitializeCommand extends Command {
 
+	public static final String name = "initialize-ctrl-command";
+
 	private String username;
 
 	private List<PlayerData> players;
 	private List<Field> fields;
 
 	public CtrlInitializeCommand(List<PlayerData> players, List<Field> fields) {
-		super("initialize-ctrl-command");
+		super(CtrlInitializeCommand.name);
 
 		this.players = players;
 		this.fields = fields;
@@ -50,11 +52,20 @@ public class CtrlInitializeCommand extends Command {
 		System.out.println("Calling initializeModel ... @ CtrlInitializeCommand.run");
 		model.initializeModel(this.players, this.fields);
 
-		model.getField(new Point2D(10, 10)).setUnit(model.generateUnit("basic-unit"));
-		model.getField(new Point2D(4, 5)).setUnit(model.generateUnit("basic-unit"));
-		model.getField(new Point2D(5, 5)).setUnit(model.generateUnit("basic-unit"));
-		model.getField(new Point2D(5, 10)).setUnit(model.generateUnit("basic-unit"));
-		model.getField(new Point2D(4, 7)).setUnit(model.generateUnit("basic-unit"));
+		model.getField(new Point2D(10, 10))
+				.setUnit(model.generateUnit("basic-unit"));
+
+		model.getField(new Point2D(4, 5))
+				.setUnit(model.generateUnit("basic-unit"));
+
+		model.getField(new Point2D(5, 5))
+				.setUnit(model.generateUnit("basic-unit"));
+
+		model.getField(new Point2D(5, 10))
+				.setUnit(model.generateUnit("basic-unit"));
+
+		model.getField(new Point2D(4, 7))
+				.setUnit(model.generateUnit("basic-unit"));
 
 		ClearViewCommand clear_command = new ClearViewCommand();
 		LoadBoardCommand view_command = new LoadBoardCommand(this.fields);

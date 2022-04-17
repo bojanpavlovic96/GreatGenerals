@@ -39,9 +39,7 @@ import view.component.menu.OptionMenu;
 // attention 
 // (somehow lost later in development... )
 
-public class DrawingStage
-		extends Stage
-		implements View {
+public class DrawingStage extends Stage implements View {
 
 	private double STAGE_WIDTH;
 	private double STAGE_HEIGHT;
@@ -139,8 +137,8 @@ public class DrawingStage
 		System.out.println("Initial canvas height: " + this.canvasHeight);
 
 		this.fieldMenu = new OptionMenu(
-			config.fieldMenuWidth, 
-			config.fieldMenuHeight);
+				config.fieldMenuWidth,
+				config.fieldMenuHeight);
 
 		this.fieldMenu.setLayoutX(100);
 		this.fieldMenu.setLayoutY(100);
@@ -154,6 +152,8 @@ public class DrawingStage
 
 	private void initCommandQueue() {
 
+		// TODO this queue should be set from setCommandQueue method
+		// after the queue is set create command processor
 		this.commandQueue = new CommandQueue();
 		this.commandProcessor = new FxCommandProcessor((CommandDrivenComponent) this);
 

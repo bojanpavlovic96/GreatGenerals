@@ -59,12 +59,12 @@ public class GameBrain implements Controller {
 	private List<FieldOption> fieldOptions;
 
 	// constructors
-	public GameBrain(GameServerProxy server_proxy, View view, Model model) {
+	public GameBrain(GameServerProxy serverProxy, View view, Model model) {
 		super();
 
 		this.view = view;
 		this.model = model;
-		this.serverProxy = server_proxy;
+		this.serverProxy = serverProxy;
 
 		// this.undoStack = new ArrayList<Command>();
 		this.undoStack = new UndoStack();
@@ -76,7 +76,7 @@ public class GameBrain implements Controller {
 		this.initFieldOptions();
 
 		// connect serverProxy and controller
-		this.serverCommandQueue = ((CommandProducer) this.serverProxy).getConsumerQueue();
+		this.serverCommandQueue = ((CommandProducer) serverProxy).getConsumerQueue();
 		this.serverCommandProcessor = new BasicCommandProcessor(
 				Executors.newSingleThreadExecutor(),
 				(CommandDrivenComponent) this);

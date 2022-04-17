@@ -101,13 +101,4 @@ public class Player {
 				this.password);
 	}
 
-	public static String translateToLevel(int points) {
-		// TODO some logic please
-		if (points < 10) {
-			return "beginner";
-		} else {
-			return "expert";
-		}
-	}
-
 }

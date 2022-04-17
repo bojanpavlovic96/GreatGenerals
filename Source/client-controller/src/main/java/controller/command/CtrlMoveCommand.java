@@ -15,6 +15,8 @@ import view.command.UnselectFieldCommand;
 
 public class CtrlMoveCommand extends Command {
 
+	public static final String name = "move-command";
+
 	private Point2D startFieldPos;
 	private Field startField;
 
@@ -22,7 +24,7 @@ public class CtrlMoveCommand extends Command {
 	private Field secondField;
 
 	public CtrlMoveCommand(Point2D firstPosition, Point2D secondPosition) {
-		super("move-command");
+		super(CtrlMoveCommand.name);
 
 		this.startFieldPos = firstPosition;
 		this.secondFieldPos = secondPosition;

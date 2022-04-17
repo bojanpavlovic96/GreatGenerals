@@ -1,18 +1,32 @@
 package app.launcher;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import app.form.StartForm;
 import app.resource_manager.AppConfig;
 import app.server.MockupLoginServerProxy;
-import communication.RabbitGameServerProxy;
-import communication.translator.JSONMessageTranslator;
 import controller.GameBrain;
+import controller.command.CtrlInitializeCommand;
 import javafx.application.Application;
+import javafx.geometry.Point2D;
+import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 import model.DataModel;
+import model.PlayerModelData;
+import model.component.field.ModelField;
+import protocol.NamedWrapperJsonTranslator;
+import proxy.RabbitGameServerProxy;
 import root.ActiveComponent;
+import root.command.Command;
 import root.communication.GameServerProxy;
+import root.communication.Translator;
+import root.communication.parser.GsonJsonParser;
 import root.controller.Controller;
 import root.model.Model;
+import root.model.PlayerData;
+import root.model.component.Field;
+import root.model.component.Terrain;
 import root.view.View;
 import view.DrawingStage;
 import view.component.HexFieldManager;
@@ -55,15 +69,24 @@ public class Launcher extends Application {
 				// new RabbitLoginServerProxy(this.connectionTask, brokerConfig.queues),
 				(String username, String roomName) -> { // game ready handler
 
-					if (!connectionTask.isConnected()) {
-						connectionTask.subscribeForEvents((connTask, eventType) -> {
+					// TODO why am I subscribeing here ... ?
+					// maybe to shutdown app in case of an error ... ?
+					// if (!connectionTask.isConnected()) {
+					// connectionTask.subscribeForEvents((connTask, eventType) -> {
 
-						});
-					}
+					// });
+					// }
 
+					Translator translator = new NamedWrapperJsonTranslator(
+							new GsonJsonParser(),
+							new StupidStaticTypeResolver());
+
+					// TODO replace username and roomName with some token/key
+					// obtained from the login server
 					GameServerProxy serverProxy = new RabbitGameServerProxy(
+							AppConfig.getInstance().rabbitServerProxyConfig,
 							connectionTask.getChannel(),
-							new JSONMessageTranslator(),
+							translator,
 							username,
 							roomName);
 
@@ -82,6 +105,10 @@ public class Launcher extends Application {
 
 					gameController = new GameBrain(serverProxy, view, model);
 
+					// TODO remove this
+					var initCommand = getFakeInitCommand();
+					gameController.getCommandQueue().enqueue(initCommand);
+
 					startPageController.hideInitialPage();
 					gameController.getView().show();
 
@@ -91,6 +118,50 @@ public class Launcher extends Application {
 		this.connectionThread.start();
 
 		this.startPageController.showInitialPage();
+	}
+
+	private Command getFakeInitCommand() {
+		List<PlayerData> players = new ArrayList<PlayerData>();
+		players.add(new PlayerModelData("user 1", Color.RED));
+		players.add(new PlayerModelData("user 2", Color.GREEN));
+		players.add(new PlayerModelData("user 3", Color.BLACK));
+
+		List<Field> fieldModels = new ArrayList<Field>();
+
+		int left = 3;
+		int right = 17;
+
+		int playerCounter = 0;
+
+		for (int i = 1; i < 16; i++) {
+
+			for (int j = left; j < right; j++) {
+				if (i % 2 == 0 && j % 5 == 0) {
+					fieldModels.add(new ModelField(
+							new Point2D(j, i),
+							players.get(playerCounter),
+							true,
+							null,
+							new Terrain("mountains", 1)));
+				} else {
+					fieldModels.add(new ModelField(
+							new Point2D(j, i),
+							players.get(playerCounter),
+							true,
+							null,
+							new Terrain("water", 1)));
+				}
+
+				playerCounter++;
+				playerCounter %= 3;
+
+			}
+
+			if (left > -3)
+				left--;
+		}
+
+		return new CtrlInitializeCommand(players, fieldModels);
 	}
 
 	@Override

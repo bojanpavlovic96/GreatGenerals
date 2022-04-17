@@ -8,9 +8,7 @@ import app.form.InitialPage;
 import app.form.MessageDisplay;
 import app.resource_manager.Language;
 import root.communication.LoginServerProxy;
-import root.communication.LoginServerResponseHandler;
 import root.communication.messages.LoginRequest;
-import root.communication.messages.LoginServerResponse;
 import root.communication.messages.LoginServerResponseStatus;
 import root.communication.messages.RegisterRequest;
 
@@ -61,20 +59,24 @@ public class StartPageController implements GameReadyEventProducer {
 
 		if (this.loginServer != null && this.loginServer.isReady()) {
 
-			loginServer.login(new LoginRequest(username, password), (response) -> {
-				if (response.getStatus() == LoginServerResponseStatus.SUCCESS) {
-					if (onGameReady != null) {
+			loginServer.login(new LoginRequest(username, password),
+					(response) -> {
+						if (response.getStatus() == LoginServerResponseStatus.SUCCESS) {
+							if (onGameReady != null) {
 
-						// this should just switch to roomForm
-						onGameReady.execute(response.getUsername(),"randomRoomName");
-					}
-				}
-			});
-			((MessageDisplay) initialPage)
-					.showInfoMessage(Language.MessageType.LoginRequestSent);
+								// this should just switch to roomForm
+								onGameReady.execute(response.getUsername(), "randomRoomName");
+							}
+						} else {
+							((MessageDisplay) initialPage).showInfoMessage(
+									Language.MessageType.LoginFailed);
+						}
+					});
+			((MessageDisplay) initialPage).showInfoMessage(
+					Language.MessageType.LoginRequestSent);
 		} else {
-			((MessageDisplay) initialPage)
-					.showInfoMessage(Language.MessageType.PleaseWaitForConnection);
+			((MessageDisplay) initialPage).showInfoMessage(
+					Language.MessageType.PleaseWaitForConnection);
 		}
 
 	}
@@ -85,21 +87,17 @@ public class StartPageController implements GameReadyEventProducer {
 		if (loginServer != null && loginServer.isReady()) {
 			loginServer.register(
 					new RegisterRequest(username, password),
-					new LoginServerResponseHandler() {
+					(response) -> {
+						if (response.getStatus() == LoginServerResponseStatus.SUCCESS) {
 
-						@Override
-						public void handleResponse(LoginServerResponse response) {
-							if (response.getStatus() == LoginServerResponseStatus.SUCCESS) {
-								if (onGameReady != null) {
+							if (onGameReady != null) {
 
-									// this should just switch back to login form
-									onGameReady.execute(
-											response.getUsername(),
-											"randomRoomName");
-								}
+								// this should just switch back to login form
+								onGameReady.execute(
+										response.getUsername(),
+										"randomRoomName");
 							}
 						}
-
 					});
 			((MessageDisplay) initialPage)
 					.showInfoMessage(Language.MessageType.RegisterRequestSent);

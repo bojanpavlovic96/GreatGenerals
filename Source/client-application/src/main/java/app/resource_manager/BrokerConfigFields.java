@@ -1,6 +1,6 @@
 package app.resource_manager;
 
-import utils.StaticParser;
+import root.communication.parser.StaticParser;
 
 public class BrokerConfigFields {
 
@@ -10,6 +10,9 @@ public class BrokerConfigFields {
 	public String password;
 	public String vhost;
 
+	// TODO this should be removed
+	// this part of config should be moved in rabbitLoginProxy
+	// (if ever gets impelemented)
 	public QueuesConfig queues;
 
 	public BrokerConfigFields() {
