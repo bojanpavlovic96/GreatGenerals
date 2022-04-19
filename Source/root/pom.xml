@@ -18,11 +18,11 @@
 			<version>11</version>
 		</dependency>
 
-		<dependency>
+		<!-- <dependency>
 			<groupId>com.rabbitmq</groupId>
 			<artifactId>amqp-client</artifactId>
 			<version>3.3.4</version>
-		</dependency>
+		</dependency> -->
 
 		<!-- https://mvnrepository.com/artifact/com.google.code.gson/gson -->
 		<dependency>
