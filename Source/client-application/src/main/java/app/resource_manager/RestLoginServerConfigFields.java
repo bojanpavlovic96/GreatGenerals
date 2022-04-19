@@ -7,6 +7,10 @@ public class RestLoginServerConfigFields {
 	public String loginPath;
 	public String registerPath;
 
+	public RestLoginServerConfigFields() {
+
+	}
+
 	public RestLoginServerConfigFields(
 			String address,
 			String port,

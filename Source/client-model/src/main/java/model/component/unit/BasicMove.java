@@ -30,7 +30,7 @@ public class BasicMove extends MoveType {
 		if (this.path != null && !this.path.isEmpty()) {
 
 			// debug
-			System.out.println("move from : "
+			System.out.println("Intention to move: "
 					+ this.myField.getStoragePosition() +
 					"->: "
 					+ this.path.get(0).getStoragePosition());

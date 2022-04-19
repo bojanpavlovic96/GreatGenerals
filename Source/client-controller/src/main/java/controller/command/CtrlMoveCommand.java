@@ -17,11 +17,11 @@ public class CtrlMoveCommand extends Command {
 
 	public static final String name = "move-command";
 
-	private Point2D startFieldPos;
-	private Field startField;
+	public Point2D startFieldPos;
+	public Field startField;
 
-	private Point2D secondFieldPos;
-	private Field secondField;
+	public Point2D secondFieldPos;
+	public Field secondField;
 
 	public CtrlMoveCommand(Point2D firstPosition, Point2D secondPosition) {
 		super(CtrlMoveCommand.name);

@@ -82,8 +82,10 @@ public class GameBrain implements Controller {
 				(CommandDrivenComponent) this);
 		this.serverCommandQueue.setCommandProcessor(this.serverCommandProcessor);
 
-		this.viewCommandQueue = this.view.getCommandQueue();
+		this.viewCommandQueue = new CommandQueue();
+		((CommandDrivenComponent) view).setCommandQueue(viewCommandQueue);
 
+		System.out.println("Thread id in controller: " + Thread.currentThread().getId());
 		// view events, click, key press ...
 		this.initViewEventHandlers();
 
@@ -261,6 +263,11 @@ public class GameBrain implements Controller {
 			this.model.shutdown();
 		}
 
+		if (this.serverProxy != null
+				&& (this.serverProxy instanceof ActiveComponent)) {
+			((ActiveComponent) this.serverProxy).shutdown();
+		}
+
 	}
 
 	@Override
@@ -296,11 +303,6 @@ public class GameBrain implements Controller {
 	@Override
 	public CommandQueue getConsumerQueue() {
 		return this.viewCommandQueue;
-	}
-
-	@Override
-	public void setConsumerQueue(CommandQueue consumer_queue) {
-		this.viewCommandQueue = consumer_queue;
 	}
 
 	@Override

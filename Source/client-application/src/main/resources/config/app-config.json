@@ -53,5 +53,20 @@
 		"clientEventsExchange": "client-events-exc",
 		"clientEventsQueue": "client-events-queue",
 		"clientEventsRoutePrefix": "client-event."
+	},
+	"restLoginServerConfig": {
+		"stage": "dev",
+		"development": {
+			"address": "localhost",
+			"port": "8080",
+			"loginPath": "login",
+			"registerPath": "register"
+		},
+		"production": {
+			"address": "localhost",
+			"port": "8080",
+			"loginPath": "login",
+			"registerPath": "register"
+		}
 	}
 }

@@ -13,7 +13,7 @@ import root.view.View;
 public interface Controller extends ModelEventHandler,
 		// has server proxy
 		ServerSlave,
-		// command received from server proxy
+		// commands received from server proxy
 		CommandDrivenComponent,
 		// produces view commands
 		CommandProducer {

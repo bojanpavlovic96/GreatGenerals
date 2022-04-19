@@ -13,15 +13,14 @@
 
   <properties>
 
-    <maven.compiler.source>1.8</maven.compiler.source>
-
-    <maven.compiler.target>1.8</maven.compiler.target>
+    <maven.compiler.source>13</maven.compiler.source>
+    <maven.compiler.target>13</maven.compiler.target>
 
   </properties>
 
   <modules>
 
-    <module>json-util</module>
+    <!-- <module>json-util</module> -->
     <module>client-application</module>
     <module>client-view</module>
     <module>client-model</module>

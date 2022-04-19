@@ -1,64 +1,36 @@
 package app.resource_manager;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.json.JsonMapper;
-
-import root.ConfigLoader;
+import root.communication.parser.StaticParser;
 
 public class RestLoginServerConfig {
-
-	private static final String CONFIG_PATH = "config/rest-login-config.json";
 
 	private static final Object PROD_STAGE = "prod";
 	private static final Object DEV_STAGE = "dev";
 
-	private static RestLoginServerConfig cache;
+	public String stage;
 
-	public static RestLoginServerConfigFields getConfig() {
-		if (RestLoginServerConfig.cache == null) {
-			var config = ConfigLoader.load(CONFIG_PATH, RestLoginServerConfig.class);
-			if (config != null) {
-				RestLoginServerConfig.cache = config;
-			} else {
-				System.out.println("Failed to load RestLoginServer configuration ... ");
+	public RestLoginServerConfigFields production;
+	public RestLoginServerConfigFields development;
 
-				return null;
-			}
-		}
+	public RestLoginServerConfig() {
 
-		return RestLoginServerConfig.cache.getTargetConfig();
 	}
 
-	// mapped fields
-
-	private String stage;
-
-	private RestLoginServerConfigFields production;
-	private RestLoginServerConfigFields development;
-
-	private RestLoginServerConfigFields getTargetConfig() {
+	public RestLoginServerConfigFields getActive() {
 		if (this.stage.equals(PROD_STAGE)) {
 			return this.production;
 		} else if (this.stage.equals(DEV_STAGE)) {
 			return this.development;
 		} else {
-			System.out.println("Broker config has wrong stage value ... ");
+			System.out.println("Rest login config has wrong stage value ... ");
 
 			return null;
 		}
 	}
 
+	@Override
 	public String toString() {
-
-		String txtObj = "";
-		try {
-			JsonMapper mapper = new JsonMapper();
-			txtObj = mapper.writeValueAsString(this);
-		} catch (JsonProcessingException e) {
-			e.printStackTrace();
-		}
-
-		return txtObj;
+		return StaticParser.ToString(this.getActive());
 	}
 
 }

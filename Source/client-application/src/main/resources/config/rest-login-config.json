@@ -1,4 +1,4 @@
-{
+{ // TODO can be removed, it is merged with app-config.json
 	"stage": "dev",
 	"dev": {
 		"address": "localhost",

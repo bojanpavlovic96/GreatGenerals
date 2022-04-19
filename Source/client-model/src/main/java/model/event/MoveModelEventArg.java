@@ -7,13 +7,15 @@ public class MoveModelEventArg extends ModelEventArg {
 
 	public static final String name = "move-model-event";
 
-	private Point2D source_field; // move from
-	private Point2D destinatoin_field; // move to
+	// TODO change this to private 
+	// switched to public with point2D serialization bug
+	public Point2D sourceField; // move from
+	public Point2D destinationField; // move to
 
 	// constructors
 
 	public MoveModelEventArg(String player_name, Point2D source_field, Point2D destination_field) {
-		super(MoveModelEventArg.name , player_name);
+		super(MoveModelEventArg.name, player_name);
 
 		this.setSourceField(source_field);
 		setDestinatoinField(destination_field);
@@ -23,19 +25,19 @@ public class MoveModelEventArg extends ModelEventArg {
 	// getters and setters
 
 	public Point2D getSourceField() {
-		return source_field;
+		return sourceField;
 	}
 
 	public void setSourceField(Point2D source_field) {
-		this.source_field = source_field;
+		this.sourceField = source_field;
 	}
 
 	public Point2D getDestinationField() {
-		return destinatoin_field;
+		return destinationField;
 	}
 
 	public void setDestinatoinField(Point2D destinatoin_field) {
-		this.destinatoin_field = destinatoin_field;
+		this.destinationField = destinatoin_field;
 	}
 
 }

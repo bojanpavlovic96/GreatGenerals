@@ -82,8 +82,6 @@ public class DrawingStage extends Stage implements View {
 
 		this.initStage();
 
-		this.initCommandQueue();
-
 		this.initEventHandlers();
 	}
 
@@ -147,17 +145,6 @@ public class DrawingStage extends Stage implements View {
 		this.root.getChildren().add(this.fieldMenu);
 
 		this.setScene(this.mainScene);
-
-	}
-
-	private void initCommandQueue() {
-
-		// TODO this queue should be set from setCommandQueue method
-		// after the queue is set create command processor
-		this.commandQueue = new CommandQueue();
-		this.commandProcessor = new FxCommandProcessor((CommandDrivenComponent) this);
-
-		this.commandQueue.setCommandProcessor(this.commandProcessor);
 
 	}
 
@@ -226,8 +213,12 @@ public class DrawingStage extends Stage implements View {
 	}
 
 	@Override
-	public void setCommandQueue(CommandQueue command_queue) {
-		this.commandQueue = command_queue;
+	public void setCommandQueue(CommandQueue commandQueue) {
+		this.commandQueue = commandQueue;
+
+		this.commandProcessor = new FxCommandProcessor((CommandDrivenComponent) this);
+		this.commandQueue.setCommandProcessor(this.commandProcessor);
+
 	}
 
 	@Override

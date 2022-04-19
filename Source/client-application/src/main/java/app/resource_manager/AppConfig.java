@@ -37,6 +37,7 @@ public class AppConfig {
 
 	public String headerImagePath;
 
+	// TODO group these in form config or something 
 	public int titleFontSize;
 	public String titleFont;
 	public int messageFontSize;
@@ -50,4 +51,6 @@ public class AppConfig {
 
 	public RabbitServerProxyConfig rabbitServerProxyConfig;
 
-}	
+	public RestLoginServerConfig restLoginServerConfig;
+
+}

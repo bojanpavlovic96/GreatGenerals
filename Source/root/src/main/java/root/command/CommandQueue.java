@@ -17,6 +17,9 @@ public class CommandQueue {
 		this.queue.add(newCommand);
 
 		if (this.commandProcessor != null) {
+			// && this.queue.size() == 1) {
+
+			// System.out.println("Executing command: " + newCommand.name);
 
 			this.commandProcessor.execute(this);
 

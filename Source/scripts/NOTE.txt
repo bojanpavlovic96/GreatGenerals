@@ -1,32 +1,40 @@
-Scrips from this dir can still be used for clean, compile, build and run
-but in the future they may (probably) WON'T be updated.
-
+ !! To build and run project you will need java with a version >= 13 (java13+) !!
 
 > TO BUILD:
 cd to .../GreatGenerals/Source/
 mvn clean install
+// this will clean and build all projects listed in .../GreatGenerals/Source/pom.xml
 
 
 > TO COMPILE: 
 cd to .../GreatGenerals/Source/
 mvn compile
+// this will compile all projects listed in .../GreatGenerals/Source/pom.xml
+
+// NOTE !!!
 // not that usefull, in order to run the whole application every project
-// has to be build/packaged in jar (done with 'mvn install' or 'mvn package') 
+// has to be built/packaged in the jar (done with 'mvn install' or 'mvn package') 
 // so that other projects can use it as dependency
 
 
 > TO RUN:
-build projects with above command
+1)	build projects with above command(s)
 
-For java 11+
-cd to .../GreatGenerals/Source/client-application
-mvn javafx:run
-    or 
-mvn exec:java
 
-for java 11-
-cd to .../GreatGenerals/Source/client-application
-java -cp ./target/client-application-0.0.1-SNAPSHOT-jar-with-dependencies.jar app.launcher.Launcher
+2)	$ cd .../GreatGeneras/Source/client-appliction
+	$ mvn exec:java
+
+	// ingore next instructions in this section (TO RUN section)
+	// they were valid at one point but are not usefull anymore
+	For java 11+
+	cd to .../GreatGenerals/Source/client-application
+	mvn javafx:run
+		or 
+	mvn exec:java
+
+	for java 11-
+	cd to .../GreatGenerals/Source/client-application
+	java -cp ./target/client-application-0.0.1-SNAPSHOT-jar-with-dependencies.jar app.launcher.Launcher
 
 
 > TO DEBUG (in visualStudioCode):
@@ -57,6 +65,7 @@ in 'launch.json' add next config
 			"mainClass": "app.launcher.Launcher",
 			"projectName": "client-application"
 		},
+		// next obj. is important for debugging 
 	    {
 
 			"type": "java",

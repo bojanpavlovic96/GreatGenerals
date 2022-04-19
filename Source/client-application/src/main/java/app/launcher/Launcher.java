@@ -5,6 +5,7 @@ import java.util.List;
 
 import app.form.StartForm;
 import app.resource_manager.AppConfig;
+import app.server.MockupGameServerProxy;
 import app.server.MockupLoginServerProxy;
 import controller.GameBrain;
 import controller.command.CtrlInitializeCommand;
@@ -15,13 +16,14 @@ import javafx.stage.Stage;
 import model.DataModel;
 import model.PlayerModelData;
 import model.component.field.ModelField;
-import protocol.NamedWrapperJsonTranslator;
+import protocol.NamedWrapperTranslator;
 import proxy.RabbitGameServerProxy;
 import root.ActiveComponent;
 import root.command.Command;
 import root.communication.GameServerProxy;
 import root.communication.Translator;
 import root.communication.parser.GsonJsonParser;
+import root.communication.parser.StaticParser;
 import root.controller.Controller;
 import root.model.Model;
 import root.model.PlayerData;
@@ -77,18 +79,28 @@ public class Launcher extends Application {
 					// });
 					// }
 
-					Translator translator = new NamedWrapperJsonTranslator(
+					Translator translator = new NamedWrapperTranslator(
 							new GsonJsonParser(),
 							new StupidStaticTypeResolver());
 
 					// TODO replace username and roomName with some token/key
 					// obtained from the login server
-					GameServerProxy serverProxy = new RabbitGameServerProxy(
+					// GameServerProxy serverProxy = new RabbitGameServerProxy(
+					// 		AppConfig.getInstance().rabbitServerProxyConfig,
+					// 		connectionTask.getChannel(),
+					// 		translator,
+					// 		username,
+					// 		roomName);
+
+					GameServerProxy serverProxy = new MockupGameServerProxy(
 							AppConfig.getInstance().rabbitServerProxyConfig,
-							connectionTask.getChannel(),
 							translator,
 							username,
 							roomName);
+
+					// TODO remove when real gameServerProxy gets implemented
+					var initCommand = getFakeInitCommand();
+					serverProxy.getConsumerQueue().enqueue(initCommand);
 
 					// TODO somehow initialize resource manager
 					// resources could be obtained from the server
@@ -104,10 +116,6 @@ public class Launcher extends Application {
 					Model model = new DataModel();
 
 					gameController = new GameBrain(serverProxy, view, model);
-
-					// TODO remove this
-					var initCommand = getFakeInitCommand();
-					gameController.getCommandQueue().enqueue(initCommand);
 
 					startPageController.hideInitialPage();
 					gameController.getView().show();

@@ -4,11 +4,8 @@ import java.io.IOException;
 
 import com.rabbitmq.client.AMQP.BasicProperties;
 import com.rabbitmq.client.Channel;
-import com.rabbitmq.client.Connection;
-import com.rabbitmq.client.Consumer;
 import com.rabbitmq.client.DefaultConsumer;
 import com.rabbitmq.client.Envelope;
-import com.rabbitmq.client.ShutdownSignalException;
 
 import root.command.CommandQueue;
 import root.communication.GameServerProxy;
@@ -97,13 +94,6 @@ public class RabbitGameServerProxy extends DefaultConsumer implements GameServer
 	}
 
 	@Override
-	public void setConsumerQueue(CommandQueue consumerQueue) {
-		this.commandQueue = consumerQueue;
-		// TODO but this does not look good
-		// better remove this method from the interface
-	}
-
-	@Override
 	public CommandQueue getConsumerQueue() {
 		return this.commandQueue;
 	}
@@ -172,59 +162,4 @@ public class RabbitGameServerProxy extends DefaultConsumer implements GameServer
 	// }
 
 	// endregion
-
-	// fake initialization saved from the previous version
-
-	// private void initCommunicationChannel() {
-	// // configure channels and start listening for server messages
-
-	// // first message must be model initialization message
-
-	// // attention do not start receiving messages until queue is set !!!
-
-	// // fake first initialization message
-	// List<PlayerData> players = new ArrayList<PlayerData>();
-	// players.add(new PlayerModelData("user 1", Color.RED));
-	// players.add(new PlayerModelData("user 2", Color.GREEN));
-	// players.add(new PlayerModelData("user 3", Color.BLACK));
-
-	// List<Field> fieldModels = new ArrayList<Field>();
-
-	// int left = 3;
-	// int right = 17;
-
-	// int playerCounter = 0;
-
-	// for (int i = 1; i < 16; i++) {
-
-	// for (int j = left; j < right; j++) {
-	// if (i % 2 == 0 && j % 5 == 0) {
-	// fieldModels.add(new ModelField(
-	// new Point2D(j, i),
-	// players.get(playerCounter),
-	// true,
-	// null,
-	// new Terrain("mountains", 1)));
-	// } else {
-	// fieldModels.add(new ModelField(
-	// new Point2D(j, i),
-	// players.get(playerCounter),
-	// true,
-	// null,
-	// new Terrain("water", 1)));
-	// }
-
-	// playerCounter++;
-	// playerCounter %= 3;
-
-	// }
-
-	// if (left > -3)
-	// left--;
-	// }
-
-	// this.commandQueue.enqueue(new CtrlInitializeCommand(players, fieldModels));
-
-	// }
-
 }

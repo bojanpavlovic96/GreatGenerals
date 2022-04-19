@@ -9,6 +9,7 @@ public class StupidStaticTypeResolver implements NameTypeResolver {
 
 	@Override
 	public Class<?> resolve(String name) {
+
 		switch (name) {
 
 		case CtrlInitializeCommand.name:

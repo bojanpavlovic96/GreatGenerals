@@ -1,3 +1,1 @@
 - reafactored configLoader to be able to switch jsonParser implementation
-- included viewConfig inside appConfig
-- 

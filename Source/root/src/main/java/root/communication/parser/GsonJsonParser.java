@@ -16,7 +16,14 @@ public class GsonJsonParser implements DataParser {
 
 	@Override
 	public String ToString(Object obj) {
-		return this.gson.toJson(obj);
+		String data = null;
+		try {
+			data = this.gson.toJson(obj);
+		} catch (Exception e) {
+			System.out.println("Exception in toString parser ... ");
+			System.out.println(e.getMessage());
+		}
+		return data;
 	}
 
 	@Override
