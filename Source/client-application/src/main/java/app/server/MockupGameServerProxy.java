@@ -84,7 +84,7 @@ public class MockupGameServerProxy implements GameServerProxy, ActiveComponent {
 
 	@Override
 	public void shutdown() {
-		if(executor!=null){
+		if (executor != null) {
 			executor.shutdown();
 		}
 		System.out.println("Mockup game server proxy shutdown ... ");

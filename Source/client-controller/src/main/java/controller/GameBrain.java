@@ -85,7 +85,6 @@ public class GameBrain implements Controller {
 		this.viewCommandQueue = new CommandQueue();
 		((CommandDrivenComponent) view).setCommandQueue(viewCommandQueue);
 
-		System.out.println("Thread id in controller: " + Thread.currentThread().getId());
 		// view events, click, key press ...
 		this.initViewEventHandlers();
 

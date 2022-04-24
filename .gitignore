@@ -61,3 +61,14 @@ atlassian-ide-plugin.xml
 
 # Local History for Visual Studio Code
 .history/
+
+## .net
+
+### DotnetCore ###
+# .NET Core build folders
+bin/
+obj/
+
+# Common node modules locations
+/node_modules
+/wwwroot/node_modules
