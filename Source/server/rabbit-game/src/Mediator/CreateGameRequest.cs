@@ -8,5 +8,11 @@ namespace RabbitGameServer.Mediator
 		public string roomName { get; set; }
 
 		public List<string> players { get; set; }
+
+		public CreateGameRequest(string roomName, List<string> players)
+		{
+			this.roomName = roomName;
+			this.players = players;
+		}
 	}
 }

@@ -4,7 +4,7 @@ using RabbitMQ.Client;
 namespace RabbitGameServer.Service
 {
 
-	public class RabbitConnection : IRabbitConnection
+	public class RabbitConnection : IRabbitConnection, IDisposable
 	{
 
 		private RabbitConfig config;
@@ -13,7 +13,6 @@ namespace RabbitGameServer.Service
 
 		public RabbitConnection(IOptions<RabbitConfig> config)
 		{
-
 			this.config = config.Value;
 
 			var factory = new ConnectionFactory();
@@ -24,7 +23,15 @@ namespace RabbitGameServer.Service
 			factory.Password = this.config.Password;
 
 			connection = factory.CreateConnection();
+		}
 
+		public void Dispose()
+		{
+			Console.WriteLine("Disposing rabbitConnection ... ");
+			if (connection != null && connection.IsOpen)
+			{
+				connection.Close();
+			}
 		}
 
 		public IModel GetChannel()

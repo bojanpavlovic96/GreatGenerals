@@ -14,14 +14,11 @@ namespace RabbitGameServer.Service
 	{
 
 		private IMediator mediator;
-		private IRabbitConnection rabbitConnection;
-		// private RabbitConfig rabbitConfig;
 		private QueuesConfig queuesConfig;
+		private IRabbitConnection rabbitConnection;
 		private INameTypeMapper typeMapper;
 		private ISerializer serializer;
 
-
-		// private IConnection connection;
 		private IModel modelEventChannel;
 		private IModel newGameChannel;
 
@@ -29,42 +26,33 @@ namespace RabbitGameServer.Service
 
 		public RabbitReceiver(IMediator mediator,
 			IRabbitConnection rabbitConnection,
-			// RabbitConfig rabbitConfig,
 			IOptions<QueuesConfig> queuesConfig,
-			INameTypeMapper typeMapper,
 			ISerializer serializer)
 		{
+
 			this.mediator = mediator;
 
 			this.rabbitConnection = rabbitConnection;
 
-			// this.rabbitConfig = rabbitConfig;
 			this.queuesConfig = queuesConfig.Value;
-			this.typeMapper = typeMapper;
 			this.serializer = serializer;
 		}
 
-		protected override async Task ExecuteAsync(CancellationToken stoppingToken)
+		protected override Task ExecuteAsync(CancellationToken stoppingToken)
 		{
-			// masterToken = stoppingToken;
-
-			// var factory = new ConnectionFactory();
-			// factory.HostName = rabbitConfig.HostName;
-			// factory.Port = rabbitConfig.Port;
-			// factory.VirtualHost = rabbitConfig.VHost;
-			// factory.UserName = rabbitConfig.UserName;
-			// factory.Password = rabbitConfig.Password;
-
-			// connection = factory.CreateConnection();
+			masterToken = stoppingToken; // might be usefull ... you never know 
 
 			setupNewGameEventConsumer();
 
 			setupModelEventConsumer();
+
+			Console.WriteLine("RabbitReceiver started");
+
+			return Task.CompletedTask;
 		}
 
 		private void setupNewGameEventConsumer()
 		{
-			// newGameChannel = connection.CreateModel();
 			newGameChannel = rabbitConnection.GetChannel();
 
 			newGameChannel.ExchangeDeclare(queuesConfig.NewGameTopic,
@@ -77,23 +65,25 @@ namespace RabbitGameServer.Service
 
 			newGameChannel.QueueBind(newGameQueue,
 						queuesConfig.NewGameTopic,
-						queuesConfig.NewGameRoute,
+						queuesConfig.NewGameRoute + "*",
 						null);
 
 			var consumer = new EventingBasicConsumer(newGameChannel);
 			consumer.Received += NewGameEventHandler;
 
 			newGameChannel.BasicConsume(newGameQueue, false, consumer);
+
+			Console.WriteLine("NewGameEventConsumer started");
 		}
 
 		private void NewGameEventHandler(object? sender, BasicDeliverEventArgs ea)
 		{
-			var body = ea.Body;
-			var props = ea.BasicProperties;
+			Console.WriteLine("Received new game event");
 
-			var message = serializer.ToObj<NewGameRequest>(body.ToArray());
+			var message = serializer.ToObj<NewGameRequest>(ea.Body.ToArray());
 
-			mediator.Send(message, masterToken).Wait();
+			var request = new CreateGameRequest(message.roomName, message.players);
+			mediator.Send(request);
 		}
 
 		private void setupModelEventConsumer()
@@ -111,7 +101,7 @@ namespace RabbitGameServer.Service
 
 			modelEventChannel.QueueBind(modelEventQueue,
 						queuesConfig.ModelEventTopic,
-						queuesConfig.ModelEventRoute,
+						queuesConfig.ModelEventRoute + "*",
 						null);
 
 			var consumer = new EventingBasicConsumer(modelEventChannel);
@@ -119,22 +109,8 @@ namespace RabbitGameServer.Service
 
 			modelEventChannel.BasicConsume(modelEventQueue, false, consumer);
 
-			// var consumer = new ModelEventConsumer();
+			Console.WriteLine("ModelEventConsumer started");
 
-			// var consumer = new EventingBasicConsumer(modelEventChannel);
-			// consumer.Received += (channel, eventArg) =>
-			// {
-			// 	var strBody = Encoding.UTF8.GetString(eventArg.Body.ToArray());
-			// 	NamedWrapper wrappedMessage =
-			// 		(NamedWrapper)serializer.ToObj(strBody, typeof(NamedWrapper));
-
-
-			// 	Type messageType = typeMapper.GetType(wrappedMessage.name);
-
-			// 	ModelEvent modelEvent =
-			// 		(ModelEvent)serializer.ToObj(strBody, messageType);
-
-			// };
 		}
 
 		private void ModelEventHandler(object? sender, BasicDeliverEventArgs ea)

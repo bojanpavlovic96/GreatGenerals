@@ -5,6 +5,16 @@ namespace RabbitGameServer.Mediator
 {
 	public class CommandSendRequest : IRequest<Unit>
 	{
-		public Command command { get; set; }
+		public string RoomName { get; set; }
+		public string PlayerId { get; set; }
+
+		public Command Command { get; set; }
+
+		public CommandSendRequest(string roomName, string playerId, Command command)
+		{
+			RoomName = roomName;
+			PlayerId = playerId;
+			Command = command;
+		}
 	}
 }

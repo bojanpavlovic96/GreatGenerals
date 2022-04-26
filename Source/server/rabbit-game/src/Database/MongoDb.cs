@@ -1,3 +1,4 @@
+using Microsoft.Extensions.Options;
 using MongoDB.Driver;
 
 namespace RabbitGameServer.Database
@@ -5,34 +6,23 @@ namespace RabbitGameServer.Database
 	public class MongoDb : IDatabase
 	{
 
-		// TODO extract this to a config obj/file
-		private string mongoUrl;
-		private string mongoUser;
-		private string mongoPassword;
-		private string databaseName;
-		private string gamesCollection;
+		private MongoConfig config;
 
-		private string MongoUri => "mongodb://" + mongoUser + ":" + mongoPassword
-				+ "@" + mongoUrl;
+		private string MongoUri =>
+			"mongodb://" + config.MongoUser + ":" + config.MongoPassword
+			+ "@" + config.MongoUrl;
 
 		private MongoClient client;
 		private IMongoDatabase database;
 
-		public MongoDb(string mongoUrl,
-			string mongoUser,
-			string mongoPassword,
-			string databaseName,
-			string gamesCollection)
+		public MongoDb(IOptions<MongoConfig> options)
 		{
-			this.mongoUrl = mongoUrl;
-			this.mongoUser = mongoUser;
-			this.mongoPassword = mongoPassword;
-			this.databaseName = databaseName;
-			this.gamesCollection = gamesCollection;
+
+			this.config = options.Value;
 
 			// I don't think this field is actually necessary
-			client = new MongoClient(mongoUrl);
-			database = client.GetDatabase(databaseName);
+			client = new MongoClient(MongoUri);
+			database = client.GetDatabase(config.DatabaseName);
 		}
 
 		public void saveCommand(string gameId, Command command)
@@ -42,7 +32,7 @@ namespace RabbitGameServer.Database
 				.Update
 				.Push<Command>(g => g.commands, command);
 
-			database.GetCollection<Game>(gamesCollection)
+			database.GetCollection<Game>(config.GamesCollection)
 				.UpdateOne(
 					g => g.id == new MongoDB.Bson.ObjectId(gameId),
 					update);
@@ -52,7 +42,7 @@ namespace RabbitGameServer.Database
 		{
 			var game = new Game(roomName, players);
 
-			database.GetCollection<Game>(gamesCollection)
+			database.GetCollection<Game>(config.GamesCollection)
 				.InsertOne(game);
 
 			return game.id.ToString();

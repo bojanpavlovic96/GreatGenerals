@@ -16,6 +16,7 @@ namespace RabbitGameServer.Game
 
 		public GamePool(IDatabase database, IPlayerProxy playerProxy)
 		{
+			Console.WriteLine("Creating gamePool ... ");
 			this.database = database;
 			this.playerProxy = playerProxy;
 

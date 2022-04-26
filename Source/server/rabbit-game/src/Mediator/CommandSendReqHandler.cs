@@ -16,7 +16,7 @@ namespace RabbitGameServer.Mediator
 		public Task<Unit> Handle(CommandSendRequest request, CancellationToken cancellationToken)
 		{
 
-			playerProxy.sendCommand("room", "player", request.command);
+			playerProxy.sendCommand(request.RoomName, request.PlayerId, request.Command);
 
 			return Task.FromResult(Unit.Value);
 		}

@@ -1,6 +1,7 @@
 using MediatR;
 using Microsoft.Extensions.Options;
 using RabbitGameServer.Game;
+using RabbitGameServer.SharedModel.Commands;
 
 namespace RabbitGameServer.Mediator
 {
@@ -11,9 +12,11 @@ namespace RabbitGameServer.Mediator
 
 		private RabbitConfig config;
 
-		private GamePool pool;
+		private IGamePool pool;
 
-		public CreateGameReqHandler(IMediator mediator, IOptions<RabbitConfig> config, GamePool pool)
+		public CreateGameReqHandler(IMediator mediator,
+			IOptions<RabbitConfig> config,
+			IGamePool pool)
 		{
 			this.mediator = mediator;
 
@@ -24,9 +27,13 @@ namespace RabbitGameServer.Mediator
 		public Task<GameMaster> Handle(CreateGameRequest request,
 			CancellationToken cancellationToken)
 		{
+			Console.WriteLine("Handling create game request for:  " + request.roomName);
 			var game = pool.CreateGame(request.roomName, request.players);
 
-			// TODO publish command to other players
+			var command = new InitializeGameCommand();
+
+			var publishRequest = new CommandSendRequest(game.RoomName, null, command);
+			mediator.Send(publishRequest);
 
 			return Task.FromResult(game);
 		}

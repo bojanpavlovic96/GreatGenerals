@@ -8,6 +8,7 @@ public interface Unit extends Cloneable {
 	// attention may be unused
 	String getUnitId();
 
+	// TODO should this be enum ... ? 
 	// unit type ... basic, advanced, archers...
 	String getUnitName();
 

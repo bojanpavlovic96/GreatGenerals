@@ -64,7 +64,7 @@ public class RabbitGameServerProxy extends DefaultConsumer implements GameServer
 					config.rabbitTopicExchangeKeyword);
 
 			channel.exchangeDeclare(
-					config.clientEventsExchange,
+					config.modelEventsExchange,
 					config.rabbitTopicExchangeKeyword);
 
 			rcvQueueName = channel.queueDeclare().getQueue();
@@ -90,7 +90,7 @@ public class RabbitGameServerProxy extends DefaultConsumer implements GameServer
 	}
 
 	private String genEventRoutingKey() {
-		return config.clientEventsRoutePrefix + "." + roomName + "." + username;
+		return config.modelEventsRoutePrefix + "." + roomName + "." + username;
 	}
 
 	@Override
@@ -104,7 +104,7 @@ public class RabbitGameServerProxy extends DefaultConsumer implements GameServer
 
 		try {
 			channel.basicPublish(
-					config.clientEventsExchange,
+					config.modelEventsExchange,
 					genEventRoutingKey(),
 					null,
 					bytePayload);

@@ -17,6 +17,8 @@ namespace RabbitGameServer.Game
 
 		public event GameDoneHandler onGameDone;
 
+		// public GameMaster() { }
+
 		public GameMaster(string roomName,
 					List<string> players,
 					IPlayerProxy playerProxy,
