@@ -2,7 +2,7 @@ using MediatR;
 using Microsoft.Extensions.Options;
 using RabbitGameServer.Mediator;
 using RabbitGameServer.SharedModel;
-using RabbitGameServer.SharedModel.ModelEvents;
+using RabbitGameServer.SharedModel.Messages;
 using RabbitGameServer.Util;
 using RabbitMQ.Client;
 using RabbitMQ.Client.Events;
@@ -13,18 +13,21 @@ namespace RabbitGameServer.Service
 	public class RabbitReceiver : BackgroundService
 	{
 
-		private IMediator mediator;
 		private QueuesConfig queuesConfig;
-		private IRabbitConnection rabbitConnection;
-		private INameTypeMapper typeMapper;
+
+		private IMediator mediator;
+
+		private IProtocolTranslator protocolTranslator;
 		private ISerializer serializer;
 
+		private IRabbitConnection rabbitConnection;
 		private IModel modelEventChannel;
 		private IModel newGameChannel;
 
 		private CancellationToken masterToken;
 
 		public RabbitReceiver(IMediator mediator,
+			IProtocolTranslator protocolTranslator,
 			IRabbitConnection rabbitConnection,
 			IOptions<QueuesConfig> queuesConfig,
 			ISerializer serializer)
@@ -32,6 +35,7 @@ namespace RabbitGameServer.Service
 
 			this.mediator = mediator;
 
+			this.protocolTranslator = protocolTranslator;
 			this.rabbitConnection = rabbitConnection;
 
 			this.queuesConfig = queuesConfig.Value;
@@ -80,9 +84,12 @@ namespace RabbitGameServer.Service
 		{
 			Console.WriteLine("Received new game event");
 
-			var message = serializer.ToObj<NewGameRequest>(ea.Body.ToArray());
+			var message = protocolTranslator.ToMessage(ea.Body.ToArray());
 
-			var request = new CreateGameRequest(message.roomName, message.players);
+			var request = new CreateGameRequest(
+				((CreateGameMsg)message).roomName,
+				((CreateGameMsg)message).player);
+
 			mediator.Send(request);
 		}
 
@@ -115,10 +122,9 @@ namespace RabbitGameServer.Service
 
 		private void ModelEventHandler(object? sender, BasicDeliverEventArgs ea)
 		{
-			var body = ea.Body;
-			var modelEvent = serializer.ToObj<ModelEvent>(body.ToArray());
+			var message = protocolTranslator.ToMessage(ea.Body.ToArray());
 
-			var request = new ModelEventRequest(modelEvent);
+			var request = new ModelEventRequest(message);
 			mediator.Send(request, masterToken).Wait();
 		}
 

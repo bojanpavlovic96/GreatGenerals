@@ -1,11 +1,11 @@
 package root.model;
 
-import javafx.scene.paint.Color;
+import root.view.Color;
 
 public interface PlayerData {
-	
+
 	String getUsername();
-	
+
 	Color getColor();
-	
+
 }

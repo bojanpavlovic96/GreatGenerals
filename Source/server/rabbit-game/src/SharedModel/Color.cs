@@ -15,5 +15,6 @@ namespace RabbitGameServer.SharedModel
 			this.blue = blue;
 			this.opacity = opacity;
 		}
+        
 	}
 }

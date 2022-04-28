@@ -6,13 +6,12 @@ namespace RabbitGameServer.Mediator
 	public class CreateGameRequest : IRequest<GameMaster>
 	{
 		public string roomName { get; set; }
+		public string masterPlayer { get; set; }
 
-		public List<string> players { get; set; }
-
-		public CreateGameRequest(string roomName, List<string> players)
+		public CreateGameRequest(string roomName, string masterPlayer)
 		{
 			this.roomName = roomName;
-			this.players = players;
+			this.masterPlayer = masterPlayer;
 		}
 	}
 }

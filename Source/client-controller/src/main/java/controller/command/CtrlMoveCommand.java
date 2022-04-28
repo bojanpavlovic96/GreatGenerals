@@ -17,7 +17,7 @@ public class CtrlMoveCommand extends Command {
 
 	public static final String name = "move-command";
 
-	public Point2D startFieldPos;
+	// TODO switch to root...Point2D
 	public Field startField;
 
 	public Point2D secondFieldPos;

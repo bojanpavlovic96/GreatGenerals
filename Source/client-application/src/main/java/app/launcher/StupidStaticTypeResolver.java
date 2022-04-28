@@ -1,9 +1,9 @@
 package app.launcher;
 
-import controller.command.CtrlInitializeCommand;
-import controller.command.CtrlMoveCommand;
 import protocol.NameTypeResolver;
 import root.command.Command;
+import root.communication.messages.InitializeCmdMsg;
+import root.communication.messages.MoveCmdMsg;
 
 public class StupidStaticTypeResolver implements NameTypeResolver {
 
@@ -12,11 +12,11 @@ public class StupidStaticTypeResolver implements NameTypeResolver {
 
 		switch (name) {
 
-		case CtrlInitializeCommand.name:
-			return CtrlInitializeCommand.class;
+			case InitializeCmdMsg.name:
+				return InitializeCmdMsg.class;
 
-		case CtrlMoveCommand.name:
-			return CtrlMoveCommand.class;
+			case MoveCmdMsg.name:
+				return MoveCmdMsg.class;
 
 		}
 

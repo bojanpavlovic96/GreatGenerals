@@ -1,6 +1,5 @@
 namespace RabbitGameServer.SharedModel.ModelEvents
 {
-	[Serializable]
 	public class ModelEvent
 	{
 		public string eventName { get; set; }

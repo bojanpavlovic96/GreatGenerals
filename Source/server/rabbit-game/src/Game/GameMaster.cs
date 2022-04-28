@@ -9,6 +9,8 @@ namespace RabbitGameServer.Game
 	public class GameMaster
 	{
 
+		public string masterPlayer { get; set; }
+
 		public string RoomName { get; set; }
 		public List<string> Players { get; set; }
 		private IDatabase Database;
@@ -20,12 +22,14 @@ namespace RabbitGameServer.Game
 		// public GameMaster() { }
 
 		public GameMaster(string roomName,
-					List<string> players,
+					string masterPlayer,
 					IPlayerProxy playerProxy,
 					IDatabase db)
 		{
 			this.RoomName = roomName;
-			this.Players = players;
+			this.masterPlayer = masterPlayer;
+			this.Players = new List<string>();
+			this.Players.Add(masterPlayer);
 
 			this.Database = db;
 

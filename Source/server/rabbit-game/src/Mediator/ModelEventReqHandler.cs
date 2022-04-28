@@ -18,8 +18,10 @@ namespace RabbitGameServer.Mediator
 			CancellationToken cancellationToken)
 		{
 
-			var game = pool.GetGame(request.modelEvent.roomName);
-			game.AddModelEvent(request.modelEvent);
+			var game = pool.GetGame(request.message.roomName);
+
+			// TODO at this point message should be converted to modelEvent ... ? 
+			// game.AddModelEvent(request.modelEvent);
 
 			return Task.FromResult(Unit.Value);
 		}

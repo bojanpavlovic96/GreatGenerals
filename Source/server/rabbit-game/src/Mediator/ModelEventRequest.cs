@@ -1,17 +1,16 @@
 using MediatR;
-using RabbitGameServer.Game;
-using RabbitGameServer.SharedModel.ModelEvents;
+using RabbitGameServer.SharedModel.Messages;
 
 namespace RabbitGameServer.Mediator
 {
 	public class ModelEventRequest : IRequest<Unit>
 	{
 
-		public ModelEvent modelEvent { get; set; }
+		public Message message;
 
-		public ModelEventRequest(ModelEvent modelEvent)
+		public ModelEventRequest(Message message)
 		{
-			this.modelEvent = modelEvent;
+			this.message = message;
 		}
 
 	}

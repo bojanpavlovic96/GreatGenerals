@@ -9,7 +9,7 @@ import root.ActiveComponent;
 import root.command.Command;
 import root.command.CommandQueue;
 import root.communication.GameServerProxy;
-import root.communication.Translator;
+import root.communication.ProtocolTranslator;
 import root.model.event.ModelEventArg;
 
 // TODO had to be in this (client-applicatoin) project because of the reference 
@@ -17,7 +17,7 @@ import root.model.event.ModelEventArg;
 public class MockupGameServerProxy implements GameServerProxy, ActiveComponent {
 
 	private RabbitServerProxyConfig config;
-	private Translator translator;
+	private ProtocolTranslator translator;
 	private String username;
 	private String roomName;
 
@@ -27,7 +27,7 @@ public class MockupGameServerProxy implements GameServerProxy, ActiveComponent {
 
 	public MockupGameServerProxy(
 			RabbitServerProxyConfig config,
-			Translator translator,
+			ProtocolTranslator translator,
 			String username,
 			String roomName) {
 		super();

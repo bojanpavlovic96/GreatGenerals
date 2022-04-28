@@ -26,11 +26,11 @@ namespace RabbitGameServer.Game
 
 		}
 
-		public GameMaster CreateGame(string roomName, List<string> players)
+		public GameMaster CreateGame(string roomName, string masterPlayer)
 		{
 			var newGame = new GameMaster(
 				roomName,
-				players,
+				masterPlayer,
 				playerProxy,
 				database);
 

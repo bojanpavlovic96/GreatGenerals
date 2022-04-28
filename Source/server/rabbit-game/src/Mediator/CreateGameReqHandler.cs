@@ -28,7 +28,7 @@ namespace RabbitGameServer.Mediator
 			CancellationToken cancellationToken)
 		{
 			Console.WriteLine("Handling create game request for:  " + request.roomName);
-			var game = pool.CreateGame(request.roomName, request.players);
+			var game = pool.CreateGame(request.roomName, request.masterPlayer);
 
 			var command = new InitializeGameCommand();
 

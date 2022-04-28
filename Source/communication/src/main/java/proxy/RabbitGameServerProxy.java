@@ -9,7 +9,8 @@ import com.rabbitmq.client.Envelope;
 
 import root.command.CommandQueue;
 import root.communication.GameServerProxy;
-import root.communication.Translator;
+import root.communication.MsgToCmdTranslator;
+import root.communication.ProtocolTranslator;
 import root.model.event.ModelEventArg;
 
 public class RabbitGameServerProxy extends DefaultConsumer implements GameServerProxy {
@@ -17,7 +18,8 @@ public class RabbitGameServerProxy extends DefaultConsumer implements GameServer
 	private RabbitServerProxyConfig config;
 
 	private Channel channel;
-	private Translator translator;
+	private ProtocolTranslator protocolTranslator;
+	private MsgToCmdTranslator msgToCmdTranslator;
 	private String username;
 	private String roomName;
 
@@ -28,7 +30,8 @@ public class RabbitGameServerProxy extends DefaultConsumer implements GameServer
 	public RabbitGameServerProxy(
 			RabbitServerProxyConfig config,
 			Channel channel,
-			Translator translator,
+			ProtocolTranslator translator,
+			MsgToCmdTranslator msgToCmdTranslator,
 			String username,
 			String roomName) {
 
@@ -40,7 +43,8 @@ public class RabbitGameServerProxy extends DefaultConsumer implements GameServer
 		this.config = config;
 
 		this.channel = channel;
-		this.translator = translator;
+		this.protocolTranslator = translator;
+		this.msgToCmdTranslator = msgToCmdTranslator;
 		this.username = username;
 		this.roomName = roomName;
 
@@ -100,7 +104,10 @@ public class RabbitGameServerProxy extends DefaultConsumer implements GameServer
 
 	@Override
 	public void sendIntention(ModelEventArg modelEvent) {
-		byte[] bytePayload = translator.toByteData(modelEvent);
+		var message = msgToCmdTranslator.ToMessage(modelEvent);
+		message.setOrigin(this.username, this.roomName);
+
+		byte[] bytePayload = protocolTranslator.toByteData(message);
 
 		try {
 			channel.basicPublish(
@@ -122,17 +129,26 @@ public class RabbitGameServerProxy extends DefaultConsumer implements GameServer
 	// region Consumer implementation
 
 	@Override
-	public void handleDelivery(String consumerTag, Envelope envelope,
-			BasicProperties properties, byte[] body)
-			throws IOException {
+	public void handleDelivery(String consumerTag,
+			Envelope envelope,
+			BasicProperties properties,
+			byte[] body) throws IOException {
 
-		var newCommand = this.translator.toCommand(new String(body));
-		if (newCommand != null) {
-			// TODO if name is uknown translator will return null
-			// this could be exception as well ...
-			this.commandQueue.enqueue(newCommand);
+		var newMessage = this.protocolTranslator.toMessage(new String(body));
+		if (newMessage == null) {
+			// debug
+			System.out.println("Failed to translate message ... ");
+			return;
 		}
 
+		var newCommand = msgToCmdTranslator.ToCommand(newMessage);
+		if (newCommand == null) {
+			// debug
+			System.out.println("Failed to translate message to command ... ");
+			return;
+		}
+
+		this.commandQueue.enqueue(newCommand);
 	}
 
 	// @Override

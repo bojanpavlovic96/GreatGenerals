@@ -21,7 +21,7 @@ import proxy.RabbitGameServerProxy;
 import root.ActiveComponent;
 import root.command.Command;
 import root.communication.GameServerProxy;
-import root.communication.Translator;
+import root.communication.ProtocolTranslator;
 import root.communication.parser.GsonJsonParser;
 import root.communication.parser.StaticParser;
 import root.controller.Controller;
@@ -79,7 +79,7 @@ public class Launcher extends Application {
 					// });
 					// }
 
-					Translator translator = new NamedWrapperTranslator(
+					ProtocolTranslator translator = new NamedWrapperTranslator(
 							new GsonJsonParser(),
 							new StupidStaticTypeResolver());
 
