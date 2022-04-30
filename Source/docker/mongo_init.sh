@@ -1,0 +1,1 @@
+mongo --eval 'db.createUser({user:"gg_user", pwd:"gg_password", roles:[{role:"readWrite", db:"gg_games"}] })'

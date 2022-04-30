@@ -4,6 +4,7 @@ using RabbitGameServer.Client;
 using RabbitGameServer.Database;
 using RabbitGameServer.Game;
 using RabbitGameServer.Service;
+using RabbitGameServer.SharedModel;
 using RabbitGameServer.Util;
 
 // TODO maybe move these to static fields inside the config classes
@@ -33,6 +34,7 @@ builder.ConfigureServices((hostContext, services) =>
 	services.AddTransient<ISerializer, NSoftSerializer>();
 	services.AddTransient<IDatabase, MongoDb>();
 	services.AddTransient<INameTypeMapper, StupidStaticTypeMapper>();
+	services.AddTransient<IProtocolTranslator, NamedWrapperTranslator>();
 	services.AddTransient<IPlayerProxy, RabbitPlayerProxy>();
 
 	services.AddHostedService<RabbitReceiver>();
