@@ -1,8 +1,9 @@
 package view.component;
 
-import javafx.geometry.Point2D;
+// import javafx.geometry.Point2D;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.Image;
+import root.Point2D;
 import root.model.component.Terrain;
 import view.ResourceManager;
 
@@ -18,7 +19,10 @@ public class ViewTerrain {
 
 	}
 
-	public void drawTerrain(GraphicsContext gc, Point2D hex_center, double hex_side, double border_width) {
+	public void drawTerrain(GraphicsContext gc,
+			Point2D hex_center,
+			double hex_side,
+			double border_width) {
 
 		Image image = ResourceManager.getInstance().getTerrain(this.terrain_name, intensity);
 

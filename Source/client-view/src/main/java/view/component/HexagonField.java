@@ -3,12 +3,13 @@ package view.component;
 import java.util.ArrayList;
 import java.util.List;
 
-import javafx.geometry.Point2D;
+// import javafx.geometry.Point2D;
 import javafx.geometry.Point3D;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.Image;
-import javafx.scene.paint.Color;
+import root.Point2D;
 import root.model.component.Field;
+import root.view.Color;
 import root.view.field.ViewField;
 import view.ResourceManager;
 
@@ -19,28 +20,27 @@ public class HexagonField implements ViewField {
 
 	// storage_position.x -> q - column
 	// storage_positoin.y -> r - row
-	private Point2D storage_position;
+	private Point2D storagePosition;
 
 	// canvas coordinates
-	private Point2D hex_center;
+	private Point2D hexCenter;
 
 	private boolean visibility;
 
 	// attention
-	// private Color border_color = Color.rgb(200, 100, 100);
-	private Color border_color;
+	private Color borderColor = Color.rgb(200, 100, 100);
 	private ViewTerrain terrain;
 	private ViewUnit unit;
 
-	private List<ViewUnit> units_in_battle;
+	private List<ViewUnit> unitsInBattle;
 
-	private double side_size;
-	private double border_width;
+	private double sideSize;
+	private double borderWidth;
 
-	private double hex_width;
-	private double hex_height;
+	private double hexWidth;
+	private double hexHeight;
 
-	private List<Point2D> corner_points;
+	private List<Point2D> cornerPoints;
 
 	// constructors
 
@@ -50,7 +50,7 @@ public class HexagonField implements ViewField {
 			double field_height,
 			double border_width) {
 
-		this.storage_position = model.getStoragePosition();
+		this.storagePosition = model.getStoragePosition();
 
 		// is visible just returns visibility field from Field
 		this.visibility = model.isVisible();
@@ -61,18 +61,18 @@ public class HexagonField implements ViewField {
 		if (model.getUnit() != null)
 			this.unit = new ViewUnit(model.getUnit());
 
-		this.units_in_battle = new ArrayList<ViewUnit>();
+		this.unitsInBattle = new ArrayList<ViewUnit>();
 
-		this.hex_width = field_width;
-		this.hex_height = field_height;
+		this.hexWidth = field_width;
+		this.hexHeight = field_height;
 
-		this.border_color = model.getPlayer().getColor();
+		this.borderColor = model.getPlayer().getColor();
 
-		this.side_size = this.calculateHexSideSize(field_height);
+		this.sideSize = this.calculateHexSideSize(field_height);
 
-		this.border_width = border_width;
+		this.borderWidth = border_width;
 
-		this.hex_center = HexagonField.calcRealPosition(this.storage_position, this.side_size);
+		this.hexCenter = HexagonField.calcRealPosition(this.storagePosition, this.sideSize);
 
 		this.initCornerPoints();
 
@@ -82,7 +82,7 @@ public class HexagonField implements ViewField {
 
 	private void initCornerPoints() {
 
-		this.corner_points = new ArrayList<Point2D>();
+		this.cornerPoints = new ArrayList<Point2D>();
 
 		// starting point is on top
 		float angle = (float) (Math.PI / 2);
@@ -95,7 +95,7 @@ public class HexagonField implements ViewField {
 			x = (float) (this.getFieldCenter().getX() - (this.getSideSize() - 2) * Math.cos(angle));
 			y = (float) (this.getFieldCenter().getY() - (this.getSideSize() - 2) * Math.sin(angle));
 
-			this.corner_points.add(new Point2D(x, y));
+			this.cornerPoints.add(new Point2D(x, y));
 
 			// add 60 degree
 			angle += Math.PI / 3;
@@ -104,18 +104,18 @@ public class HexagonField implements ViewField {
 
 	}
 
-	private double calcHexWidth(double side_size) {
-		return Math.sqrt(3) * side_size;
+	private double calcHexWidth(double sideSize) {
+		return Math.sqrt(3) * sideSize;
 	}
 
-	private double calcHexHeight(double side_size) {
-		return 2 * side_size;
+	private double calcHexHeight(double sideSize) {
+		return 2 * sideSize;
 	}
 
 	// methods for position calculations
 	// HexCoordinateConverter
-	private double calculateHexSideSize(double hex_height) {
-		return hex_height / 2;
+	private double calculateHexSideSize(double hexHeight) {
+		return hexHeight / 2;
 	}
 
 	static public Point3D convertToCube(Point2D axial) {
@@ -143,13 +143,13 @@ public class HexagonField implements ViewField {
 
 	}
 
-	static public Point2D calcRealPosition(Point2D axial, double side_size) {
+	static public Point2D calcRealPosition(Point2D axial, double sideSize) {
 
 		// work with this setup
 		// x -> y
-		double x = side_size * (Math.sqrt(3) * axial.getX() + Math.sqrt(3) / 2 * axial.getY());
+		double x = sideSize * (Math.sqrt(3) * axial.getX() + Math.sqrt(3) / 2 * axial.getY());
 		// y
-		double y = side_size * (3.0 / 2 * axial.getY());
+		double y = sideSize * (3.0 / 2 * axial.getY());
 
 		return new Point2D(x, y);
 	}
@@ -175,9 +175,9 @@ public class HexagonField implements ViewField {
 		return new Point3D(rx, ry, rz);
 	}
 
-	static public Point2D calcStoragePosition(Point2D point, double field_width, double field_height) {
+	static public Point2D calcStoragePosition(Point2D point, double fieldWidth, double fieldHeight) {
 
-		double side_size = field_height / 2;
+		double side_size = fieldHeight / 2;
 
 		// don't ask ...
 		// x - y
@@ -198,8 +198,10 @@ public class HexagonField implements ViewField {
 		gc.save();
 
 		// every player has different border color
-		gc.setStroke(this.border_color);
-		gc.setLineWidth(this.border_width);
+
+		// gc.setStroke(getJColor(borderColor));
+		gc.setStroke(borderColor.asFxColor());
+		gc.setLineWidth(this.borderWidth);
 
 		// path
 		gc.beginPath();
@@ -236,22 +238,22 @@ public class HexagonField implements ViewField {
 
 	private void drawTerrain(GraphicsContext gc) {
 		if (this.terrain != null)
-			this.terrain.drawTerrain(gc, this.hex_center, this.side_size, this.border_width);
+			this.terrain.drawTerrain(gc, this.hexCenter, this.sideSize, this.borderWidth);
 	}
 
 	private void drawHiddenTerrain(GraphicsContext gc) {
 		if (this.terrain != null) {
 			this.terrain.drawHiddenTerrain(gc,
-					this.hex_center,
-					this.calculateHexSideSize(hex_height),
-					this.border_width);
+					this.hexCenter,
+					this.calculateHexSideSize(hexHeight),
+					this.borderWidth);
 		}
 	}
 
 	private void drawUnit(GraphicsContext gc) {
 
 		if (this.unit != null) {
-			if (this.units_in_battle.isEmpty()) {
+			if (this.unitsInBattle.isEmpty()) {
 				this.unit.drawUnit(gc, this.getFieldCenter(), this.getSideSize());
 			} else {
 				this.drawBattle(gc);
@@ -262,6 +264,7 @@ public class HexagonField implements ViewField {
 
 	// DrawableHexagon
 
+	@Override
 	public void drawOn(GraphicsContext gc) {
 
 		// System.out.println("Drawing hex. field ... ");
@@ -286,6 +289,7 @@ public class HexagonField implements ViewField {
 
 	}
 
+	@Override
 	public void paintField(GraphicsContext gc, Color color) {
 		gc.save();
 
@@ -297,12 +301,14 @@ public class HexagonField implements ViewField {
 			ys[i] = this.getCornerPoints().get(i).getY();
 		}
 
-		gc.setFill(color);
+		// gc.setFill(getJColor(color));
+		gc.setFill(color.asFxColor());
 		gc.fillPolygon(xs, ys, 6);
 
 		gc.restore();
 	}
 
+	@Override
 	public void clearField(GraphicsContext gc) {
 		gc.save();
 
@@ -314,7 +320,8 @@ public class HexagonField implements ViewField {
 			ys[i] = this.getCornerPoints().get(i).getY();
 		}
 
-		gc.setFill(Color.GRAY);
+		// gc.setFill(getJColor(Color.GRAY));
+		gc.setFill(Color.GRAY.asFxColor());
 		gc.fillPolygon(xs, ys, 6);
 
 		gc.restore();
@@ -341,42 +348,43 @@ public class HexagonField implements ViewField {
 
 	// getters and setters
 	public List<Point2D> getCornerPoints() {
-		return corner_points;
+		return cornerPoints;
 	}
 
 	public double getHexWidth() {
-		return hex_width;
+		return hexWidth;
 	}
 
 	public double getHexHeight() {
-		return hex_height;
+		return hexHeight;
 	}
 
 	public double getBorderWidth() {
-		return border_width;
+		return borderWidth;
 	}
 
 	public void setBorderWidth(double border_width) {
-		this.border_width = border_width;
+		this.borderWidth = border_width;
 	}
 
+	@Override
 	public Point2D getFieldCenter() {
-		return hex_center;
+		return hexCenter;
 	}
 
 	public void setHexCenter(Point2D hex_center) {
-		this.hex_center = hex_center;
+		this.hexCenter = hex_center;
 	}
 
 	public double getSideSize() {
-		return side_size;
+		return sideSize;
 	}
 
 	public void setSideSize(double side_size) {
-		this.side_size = side_size;
+		this.sideSize = side_size;
 
-		this.hex_width = this.calcHexWidth(this.side_size);
-		this.hex_height = this.calcHexHeight(this.side_size);
+		this.hexWidth = this.calcHexWidth(this.sideSize);
+		this.hexHeight = this.calcHexHeight(this.sideSize);
 
 		this.initCornerPoints();
 

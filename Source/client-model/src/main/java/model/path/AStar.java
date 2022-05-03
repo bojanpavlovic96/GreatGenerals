@@ -9,7 +9,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import javafx.geometry.Point2D;
+import root.Point2D;
+// import javafx.geometry.Point2D;
 import root.model.Model;
 import root.model.action.move.PathFinder;
 import root.model.component.Field;

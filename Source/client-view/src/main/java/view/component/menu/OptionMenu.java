@@ -4,9 +4,8 @@ import java.util.List;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import javafx.geometry.Point2D;
-import javafx.scene.control.Button;
 import javafx.scene.control.ListView;
+import root.Point2D;
 import root.model.component.option.FieldOption;
 import root.view.menu.Menu;
 import root.view.menu.MenuItem;

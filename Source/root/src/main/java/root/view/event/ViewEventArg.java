@@ -1,6 +1,6 @@
 package root.view.event;
 
-import javafx.geometry.Point2D;
+import root.Point2D;
 
 public class ViewEventArg {
 

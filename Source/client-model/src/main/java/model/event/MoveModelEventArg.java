@@ -1,6 +1,7 @@
 package model.event;
 
-import javafx.geometry.Point2D;
+import root.Point2D;
+// import javafx.geometry.Point2D;
 import root.model.event.ModelEventArg;
 
 public class MoveModelEventArg extends ModelEventArg {

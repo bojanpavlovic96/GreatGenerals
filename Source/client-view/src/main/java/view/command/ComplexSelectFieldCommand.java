@@ -1,10 +1,11 @@
 package view.command;
 
 import javafx.scene.canvas.GraphicsContext;
-import javafx.scene.paint.Color;
+// import javafx.scene.paint.Color;
 import root.command.Command;
 import root.command.CommandDrivenComponent;
 import root.model.component.Field;
+import root.view.Color;
 import root.view.View;
 import root.view.field.ViewField;
 
@@ -12,7 +13,7 @@ public class ComplexSelectFieldCommand extends Command {
 
 	public static final String commandName = "select-field-view-command";
 
-	private Color filter_color;
+	private Color filterColor;
 
 	private Field modelField;
 	private ViewField viewField;
@@ -23,7 +24,7 @@ public class ComplexSelectFieldCommand extends Command {
 	public ComplexSelectFieldCommand(Field modelField) {
 		super(ComplexSelectFieldCommand.commandName);
 
-		this.filter_color = ComplexSelectFieldCommand.default_filter_color;
+		this.filterColor = ComplexSelectFieldCommand.default_filter_color;
 
 		this.modelField = modelField;
 
@@ -44,7 +45,7 @@ public class ComplexSelectFieldCommand extends Command {
 
 		((View) targetComponent)
 				.convertToViewField(modelField)
-				.paintField(gc, filter_color);
+				.paintField(gc, filterColor);
 
 		if (this.modelField.getUnit() != null
 				&& this.modelField.getUnit().getMoveType().getPath() != null) {
@@ -53,7 +54,7 @@ public class ComplexSelectFieldCommand extends Command {
 
 				((View) targetComponent)
 						.convertToViewField(pathField)
-						.paintField(gc, filter_color);
+						.paintField(gc, filterColor);
 
 			}
 		}

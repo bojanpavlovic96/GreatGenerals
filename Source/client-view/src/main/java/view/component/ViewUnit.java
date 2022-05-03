@@ -1,8 +1,9 @@
 package view.component;
 
-import javafx.geometry.Point2D;
+// import javafx.geometry.Point2D;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.Image;
+import root.Point2D;
 import root.model.component.Unit;
 import view.ResourceManager;
 
@@ -42,11 +43,11 @@ public class ViewUnit {
 		double image_width = hex_side * 1.4;
 		double image_height = hex_side * 1.4;
 
-		gc.drawImage(	image,
-						hex_center.getX() - image_width / 2,
-						hex_center.getY() - image_height / 2,
-						image_width,
-						image_height);
+		gc.drawImage(image,
+				hex_center.getX() - image_width / 2,
+				hex_center.getY() - image_height / 2,
+				image_width,
+				image_height);
 		gc.restore();
 
 	}

@@ -124,4 +124,6 @@ public abstract class MoveType implements Cloneable, Runnable {
 
 	public abstract void run();
 
+	public abstract String getName();
+
 }

@@ -7,28 +7,28 @@ import app.form.StartForm;
 import app.resource_manager.AppConfig;
 import app.server.MockupGameServerProxy;
 import app.server.MockupLoginServerProxy;
+import app.server.MockupMsgTranslator;
 import controller.GameBrain;
 import controller.command.CtrlInitializeCommand;
 import javafx.application.Application;
-import javafx.geometry.Point2D;
-import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 import model.DataModel;
 import model.PlayerModelData;
 import model.component.field.ModelField;
 import protocol.NamedWrapperTranslator;
-import proxy.RabbitGameServerProxy;
 import root.ActiveComponent;
+import root.Point2D;
 import root.command.Command;
 import root.communication.GameServerProxy;
+import root.communication.MsgToCmdTranslator;
 import root.communication.ProtocolTranslator;
 import root.communication.parser.GsonJsonParser;
-import root.communication.parser.StaticParser;
 import root.controller.Controller;
 import root.model.Model;
 import root.model.PlayerData;
 import root.model.component.Field;
 import root.model.component.Terrain;
+import root.view.Color;
 import root.view.View;
 import view.DrawingStage;
 import view.component.HexFieldManager;
@@ -72,16 +72,18 @@ public class Launcher extends Application {
 				(String username, String roomName) -> { // game ready handler
 
 					// TODO why am I subscribeing here ... ?
-					// maybe to shutdown app in case of an error ... ?
+					// maybe to shutdown app in case of an connection error ... ?
 					// if (!connectionTask.isConnected()) {
 					// connectionTask.subscribeForEvents((connTask, eventType) -> {
 
 					// });
 					// }
 
-					ProtocolTranslator translator = new NamedWrapperTranslator(
+					ProtocolTranslator protocolTranslator = new NamedWrapperTranslator(
 							new GsonJsonParser(),
 							new StupidStaticTypeResolver());
+
+					MsgToCmdTranslator msgToCmdTranslator = new MockupMsgTranslator();
 
 					// TODO replace username and roomName with some token/key
 					// obtained from the login server
@@ -94,7 +96,8 @@ public class Launcher extends Application {
 
 					GameServerProxy serverProxy = new MockupGameServerProxy(
 							AppConfig.getInstance().rabbitServerProxyConfig,
-							translator,
+							protocolTranslator,
+							msgToCmdTranslator,
 							username,
 							roomName);
 
@@ -169,7 +172,9 @@ public class Launcher extends Application {
 				left--;
 		}
 
-		return new CtrlInitializeCommand(players, fieldModels);
+		var cmd = new CtrlInitializeCommand(players, null);
+		cmd.fields = fieldModels;
+		return cmd;
 	}
 
 	@Override

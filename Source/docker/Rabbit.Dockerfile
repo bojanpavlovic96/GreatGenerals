@@ -1,5 +1,5 @@
 # don't forget to update version 
-# pick management version from dockerhub if you want to access web management ui
+# pick management version  if you want to be able to access web management ui
 # and more important to be ale to create users defined in definitions.json file
 FROM rabbitmq:3.8.3-management
 

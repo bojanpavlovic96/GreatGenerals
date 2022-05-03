@@ -1,8 +1,8 @@
 package root.view.field;
 
-import javafx.geometry.Point2D;
 import javafx.scene.canvas.GraphicsContext;
-import javafx.scene.paint.Color;
+import root.Point2D;
+import root.view.Color;
 
 public interface ViewField {
 

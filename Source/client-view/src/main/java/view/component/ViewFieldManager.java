@@ -1,6 +1,7 @@
 package view.component;
 
-import javafx.geometry.Point2D;
+import root.Point2D;
+// import javafx.geometry.Point2D;
 import root.model.component.Field;
 import root.view.field.ViewField;
 

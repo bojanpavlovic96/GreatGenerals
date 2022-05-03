@@ -9,9 +9,9 @@ public class BasicUnit implements Unit {
 
 	private Field myField;
 
-	private final String unit_name = "basic-unit";
+	public static final String unitName = "basic-unit";
 
-	private String unit_id;
+	private String unitId;
 
 	// attention this should be list of attacks and movement types
 
@@ -39,11 +39,11 @@ public class BasicUnit implements Unit {
 	}
 
 	public String getUnitId() {
-		return this.unit_id;
+		return this.unitId;
 	}
 
 	public String getUnitName() {
-		return this.unit_name;
+		return BasicUnit.unitName;
 	}
 
 	public boolean canMove() {

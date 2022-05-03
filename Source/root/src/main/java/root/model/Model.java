@@ -2,8 +2,8 @@ package root.model;
 
 import java.util.List;
 
-import javafx.geometry.Point2D;
 import root.ActiveComponent;
+import root.Point2D;
 import root.model.component.Field;
 import root.model.component.Unit;
 import root.model.event.ModelEventHandler;
@@ -14,14 +14,14 @@ public interface Model extends ActiveComponent {
 
 	List<Field> getFreeNeighbours(Field currentField);
 
-	Field getField(Point2D storage_position);
+	Field getField(Point2D storagePosition);
 
 	void setField(Field field);
 
-	void setEventHandler(ModelEventHandler event_handler);
+	void setEventHandler(ModelEventHandler eventHandler);
 
-	void initializeModel(List<PlayerData> list_of_players, List<Field> fields);
+	void initializeModel(List<PlayerData> listOfPlayers, List<Field> fields);
 
-	Unit generateUnit(String unit_name);
+	Unit generateUnit(String unitName);
 
 }

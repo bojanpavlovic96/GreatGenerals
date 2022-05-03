@@ -11,6 +11,8 @@ import root.model.component.Field;
 
 public class BasicMove extends MoveType {
 
+	public static final String name = "BaicMove";
+
 	private ScheduledFuture<?> movingFuture;
 
 	public BasicMove(Field myField,
@@ -92,6 +94,11 @@ public class BasicMove extends MoveType {
 	@Override
 	public boolean isMoving() {
 		return (movingFuture != null);
+	}
+
+	@Override
+	public String getName() {
+		return BasicMove.name;
 	}
 
 }

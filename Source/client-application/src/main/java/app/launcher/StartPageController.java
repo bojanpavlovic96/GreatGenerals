@@ -64,8 +64,10 @@ public class StartPageController implements GameReadyEventProducer {
 						if (response.getStatus() == LoginServerResponseStatus.SUCCESS) {
 							if (onGameReady != null) {
 
+								// TODO replace this with actuall values 
 								// this should just switch to roomForm
-								onGameReady.execute(response.getUsername(), "randomRoomName");
+								// onGameReady.execute(response.getUsername(), "randomRoomName");
+								onGameReady.execute("randomUsername", "randomRoomName");
 							}
 						} else {
 							((MessageDisplay) initialPage).showInfoMessage(

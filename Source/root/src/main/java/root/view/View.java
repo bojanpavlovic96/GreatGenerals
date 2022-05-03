@@ -1,8 +1,8 @@
 package root.view;
 
-import javafx.geometry.Point2D;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
+import root.Point2D;
 import root.command.CommandDrivenComponent;
 import root.model.component.Field;
 import root.view.event.ViewEventProducer;

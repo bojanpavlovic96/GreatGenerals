@@ -1,17 +1,19 @@
 package root.communication.messages;
 
-import javafx.geometry.Point2D;
+import root.Point2D;
 
 public class MoveCmdMsg extends Message {
 
-	public static final String name = "move-comd-msg";
+	public static final String name = "move-cmd-msg";
 
-	// TODO please create custom point2D class ... 
 	public Point2D startFieldPos;
 	public Point2D endFieldPos;
 
-	public MoveCmdMsg() {
+	public MoveCmdMsg(Point2D startField, Point2D endField) {
 		super(MoveCmdMsg.name);
+
+		this.startFieldPos = startField;
+		this.endFieldPos = endField;
 	}
 
 }

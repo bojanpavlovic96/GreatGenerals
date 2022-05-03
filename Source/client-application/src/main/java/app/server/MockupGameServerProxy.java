@@ -6,9 +6,9 @@ import java.util.concurrent.Executors;
 import model.event.MoveModelEventArg;
 import proxy.RabbitServerProxyConfig;
 import root.ActiveComponent;
-import root.command.Command;
 import root.command.CommandQueue;
 import root.communication.GameServerProxy;
+import root.communication.MsgToCmdTranslator;
 import root.communication.ProtocolTranslator;
 import root.model.event.ModelEventArg;
 
@@ -17,7 +17,8 @@ import root.model.event.ModelEventArg;
 public class MockupGameServerProxy implements GameServerProxy, ActiveComponent {
 
 	private RabbitServerProxyConfig config;
-	private ProtocolTranslator translator;
+	private ProtocolTranslator protocolTranslator;
+	private MsgToCmdTranslator messageTranslator;
 	private String username;
 	private String roomName;
 
@@ -27,13 +28,15 @@ public class MockupGameServerProxy implements GameServerProxy, ActiveComponent {
 
 	public MockupGameServerProxy(
 			RabbitServerProxyConfig config,
-			ProtocolTranslator translator,
+			ProtocolTranslator protocolTranslator,
+			MsgToCmdTranslator messageTranslator,
 			String username,
 			String roomName) {
 		super();
 
 		this.config = config;
-		this.translator = translator;
+		this.protocolTranslator = protocolTranslator;
+		this.messageTranslator = messageTranslator;
 		this.username = username;
 		this.roomName = roomName;
 
@@ -50,7 +53,8 @@ public class MockupGameServerProxy implements GameServerProxy, ActiveComponent {
 	@Override
 	public void sendIntention(ModelEventArg action) {
 
-		byte[] message = translator.toByteData(action);
+		var message = messageTranslator.ToMessage(action);
+		byte[] byteMessage = protocolTranslator.toByteData(message);
 		// let's say this message is gonna be sent
 
 		executor.submit(() -> {
@@ -65,11 +69,28 @@ public class MockupGameServerProxy implements GameServerProxy, ActiveComponent {
 			int endX = (int) ((MoveModelEventArg) action).getDestinationField().getX();
 			int endY = (int) ((MoveModelEventArg) action).getDestinationField().getY();
 
-			// oh look we received new command
-			String stringCommand = "{\"name\":\"move-command\",\"payload\":\"{ name: move-command, startFieldPos: {x:"
-					+ startX + ",y:" + startY + "},  secondFieldPos: {x:" + endX + ",y:" + endY + "} } \"}";
+			// oh look we received a new command
+			// String stringCommand = "{\"name\":\"move-command\",\"payload\":\"{ name: move-command, startFieldPos: {x:"
+			// 		+ startX + ",y:" + startY + "},  secondFieldPos: {x:" + endX + ",y:" + endY + "} } \"}";
 
-			Command command = translator.toCommand(stringCommand);
+			// oh look we received a new command 
+			// this string should represend an actual message received/sent from/to rabbit
+			// String stringCommand = "{\"name\":\"move-cmd-msg\",\"payload\":"
+			// 		+ "\"{ \"name\":\"move-cmd-msg\",\"roomName\": " + roomName
+			// 		+ ",\"player\": " + username + ","
+			// 		+ "startFieldPos: {x:" + startX + ",y:" + startY + "},"
+			// 		+ "endFieldPos: {x:" + endX + ",y:" + endY + "} } \"}";
+
+			String stringCommand = "{\"name\":\"move-cmd-msg\",\"payload\":"
+					+ "\"{ name: move-cmd-msg, roomName: " + roomName
+					+ ", player: " + username + ","
+					+ "startFieldPos: {x:" + startX + ",y:" + startY + "},"
+					+ "endFieldPos: {x:" + endX + ",y:" + endY + "} } \"}";
+
+			var inMessage = protocolTranslator.toMessage(stringCommand.getBytes());
+			var command = messageTranslator.ToCommand(inMessage);
+
+			// Command command = messageTranslator.ToCommand(incomingMessage);
 			System.out.println("Mockup server proxy queueing: " + command.getName());
 
 			// Command command = new CtrlMoveCommand(

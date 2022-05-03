@@ -2,7 +2,7 @@ package view.command;
 
 import java.util.List;
 
-import javafx.geometry.Point2D;
+import root.Point2D;
 import root.command.Command;
 import root.model.component.Field;
 import root.view.View;

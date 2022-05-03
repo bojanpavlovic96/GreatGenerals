@@ -8,11 +8,11 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledThreadPoolExecutor;
 
-import javafx.geometry.Point2D;
 import model.component.unit.BasicMove;
 import model.component.unit.BasicUnit;
 import model.component.unit.UnitFactory;
 import model.path.AStar;
+import root.Point2D;
 import root.model.Model;
 import root.model.PlayerData;
 import root.model.component.Field;
@@ -46,6 +46,7 @@ public class DataModel implements Model {
 
 	// private methods
 
+	// TODO MAYYYBE provide unitFactory as and external dependency ... ? 
 	private void initUnitCreator() {
 
 		this.unitFactory = new UnitFactory();
@@ -61,10 +62,10 @@ public class DataModel implements Model {
 
 	// methods
 
-	public void initializeModel(List<PlayerData> list_of_players, List<Field> fields) {
+	public void initializeModel(List<PlayerData> listOfPlayers, List<Field> fields) {
 
 		this.players = new HashMap<String, PlayerData>();
-		for (PlayerData player : list_of_players) {
+		for (PlayerData player : listOfPlayers) {
 			this.players.put(player.getUsername(), player);
 		}
 
@@ -82,7 +83,9 @@ public class DataModel implements Model {
 
 	@Override
 	public Field getField(Point2D storage_position) {
-		return this.fields.get(storage_position);
+		var values = this.fields.values().toArray();
+		var value = this.fields.get(storage_position);
+		return value;
 	}
 
 	@Override
@@ -134,21 +137,21 @@ public class DataModel implements Model {
 		return neighbours;
 	}
 
-	public void setUnit(Point2D storagePosition, String unitName) {
+	// public void setUnit(Point2D storagePosition, String unitName) {
 
-		Field field = this.fields.get(storagePosition);
-		Unit unit = this.unitFactory.generateUnit(unitName);
+	// 	Field field = this.fields.get(storagePosition);
+	// 	Unit unit = this.unitFactory.generateUnit(unitName);
 
-		if (unit != null) {
+	// 	if (unit != null) {
 
-			field.setUnit(unit);
-			unit.setField(field);
+	// 		field.setUnit(unit);
+	// 		unit.setField(field);
 
-		} else {
-			System.out.println("Unit creator was unable to create requested unit " + unitName);
-		}
+	// 	} else {
+	// 		System.out.println("Unit creator was unable to create requested unit " + unitName);
+	// 	}
 
-	}
+	// }
 
 	@Override
 	public void setEventHandler(ModelEventHandler handler) {

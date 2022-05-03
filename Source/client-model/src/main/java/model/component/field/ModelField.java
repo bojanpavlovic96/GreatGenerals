@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import javafx.geometry.Point2D;
+import root.Point2D;
 import root.model.PlayerData;
 import root.model.component.Field;
 import root.model.component.Terrain;
@@ -14,7 +14,7 @@ import root.model.event.ModelEventHandler;
 
 public class ModelField implements Field {
 
-	private Point2D storage_position;
+	private Point2D storagePosition;
 
 	private PlayerData player;
 
@@ -24,7 +24,7 @@ public class ModelField implements Field {
 	private Terrain terrain;
 
 	// implement battle
-	private List<Unit> units_in_battle;
+	private List<Unit> unitsInBattle;
 
 	// key format: name-field-option => move-to-field-option
 	// private Map<String, FieldOption> options;
@@ -35,6 +35,20 @@ public class ModelField implements Field {
 
 	// constructors
 
+	public ModelField(Point2D storagePosition,
+			PlayerData player,
+			boolean visibility,
+			Terrain terrain) {
+		super();
+
+		this.storagePosition = storagePosition;
+		this.player = player;
+		this.visibility = visibility;
+		this.unit = null;
+		this.terrain = terrain;
+
+	}
+
 	public ModelField(Point2D storage_position,
 			PlayerData player,
 			boolean visibility,
@@ -42,7 +56,7 @@ public class ModelField implements Field {
 			Terrain terrain) {
 		super();
 
-		this.storage_position = storage_position;
+		this.storagePosition = storage_position;
 		this.player = player;
 		this.visibility = visibility;
 		this.unit = unit;
@@ -55,7 +69,7 @@ public class ModelField implements Field {
 	@Override
 	public Point2D getStoragePosition() {
 
-		return storage_position;
+		return storagePosition;
 	}
 
 	@Override
@@ -70,9 +84,7 @@ public class ModelField implements Field {
 
 		// if method is used for inserting (not removing) unit
 		if (this.unit != null) {
-			// update unit event handler (modelEventHandler)
 			this.unit.setEventHandler(this.eventHandler);
-			// update reference to field
 			this.unit.setField(this);
 		}
 

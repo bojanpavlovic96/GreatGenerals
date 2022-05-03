@@ -3,7 +3,7 @@ package controller.command;
 import java.util.List;
 import java.util.function.Function;
 
-import javafx.geometry.Point2D;
+import root.Point2D;
 import root.command.Command;
 import root.command.CommandDrivenComponent;
 import root.command.CommandQueue;
@@ -18,6 +18,7 @@ public class CtrlMoveCommand extends Command {
 	public static final String name = "move-command";
 
 	// TODO switch to root...Point2D
+	public Point2D startFieldPos;
 	public Field startField;
 
 	public Point2D secondFieldPos;
@@ -34,8 +35,12 @@ public class CtrlMoveCommand extends Command {
 	public void setTargetComponent(CommandDrivenComponent target) {
 		super.setTargetComponent(target);
 
-		this.startField = ((Controller) super.targetComponent).getModel().getField(this.startFieldPos);
-		this.secondField = ((Controller) super.targetComponent).getModel().getField(this.secondFieldPos);
+		this.startField = ((Controller) super.targetComponent)
+				.getModel()
+				.getField(this.startFieldPos);
+		this.secondField = ((Controller) super.targetComponent)
+				.getModel()
+				.getField(this.secondFieldPos);
 	}
 
 	@Override

@@ -6,7 +6,6 @@ import java.util.List;
 import java.util.Map;
 
 import javafx.event.EventHandler;
-import javafx.geometry.Point2D;
 import javafx.scene.Group;
 import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
@@ -20,6 +19,7 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.paint.Color;
 import javafx.stage.Screen;
 import javafx.stage.Stage;
+import root.Point2D;
 import root.command.CommandDrivenComponent;
 import root.command.CommandProcessor;
 import root.command.CommandQueue;

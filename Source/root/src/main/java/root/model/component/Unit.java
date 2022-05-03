@@ -21,7 +21,7 @@ public interface Unit extends Cloneable {
 	// attention maybe list of move types
 	MoveType getMoveType();
 
-	void relocateTo(Field next_field);
+	void relocateTo(Field nextField);
 
 	boolean haveAirAttack();
 
@@ -29,6 +29,6 @@ public interface Unit extends Cloneable {
 
 	Unit clone() throws CloneNotSupportedException;
 
-	void setEventHandler(ModelEventHandler event_handler);
+	void setEventHandler(ModelEventHandler eventHandler);
 
 }

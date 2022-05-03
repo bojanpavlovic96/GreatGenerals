@@ -2,7 +2,7 @@ package root.model.component;
 
 import java.util.List;
 
-import javafx.geometry.Point2D;
+import root.Point2D;
 import root.model.PlayerData;
 import root.model.component.option.FieldOption;
 import root.model.event.ModelEventHandler;

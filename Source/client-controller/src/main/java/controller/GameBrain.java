@@ -96,6 +96,11 @@ public class GameBrain implements Controller {
 
 	private void initViewEventHandlers() {
 
+		// TODO maybe put this inside the ctrlInitializeCommand
+		// if server is very slow you could be able to click on the map before
+		// the fields are initialized (created)
+		// other approach would be put some loading screen above everything 
+		// until we get ctrlInitializeCommand ... 
 		this.view.addEventHandler("left-mouse-click-event", new ViewEventHandler() {
 
 			public void execute(ViewEventArg arg) {
