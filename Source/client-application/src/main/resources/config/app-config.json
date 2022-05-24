@@ -19,7 +19,10 @@
 			"opacity": 0.5
 		},
 		"fieldMenuWidth": 200,
-		"fieldMenuHeight": 299
+		"fieldMenuHeight": 299,
+		"fieldHeight": 80,
+		"fieldWdith": 30,
+		"fieldBorderWidth": 2
 	},
 	"brokerConfig": {
 		"stage": "dev",
@@ -58,13 +61,13 @@
 		"stage": "dev",
 		"development": {
 			"address": "localhost",
-			"port": "8080",
+			"port": 8080,
 			"loginPath": "login",
 			"registerPath": "register"
 		},
 		"production": {
 			"address": "localhost",
-			"port": "8080",
+			"port": 8080,
 			"loginPath": "login",
 			"registerPath": "register"
 		}

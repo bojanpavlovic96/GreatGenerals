@@ -19,8 +19,7 @@ import javafx.scene.control.TextField;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Font;
 
-public class RoomForm
-		extends VBox
+public class RoomForm extends VBox
 		implements FormMessageProducer, HasLabels {
 
 	// Noto Sans CJK TC Black
@@ -40,11 +39,11 @@ public class RoomForm
 
 	private Button logoutBtn;
 
-	private Label toomNameLb;
-	private TextField room_name_tf;
+	private Label roomNameLb;
+	private TextField roomNameTf;
 
 	private Label roomPasswordLb;
-	private PasswordField room_password_pf;
+	private PasswordField roomPasswordPf;
 
 	private Button createRoomBtn;
 	private Button joinRoomBtn;
@@ -90,13 +89,13 @@ public class RoomForm
 		this.logoutBtn = new Button(this.language.logout);
 		this.logoutBtn.setFont(this.font);
 
-		this.toomNameLb = new Label(this.language.roomName);
-		this.toomNameLb.setFont(this.font);
-		this.room_name_tf = new TextField();
+		this.roomNameLb = new Label(this.language.roomName);
+		this.roomNameLb.setFont(this.font);
+		this.roomNameTf = new TextField();
 
 		this.roomPasswordLb = new Label(this.language.roomPassword);
 		this.roomPasswordLb.setFont(this.font);
-		this.room_password_pf = new PasswordField();
+		this.roomPasswordPf = new PasswordField();
 
 		this.createRoomBtn = new Button(this.language.createRoom);
 		this.createRoomBtn.setFont(this.font);
@@ -136,11 +135,11 @@ public class RoomForm
 
 		this.getChildren().add(this.logoutBtn);
 
-		this.getChildren().add(this.toomNameLb);
-		this.getChildren().add(this.room_name_tf);
+		this.getChildren().add(this.roomNameLb);
+		this.getChildren().add(this.roomNameTf);
 
 		this.getChildren().add(this.roomPasswordLb);
-		this.getChildren().add(this.room_password_pf);
+		this.getChildren().add(this.roomPasswordPf);
 
 		this.getChildren().add(this.createRoomBtn);
 		this.getChildren().add(this.joinRoomBtn);
@@ -156,16 +155,16 @@ public class RoomForm
 		this.disableStartingGame();
 
 		// elements margins (up, right, down, left)
-		VBox.setMargin(this.room_name_tf, new Insets(2, 0, 5, 0));
+		VBox.setMargin(this.roomNameTf, new Insets(2, 0, 5, 0));
 
-		VBox.setMargin(this.room_password_pf, new Insets(2, 0, 5, 0));
+		VBox.setMargin(this.roomPasswordPf, new Insets(2, 0, 5, 0));
 
 		VBox.setMargin(this.createRoomBtn, new Insets(5, 0, 5, 0));
 
 		VBox.setMargin(this.playersLb, new Insets(10, 0, 0, 0));
 
 		VBox.setMargin(this.startGameBtn, new Insets(10, 0, 0, 5));
-		
+
 		StringResourceManager.subscribeForLanguageChange(this);
 	}
 
@@ -202,11 +201,11 @@ public class RoomForm
 
 	// public methods
 	public String getRoomName() {
-		return this.room_name_tf.getText();
+		return this.roomNameTf.getText();
 	}
 
 	public String getRoomPassword() {
-		return this.room_password_pf.getText();
+		return this.roomPasswordPf.getText();
 	}
 
 	public void addPlayer(String new_player) {
@@ -261,7 +260,7 @@ public class RoomForm
 		this.language = newLanguage;
 
 		this.logoutBtn.setText(this.language.logout);
-		this.toomNameLb.setText(this.language.roomName);
+		this.roomNameLb.setText(this.language.roomName);
 		this.roomPasswordLb.setText(this.language.roomPassword);
 		this.createRoomBtn.setText(this.language.createRoom);
 		this.joinRoomBtn.setText(this.language.joinRoom);

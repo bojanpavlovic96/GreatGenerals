@@ -5,7 +5,7 @@ import java.util.List;
 import root.command.Command;
 import root.model.component.option.FieldOption;
 import root.view.menu.Menu;
-import view.component.menu.Option;
+import view.component.menu.ShortMenuItem;
 import root.view.View;
 
 public class PopulateMenuCommand extends Command {
@@ -25,10 +25,10 @@ public class PopulateMenuCommand extends Command {
 		clearCommand.setTargetComponent(super.targetComponent);
 		clearCommand.run();
 
-		Menu menu = ((View) super.targetComponent).getOptionMenu();
+		Menu menu = ((View) super.targetComponent).getShortOptionMenu();
 
 		for (FieldOption singleOption : this.newOptions) {
-			menu.addOption(new Option(singleOption));
+			menu.addOption(new ShortMenuItem(singleOption));
 		}
 
 	}

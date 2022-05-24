@@ -81,7 +81,7 @@ public class StartForm extends Stage implements InitialPage {
 		this.setX(dimension.getWidth() / 2 - this.WIDTH / 2);
 		// using dimension.getHeight() / 2 wont really work great
 		// i don't know which display/monitor is gonna be used
-		// sometimes it uses dimension of one and display on another ...
+		// sometimes it will uses dimensions of one and display on another ...
 		this.setY(200);
 
 		VBox.setVgrow(this.mainContainer, Priority.NEVER);

@@ -1,7 +1,8 @@
 package model.component.unit;
 
-public interface UnitAttack {
+public class UnitAttack {
 
-		
+	public int damage;
+	public int range;
 	
 }

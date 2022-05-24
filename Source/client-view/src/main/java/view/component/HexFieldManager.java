@@ -1,7 +1,6 @@
 package view.component;
 
 import root.Point2D;
-// import javafx.geometry.Point2D;
 import root.model.component.Field;
 import root.view.field.ViewField;
 
@@ -11,19 +10,16 @@ public class HexFieldManager implements ViewFieldManager {
 	private double fieldWidth;
 	private double fieldBorderWidth;
 
-	// constructors
-
-	public HexFieldManager(double field_height,
-			double field_width,
-			double field_border_width) {
+	// TODO maybe just pass the viewConfig to the constructor
+	public HexFieldManager(double fieldHeight,
+			double fieldWidth,
+			double fieldBorderWidth) {
 
 		super();
-		this.fieldHeight = field_height;
-		this.fieldWidth = field_width;
-		this.fieldBorderWidth = field_border_width;
+		this.fieldHeight = fieldHeight;
+		this.fieldWidth = fieldWidth;
+		this.fieldBorderWidth = fieldBorderWidth;
 	}
-
-	// methods
 
 	public ViewField getViewField(Field fieldModel) {
 		return new HexagonField(fieldModel,

@@ -8,6 +8,9 @@ import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.ScheduledThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
+// not finished 
+// not worth it, many recommended to just use concurrent.Executors ... 
+// it kinda works ... 
 public class Timer {
 
 	class RunnableWithFuture {

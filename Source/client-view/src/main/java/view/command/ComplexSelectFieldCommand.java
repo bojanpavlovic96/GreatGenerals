@@ -1,7 +1,6 @@
 package view.command;
 
 import javafx.scene.canvas.GraphicsContext;
-// import javafx.scene.paint.Color;
 import root.command.Command;
 import root.command.CommandDrivenComponent;
 import root.model.component.Field;
@@ -9,6 +8,7 @@ import root.view.Color;
 import root.view.View;
 import root.view.field.ViewField;
 
+// does not look like this is actually used ... 
 public class ComplexSelectFieldCommand extends Command {
 
 	public static final String commandName = "select-field-view-command";

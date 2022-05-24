@@ -18,7 +18,7 @@ public class LoginController {
 
 	private final LoginService loginService;
 
-	// if @Primary annotation is not used
+	// if @Primary annotation is not used @Qualifier is necessary
 	// this is the only way to inject the bean if multiple impl. are provided
 	// also there is a xml way of doing this but ... it is xml
 	// @Autowired
@@ -35,18 +35,18 @@ public class LoginController {
 	@PostMapping("/login")
 	public LoginServerResponse login(@RequestBody LoginRequest request) {
 
+		var username = request.getUsername();
+		var password = request.getPassword();
+
 		var response = new LoginServerResponse();
-		response.setUsername(request.getUsername());
+		response.setUsername(username);
 
 		LoginResult loginResult = null;
 		try {
-			loginResult = loginService.login(
-					request.getUsername(),
-					request.getPassword())
-					.get();
+			loginResult = loginService.login(username, password).get();
 		} catch (Exception e) {
 			// debug
-			System.out.println("Exception while useing login service... ");
+			System.out.println("Exception while using login service... ");
 			System.out.println(e.getMessage());
 		}
 

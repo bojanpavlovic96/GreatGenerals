@@ -1,0 +1,55 @@
+version: '3.5'
+
+networks: 
+  default: 
+    name: gg-network
+    external: true
+
+# ========================
+
+services:
+  gg-broker:
+    container_name: gg-broker
+    build:
+      context: ./
+      dockerfile: ./docker/Broker-Rabbit.Dockerfile
+    image: gg/broker-rabbitmq
+    ports: 
+    - "0.0.0.0:5672:5672"
+    - "0.0.0.0:15672:15672"
+
+  gg-game-db:
+    container_name: gg-game-db
+    build:
+      context: ./
+      dockerfile: ./docker/GameDb-Mongo.Dockerfile
+    image: gg/game-db-mongo
+    ports:
+    - "0.0.0.0:27017:27017"
+
+  gg-users-db:
+    container_name: gg-users-db
+    build:
+      context: ./
+      dockerfile: ./docker/UserDb-MySql.Dockerfile
+    image: gg/users-db-mysql
+    ports:
+    - "0.0.0.0:3306:3306"
+
+  gg-login-server:
+    container_name: gg-login-server
+    build:
+      context: ./
+      dockerfile: ./docker/RestLoginServer-Spring.Dockerfile
+    image: gg/rest-login-spring
+    ports:
+      - "0.0.0.0:9000:9000"
+
+  gg-game-server:
+    container_name: gg-game-server
+    build:
+      context: ./
+      dockerfile: ./docker/GameServer-DotNet.Dockerfile
+    image: gg/rest-login-spring
+    # ports:
+    # - "0.0.0.0:9000:9000"

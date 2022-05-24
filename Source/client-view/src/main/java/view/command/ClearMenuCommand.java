@@ -12,7 +12,7 @@ public class ClearMenuCommand extends Command {
 
 	@Override
 	public void run() {
-		Menu fieldMenu = ((View) super.targetComponent).getOptionMenu();
+		Menu fieldMenu = ((View) super.targetComponent).getShortOptionMenu();
 		fieldMenu.clearOptions();
 	}
 

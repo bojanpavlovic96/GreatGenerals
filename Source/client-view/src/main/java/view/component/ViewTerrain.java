@@ -1,6 +1,5 @@
 package view.component;
 
-// import javafx.geometry.Point2D;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.Image;
 import root.Point2D;
@@ -9,57 +8,57 @@ import view.ResourceManager;
 
 public class ViewTerrain {
 
-	private String terrain_name;
+	private String terrainName;
 	private int intensity;
 
 	public ViewTerrain(Terrain model) {
 
-		this.terrain_name = model.getName();
+		this.terrainName = model.getName();
 		this.intensity = model.getIntensity();
 
 	}
 
 	public void drawTerrain(GraphicsContext gc,
-			Point2D hex_center,
-			double hex_side,
-			double border_width) {
+			Point2D hexCenter,
+			double hexSide,
+			double borederWidth) {
 
-		Image image = ResourceManager.getInstance().getTerrain(this.terrain_name, intensity);
+		Image image = ResourceManager.getInstance().getTerrain(this.terrainName, intensity);
 
 		if (image == null) {
-			System.out.println("Terrain image is null... " + this.terrain_name
+			System.out.println("Terrain image is null... " + this.terrainName
 					+ "\t @ ViewTerrain.drawTerrain");
 		}
 
-		double hex_width = (double) (Math.sqrt(3) * hex_side);
-		double hex_height = 2 * hex_side;
+		double hex_width = (double) (Math.sqrt(3) * hexSide);
+		double hex_height = 2 * hexSide;
 
 		gc.save();
 
 		gc.drawImage(image,
-				hex_center.getX() - hex_width / 2 + border_width,
-				hex_center.getY() - hex_height / 2 + border_width,
-				hex_width - 2 * border_width,
-				hex_height - 2 * border_width);
+				hexCenter.getX() - hex_width / 2 + borederWidth,
+				hexCenter.getY() - hex_height / 2 + borederWidth,
+				hex_width - 2 * borederWidth,
+				hex_height - 2 * borederWidth);
 
 		gc.restore();
 
 	}
 
 	public void drawHiddenTerrain(GraphicsContext gc,
-			Point2D hex_center,
-			double hex_side,
-			double border_width) {
+			Point2D hexCenter,
+			double hexSide,
+			double borderWidth) {
 
-		String old_terrain_name = this.terrain_name;
-		this.terrain_name = "fog";
+		String old_terrain_name = this.terrainName;
+		this.terrainName = "fog";
 
 		int old_intensity = this.intensity;
 		this.intensity = 1;
 
-		this.drawTerrain(gc, hex_center, hex_side, border_width);
+		this.drawTerrain(gc, hexCenter, hexSide, borderWidth);
 
-		this.terrain_name = old_terrain_name;
+		this.terrainName = old_terrain_name;
 		this.intensity = old_intensity;
 
 	}

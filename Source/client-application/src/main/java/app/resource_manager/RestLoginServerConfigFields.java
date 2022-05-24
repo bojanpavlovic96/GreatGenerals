@@ -3,7 +3,7 @@ package app.resource_manager;
 public class RestLoginServerConfigFields {
 
 	public String address;
-	public String port;
+	public int port;
 	public String loginPath;
 	public String registerPath;
 
@@ -13,7 +13,7 @@ public class RestLoginServerConfigFields {
 
 	public RestLoginServerConfigFields(
 			String address,
-			String port,
+			int port,
 			String loginPath,
 			String registerPath) {
 

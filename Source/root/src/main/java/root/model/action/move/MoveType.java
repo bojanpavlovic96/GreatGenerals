@@ -93,6 +93,7 @@ public abstract class MoveType implements Cloneable, Runnable {
 
 	public abstract boolean isMoving();
 
+	
 	public boolean isOnPath(Field field) {
 		var fieldPos = field.getStoragePosition();
 

@@ -13,10 +13,9 @@
 	<artifactId>rest-login</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<name>rest-login</name>
-	<description>Demo project for Spring Boot</description>
 
 	<properties>
-		<java.version>11</java.version>
+		<java.version>13</java.version>
 	</properties>
 
 	<dependencies>
@@ -53,6 +52,9 @@
 			<plugin>
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>
+				<configuration>
+					<mainClass>server.RestLoginApplication</mainClass>
+				</configuration>
 			</plugin>
 		</plugins>
 	</build>

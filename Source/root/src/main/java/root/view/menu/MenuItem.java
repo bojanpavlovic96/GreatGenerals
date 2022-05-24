@@ -4,8 +4,8 @@ public interface MenuItem {
 
 	String getName();
 
-	Runnable getOnClickRunnable();
+	Runnable getOnClickHandler();
 
-	void setOnClickRunnable(Runnable new_runnable);
+	void setOnClickHandler(Runnable onClick);
 
 }

@@ -11,6 +11,10 @@ public class LoginServerResponse {
 	public LoginServerResponse() {
 	}
 
+	private LoginServerResponse(LoginServerResponseStatus status) {
+		this.status = status;
+	}
+
 	public LoginServerResponse(String username,
 			int level,
 			int points,
@@ -61,6 +65,10 @@ public class LoginServerResponse {
 				", points='" + getPoints() + "'" +
 				", status='" + getStatus() + "'" +
 				"}";
+	}
+
+	public static LoginServerResponse failed() {
+		return new LoginServerResponse(LoginServerResponseStatus.SERVER_ERROR);
 	}
 
 }

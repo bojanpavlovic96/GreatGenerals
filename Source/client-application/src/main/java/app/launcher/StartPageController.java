@@ -7,38 +7,35 @@ import app.form.GameReadyEventProducer;
 import app.form.InitialPage;
 import app.form.MessageDisplay;
 import app.resource_manager.Language;
+import root.ActiveComponent;
 import root.communication.LoginServerProxy;
 import root.communication.messages.LoginRequest;
 import root.communication.messages.LoginServerResponseStatus;
 import root.communication.messages.RegisterRequest;
 
-/* Used for handling user actions from login/register/createRoom/joinRoom form */
-public class StartPageController implements GameReadyEventProducer {
+// Used for handling user actions from login/register/createRoom/joinRoom form
+public class StartPageController implements GameReadyEventProducer, ActiveComponent {
 
 	private InitialPage initialPage;
 
-	private GameReadyHandler onGameReady;
-
-	// game data
-	// user
 	private String username;
 	private String password;
 	private boolean loggedIn;
-	// room
+
 	private String roomName;
 	private String roomPassword;
-	// also room
+
 	private List<String> players;
 
 	private LoginServerProxy loginServer;
 
-	// methods
+	private GameReadyHandler onGameReady;
 
-	public StartPageController(InitialPage initial_page,
+	public StartPageController(InitialPage initialPage,
 			LoginServerProxy loginServer,
 			GameReadyHandler onGameReady) {
 
-		this.initialPage = initial_page;
+		this.initialPage = initialPage;
 		this.loginServer = loginServer;
 		this.onGameReady = onGameReady;
 
@@ -46,8 +43,6 @@ public class StartPageController implements GameReadyEventProducer {
 
 		this.initialPage.setOnLoginHandler(this::loginActionHandler);
 		this.initialPage.setOnRegisterHandler(this::registerActionHandler);
-
-		// TODO implement handlers for other actions
 
 	}
 
@@ -57,30 +52,24 @@ public class StartPageController implements GameReadyEventProducer {
 		this.username = _username;
 		this.password = _password;
 
-		if (this.loginServer != null && this.loginServer.isReady()) {
-
-			loginServer.login(new LoginRequest(username, password),
-					(response) -> {
-						if (response.getStatus() == LoginServerResponseStatus.SUCCESS) {
-							if (onGameReady != null) {
-
-								// TODO replace this with actuall values 
-								// this should just switch to roomForm
-								// onGameReady.execute(response.getUsername(), "randomRoomName");
-								onGameReady.execute("randomUsername", "randomRoomName");
-							}
-						} else {
-							((MessageDisplay) initialPage).showInfoMessage(
-									Language.MessageType.LoginFailed);
-						}
-					});
-			((MessageDisplay) initialPage).showInfoMessage(
-					Language.MessageType.LoginRequestSent);
-		} else {
-			((MessageDisplay) initialPage).showInfoMessage(
-					Language.MessageType.PleaseWaitForConnection);
+		if (loginServer == null || !loginServer.isReady()) {
+			showInfoMessage(Language.MessageType.PleaseWaitForConnection);
 		}
 
+		loginServer.login(new LoginRequest(username, password),
+				(response) -> {
+					if (response.getStatus() == LoginServerResponseStatus.SUCCESS) {
+						if (onGameReady != null) {
+							// onGameReady.execute("randomUsername", "randomRoomName");
+							initialPage.hideUserForm();
+							initialPage.showRoomForm();
+						}
+					} else {
+						showInfoMessage(Language.MessageType.LoginFailed);
+					}
+				});
+
+		showInfoMessage(Language.MessageType.LoginRequestSent);
 	}
 
 	private void registerActionHandler(String username, String password) {
@@ -95,17 +84,14 @@ public class StartPageController implements GameReadyEventProducer {
 							if (onGameReady != null) {
 
 								// this should just switch back to login form
-								onGameReady.execute(
-										response.getUsername(),
+								onGameReady.execute(response.getUsername(),
 										"randomRoomName");
 							}
 						}
 					});
-			((MessageDisplay) initialPage)
-					.showInfoMessage(Language.MessageType.RegisterRequestSent);
+			showInfoMessage(Language.MessageType.RegisterRequestSent);
 		} else {
-			((MessageDisplay) initialPage)
-					.showInfoMessage(Language.MessageType.PleaseWaitForConnection);
+			showInfoMessage(Language.MessageType.PleaseWaitForConnection);
 		}
 
 	}
@@ -127,6 +113,23 @@ public class StartPageController implements GameReadyEventProducer {
 	@Override
 	public GameReadyHandler getGameReadyHandler() {
 		return this.onGameReady;
+	}
+
+	private void showInfoMessage(Language.MessageType infoName) {
+		((MessageDisplay) initialPage).showInfoMessage(infoName);
+	}
+
+	@Override
+	public void shutdown() {
+		// because of the bug with the httpClient where client will hold thread 
+		// pool alive even after the last window is closed 
+		// shuttingDown custom threadPool doesn't work (but should be) anyways 
+		// but ... if I (anyone) somehow find solution how to shutdown client this
+		// interface implementation and this call propagation will be used 
+		if (loginServer != null && loginServer instanceof ActiveComponent) {
+			((ActiveComponent) loginServer).shutdown();
+		}
+
 	}
 
 }

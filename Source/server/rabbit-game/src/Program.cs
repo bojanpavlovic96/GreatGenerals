@@ -7,10 +7,6 @@ using RabbitGameServer.Service;
 using RabbitGameServer.SharedModel;
 using RabbitGameServer.Util;
 
-// const string RABBIT_CONFIG_SECTION = "RabbitConfig";
-// const string QUEUES_CONFIG_SECTION = "QueuesConfig";
-// const string MONGO_CONFIG_SECTION = "MongoConfig";
-
 var builder = Host.CreateDefaultBuilder(args);
 
 builder.ConfigureServices((hostContext, services) =>
@@ -23,7 +19,6 @@ builder.ConfigureServices((hostContext, services) =>
 
 	services.Configure<MongoConfig>(
 		hostContext.Configuration.GetSection(MongoConfig.ConfigSection));
-
 
 	services.AddMediatR(typeof(Program).Assembly);
 
@@ -39,6 +34,7 @@ builder.ConfigureServices((hostContext, services) =>
 	services.AddHostedService<RabbitReceiver>();
 
 });
+
 
 var host = builder.Build();
 

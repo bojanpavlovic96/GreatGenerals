@@ -26,16 +26,14 @@ public class DataModel implements Model {
 
 	private UnitFactory unitFactory;
 
+	// this is timer ...
 	private ScheduledExecutorService executor;
 
 	// unique event handler (move, attack, build ... )
 	private ModelEventHandler eventHandler;
 
-	// constructors
-
 	public DataModel() {
 
-		// this is timer...
 		this.executor = Executors.newScheduledThreadPool(3);
 		// remove task from waiting queue after it is cancelled
 		((ScheduledThreadPoolExecutor) this.executor).setRemoveOnCancelPolicy(true);
@@ -44,8 +42,6 @@ public class DataModel implements Model {
 
 	}
 
-	// private methods
-
 	// TODO MAYYYBE provide unitFactory as and external dependency ... ? 
 	private void initUnitCreator() {
 
@@ -53,14 +49,11 @@ public class DataModel implements Model {
 
 		Unit basicUnit = new BasicUnit(
 				new BasicMove(null, new AStar(this), this.executor),
-				null,
-				null);
+				new ArrayList<>());
 
 		this.unitFactory.addPrototype(basicUnit);
 
 	}
-
-	// methods
 
 	public void initializeModel(List<PlayerData> listOfPlayers, List<Field> fields) {
 
@@ -82,19 +75,13 @@ public class DataModel implements Model {
 	}
 
 	@Override
-	public Field getField(Point2D storage_position) {
-		var values = this.fields.values().toArray();
-		var value = this.fields.get(storage_position);
-		return value;
+	public Field getField(Point2D storagePosition) {
+		return fields.get(storagePosition);
 	}
 
 	@Override
 	public void setField(Field new_field) {
-		this.fields.put(new_field.getStoragePosition(), new_field);
-	}
-
-	public boolean isInitialized() {
-		return this.fields != null;
+		fields.put(new_field.getStoragePosition(), new_field);
 	}
 
 	@Override
@@ -103,11 +90,12 @@ public class DataModel implements Model {
 	}
 
 	@Override
-	public List<Field> getFreeNeighbours(Field for_field) {
+	public List<Field> getFreeNeighbours(Field forField) {
 
-		List<Field> neighbours = new ArrayList<Field>();
+		// TODO this is tied to the hexagon fields implementation 
+		var neighbours = new ArrayList<Field>();
 		Field neighbour = null;
-		Point2D position = for_field.getStoragePosition();
+		Point2D position = forField.getStoragePosition();
 
 		// up right
 		neighbour = this.fields.get(new Point2D(position.getX() - 1, position.getY() + 1));
@@ -129,7 +117,7 @@ public class DataModel implements Model {
 		neighbour = this.fields.get(new Point2D(position.getX(), position.getY() - 1));
 		if (neighbour != null && !neighbour.isInBattle() && neighbour.getUnit() == null)
 			neighbours.add(neighbour);
-		// // up left
+		// up left
 		neighbour = this.fields.get(new Point2D(position.getX() - 1, position.getY()));
 		if (neighbour != null && !neighbour.isInBattle() && neighbour.getUnit() == null)
 			neighbours.add(neighbour);
@@ -163,8 +151,7 @@ public class DataModel implements Model {
 
 		// attention this could possibly throw some exceptions if some tasks are still
 		// running or waiting
-		if (this.executor != null
-				&& !this.executor.isShutdown()) {
+		if (this.executor != null&& !this.executor.isShutdown()) {
 
 			// this shutdown cancels all running and waiting tasks
 			this.executor.shutdownNow();

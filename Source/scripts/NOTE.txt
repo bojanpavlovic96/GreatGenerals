@@ -36,10 +36,29 @@ mvn compile
 	cd to .../GreatGenerals/Source/client-application
 	java -cp ./target/client-application-0.0.1-SNAPSHOT-jar-with-dependencies.jar app.launcher.Launcher
 
+! ATTENTION !
+If after exiting (closing all windows) process don't exit (speaking about terminal)
+it is possible that HttpClient is still keeping it's thread pool alive. This will 
+for sure happen if you try to login but server is not running, exception will be thrown 
+stating that server is not available, if you close window soon after that it will hang
+because I guess that one (or more ... ) thread is still alive.
+One solution would be creating custom thread pool (ExecutionService) and passing it 
+to the httpClienBuilder and then shutting it down manually (the same thing is not 
+possible with the default executor created by the httpClient). BUT for some reason
+this doesn't work ... sooo ... 
+
+-Dexec.cleanupDaemonThreads=false
+
+adding this argument ^ to the cli while running the app 
+(mvn exec:java -Dexec.cleanupDaemonThreads=false) 
+will basically cleanup all remaining threads so ... yeah
+
+https://stackoverflow.com/questions/65333866/java-httpclient-not-releasing-threads
+https://stackoverflow.com/questions/51871635/couldnt-destroy-threadgroup-org-codehaus-mojo-exec-execjavamojoisolatedthreadg
 
 > TO DEBUG (in visualStudioCode):
-cd to .../GreatGenerals/Sourece/client-application
-mvnDebug exec:java -Djavafx.run.jvmArguments=-agentlib:jdwp=transport=dt_socket,server=y,suspend=y,address=8000
+	$ cd to .../GreatGenerals/Sourece/client-application
+	$ mvnDebug exec:java -Djavafx.run.jvmArguments=-agentlib:jdwp=transport=dt_socket,server=y,suspend=y,address=8000
 
 make sure that port 8000 is not in use if it is in use just pick some other
 but don't forget to update launch.json as well 
@@ -80,3 +99,8 @@ in 'launch.json' add next config
 in vsCode run > Debug: Select and Start Debugging
 select 'attach to mvnDebug'
 
+====================================================================================
+
+> To launch rest login server (.../Source/server/rest-login/) 
+	$ cd .../Source/server/rest-login/
+	$ mvn spring-boot:run

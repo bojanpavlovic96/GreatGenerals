@@ -19,12 +19,12 @@ public class OptionsDelimiter extends Button implements MenuItem {
 	}
 
 	@Override
-	public Runnable getOnClickRunnable() {
+	public Runnable getOnClickHandler() {
 		return null;
 	}
 
 	@Override
-	public void setOnClickRunnable(Runnable new_runnable) {
+	public void setOnClickHandler(Runnable new_runnable) {
 
 	}
 

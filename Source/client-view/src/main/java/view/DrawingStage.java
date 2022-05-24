@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javafx.application.Platform;
 import javafx.event.EventHandler;
 import javafx.scene.Group;
 import javafx.scene.Scene;
@@ -32,7 +33,8 @@ import root.view.field.ViewField;
 import root.view.menu.Menu;
 import view.command.FxCommandProcessor;
 import view.component.ViewFieldManager;
-import view.component.menu.OptionMenu;
+import view.component.menu.LongOptionsMenu;
+import view.component.menu.ShortOptionsMenu;
 
 // attention 
 // attention scroll pane (sometimes) throws some exception but it is harmless
@@ -55,7 +57,8 @@ public class DrawingStage extends Stage implements View {
 	private Canvas boardCanvas;
 	private Canvas secondLayerCanvas;
 
-	private OptionMenu fieldMenu;
+	private ShortOptionsMenu shortOptionsMenu;
+	private LongOptionsMenu longOptionsMenu;
 
 	private double canvasWitdth;
 	private double canvasHeight;
@@ -134,15 +137,21 @@ public class DrawingStage extends Stage implements View {
 		System.out.println("Initial canvas width: " + this.canvasWitdth);
 		System.out.println("Initial canvas height: " + this.canvasHeight);
 
-		this.fieldMenu = new OptionMenu(
+		this.shortOptionsMenu = new ShortOptionsMenu(
 				config.fieldMenuWidth,
 				config.fieldMenuHeight);
 
-		this.fieldMenu.setLayoutX(100);
-		this.fieldMenu.setLayoutY(100);
-		this.fieldMenu.setVisible(true);
+		this.longOptionsMenu = new LongOptionsMenu(
+				config.fieldMenuWidth,
+				config.fieldMenuHeight);
 
-		this.root.getChildren().add(this.fieldMenu);
+		this.shortOptionsMenu.setLayoutX(100);
+		this.shortOptionsMenu.setLayoutY(100);
+		this.shortOptionsMenu.setVisible(true);
+
+		Platform.setImplicitExit(true);
+
+		this.root.getChildren().add(this.shortOptionsMenu);
 
 		this.setScene(this.mainScene);
 
@@ -349,7 +358,7 @@ public class DrawingStage extends Stage implements View {
 	public void setMenuVisibility(boolean visibility) {
 		// with next line, vbox throws some outOfBoundsException: -1 ... don't touch it
 		// not anymore, but I will leave above comment ... just in case
-		this.fieldMenu.setVisible(visibility);
+		this.shortOptionsMenu.setVisible(visibility);
 	}
 
 	@Override
@@ -363,13 +372,18 @@ public class DrawingStage extends Stage implements View {
 	}
 
 	@Override
-	public Menu getOptionMenu() {
-		return this.fieldMenu;
+	public Menu getShortOptionMenu() {
+		return this.shortOptionsMenu;
+	}
+
+	@Override
+	public Menu getLongOptionsMenu() {
+		return this.longOptionsMenu;
 	}
 
 	@Override
 	public void setMenuPosition(Point2D position) {
-		this.fieldMenu.setPosition(position);
+		this.shortOptionsMenu.setPosition(position);
 	}
 
 	@Override

@@ -12,7 +12,6 @@ import root.model.Model;
 import root.model.PlayerData;
 import root.model.component.Field;
 import root.model.component.Terrain;
-import root.model.component.option.FieldOption;
 import view.command.ClearViewCommand;
 import view.command.LoadBoardCommand;
 

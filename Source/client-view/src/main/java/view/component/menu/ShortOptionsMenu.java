@@ -10,11 +10,11 @@ import root.model.component.option.FieldOption;
 import root.view.menu.Menu;
 import root.view.menu.MenuItem;
 
-public class OptionMenu extends ListView<MenuItem> implements Menu {
+public class ShortOptionsMenu extends ListView<MenuItem> implements Menu {
 
 	private ObservableList<MenuItem> menuItems;
 
-	public OptionMenu(double menuWidth, double menuHeight) {
+	public ShortOptionsMenu(double menuWidth, double menuHeight) {
 		super.setPrefWidth(menuWidth);
 		super.setPrefHeight(menuHeight);
 
@@ -67,7 +67,7 @@ public class OptionMenu extends ListView<MenuItem> implements Menu {
 		clearOptions();
 
 		for (FieldOption singleOption : options) {
-			addOption(new Option(singleOption));
+			addOption(new ShortMenuItem(singleOption));
 		}
 
 	}

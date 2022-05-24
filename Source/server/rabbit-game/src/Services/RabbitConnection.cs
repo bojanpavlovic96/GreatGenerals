@@ -15,6 +15,8 @@ namespace RabbitGameServer.Service
 		{
 			this.config = config.Value;
 
+			Console.WriteLine("Creating rabbit conn. with: " + this.config.HostName);
+
 			var factory = new ConnectionFactory();
 			factory.HostName = this.config.HostName;
 			factory.Port = this.config.Port;

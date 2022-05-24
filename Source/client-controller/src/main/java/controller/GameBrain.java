@@ -30,7 +30,7 @@ import root.view.event.ViewEventHandler;
 import root.view.menu.Menu;
 import view.command.ClearTopLayerCommand;
 import view.command.PopulateMenuCommand;
-import view.command.ShowFieldInfoCommand;
+import view.command.ShowFieldMenuCommand;
 import view.command.SelectFieldCommand;
 import view.command.ZoomInCommand;
 import view.command.ZoomOutCommand;
@@ -163,9 +163,9 @@ public class GameBrain implements Controller {
 
 					Command showMenuCommand;
 					if (selectedField != null) {
-						showMenuCommand = new ShowFieldInfoCommand(selectedField, focusedField);
+						showMenuCommand = new ShowFieldMenuCommand(selectedField, focusedField);
 					} else {
-						showMenuCommand = new ShowFieldInfoCommand(focusedField, focusedField);
+						showMenuCommand = new ShowFieldMenuCommand(focusedField, focusedField);
 					}
 
 					viewCommandQueue.enqueue(clearCommand);
@@ -348,7 +348,7 @@ public class GameBrain implements Controller {
 		}
 
 		// TODO feel like this is useless
-		Menu fieldMenu = view.getOptionMenu();
+		Menu fieldMenu = view.getShortOptionMenu();
 		if (fieldMenu.isDisplayed()) {
 			selectedField.adjustOptionsFor(focusedField);
 			viewCommandQueue.enqueue(new PopulateMenuCommand(selectedField.getEnabledOptions()));

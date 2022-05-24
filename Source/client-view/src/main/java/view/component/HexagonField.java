@@ -3,7 +3,6 @@ package view.component;
 import java.util.ArrayList;
 import java.util.List;
 
-// import javafx.geometry.Point2D;
 import javafx.geometry.Point3D;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.Image;
@@ -44,11 +43,10 @@ public class HexagonField implements ViewField {
 
 	// constructors
 
-	public HexagonField(
-			Field model,
-			double field_width,
-			double field_height,
-			double border_width) {
+	public HexagonField(Field model,
+			double fieldWidth,
+			double fieldHeight,
+			double fieldBorder) {
 
 		this.storagePosition = model.getStoragePosition();
 
@@ -63,14 +61,14 @@ public class HexagonField implements ViewField {
 
 		this.unitsInBattle = new ArrayList<ViewUnit>();
 
-		this.hexWidth = field_width;
-		this.hexHeight = field_height;
+		this.hexWidth = fieldWidth;
+		this.hexHeight = fieldHeight;
 
 		this.borderColor = model.getPlayer().getColor();
 
-		this.sideSize = this.calculateHexSideSize(field_height);
+		this.sideSize = this.calculateHexSideSize(fieldHeight);
 
-		this.borderWidth = border_width;
+		this.borderWidth = fieldBorder;
 
 		this.hexCenter = HexagonField.calcRealPosition(this.storagePosition, this.sideSize);
 

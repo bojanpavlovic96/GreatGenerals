@@ -6,8 +6,8 @@ import java.util.List;
 import app.form.StartForm;
 import app.resource_manager.AppConfig;
 import app.server.MockupGameServerProxy;
-import app.server.MockupLoginServerProxy;
 import app.server.MockupMsgTranslator;
+import app.server.RestLoginServerProxy;
 import controller.GameBrain;
 import controller.command.CtrlInitializeCommand;
 import javafx.application.Application;
@@ -67,17 +67,12 @@ public class Launcher extends Application {
 
 		startPageController = new StartPageController(
 				new StartForm(),
-				new MockupLoginServerProxy(),
+				new RestLoginServerProxy(
+						AppConfig.getInstance().restLoginServerConfig.getActive(),
+						new GsonJsonParser()),
+				// new MockupLoginServerProxy(),
 				// new RabbitLoginServerProxy(this.connectionTask, brokerConfig.queues),
 				(String username, String roomName) -> { // game ready handler
-
-					// TODO why am I subscribeing here ... ?
-					// maybe to shutdown app in case of an connection error ... ?
-					// if (!connectionTask.isConnected()) {
-					// connectionTask.subscribeForEvents((connTask, eventType) -> {
-
-					// });
-					// }
 
 					ProtocolTranslator protocolTranslator = new NamedWrapperTranslator(
 							new GsonJsonParser(),
@@ -107,11 +102,12 @@ public class Launcher extends Application {
 
 					// TODO somehow initialize resource manager
 					// resources could be obtained from the server
-					// values passed to the hexFieldManager should also be extracted from
-					// configuration
+					var viewConfig = AppConfig.getInstance().viewConfig;
 					View view = new DrawingStage(
-							new HexFieldManager(80, 30, 2),
-							AppConfig.getInstance().viewConfig);
+							new HexFieldManager(viewConfig.fieldHeight,
+									viewConfig.fieldWdith,
+									viewConfig.fieldBorderWidth),
+							viewConfig);
 
 					// attention controller still null at this moment
 					// modelEventHandler is set from controller constructor
@@ -183,23 +179,23 @@ public class Launcher extends Application {
 
 		System.out.println("Calling application stop ... @ Launcher.start");
 
+		// not every implementation of this components has to be activeCompoenent
+		// that is why I am doing check with every component
+
 		// close connection on shutdown
-		if (this.connectionTask != null) {
+		if (connectionTask != null && connectionTask instanceof ActiveComponent) {
 			System.out.println("Closing connection ... @ Launcher.stop");
 			((ActiveComponent) this.connectionTask).shutdown();
 		}
 
-		if (this.gameController != null) {
+		if (gameController != null && gameController instanceof ActiveComponent) {
 			System.out.println("Shutting down controller ... @ Launcher.stop");
 			((ActiveComponent) this.gameController).shutdown();
 		}
 
-		// startPageController is not active compontent
-		// since the loginServerProxy is implemented
-		// if (this.startPageController != null) {
-		// System.out.println("Shutting down initial controller ... @ Launcher.stop");
-		// ((ActiveComponent) this.startPageController).shutdown();
-		// }
+		if (startPageController != null && startPageController instanceof ActiveComponent) {
+			((ActiveComponent) startPageController).shutdown();
+		}
 
 	}
 

@@ -11,7 +11,7 @@ import root.view.field.ViewField;
 import root.view.menu.Menu;
 
 // TODO rename this to showFieldMenuCommand
-public class ShowFieldInfoCommand extends Command {
+public class ShowFieldMenuCommand extends Command {
 
 	public static final String commandName = "display-field-info-view-command";
 
@@ -23,8 +23,8 @@ public class ShowFieldInfoCommand extends Command {
 	private Field targetField;
 	private ViewField viewTarget;
 
-	public ShowFieldInfoCommand(Field selected_field, Field target_field) {
-		super(ShowFieldInfoCommand.commandName);
+	public ShowFieldMenuCommand(Field selected_field, Field target_field) {
+		super(ShowFieldMenuCommand.commandName);
 
 		this.selectedField = selected_field;
 		this.targetField = target_field;
@@ -50,7 +50,7 @@ public class ShowFieldInfoCommand extends Command {
 
 		View view = (View) targetComponent;
 
-		Menu menu = view.getOptionMenu();
+		Menu menu = view.getShortOptionMenu();
 		menu.clearOptions();
 
 		selectedField.adjustOptionsFor(targetField);
@@ -70,8 +70,8 @@ public class ShowFieldInfoCommand extends Command {
 
 		gc.fillRect(viewTarget.getFieldCenter().getX() + menu.getMenuWidth(),
 				viewTarget.getFieldCenter().getY(),
-				ShowFieldInfoCommand.INFO_WIDTH,
-				ShowFieldInfoCommand.INFO_HEIGHT);
+				ShowFieldMenuCommand.INFO_WIDTH,
+				ShowFieldMenuCommand.INFO_HEIGHT);
 
 		gc.restore();
 

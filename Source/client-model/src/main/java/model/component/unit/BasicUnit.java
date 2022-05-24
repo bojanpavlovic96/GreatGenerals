@@ -1,5 +1,9 @@
 package model.component.unit;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import root.model.action.attack.AttackType;
 import root.model.action.move.MoveType;
 import root.model.component.Field;
 import root.model.component.Unit;
@@ -7,75 +11,78 @@ import root.model.event.ModelEventHandler;
 
 public class BasicUnit implements Unit {
 
-	private Field myField;
-
+	// TODO should be enum ? 
 	public static final String unitName = "basic-unit";
 
-	private String unitId;
-
-	// attention this should be list of attacks and movement types
+	private Field myField;
 
 	private MoveType movementType;
-	// attention air and ground attack could be the same thing with different range
-	private UnitAttack airAttack;
-	private UnitAttack groundAttack;
+	private List<AttackType> attacks;
 
 	private ModelEventHandler eventHandler;
-
-	// methods
 
 	public BasicUnit() {
 		// attention may be used only in clone
 		// protected is better solution than public
 	}
 
-	public BasicUnit(MoveType moveCtrl,
-			UnitAttack airAttackCtrl,
-			UnitAttack groundAttackCtrl) {
+	public BasicUnit(MoveType move, List<AttackType> attacks) {
 
-		this.movementType = moveCtrl;
-		this.airAttack = airAttackCtrl;
-		this.groundAttack = groundAttackCtrl;
+		this.movementType = move;
+		this.attacks = attacks;
 	}
 
-	public String getUnitId() {
-		return this.unitId;
+	public BasicUnit(MoveType move, AttackType attack) {
+
+		this.movementType = move;
+		this.attacks = new ArrayList<>();
+		this.attacks.add(attack);
 	}
 
+	@Override
 	public String getUnitName() {
 		return BasicUnit.unitName;
 	}
 
+	@Override
+	public Field getField() {
+		return this.myField;
+	}
+
+	@Override
+	public void setField(Field newField) {
+
+		this.myField = newField;
+
+		if (this.canMove()) {
+			this.movementType.setField(newField);
+		}
+
+		// TODO do the same thing for attack
+
+	}
+
+	@Override
 	public boolean canMove() {
 		return this.movementType != null;
 	}
 
+	@Override
 	public MoveType getMoveType() {
 		return this.movementType;
 	}
 
-	public boolean haveAirAttack() {
-		return this.airAttack != null;
+	@Override
+	public List<AttackType> getAttacks() {
+		return this.attacks;
 	}
 
-	public boolean haveGroundAttack() {
-		return this.groundAttack != null;
+	@Override
+	public boolean hasAttack() {
+		return this.attacks != null && !this.attacks.isEmpty();
 	}
 
-	public Unit clone() throws CloneNotSupportedException {
-		// exception just because... cloneable...
-
-		BasicUnit clone = (BasicUnit) super.clone();
-
-		clone.movementType = this.movementType.clone();
-
-		/*
-		 * TODO same for air and ground attack
-		 */
-
-		return clone;
-	}
-
+	@Override
 	public void relocateTo(Field nextField) {
 
 		// remove from current field
@@ -89,6 +96,22 @@ public class BasicUnit implements Unit {
 
 	}
 
+	@Override
+	public Unit clone() throws CloneNotSupportedException {
+		// exception just because... cloneable...
+
+		BasicUnit clone = (BasicUnit) super.clone();
+
+		clone.movementType = this.movementType.clone();
+		clone.attacks = new ArrayList<>();
+		for (AttackType attack : this.attacks) {
+			clone.attacks.add(attack.clone());
+		}
+
+		return clone;
+	}
+
+	@Override
 	public void setEventHandler(ModelEventHandler handler) {
 		this.eventHandler = handler;
 
@@ -97,22 +120,6 @@ public class BasicUnit implements Unit {
 		}
 
 		// TODO do the same for attack
-
-	}
-
-	public Field getField() {
-		return this.myField;
-	}
-
-	public void setField(Field newField) {
-
-		this.myField = newField;
-
-		if (this.canMove()) {
-			this.movementType.setField(newField);
-		}
-
-		// TODO do the same thing for attack
 
 	}
 

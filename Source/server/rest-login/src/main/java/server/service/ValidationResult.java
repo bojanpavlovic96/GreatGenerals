@@ -1,5 +1,8 @@
 package server.service;
 
 public enum ValidationResult {
-	Valid, AlreadyInUse, TooShort, InvalidCharacters
+	Valid,
+	AlreadyInUse,
+	InvalidLength,
+	InvalidCharacters
 }

@@ -14,6 +14,8 @@ public abstract class FieldOption implements Runnable {
 
 	protected boolean enabled;
 
+	// TODO add description 
+
 	// constructors
 
 	public FieldOption(String optionName, Controller gameController) {

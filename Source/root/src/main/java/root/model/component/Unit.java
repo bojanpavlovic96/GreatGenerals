@@ -1,12 +1,12 @@
 package root.model.component;
 
+import java.util.List;
+
+import root.model.action.attack.AttackType;
 import root.model.action.move.MoveType;
 import root.model.event.ModelEventHandler;
 
 public interface Unit extends Cloneable {
-
-	// attention may be unused
-	String getUnitId();
 
 	// TODO should this be enum ... ? 
 	// unit type ... basic, advanced, archers...
@@ -18,14 +18,13 @@ public interface Unit extends Cloneable {
 
 	boolean canMove();
 
-	// attention maybe list of move types
 	MoveType getMoveType();
 
 	void relocateTo(Field nextField);
 
-	boolean haveAirAttack();
+	List<AttackType> getAttacks();
 
-	boolean haveGroundAttack();
+	boolean hasAttack();
 
 	Unit clone() throws CloneNotSupportedException;
 
