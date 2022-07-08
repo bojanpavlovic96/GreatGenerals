@@ -47,7 +47,12 @@ namespace RabbitGameServer.SharedModel
 
 		public Message ToMessage(byte[] payload)
 		{
-			return ToMessage(payload.ToString());
+			if (payload != null)
+			{
+				return ToMessage(payload.ToString());
+			}
+
+			return null;
 		}
 
 	}

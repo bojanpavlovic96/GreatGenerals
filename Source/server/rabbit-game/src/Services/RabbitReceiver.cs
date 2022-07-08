@@ -21,8 +21,8 @@ namespace RabbitGameServer.Service
 		private ISerializer serializer;
 
 		private IRabbitConnection rabbitConnection;
-		private IModel modelEventChannel;
-		private IModel newGameChannel;
+		private IModel? modelEventChannel;
+		private IModel? newGameChannel;
 
 		private CancellationToken masterToken;
 
@@ -40,11 +40,12 @@ namespace RabbitGameServer.Service
 
 			this.queuesConfig = queuesConfig.Value;
 			this.serializer = serializer;
+
 		}
 
-		protected override Task ExecuteAsync(CancellationToken stoppingToken)
+		protected override async Task ExecuteAsync(CancellationToken stoppingToken)
 		{
-			masterToken = stoppingToken; // might be usefull ... you never know 
+			masterToken = stoppingToken; // might be useful ... you never know 
 
 			setupNewGameEventConsumer();
 
@@ -52,7 +53,6 @@ namespace RabbitGameServer.Service
 
 			Console.WriteLine("RabbitReceiver started");
 
-			return Task.CompletedTask;
 		}
 
 		private void setupNewGameEventConsumer()

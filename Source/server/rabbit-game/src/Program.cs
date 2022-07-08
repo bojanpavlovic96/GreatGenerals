@@ -35,6 +35,10 @@ builder.ConfigureServices((hostContext, services) =>
 
 });
 
+// to use Development settings (appsettings.Development.json)
+// $ export DOTNET_ENVIRONMENT Development
+// similar, to use production settings (appsettings.Production.json)
+// $ export DOTNET_ENVIRONMENT Development
 
 var host = builder.Build();
 

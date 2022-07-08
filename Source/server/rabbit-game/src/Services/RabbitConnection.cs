@@ -15,6 +15,8 @@ namespace RabbitGameServer.Service
 		{
 			this.config = config.Value;
 
+			// log that will ensure you that the right config is used 
+			// development hostname is localhost while the production is gg-broker
 			Console.WriteLine("Creating rabbit conn. with: " + this.config.HostName);
 
 			var factory = new ConnectionFactory();
@@ -29,7 +31,6 @@ namespace RabbitGameServer.Service
 
 		public void Dispose()
 		{
-			Console.WriteLine("Disposing rabbitConnection ... ");
 			if (connection != null && connection.IsOpen)
 			{
 				connection.Close();
