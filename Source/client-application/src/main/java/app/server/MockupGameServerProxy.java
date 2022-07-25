@@ -4,11 +4,11 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 import model.event.MoveModelEventArg;
-import proxy.RabbitServerProxyConfig;
+import proxy.RabbitGameServerProxyConfig;
 import root.ActiveComponent;
 import root.command.CommandQueue;
 import root.communication.GameServerProxy;
-import root.communication.MsgToCmdTranslator;
+import root.communication.MessageInterpreter;
 import root.communication.ProtocolTranslator;
 import root.model.event.ModelEventArg;
 
@@ -16,9 +16,9 @@ import root.model.event.ModelEventArg;
 // to MoveModelEventArg, it is just a mockup anyways so let it be ... 
 public class MockupGameServerProxy implements GameServerProxy, ActiveComponent {
 
-	private RabbitServerProxyConfig config;
+	private RabbitGameServerProxyConfig config;
 	private ProtocolTranslator protocolTranslator;
-	private MsgToCmdTranslator messageTranslator;
+	private MessageInterpreter messageTranslator;
 	private String username;
 	private String roomName;
 
@@ -27,9 +27,9 @@ public class MockupGameServerProxy implements GameServerProxy, ActiveComponent {
 	private ExecutorService executor;
 
 	public MockupGameServerProxy(
-			RabbitServerProxyConfig config,
+			RabbitGameServerProxyConfig config,
 			ProtocolTranslator protocolTranslator,
-			MsgToCmdTranslator messageTranslator,
+			MessageInterpreter messageTranslator,
 			String username,
 			String roomName) {
 		super();
@@ -51,7 +51,7 @@ public class MockupGameServerProxy implements GameServerProxy, ActiveComponent {
 	}
 
 	@Override
-	public void sendIntention(ModelEventArg action) {
+	public boolean sendIntention(ModelEventArg action) {
 
 		var message = messageTranslator.ToMessage(action);
 		byte[] byteMessage = protocolTranslator.toByteData(message);
@@ -101,6 +101,7 @@ public class MockupGameServerProxy implements GameServerProxy, ActiveComponent {
 
 		});
 
+		return true;
 	}
 
 	@Override

@@ -1,89 +1,116 @@
 package proxy;
 
 import java.io.IOException;
+import java.util.concurrent.TimeoutException;
 
 import com.rabbitmq.client.AMQP.BasicProperties;
 import com.rabbitmq.client.Channel;
+import com.rabbitmq.client.Consumer;
 import com.rabbitmq.client.DefaultConsumer;
 import com.rabbitmq.client.Envelope;
+import com.rabbitmq.client.ShutdownSignalException;
 
+import root.ActiveComponent;
 import root.command.CommandQueue;
 import root.communication.GameServerProxy;
-import root.communication.MsgToCmdTranslator;
+import root.communication.MessageInterpreter;
 import root.communication.ProtocolTranslator;
 import root.model.event.ModelEventArg;
 
-public class RabbitGameServerProxy extends DefaultConsumer implements GameServerProxy {
+public class RabbitGameServerProxy
+		implements GameServerProxy, Consumer, ActiveComponent, ConnectionEventHandler {
 
-	private RabbitServerProxyConfig config;
+	private RabbitGameServerProxyConfig config;
 
-	private Channel channel;
+	private RabbitChannelProvider channelProvider;
+
+	private MessageInterpreter messageInterpreter;
 	private ProtocolTranslator protocolTranslator;
-	private MsgToCmdTranslator msgToCmdTranslator;
+
 	private String username;
 	private String roomName;
 
 	private CommandQueue commandQueue;
 
 	private String rcvQueueName;
+	private Channel channel;
 
-	public RabbitGameServerProxy(
-			RabbitServerProxyConfig config,
-			Channel channel,
+	public RabbitGameServerProxy(RabbitGameServerProxyConfig config,
+			RabbitChannelProvider channelProvider,
 			ProtocolTranslator translator,
-			MsgToCmdTranslator msgToCmdTranslator,
+			MessageInterpreter msgInterpreter,
 			String username,
 			String roomName) {
-
-		super(channel);
 
 		// TODO instead of using username and the roomName
 		// pass some token/key received from the server after login/register
 
 		this.config = config;
 
-		this.channel = channel;
+		this.channelProvider = channelProvider;
 		this.protocolTranslator = translator;
-		this.msgToCmdTranslator = msgToCmdTranslator;
+		this.messageInterpreter = msgInterpreter;
 		this.username = username;
 		this.roomName = roomName;
 
 		this.commandQueue = new CommandQueue();
 
-		this.subscribeToServerCommands();
+		this.channelProvider.subscribeForEvents(this);
+
 	}
 
-	private void subscribeToServerCommands() {
-		if (channel == null || !channel.isOpen()) {
-			// TODO throw some exception ...
-			// debug
-			System.out.println("Broker channel is not open ... ");
-			System.out.println("Cant create game server proxy ... ");
+	@Override
+	public void handleConnectionEvent(RabbitChannelProvider channelProvider, RabbitConnectionEventType eventType) {
+		if (eventType != RabbitConnectionEventType.CONNECTION) {
+			// disconnection
+			try {
+				if (channel != null) {
+
+					if (rcvQueueName != null) {
+						channel.queueDelete(rcvQueueName);
+					}
+
+					channel.close();
+				}
+			} catch (IOException | TimeoutException e) {
+				System.out.println("Failed to close channel after DISCONNECT event "
+						+ "@RabbitRoomServeProxy ... ");
+				System.out.println(e.getMessage());
+			}
+
+			rcvQueueName = null;
+			channel = null;
 			return;
-		}
+		} else {
+			// connection 
 
-		try {
-			channel.exchangeDeclare(
-					config.serverCommandsExchange,
-					config.rabbitTopicExchangeKeyword);
+			channel = channelProvider.getChannel();
 
-			channel.exchangeDeclare(
-					config.modelEventsExchange,
-					config.rabbitTopicExchangeKeyword);
+			try {
+				channel.exchangeDeclare(
+						config.serverCommandsExchange,
+						config.rabbitTopicExchangeKeyword);
 
-			rcvQueueName = channel.queueDeclare().getQueue();
-			channel.queueBind(
-					rcvQueueName,
-					config.serverCommandsExchange,
-					genCommandRoutingKey());
+				channel.exchangeDeclare(
+						config.modelEventsExchange,
+						config.rabbitTopicExchangeKeyword);
 
-			channel.basicConsume(rcvQueueName, this);
+				rcvQueueName = channel.queueDeclare().getQueue();
+				channel.queueBind(
+						rcvQueueName,
+						config.serverCommandsExchange,
+						genCommandRoutingKey());
 
-		} catch (IOException e) {
-			e.printStackTrace();
-			// debug
-			System.out.println("Exception in rabbitServerProxy channel initialization ... ");
-			System.out.println("Exc message: " + e.getMessage());
+				channel.basicConsume(rcvQueueName, this);
+
+			} catch (IOException e) {
+				e.printStackTrace();
+				// debug
+				System.out.println("Exception in rabbitServerProxy channel initialization ... ");
+				System.out.println("Exc message: " + e.getMessage());
+				return;
+			}
+
 			return;
 		}
 
@@ -103,8 +130,20 @@ public class RabbitGameServerProxy extends DefaultConsumer implements GameServer
 	}
 
 	@Override
-	public void sendIntention(ModelEventArg modelEvent) {
-		var message = msgToCmdTranslator.ToMessage(modelEvent);
+	public boolean sendIntention(ModelEventArg modelEvent) {
+
+		if (channel == null) {
+			// channel is gonna be created at each CONNECTION event 
+			// (channelProvider.subscribeForEvents ^ )
+			// if channel is null either DISCONNECT event happened
+			// or CONNECTION event still didn't happen
+
+			System.out.println("Failed ot send intention, channel not available ... ");
+
+			return false;
+		}
+
+		var message = messageInterpreter.ToMessage(modelEvent);
 		message.setOrigin(this.username, this.roomName);
 
 		byte[] bytePayload = protocolTranslator.toByteData(message);
@@ -122,8 +161,10 @@ public class RabbitGameServerProxy extends DefaultConsumer implements GameServer
 			System.out.println("Failed to publish client event: "
 					+ modelEvent.getClass().getName());
 			System.out.println("Exc message: " + e.getMessage());
-			return;
+			return false;
 		}
+
+		return true;
 	}
 
 	// region Consumer implementation
@@ -141,7 +182,7 @@ public class RabbitGameServerProxy extends DefaultConsumer implements GameServer
 			return;
 		}
 
-		var newCommand = msgToCmdTranslator.ToCommand(newMessage);
+		var newCommand = messageInterpreter.ToCommand(newMessage);
 		if (newCommand == null) {
 			// debug
 			System.out.println("Failed to translate message to command ... ");
@@ -151,31 +192,45 @@ public class RabbitGameServerProxy extends DefaultConsumer implements GameServer
 		this.commandQueue.enqueue(newCommand);
 	}
 
-	// @Override
-	// public void handleConsumeOk(String consumerTag) {
+	@Override
+	public void handleConsumeOk(String consumerTag) {
 
-	// }
+	}
 
-	// @Override
-	// public void handleCancelOk(String consumerTag) {
+	@Override
+	public void handleCancelOk(String consumerTag) {
 
-	// }
+	}
 
-	// @Override
-	// public void handleCancel(String consumerTag) throws IOException {
+	@Override
+	public void handleCancel(String consumerTag) throws IOException {
 
-	// }
+	}
 
-	// @Override
-	// public void handleShutdownSignal(String consumerTag, ShutdownSignalException
-	// sig) {
+	@Override
+	public void handleShutdownSignal(String consumerTag, ShutdownSignalException sig) {
 
-	// }
+	}
 
-	// @Override
-	// public void handleRecoverOk(String consumerTag) {
+	@Override
+	public void handleRecoverOk(String consumerTag) {
 
-	// }
+	}
 
 	// endregion
+
+	@Override
+	public void shutdown() {
+		if (channel != null) {
+			try {
+				channel.close();
+			} catch (IOException | TimeoutException e) {
+				System.out.println("Exc while closing channel, gameserverproxy ... ");
+				System.out.println(e.getMessage());
+				return;
+			}
+		}
+
+	}
+
 }

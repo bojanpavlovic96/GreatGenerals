@@ -4,5 +4,6 @@
     "cSpell.words": [
         "amqp"
     ],
-    "todo-tree.tree.disableCompactFolders": false
+    "todo-tree.tree.disableCompactFolders": false,
+    "C_Cpp.errorSquiggles": "Disabled"
 }

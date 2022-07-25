@@ -2,21 +2,34 @@ package app.launcher;
 
 import protocol.NameTypeResolver;
 import root.command.Command;
-import root.communication.messages.InitializeCmdMsg;
-import root.communication.messages.MoveCmdMsg;
+import root.communication.messages.CreateRoomRequestMsg;
+import root.communication.messages.InitializeMsg;
+import root.communication.messages.JoinResponseMsg;
+import root.communication.messages.JoinRoomRequestMsg;
+import root.communication.messages.MessageType;
+import root.communication.messages.MoveMsg;
 
 public class StupidStaticTypeResolver implements NameTypeResolver {
 
 	@Override
-	public Class<?> resolve(String name) {
+	public Class<?> resolve(MessageType type) {
 
-		switch (name) {
+		switch (type) {
 
-			case InitializeCmdMsg.name:
-				return InitializeCmdMsg.class;
+			case InitializeMsg:
+				return InitializeMsg.class;
 
-			case MoveCmdMsg.name:
-				return MoveCmdMsg.class;
+			case MoveMessage:
+				return MoveMsg.class;
+
+			case CreateRoomRequest:
+				return CreateRoomRequestMsg.class;
+
+			case JoinRoomRequest:
+				return JoinRoomRequestMsg.class;
+
+			case JoinResponse:
+				return JoinResponseMsg.class;
 
 		}
 

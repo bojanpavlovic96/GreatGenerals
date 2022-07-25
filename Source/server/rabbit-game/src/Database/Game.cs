@@ -13,7 +13,7 @@ namespace RabbitGameServer.Database
 
 		public DateTime startTime { get; set; }
 
-		public List<Command> commands { get; set; }
+		public List<Message> messages { get; set; }
 
 		public Game(string roomName, List<string> players)
 		{
@@ -21,7 +21,7 @@ namespace RabbitGameServer.Database
 			this.playerIds = players;
 
 			this.startTime = DateTime.Now;
-			this.commands = new List<Command>();
+			this.messages = new List<Message>();
 		}
 
 	}

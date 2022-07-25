@@ -13,9 +13,9 @@ public interface View extends ViewEventProducer, CommandDrivenComponent {
 
 	String getViewTheme();
 
-	void show();
+	void showView();
 
-	void hide();
+	void hideView();
 
 	void setCanvasVisibility(boolean visibility);
 

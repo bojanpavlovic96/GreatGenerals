@@ -7,10 +7,7 @@ namespace RabbitGameServer.Util
 	{
 		public Type GetType(string name)
 		{
-			if (name == MoveModelEvent.name)
-			{
-				return typeof(MoveModelEvent);
-			}
+			// TODO implement
 
 			return typeof(MoveModelEvent);
 		}

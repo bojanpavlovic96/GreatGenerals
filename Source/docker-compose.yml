@@ -2,7 +2,7 @@ version: '3.5'
 
 networks: 
   default: 
-    name: gg-network
+    name: gg_network
     external: true
 
 # ========================
@@ -43,13 +43,13 @@ services:
       dockerfile: ./docker/RestLoginServer-Spring.Dockerfile
     image: gg/rest-login-spring
     ports:
-      - "0.0.0.0:9000:9000"
+      - "0.0.0.0:9000:9090"
 
   gg-game-server:
     container_name: gg-game-server
     build:
       context: ./
       dockerfile: ./docker/GameServer-DotNet.Dockerfile
-    image: gg/rest-login-spring
+    image: gg/game-server-dotnet
     # ports:
     # - "0.0.0.0:9000:9000"

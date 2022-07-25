@@ -22,7 +22,7 @@ namespace RabbitGameServer.Service
 
 		private IRabbitConnection rabbitConnection;
 		private IModel? modelEventChannel;
-		private IModel? newGameChannel;
+		private IModel? roomChannel;
 
 		private CancellationToken masterToken;
 
@@ -47,35 +47,34 @@ namespace RabbitGameServer.Service
 		{
 			masterToken = stoppingToken; // might be useful ... you never know 
 
-			setupNewGameEventConsumer();
-
+			setupNewRoomEventConsumer();
+			setupJoinGameConsumer();
 			setupModelEventConsumer();
 
 			Console.WriteLine("RabbitReceiver started");
-
 		}
 
-		private void setupNewGameEventConsumer()
+		private void setupNewRoomEventConsumer()
 		{
-			newGameChannel = rabbitConnection.GetChannel();
+			roomChannel = rabbitConnection.GetChannel();
 
-			newGameChannel.ExchangeDeclare(queuesConfig.NewGameTopic,
+			roomChannel.ExchangeDeclare(queuesConfig.RoomsRequestTopic,
 								"topic",
 								false,
 								true,
 								null);
 
-			var newGameQueue = newGameChannel.QueueDeclare().QueueName;
+			var newGameQueue = roomChannel.QueueDeclare().QueueName;
 
-			newGameChannel.QueueBind(newGameQueue,
-						queuesConfig.NewGameTopic,
-						queuesConfig.NewGameRoute + "*",
+			roomChannel.QueueBind(newGameQueue,
+						queuesConfig.RoomsRequestTopic,
+						queuesConfig.NewGameRoute + "#",
 						null);
 
-			var consumer = new EventingBasicConsumer(newGameChannel);
+			var consumer = new EventingBasicConsumer(roomChannel);
 			consumer.Received += NewGameEventHandler;
 
-			newGameChannel.BasicConsume(newGameQueue, false, consumer);
+			roomChannel.BasicConsume(newGameQueue, false, consumer);
 
 			Console.WriteLine("NewGameEventConsumer started");
 		}
@@ -83,19 +82,18 @@ namespace RabbitGameServer.Service
 		private void NewGameEventHandler(object? sender, BasicDeliverEventArgs ea)
 		{
 			Console.WriteLine("Received new game event");
-
 			var message = protocolTranslator.ToMessage(ea.Body.ToArray());
 
-			var request = new CreateGameRequest(
-				((CreateGameMsg)message).roomName,
-				((CreateGameMsg)message).player);
+			var roomMsg = (CreateRoomMsg)message;
+			var request = new CreateRoomRequest(roomMsg.roomName,
+								roomMsg.password,
+								roomMsg.player);
 
 			mediator.Send(request);
 		}
 
 		private void setupModelEventConsumer()
 		{
-			// modelEventChannel = connection.CreateModel();
 			modelEventChannel = rabbitConnection.GetChannel();
 
 			modelEventChannel.ExchangeDeclare(queuesConfig.ModelEventTopic,
@@ -126,6 +124,31 @@ namespace RabbitGameServer.Service
 
 			var request = new ModelEventRequest(message);
 			mediator.Send(request, masterToken).Wait();
+		}
+
+		private void setupJoinGameConsumer()
+		{
+			var joinGameQueue = roomChannel.QueueDeclare().QueueName;
+			roomChannel.QueueBind(joinGameQueue,
+						queuesConfig.RoomsRequestTopic,
+						queuesConfig.JoinGameRoute + "*",
+						null);
+
+			var consumer = new EventingBasicConsumer(roomChannel);
+			consumer.Received += JoinGameEventHandler;
+		}
+
+		private void JoinGameEventHandler(object? sender, BasicDeliverEventArgs ea)
+		{
+			Console.WriteLine("Received join room event... ;");
+
+			var message = protocolTranslator.ToMessage(ea.Body.ToArray());
+
+			var request = new JoinGameRequest(message.roomName,
+					message.player,
+					((JoinRoomMessage)message).password);
+
+			mediator.Send(request);
 		}
 
 	}

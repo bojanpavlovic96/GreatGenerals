@@ -11,12 +11,12 @@ import root.communication.parser.GsonJsonParser;
 
 public class ConfigLoader {
 
-	private static DataParser jsonParser;
+	private static DataParser configParser;
 
 	public static <T> T load(String configPath, Class<T> configType) {
 
-		if (jsonParser == null) {
-			jsonParser = new GsonJsonParser();
+		if (configParser == null) {
+			configParser = new GsonJsonParser();
 		}
 
 		URL url = Resources.getResource(configPath);
@@ -32,7 +32,7 @@ public class ConfigLoader {
 
 		if (txtConfig != null && !txtConfig.isEmpty()) {
 
-			return jsonParser.FromString(txtConfig, configType);
+			return configParser.FromString(txtConfig, configType);
 
 		} else {
 			System.out.println("ERROR: Found empty config file on path:" +

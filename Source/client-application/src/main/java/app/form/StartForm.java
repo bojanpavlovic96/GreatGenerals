@@ -6,6 +6,7 @@ import java.awt.Toolkit;
 import app.event.RoomFormActionHandler;
 import app.event.UserFormActionHandler;
 import app.resource_manager.Language;
+import javafx.application.Platform;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.layout.Priority;
@@ -132,16 +133,12 @@ public class StartForm extends Stage implements InitialPage {
 
 	@Override
 	public void showInfoMessage(Language.MessageType messageName) {
-
 		((MessageDisplay) headerForm).showInfoMessage(messageName);
-
 	}
 
 	@Override
 	public void showStatusMessage(Language.MessageType messageName) {
-
 		((MessageDisplay) headerForm).showStatusMessage(messageName);
-
 	}
 
 	@Override
@@ -157,51 +154,71 @@ public class StartForm extends Stage implements InitialPage {
 	// initial page interface
 
 	// implement
+	@Override
 	public void setOnLogoutHandler(UserFormActionHandler handler) {
 
 	}
 
+	@Override
 	public void setOnLoginHandler(UserFormActionHandler handler) {
 		this.userForm.setOnLoginHandler(handler);
 	}
 
+	@Override
 	public void setOnRegisterHandler(UserFormActionHandler handler) {
 		this.userForm.setOnRegisterHandler(handler);
 	}
 
+	@Override
 	public void setOnCreateRoomHandler(RoomFormActionHandler handler) {
-		this.roomForm.setOnCreateGroupHandler(handler);
+		this.roomForm.setOnCreateRoomHandler(handler);
 	}
 
+	@Override
 	public void setOnJoinRoomHandler(RoomFormActionHandler handler) {
-		this.roomForm.setOnJoinGroupHandler(handler);
+		this.roomForm.setOnJoinRoomHandler(handler);
 	}
 
 	// implement
+	@Override
 	public void setOnStartGameHandler() {
 
 	}
 
+	@Override
 	public void showUserForm() {
-		this.userForm.setVisible(true);
+		Platform.runLater(() -> {
+			userForm.setVisible(true);
+		});
 	}
 
+	@Override
 	public void hideUserForm() {
-		this.userForm.setVisible(false);
+		Platform.runLater(() -> {
+			userForm.setVisible(false);
+		});
 	}
 
+	@Override
 	public void showRoomForm() {
-		this.roomForm.setVisible(true);
+		Platform.runLater(() -> {
+			roomForm.setVisible(true);
+		});
 	}
 
+	@Override
 	public void hideRoomForm() {
-		this.roomForm.setVisible(false);
+		Platform.runLater(() -> {
+			roomForm.setVisible(false);
+		});
 	}
 
+	@Override
 	public void setUsername(String username) {
 		this.userForm.setUsername(username);
 	}
 
+	@Override
 	public void setUserPassword(String password) {
 		this.userForm.setUserPassword(password);
 	}
@@ -214,6 +231,20 @@ public class StartForm extends Stage implements InitialPage {
 	@Override
 	public String getPassword() {
 		return this.userForm.getPassword();
+	}
+
+	@Override
+	public void showPage() {
+		Platform.runLater(() -> {
+			super.show();
+		});
+	}
+
+	@Override
+	public void hidePage() {
+		Platform.runLater(() -> {
+			super.hide();
+		});
 	}
 
 }

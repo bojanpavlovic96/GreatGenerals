@@ -1,56 +1,76 @@
 using Microsoft.Extensions.Options;
 using RabbitGameServer.Service;
 using RabbitGameServer.SharedModel;
-using RabbitGameServer.SharedModel.Commands;
+using RabbitGameServer.SharedModel.Messages;
 using RabbitGameServer.Util;
 using RabbitMQ.Client;
 
 namespace RabbitGameServer.Client
 {
-	public class RabbitPlayerProxy : IPlayerProxy
+	public class RabbitPlayerProxy : IPlayerProxy, IDisposable
 	{
 
 		private QueuesConfig config;
 		private IRabbitConnection connection;
-		private ISerializer commandSerializer;
+		private IProtocolTranslator translator;
+
+		private IModel channel;
 
 		public RabbitPlayerProxy(IOptions<QueuesConfig> options,
 						IRabbitConnection rabbitConnection,
-						ISerializer serializer)
+						IProtocolTranslator translator)
 		{
 			this.config = options.Value;
 			this.connection = rabbitConnection;
-			this.commandSerializer = serializer;
+			this.translator = translator;
+
+			channel = connection.GetChannel();
+
 		}
 
-		public void sendCommand(string roomName, string playerId, Command newCommand)
+		public void sendMessage(string roomName, string playerId, Message newMessage)
 		{
 
-			var channel = connection.GetChannel();
+			// already done in constructor
+			// channel = connection.GetChannel();
 
-			var wrapper = new NamedWrapper(
-				newCommand.name,
-				commandSerializer.ToString(newCommand));
+			Console.WriteLine("Channel created inside proxy ... ");
+			var byteContent = translator.ToByteData(newMessage);
 
-			var byteContent = commandSerializer.ToBytes(wrapper);
+			channel.ExchangeDeclare(config.RoomsResponseTopic, "topic",
+								false,
+								true,
+								null);
+			Console.WriteLine($"Publishing on: {config.RoomsResponseTopic} - {routingKeyFor(roomName, playerId)}");
 
-			channel.BasicPublish(
-				config.ServerCommandTopic,
-				routingKeyFor(roomName, playerId),
-				null,
-				byteContent);
+			try
+			{
+				channel.BasicPublish(
+					config.RoomsResponseTopic,
+					routingKeyFor(roomName, playerId),
+					null,
+					byteContent);
+			}
+			catch (Exception e)
+			{
+				Console.WriteLine("Failed to publish message ... ");
+				Console.WriteLine(e.Message);
+			}
+
 		}
 
 		private string routingKeyFor(string roomName, string playerId)
 		{
+			return $"{config.RoomResponseRoute}{roomName}.{playerId}";
+		}
 
-			var route = config.ServerCommandRoutePrefix + "." + roomName;
-			if (playerId != null && playerId != "")
+
+		public void Dispose()
+		{
+			if (channel != null)
 			{
-				route += "." + playerId;
+				channel.Close();
 			}
-
-			return route;
 		}
 
 	}

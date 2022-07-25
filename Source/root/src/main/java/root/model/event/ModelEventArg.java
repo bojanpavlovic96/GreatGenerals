@@ -2,35 +2,34 @@ package root.model.event;
 
 public abstract class ModelEventArg {
 
-	// translator uses this field to determine how to translate message to
-	// appropriate format
-	private String eventName;
+	public static enum EventType {
+		MoveModelEvent,
+		AttackModelEvent
+	}
+
+	private EventType type;
 
 	private String playerName;
 
-	// constructors
-
-	public ModelEventArg(String event_name, String player_name) {
-		this.eventName = event_name;
-		this.setPlayerName(player_name);
+	public ModelEventArg(EventType type, String playerName) {
+		this.type = type;
+		this.setPlayerName(playerName);
 	}
 
-	// getters and setters
-
-	public String getEventName() {
-		return eventName;
+	public EventType getEventName() {
+		return type;
 	}
 
-	public void setEventName(String event_name) {
-		this.eventName = event_name;
+	public void setEventName(EventType type) {
+		this.type = type;
 	}
 
 	public String getPlayerName() {
 		return playerName;
 	}
 
-	public void setPlayerName(String player_name) {
-		this.playerName = player_name;
+	public void setPlayerName(String playerName) {
+		this.playerName = playerName;
 	}
 
 }

@@ -34,7 +34,4 @@ public interface Controller extends ModelEventHandler,
 
 	void setSelectedField(Field newField);
 
-	// TODO this is useless i think
-	void selectField(Field fieldToSelect);
-
 }

@@ -26,17 +26,19 @@ namespace RabbitGameServer.Game
 
 		}
 
-		public GameMaster CreateGame(string roomName, string masterPlayer)
+		public GameMaster CreateGame(string roomName,
+							string masterPlayer,
+							string password)
 		{
 			var newGame = new GameMaster(
 				roomName,
+				password,
 				masterPlayer,
 				playerProxy,
-				database);
+				database,
+				GameDoneHandler);
 
 			games.Add(roomName, newGame);
-
-			newGame.onGameDone += GameDoneHandler;
 
 			GamesCount++;
 
@@ -54,7 +56,7 @@ namespace RabbitGameServer.Game
 
 		public GameMaster GetGame(string roomName)
 		{
-			GameMaster game;
+			GameMaster game = null;
 			games.TryGetValue(roomName, out game);
 			return game;
 		}

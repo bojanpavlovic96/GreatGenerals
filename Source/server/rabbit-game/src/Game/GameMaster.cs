@@ -12,6 +12,7 @@ namespace RabbitGameServer.Game
 		public string masterPlayer { get; set; }
 
 		public string RoomName { get; set; }
+		public string Password { get; set; }
 		public List<string> Players { get; set; }
 		private IDatabase Database;
 
@@ -22,16 +23,21 @@ namespace RabbitGameServer.Game
 		// public GameMaster() { }
 
 		public GameMaster(string roomName,
+					string password,
 					string masterPlayer,
 					IPlayerProxy playerProxy,
-					IDatabase db)
+					IDatabase db,
+					GameDoneHandler onGameDone)
 		{
 			this.RoomName = roomName;
+			this.Password = password;
 			this.masterPlayer = masterPlayer;
 			this.Players = new List<string>();
 			this.Players.Add(masterPlayer);
 
 			this.Database = db;
+
+			this.onGameDone += onGameDone;
 
 			this.Stats = new BasicStats();
 		}
@@ -47,7 +53,15 @@ namespace RabbitGameServer.Game
 
 		}
 
+		public bool hasPlayer(string name)
+		{
+			return this.Players.Contains(name);
+		}
 
+		public void addPlayer(string name)
+		{
+			Players.Add(name);
+		}
 
 	}
 }

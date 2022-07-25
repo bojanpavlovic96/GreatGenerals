@@ -9,11 +9,14 @@ import com.rabbitmq.client.Connection;
 import com.rabbitmq.client.ConnectionFactory;
 import com.rabbitmq.client.ShutdownSignalException;
 
-import app.event.ConnectionEventHandler;
 import app.resource_manager.BrokerConfigFields;
+import proxy.ConnectionEventHandler;
+import proxy.RabbitChannelProvider;
+import proxy.RabbitConnectionEventType;
 import root.ActiveComponent;
 
-public class RabbitConnectionTask implements Runnable, ActiveComponent {
+public class RabbitConnectionTask
+		implements Runnable, ActiveComponent, RabbitChannelProvider {
 
 	private BrokerConfigFields brokerConfig;
 
@@ -121,13 +124,14 @@ public class RabbitConnectionTask implements Runnable, ActiveComponent {
 		return connection;
 	}
 
+	@Override // RabbitChannelProvider
 	public Channel getChannel() {
 
-		if (this.isConnected()) {
+		if (isConnected()) {
+			System.out.println("Connected with the rabbit, creating channel ... ");
 
 			try {
 				return this.connection.createChannel();
-
 			} catch (IOException e) {
 				e.printStackTrace();
 				System.out.println("Exception in creating new channel ... ");
@@ -135,24 +139,29 @@ public class RabbitConnectionTask implements Runnable, ActiveComponent {
 				return null;
 			}
 
+		} else {
+			System.out.println("Not connected with the rabbit, cant create channel ... ");
 		}
 
 		return null;
 	}
 
+	@Override // RabbitChannelProvider
 	public boolean isConnected() {
 		return (this.connection != null && this.connection.isOpen());
 	}
 
+	@Override // RabbitChannelProvider
 	public void subscribeForEvents(ConnectionEventHandler newSub) {
-		this.eventSubscribers.add(newSub);
+		eventSubscribers.add(newSub);
 		if (this.isConnected()) {
 			newSub.handleConnectionEvent(this, RabbitConnectionEventType.CONNECTION);
 		}
 	}
 
+	@Override // RabbitChannelProvider
 	public void unsubscribeForEvents(ConnectionEventHandler sub) {
-		this.eventSubscribers.remove(sub);
+		eventSubscribers.remove(sub);
 	}
 
 }

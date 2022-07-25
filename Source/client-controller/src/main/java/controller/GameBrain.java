@@ -26,7 +26,6 @@ import root.model.event.ModelEventArg;
 import root.model.event.ModelEventHandler;
 import root.view.View;
 import root.view.event.ViewEventArg;
-import root.view.event.ViewEventHandler;
 import root.view.menu.Menu;
 import view.command.ClearTopLayerCommand;
 import view.command.PopulateMenuCommand;
@@ -62,33 +61,32 @@ public class GameBrain implements Controller {
 	public GameBrain(GameServerProxy serverProxy, View view, Model model) {
 		super();
 
+		this.serverProxy = serverProxy;
 		this.view = view;
 		this.model = model;
-		this.serverProxy = serverProxy;
 
-		// this.undoStack = new ArrayList<Command>();
-		this.undoStack = new UndoStack();
+		undoStack = new UndoStack();
 
 		// attention let's say that every controller implementations has its own
 		// ModelEventHandler (maybe this isn't the best approach)
-		this.model.setEventHandler((ModelEventHandler) this);
+		model.setEventHandler((ModelEventHandler) this);
 
-		this.initFieldOptions();
+		initFieldOptions();
 
 		// connect serverProxy and controller
-		this.serverCommandQueue = ((CommandProducer) serverProxy).getConsumerQueue();
-		this.serverCommandProcessor = new BasicCommandProcessor(
+		serverCommandQueue = ((CommandProducer) serverProxy).getConsumerQueue();
+		serverCommandProcessor = new BasicCommandProcessor(
 				Executors.newSingleThreadExecutor(),
 				(CommandDrivenComponent) this);
-		this.serverCommandQueue.setCommandProcessor(this.serverCommandProcessor);
+		serverCommandQueue.setCommandProcessor(this.serverCommandProcessor);
 
-		this.viewCommandQueue = new CommandQueue();
+		viewCommandQueue = new CommandQueue();
 		((CommandDrivenComponent) view).setCommandQueue(viewCommandQueue);
 
 		// view events, click, key press ...
-		this.initViewEventHandlers();
+		initViewEventHandlers();
 
-		this.view.show();
+		view.showView();
 
 	}
 
@@ -101,120 +99,107 @@ public class GameBrain implements Controller {
 		// the fields are initialized (created)
 		// other approach would be put some loading screen above everything 
 		// until we get ctrlInitializeCommand ... 
-		this.view.addEventHandler("left-mouse-click-event", new ViewEventHandler() {
+		view.addEventHandler("left-mouse-click-event", (ViewEventArg arg) -> {
 
-			public void execute(ViewEventArg arg) {
+			Field clickedField = model.getField(arg.getFieldPosition());
+			if (clickedField != null) {
 
-				Field clickedField = model.getField(arg.getFieldPosition());
-				if (clickedField != null) {
+				// undo all previous commands
+				Command doneCommand = null;
+				while ((doneCommand = undoStack.pop()) != null) {
+					var antiCommand = doneCommand.getAntiCommand();
+					viewCommandQueue.enqueue(antiCommand);
+				}
 
-					// undo all previous commands
-					Command doneCommand = null;
-					while ((doneCommand = undoStack.pop()) != null) {
-						var antiCommand = doneCommand.getAntiCommand();
-						viewCommandQueue.enqueue(antiCommand);
+				var selectField = new SelectFieldCommand(clickedField);
+
+				viewCommandQueue.enqueue(selectField);
+				undoStack.push(selectField);
+
+				if (clickedField.getUnit() != null
+						&& clickedField.getUnit().getMoveType() != null
+						&& clickedField.getUnit().getMoveType().getPath() != null) {
+
+					for (Field pathField : clickedField
+							.getUnit()
+							.getMoveType()
+							.getPath()) {
+
+						var selectPathField = new SelectFieldCommand(pathField);
+
+						viewCommandQueue.enqueue(selectPathField);
+						undoStack.push(selectPathField);
 					}
-
-					var selectField = new SelectFieldCommand(clickedField);
-
-					viewCommandQueue.enqueue(selectField);
-					undoStack.push(selectField);
-
-					if (clickedField.getUnit() != null
-							&& clickedField.getUnit().getMoveType() != null
-							&& clickedField.getUnit().getMoveType().getPath() != null) {
-
-						for (Field pathField : clickedField
-								.getUnit()
-								.getMoveType()
-								.getPath()) {
-
-							var selectPathField = new SelectFieldCommand(pathField);
-
-							viewCommandQueue.enqueue(selectPathField);
-							undoStack.push(selectPathField);
-						}
-
-					}
-
-					// remove
-					// var selectCommand = new ComplexSelectFieldCommand(clickedField);
-					// viewCommandQueue.enqueue(selectCommand);
-
-					selectedField = clickedField;
-					focusedField = null;
 
 				}
+
+				// remove
+				// var selectCommand = new ComplexSelectFieldCommand(clickedField);
+				// viewCommandQueue.enqueue(selectCommand);
+
+				selectedField = clickedField;
+				focusedField = null;
 
 			}
 
 		});
 
-		this.view.addEventHandler("right-mouse-click-event", new ViewEventHandler() {
+		view.addEventHandler("right-mouse-click-event", (ViewEventArg arg) -> {
 
-			public void execute(ViewEventArg arg) {
+			focusedField = model.getField(arg.getFieldPosition());
 
-				focusedField = model.getField(arg.getFieldPosition());
+			// valid click
+			if (focusedField != null) {
 
-				// valid click
-				if (focusedField != null) {
+				var clearCommand = new ClearTopLayerCommand();
 
-					var clearCommand = new ClearTopLayerCommand();
-
-					Command showMenuCommand;
-					if (selectedField != null) {
-						showMenuCommand = new ShowFieldMenuCommand(selectedField, focusedField);
-					} else {
-						showMenuCommand = new ShowFieldMenuCommand(focusedField, focusedField);
-					}
-
-					viewCommandQueue.enqueue(clearCommand);
-					viewCommandQueue.enqueue(showMenuCommand);
-
-					undoStack.push(showMenuCommand);
-
+				Command showMenuCommand;
+				if (selectedField != null) {
+					showMenuCommand = new ShowFieldMenuCommand(selectedField, focusedField);
+				} else {
+					showMenuCommand = new ShowFieldMenuCommand(focusedField, focusedField);
 				}
+
+				viewCommandQueue.enqueue(clearCommand);
+				viewCommandQueue.enqueue(showMenuCommand);
+
+				undoStack.push(showMenuCommand);
 
 			}
 
 		});
 
+		// 25.7.2022 - understanding: drawing path 
 		// i don't understand this comment 9.12.2021
 		// TODO maybe for the purpose of redrawing path and similar options
 		// add additional list of command which are "stateless" and which execution wont
 		// do any damage to the current state if they are executed more than once
 
-		this.view.addEventHandler("key-event-char-1", new ViewEventHandler() {
+		view.addEventHandler("key-event-char-1", (ViewEventArg arg) -> {
 
-			public void execute(ViewEventArg arg) {
+			ZoomInCommand command = new ZoomInCommand(model.getFields());
+			viewCommandQueue.enqueue(command);
 
-				ZoomInCommand command = new ZoomInCommand(model.getFields());
-				viewCommandQueue.enqueue(command);
+			// this wont be valid in situation when attack and build commands get
+			// implemented
+			// // reset old state
+			// for (Command prev_command : toUndo) {
+			// viewCommandQueue.enqueue(prev_command);
+			// }
 
-				// this wont be valid in situation when attack and build commands get
-				// implemented
-				// // reset old state
-				// for (Command prev_command : toUndo) {
-				// viewCommandQueue.enqueue(prev_command);
-				// }
-
-			}
 		});
 
-		this.view.addEventHandler("key-event-char-2", new ViewEventHandler() {
+		view.addEventHandler("key-event-char-2", (ViewEventArg arg)-> {
 
-			public void execute(ViewEventArg arg) {
+			ZoomOutCommand command = new ZoomOutCommand(model.getFields());
+			viewCommandQueue.enqueue(command);
 
-				ZoomOutCommand command = new ZoomOutCommand(model.getFields());
-				viewCommandQueue.enqueue(command);
+			// this wont be valid in situation when attack and build command get implemented
+			// // reset old state
+			// for (Command prev_command : toUndo) {
+			// viewCommandQueue.enqueue(prev_command);
+			// }
 
-				// this wont be valid in situation when attack and build command get implemented
-				// // reset old state
-				// for (Command prev_command : toUndo) {
-				// viewCommandQueue.enqueue(prev_command);
-				// }
-
-			}
 		});
 
 	}
@@ -322,38 +307,6 @@ public class GameBrain implements Controller {
 	@Override
 	public void setSelectedField(Field newField) {
 		this.selectedField = newField;
-	}
-
-	// TODO this should be removed ...
-	@Override
-	public void selectField(Field fieldToSelect) {
-
-		this.selectedField = fieldToSelect;
-
-		var selectField = new SelectFieldCommand(this.selectedField);
-		this.viewCommandQueue.enqueue(selectField);
-
-		if (this.selectedField.getUnit() != null
-				&& this.selectedField.getUnit().getMoveType() != null
-				&& this.selectedField.getUnit().getMoveType().getPath() != null) {
-			for (Field pathField : this.selectedField
-					.getUnit()
-					.getMoveType()
-					.getPath()) {
-				var selectPathField = new SelectFieldCommand(pathField);
-
-				viewCommandQueue.enqueue(selectPathField);
-				this.undoStack.equals(selectPathField);
-			}
-		}
-
-		// TODO feel like this is useless
-		Menu fieldMenu = view.getShortOptionMenu();
-		if (fieldMenu.isDisplayed()) {
-			selectedField.adjustOptionsFor(focusedField);
-			viewCommandQueue.enqueue(new PopulateMenuCommand(selectedField.getEnabledOptions()));
-		}
-
 	}
 
 	@Override

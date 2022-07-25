@@ -8,21 +8,14 @@ namespace RabbitGameServer.SharedModel
 
 		private ISerializer serializer;
 
-		// if polymorphic serialization works as intended 
-		// this reference will be useless 
-		private INameTypeMapper typeMapper;
-
-		public NamedWrapperTranslator(ISerializer serializer,
-			INameTypeMapper typeMapper)
+		public NamedWrapperTranslator(ISerializer serializer)
 		{
 			this.serializer = serializer;
-			this.typeMapper = typeMapper;
 		}
 
 		public byte[] ToByteData(Message message)
 		{
-			var wrappedMsg = new NamedWrapper(
-				message.name,
+			var wrappedMsg = new NamedWrapper(message.type.ToString(),
 				serializer.ToString(message));
 
 			return serializer.ToBytes(wrappedMsg);
@@ -31,7 +24,7 @@ namespace RabbitGameServer.SharedModel
 		public string ToStrData(Message message)
 		{
 			var wrappedMsg = new NamedWrapper(
-				message.name,
+				message.type.ToString(),
 				serializer.ToString(message));
 
 			return serializer.ToString(wrappedMsg);
@@ -40,19 +33,56 @@ namespace RabbitGameServer.SharedModel
 		public Message ToMessage(string payload)
 		{
 			var wrappedMsg = serializer.ToObj<NamedWrapper>(payload);
+			Console.WriteLine("We are unwrapping ... ");
+			Console.WriteLine("Name: " + wrappedMsg.name);
+			Console.WriteLine("Payload: " + wrappedMsg.payload);
 
-			// TODO place to look for if polymorphic serialization does not work 
-			return serializer.ToObj<Message>(wrappedMsg.payload);
+			// TODO try catch can be removed after testing 
+			try
+			{
+				if (wrappedMsg.name == MessageType.InitializeMessage.ToString())
+				{
+					Console.WriteLine("Translating InitializeCommand ... ");
+					return serializer.ToObj<InitializeMessage>(wrappedMsg.payload);
+				}
+				else if (wrappedMsg.name == MessageType.MoveCommand.ToString())
+				{
+					Console.WriteLine("Translating MoveCommand ... ");
+					return serializer.ToObj<MoveCmdMessage>(wrappedMsg.payload);
+				}
+				else if (wrappedMsg.name == MessageType.CreateRoomRequest.ToString())
+				{
+					Console.WriteLine("Translating CrateRoomMessage ... ");
+					return serializer.ToObj<CreateRoomMsg>(wrappedMsg.payload);
+				}
+				else if (wrappedMsg.name == MessageType.JoinRoomRequest.ToString())
+				{
+					Console.WriteLine("Translating JoinRoomRequest ... ");
+					return serializer.ToObj<JoinRoomMessage>(wrappedMsg.payload);
+				}
+				else if (wrappedMsg.name == MessageType.JoinResponse.ToString())
+				{
+					Console.WriteLine("Translating JoinResponse ... ");
+					return serializer.ToObj<JoinResponseMsg>(wrappedMsg.payload);
+				}
+			}
+			catch (Exception e)
+			{
+				Console.WriteLine("Exc while casting message to concrete type ... ");
+				Console.WriteLine(e.Message);
+			}
+
+			return null;
 		}
 
 		public Message ToMessage(byte[] payload)
 		{
-			if (payload != null)
-			{
-				return ToMessage(payload.ToString());
-			}
+			return ToMessage(bytesToString(payload));
+		}
 
-			return null;
+		private string bytesToString(byte[] someBytes)
+		{
+			return System.Text.Encoding.Default.GetString(someBytes);
 		}
 
 	}

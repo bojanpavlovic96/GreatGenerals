@@ -4,18 +4,22 @@ public class Language {
 
 	public enum MessageType {
 		WaitingForServer,
-		ConectionEstablished,
+		ConnectionEstablished,
 		ServerUnreachable,
 		PleaseWaitForConnection,
 		LoginRequestSent,
 		RegisterRequestSent,
 		CreateRequestSent,
 		JoinRequestSent,
-		// bellow are new
 		LoginSuccessful,
 		LoginFailed,
 		RegisterSuccessful,
-		RegisterFailed
+		RegisterFailed,
+		PleaseWaitForRoomServer,
+		RoomCreated,
+		AlreadyInRoom,
+		RoomExists
+
 	}
 
 	public static class Message {
@@ -52,38 +56,52 @@ public class Language {
 	public Language.Message registerSuccessful;
 	public Language.Message registerFailed;
 
+	public Language.Message pleaseWaitForRoomServer;
+
+	public Language.Message roomCreated;
+	public Language.Message alreadyInRoom;
+	public Language.Message roomExists;
+
 	public Language() {
 
 	}
 
 	public Language.Message getMessage(Language.MessageType message) {
 		switch (message) {
-		case WaitingForServer:
-			return this.waitingForServer;
-		case ConectionEstablished:
-			return this.connectionEstablished;
-		case ServerUnreachable:
-			return this.serverUnreachable;
-		case PleaseWaitForConnection:
-			return this.pleaseWaitForConnection;
-		case LoginRequestSent:
-			return this.loginRequestSent;
-		case RegisterRequestSent:
-			return this.registerRequestSent;
-		case CreateRequestSent:
-			return this.createRequestSent;
-		case JoinRequestSent:
-			return this.joinRequestSent;
-		case LoginFailed:
-			return this.loginFailed;
-		case LoginSuccessful:
-			return this.loginSuccessful;
-		case RegisterFailed:
-			return this.registerFailed;
-		case RegisterSuccessful:
-			return this.registerSuccessful;
-		default:
-			break;
+			case WaitingForServer:
+				return this.waitingForServer;
+			case ConnectionEstablished:
+				return this.connectionEstablished;
+			case ServerUnreachable:
+				return this.serverUnreachable;
+			case PleaseWaitForConnection:
+				return this.pleaseWaitForConnection;
+			case LoginRequestSent:
+				return this.loginRequestSent;
+			case RegisterRequestSent:
+				return this.registerRequestSent;
+			case CreateRequestSent:
+				return this.createRequestSent;
+			case JoinRequestSent:
+				return this.joinRequestSent;
+			case LoginFailed:
+				return this.loginFailed;
+			case LoginSuccessful:
+				return this.loginSuccessful;
+			case RegisterFailed:
+				return this.registerFailed;
+			case RegisterSuccessful:
+				return this.registerSuccessful;
+			case PleaseWaitForRoomServer:
+				return this.pleaseWaitForRoomServer;
+			case RoomCreated:
+				return this.roomCreated;
+			case AlreadyInRoom:
+				return this.alreadyInRoom;
+			case RoomExists:
+				return this.roomExists;
+			default:
+				break;
 		}
 
 		return null;

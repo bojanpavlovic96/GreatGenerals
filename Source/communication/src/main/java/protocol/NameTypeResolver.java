@@ -1,5 +1,7 @@
 package protocol;
 
+import root.communication.messages.MessageType;
+
 public interface NameTypeResolver {
-	Class<?> resolve(String name);
+	Class<?> resolve(MessageType type);
 }

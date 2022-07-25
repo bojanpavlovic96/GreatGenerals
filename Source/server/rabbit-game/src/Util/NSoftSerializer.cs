@@ -1,5 +1,6 @@
 using System.Text;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Converters;
 
 namespace RabbitGameServer.Util
 {
@@ -13,7 +14,7 @@ namespace RabbitGameServer.Util
 
 		public string ToString(Object obj)
 		{
-			return JsonConvert.SerializeObject(obj);
+			return JsonConvert.SerializeObject(obj, new StringEnumConverter());
 		}
 
 		public Object ToObj(byte[] bytes, Type type)
@@ -24,6 +25,7 @@ namespace RabbitGameServer.Util
 
 		public Object ToObj(string text, Type type)
 		{
+			// apparently deserialization works with string enums ... 
 			return JsonConvert.DeserializeObject(text, type);
 		}
 
@@ -35,6 +37,7 @@ namespace RabbitGameServer.Util
 
 		public T ToObj<T>(string text) where T : class
 		{
+			// apparently deserialization works with string enums ... 
 			return JsonConvert.DeserializeObject<T>(text);
 		}
 	}

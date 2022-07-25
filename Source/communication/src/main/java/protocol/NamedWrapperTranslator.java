@@ -2,6 +2,7 @@ package protocol;
 
 import root.communication.ProtocolTranslator;
 import root.communication.messages.Message;
+import root.communication.messages.MessageType;
 import root.communication.parser.DataParser;
 
 public class NamedWrapperTranslator implements ProtocolTranslator {
@@ -9,9 +10,7 @@ public class NamedWrapperTranslator implements ProtocolTranslator {
 	private NameTypeResolver typeResolver;
 	private DataParser parser;
 
-	public NamedWrapperTranslator(
-			DataParser parser,
-			NameTypeResolver messageTypeResolver) {
+	public NamedWrapperTranslator(DataParser parser, NameTypeResolver messageTypeResolver) {
 
 		this.parser = parser;
 		this.typeResolver = messageTypeResolver;
@@ -20,7 +19,7 @@ public class NamedWrapperTranslator implements ProtocolTranslator {
 	@Override
 	public String toStrData(Message message) {
 		var wrapper = new NamedWrapper(
-				message.name,
+				message.type.toString(),
 				parser.ToString(message));
 
 		return parser.ToString(wrapper);
@@ -33,17 +32,26 @@ public class NamedWrapperTranslator implements ProtocolTranslator {
 
 	@Override
 	public Message toMessage(String strData) {
-		var wrappedData = parser.FromString(strData, NamedWrapper.class);
-		var messageType = typeResolver.resolve(wrappedData.name);
-		if (messageType == null) {
-			// TODO I guess this should be handled somehow
-			// some exception maybe ...
-			// debug
-			System.out.println("Unknown message type received: " + wrappedData.name);
-			return null;
+
+		Message message = null;
+
+		try {
+			var wrappedData = parser.FromString(strData, NamedWrapper.class);
+			var messageType = typeResolver.resolve(MessageType.valueOf(wrappedData.name));
+
+			if (messageType == null) {
+				System.out.println("Unknown message type received: " + wrappedData.name);
+				return null;
+			} else {
+				System.out.println("Resolved message class: " + messageType.toString());
+			}
+			message = (Message) parser.FromString(wrappedData.payload, messageType);
+		} catch (Exception e) {
+			System.out.println("exception while casting received message ... ");
+			System.out.println(e.getMessage());
 		}
 
-		return (Message) parser.FromString(wrappedData.payload, messageType);
+		return message;
 	}
 
 	@Override

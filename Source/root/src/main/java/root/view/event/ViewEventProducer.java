@@ -4,14 +4,14 @@ import java.util.List;
 
 public interface ViewEventProducer {
 
-	void addEventHandler(String event_name, ViewEventHandler event_handler);
+	void addEventHandler(String eventName, ViewEventHandler eventHandler);
 
-	List<ViewEventHandler> getEventHandlers(String event_name);
+	List<ViewEventHandler> getEventHandlers(String eventName);
 
-	ViewEventHandler getSingleEventHandler(String event_name, String handler_name);
+	ViewEventHandler getSingleEventHandler(String eventName, String handlerName);
 
-	ViewEventHandler removeEventHandler(String event_name, String handler_name);
+	ViewEventHandler removeEventHandler(String eventName, String handlerName);
 
-	List<ViewEventHandler> removeAllEventHandlers(String event_name);
+	List<ViewEventHandler> removeAllEventHandlers(String eventName);
 
 }

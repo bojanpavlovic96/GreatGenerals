@@ -25,7 +25,7 @@ mvn compile
 	$ mvn exec:java
 
 	// ingore next instructions in this section (TO RUN section)
-	// they were valid at one point but are not usefull anymore
+	// they were valid at some point but are not usefull anymore
 	For java 11+
 	cd to .../GreatGenerals/Source/client-application
 	mvn javafx:run

@@ -2,13 +2,13 @@ package root.communication.messages;
 
 public class Message {
 
-	public String name;
+	public MessageType type;
 
 	public String roomName;
 	public String player;
 
-	public Message(String name) {
-		this.name = name;
+	public Message(MessageType type) {
+		this.type = type;
 	}
 
 	public void setOrigin(String player, String roomName) {

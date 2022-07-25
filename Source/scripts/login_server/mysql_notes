@@ -1,0 +1,15 @@
+If connecting from the host.
+	mysql -u root -proot --host ip_address # repalce ip_address with the real address
+	mysql -u gg_user --host ip_address -p 
+	# -||-, will be prompted for the password (gg_password)
+If connecting from the container inside the gg_network. 
+	# gg-users-db should be the name of the mysql users db container
+	mysql -u root -proot --host gg-users-db 
+	mysql -u gg_user --host gg-users-db  -p 
+	# -||-, will be prompted for the password (gg_password)
+
+Only available to the root user. 
+SLECT user FROM mysql.user # to list users
+
+USE gg_players;
+SHOW TABLES; 

@@ -1,6 +1,11 @@
 username='gg_user'
 password='gg_password'
-host='localhost'
+# host='localhost'
+host='%' 
+# wildcard matching all hosts
+# you can create accounts with the same name but different hostname 
+# hostname is the address of host from which user is gonna access this db 
+# https://dev.mysql.com/doc/refman/5.7/en/account-names.html
 database='gg_players'
 
 query="FLUSH PRIVILEGES"
@@ -18,8 +23,7 @@ echo "Create database: $query"
 mysql -u root -proot -e "$query"
 echo 
 
-# query="GRANT ALL ON \"$database\".\"*\" TO \"$username\"@\"$host\""
-query="GRANT ALL ON $database.* TO $username@$host"
+query="GRANT ALL ON $database.* TO $username"
 echo "Grant permissions: $query"
 # mysql -u root -proot -e "GRANT ALL ON gg_users.* TO gg_user@localhost"
 mysql -u root -proot -e "$query"

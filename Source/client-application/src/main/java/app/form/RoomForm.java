@@ -239,11 +239,11 @@ public class RoomForm extends VBox
 
 	}
 
-	public void setOnCreateGroupHandler(RoomFormActionHandler handler) {
+	public void setOnCreateRoomHandler(RoomFormActionHandler handler) {
 		this.on_create_room = handler;
 	}
 
-	public void setOnJoinGroupHandler(RoomFormActionHandler handler) {
+	public void setOnJoinRoomHandler(RoomFormActionHandler handler) {
 		this.on_join_room = handler;
 	}
 

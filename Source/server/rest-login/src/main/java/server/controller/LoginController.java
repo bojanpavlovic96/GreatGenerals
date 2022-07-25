@@ -1,6 +1,6 @@
 package server.controller;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
@@ -26,10 +26,17 @@ public class LoginController {
 	// @Qualifier("MockupLoginService") LoginService loginService,
 	// @Qualifier("JpaPlayerRepository") PlayerRepository playerRepo) {
 
-	@Autowired
 	public LoginController(LoginService loginService) {
 
 		this.loginService = loginService;
+	}
+
+	@GetMapping("/ping")
+	public LoginServerResponse ping() {
+		return new LoginServerResponse("ping_username",
+				128,
+				256,
+				LoginServerResponseStatus.SUCCESS);
 	}
 
 	@PostMapping("/login")
@@ -78,7 +85,7 @@ public class LoginController {
 					request.getPassword())
 					.get();
 		} catch (Exception e) {
-			System.out.println("Exception while useing login service... ");
+			System.out.println("Exception while using login service... ");
 			System.out.println(e.getMessage());
 		}
 

@@ -60,7 +60,7 @@ public class DrawingStage extends Stage implements View {
 	private ShortOptionsMenu shortOptionsMenu;
 	private LongOptionsMenu longOptionsMenu;
 
-	private double canvasWitdth;
+	private double canvasWidth;
 	private double canvasHeight;
 
 	private Color backgroundColor = Color.GRAY;
@@ -83,9 +83,13 @@ public class DrawingStage extends Stage implements View {
 
 		this.fieldManager = fieldManager;
 
-		this.initStage();
+		Platform.runLater(() -> {
 
-		this.initEventHandlers();
+			this.initStage();
+
+			this.initEventHandlers();
+
+		});
 	}
 
 	// only stage specific things
@@ -113,14 +117,14 @@ public class DrawingStage extends Stage implements View {
 		this.STAGE_HEIGHT = Screen.getPrimary().getBounds().getHeight();
 
 		// match canvas size with stage (windows) size
-		this.canvasWitdth = this.STAGE_WIDTH;
+		this.canvasWidth = this.STAGE_WIDTH;
 		this.canvasHeight = this.STAGE_HEIGHT;
 
 		// create canvas and add it to the root node
 		this.boardCanvas = new Canvas();
 
 		// set canvas width/height to match stage size
-		this.boardCanvas.setWidth(this.canvasWitdth);
+		this.boardCanvas.setWidth(this.canvasWidth);
 		this.boardCanvas.setHeight(this.canvasHeight);
 
 		this.root.getChildren().add(this.boardCanvas);
@@ -129,12 +133,12 @@ public class DrawingStage extends Stage implements View {
 		this.secondLayerCanvas = new Canvas();
 
 		// width and height same as the board canvas
-		this.secondLayerCanvas.setWidth(this.canvasWitdth);
+		this.secondLayerCanvas.setWidth(this.canvasWidth);
 		this.secondLayerCanvas.setHeight(this.canvasHeight);
 
 		this.root.getChildren().add(this.secondLayerCanvas);
 
-		System.out.println("Initial canvas width: " + this.canvasWitdth);
+		System.out.println("Initial canvas width: " + this.canvasWidth);
 		System.out.println("Initial canvas height: " + this.canvasHeight);
 
 		this.shortOptionsMenu = new ShortOptionsMenu(
@@ -154,7 +158,6 @@ public class DrawingStage extends Stage implements View {
 		this.root.getChildren().add(this.shortOptionsMenu);
 
 		this.setScene(this.mainScene);
-
 	}
 
 	private void initEventHandlers() {
@@ -187,11 +190,11 @@ public class DrawingStage extends Stage implements View {
 				}
 			}
 		};
-		this.secondLayerCanvas.addEventHandler(MouseEvent.MOUSE_CLICKED, eventHandler);
+		secondLayerCanvas.addEventHandler(MouseEvent.MOUSE_CLICKED, eventHandler);
 
 		// key event handler name format
 		// key-event-char-k - 'k' pressed button
-		this.addEventHandler(KeyEvent.KEY_TYPED,
+		addEventHandler(KeyEvent.KEY_TYPED,
 				(event) -> {
 
 					String key = event.getCharacter();
@@ -300,8 +303,12 @@ public class DrawingStage extends Stage implements View {
 	}
 
 	// view interface
-
-	// show() is already implemented in stage
+	@Override
+	public void showView() {
+		Platform.runLater(() -> {
+			show();
+		});
+	}
 
 	@Override
 	public String getViewTheme() {
@@ -393,21 +400,28 @@ public class DrawingStage extends Stage implements View {
 				.calcRealPosition(new Point2D(point.getX() + 1, point.getY() + 1));
 
 		if (real_position.getX() > this.STAGE_WIDTH)
-			this.canvasWitdth = real_position.getX();
+			this.canvasWidth = real_position.getX();
 		else
-			this.canvasWitdth = this.STAGE_WIDTH;
+			this.canvasWidth = this.STAGE_WIDTH;
 
 		if (real_position.getY() > this.STAGE_HEIGHT)
 			this.canvasHeight = real_position.getY();
 		else
 			this.canvasHeight = this.STAGE_HEIGHT;
 
-		this.boardCanvas.setWidth(this.canvasWitdth);
-		this.secondLayerCanvas.setWidth(this.canvasWitdth);
+		this.boardCanvas.setWidth(this.canvasWidth);
+		this.secondLayerCanvas.setWidth(this.canvasWidth);
 
 		this.boardCanvas.setHeight(this.canvasHeight);
 		this.secondLayerCanvas.setHeight(this.canvasHeight);
 
+	}
+
+	@Override
+	public void hideView() {
+		Platform.runLater(() -> {
+			hide();
+		});
 	}
 
 }

@@ -6,22 +6,28 @@ import java.util.List;
 import app.form.StartForm;
 import app.resource_manager.AppConfig;
 import app.server.MockupGameServerProxy;
-import app.server.MockupMsgTranslator;
-import app.server.RestLoginServerProxy;
+import app.server.MockupMsgInterpreter;
+
 import controller.GameBrain;
 import controller.command.CtrlInitializeCommand;
+
 import javafx.application.Application;
+import javafx.application.Platform;
 import javafx.stage.Stage;
+
 import model.DataModel;
 import model.PlayerModelData;
 import model.component.field.ModelField;
+
 import protocol.NamedWrapperTranslator;
+
+import proxy.RabbitRoomServerProxy;
+import proxy.RestLoginServerProxy;
+
 import root.ActiveComponent;
 import root.Point2D;
 import root.command.Command;
 import root.communication.GameServerProxy;
-import root.communication.MsgToCmdTranslator;
-import root.communication.ProtocolTranslator;
 import root.communication.parser.GsonJsonParser;
 import root.controller.Controller;
 import root.model.Model;
@@ -55,76 +61,82 @@ public class Launcher extends Application {
 		// ignore generated primaryStage
 
 		var brokerConfig = AppConfig.getInstance().brokerConfig.getActive();
-		if (brokerConfig != null) {
-			System.out.println("Using broker config: \n" + brokerConfig.toString());
-		} else {
-			System.out.println("Exiting ... ");
-
-			return;
-		}
+		System.out.println("Using broker config: \n" + brokerConfig.toString());
 
 		connectionTask = new RabbitConnectionTask(brokerConfig);
 
-		startPageController = new StartPageController(
-				new StartForm(),
-				new RestLoginServerProxy(
-						AppConfig.getInstance().restLoginServerConfig.getActive(),
-						new GsonJsonParser()),
-				// new MockupLoginServerProxy(),
-				// new RabbitLoginServerProxy(this.connectionTask, brokerConfig.queues),
-				(String username, String roomName) -> { // game ready handler
+		var msgInterpreter = new MockupMsgInterpreter();
 
-					ProtocolTranslator protocolTranslator = new NamedWrapperTranslator(
-							new GsonJsonParser(),
-							new StupidStaticTypeResolver());
+		var loginProxy = new RestLoginServerProxy(
+				AppConfig.getInstance().restLoginServerConfig.getActive(),
+				new GsonJsonParser());
 
-					MsgToCmdTranslator msgToCmdTranslator = new MockupMsgTranslator();
+		var protocolTranslator = new NamedWrapperTranslator(
+				new GsonJsonParser(),
+				new StupidStaticTypeResolver());
 
-					// TODO replace username and roomName with some token/key
-					// obtained from the login server
-					// GameServerProxy serverProxy = new RabbitGameServerProxy(
-					// 		AppConfig.getInstance().rabbitServerProxyConfig,
-					// 		connectionTask.getChannel(),
-					// 		translator,
-					// 		username,
-					// 		roomName);
+		var roomProxy = new RabbitRoomServerProxy(
+				AppConfig.getInstance().rabbitRoomServerProxyConfig,
+				connectionTask,
+				protocolTranslator);
 
-					GameServerProxy serverProxy = new MockupGameServerProxy(
-							AppConfig.getInstance().rabbitServerProxyConfig,
-							protocolTranslator,
-							msgToCmdTranslator,
-							username,
-							roomName);
+		startPageController = new StartPageController(new StartForm(),
+				loginProxy,
+				roomProxy,
+				this::startTheGame);
 
-					// TODO remove when real gameServerProxy gets implemented
-					var initCommand = getFakeInitCommand();
-					serverProxy.getConsumerQueue().enqueue(initCommand);
+		connectionThread = new Thread(this.connectionTask);
+		connectionThread.start();
 
-					// TODO somehow initialize resource manager
-					// resources could be obtained from the server
-					var viewConfig = AppConfig.getInstance().viewConfig;
-					View view = new DrawingStage(
-							new HexFieldManager(viewConfig.fieldHeight,
-									viewConfig.fieldWdith,
-									viewConfig.fieldBorderWidth),
-							viewConfig);
+		startPageController.showInitialPage();
+	}
 
-					// attention controller still null at this moment
-					// modelEventHandler is set from controller constructor
-					// this is empty model (only timer and unit creator)
-					Model model = new DataModel();
+	private void startTheGame(String username, String roomName) {
 
-					gameController = new GameBrain(serverProxy, view, model);
+		// after the login replace username and roomName with some token 
+		// provided by the loginServer
 
-					startPageController.hideInitialPage();
-					gameController.getView().show();
+		System.out.println("Game ready handler called ... ");
+		// GameServerProxy serverProxy = new RabbitGameServerProxy(
+		// 		AppConfig.getInstance().rabbitServerProxyConfig,
+		// 		connectionTask.getChannel(),
+		// 		translator,
+		// 		username,
+		// 		roomName);
 
-				});
+		var protocolTranslator = new NamedWrapperTranslator(
+				new GsonJsonParser(),
+				new StupidStaticTypeResolver());
 
-		this.connectionThread = new Thread(this.connectionTask);
-		this.connectionThread.start();
+		var msgInterpreter = new MockupMsgInterpreter();
 
-		this.startPageController.showInitialPage();
+		GameServerProxy serverProxy = new MockupGameServerProxy(
+				AppConfig.getInstance().rabbitGameServerProxyConfig,
+				protocolTranslator,
+				msgInterpreter,
+				username,
+				roomName);
+
+		var initCommand = getFakeInitCommand();
+		serverProxy.getConsumerQueue().enqueue(initCommand);
+
+		var viewConfig = AppConfig.getInstance().viewConfig;
+		View view = new DrawingStage(
+				new HexFieldManager(viewConfig.fieldHeight,
+						viewConfig.fieldWidth,
+						viewConfig.fieldBorderWidth),
+				viewConfig);
+
+		// attention controller still null at this moment
+		// modelEventHandler is set from controller constructor
+		// this is empty model (only timer and unit creator)
+		Model model = new DataModel();
+
+		gameController = new GameBrain(serverProxy, view, model);
+
+		startPageController.hideInitialPage();
+		gameController.getView().showView();
+
 	}
 
 	private Command getFakeInitCommand() {

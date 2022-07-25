@@ -25,12 +25,12 @@ namespace RabbitGameServer.Database
 			database = client.GetDatabase(config.DatabaseName);
 		}
 
-		public void saveCommand(string gameId, Command command)
+		public void saveCommand(string gameId, Message command)
 		{
 			var filter = (Game g) => g.id == new MongoDB.Bson.ObjectId(gameId);
 			var update = Builders<Game>
 				.Update
-				.Push<Command>(g => g.commands, command);
+				.Push<Message>(g => g.messages, command);
 
 			database.GetCollection<Game>(config.GamesCollection)
 				.UpdateOne(

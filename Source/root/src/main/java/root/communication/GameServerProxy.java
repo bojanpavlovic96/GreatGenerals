@@ -5,6 +5,6 @@ import root.model.event.ModelEventArg;
 
 public interface GameServerProxy extends CommandProducer {
 
-	void sendIntention(ModelEventArg action);
+	boolean sendIntention(ModelEventArg action);
 
 }
