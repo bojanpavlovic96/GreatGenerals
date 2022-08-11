@@ -10,8 +10,8 @@ import app.resource_manager.Language;
 import root.ActiveComponent;
 import root.communication.LoginServerProxy;
 import root.communication.RoomServerProxy;
-import root.communication.messages.JoinResponseMsg;
-import root.communication.messages.JoinResponseType;
+import root.communication.messages.RoomResponseMsg;
+import root.communication.messages.RoomResponseType;
 import root.communication.messages.LoginRequest;
 import root.communication.messages.LoginServerResponse;
 import root.communication.messages.LoginServerResponseStatus;
@@ -24,7 +24,6 @@ public class StartPageController implements GameReadyEventProducer, ActiveCompon
 
 	private String username;
 	private String password;
-	private boolean loggedIn;
 
 	private String roomName;
 	private String roomPassword;
@@ -48,19 +47,20 @@ public class StartPageController implements GameReadyEventProducer, ActiveCompon
 
 		this.showInitialPage();
 
-		this.initialPage.setOnLoginHandler(this::loginActionHandler);
-		this.initialPage.setOnRegisterHandler(this::registerActionHandler);
+		initialPage.setOnLoginHandler(this::loginActionHandler);
+		initialPage.setOnRegisterHandler(this::registerActionHandler);
 
-		this.initialPage.setOnCreateRoomHandler(this::createRoomActionHandler);
-		this.initialPage.setOnJoinRoomHandler(this::joinRoomActionHandler);
+		initialPage.setOnCreateRoomHandler(this::createRoomActionHandler);
+		initialPage.setOnJoinRoomHandler(this::joinRoomActionHandler);
+
+		initialPage.setOnStartGameHandler(this::startGameActionHandler);
+
+		initialPage.setOnLeaveRoomHandler(this::leaveRoomActionHandler);
 
 	}
 
-	private void loginActionHandler(String _username, String _password) {
+	private void loginActionHandler(String username, String password) {
 		System.out.println("Handling login action ... @ InitialController");
-
-		this.username = _username;
-		this.password = _password;
 
 		if (loginServer == null || !loginServer.isReady()) {
 			System.out.println("Login server not available at the moment ... ");
@@ -72,6 +72,10 @@ public class StartPageController implements GameReadyEventProducer, ActiveCompon
 				(response) -> {
 					if (response.getStatus() == LoginServerResponseStatus.SUCCESS) {
 						System.out.println("Login successful ... ");
+
+						this.username = username;
+						this.password = password;
+
 						initialPage.hideUserForm();
 						initialPage.showRoomForm();
 					} else {
@@ -99,7 +103,7 @@ public class StartPageController implements GameReadyEventProducer, ActiveCompon
 				(LoginServerResponse response) -> {
 					if (response.getStatus() == LoginServerResponseStatus.SUCCESS) {
 						System.out.println("Successful registration ... ");
-						// when you get registered you automatically get loggedin
+						// when you get registered you automatically get logged in 
 						// because why not ... 
 						// next page should be the room page
 
@@ -128,31 +132,126 @@ public class StartPageController implements GameReadyEventProducer, ActiveCompon
 		System.out.println("room server is ready ... will try to create room ... ");
 
 		roomServer.CreateRoom(roomName, roomPassword, username,
-				(JoinResponseMsg response) -> {
-					System.out.println("Handling room response ... ");
-					if (response.responseType == JoinResponseType.Success) {
-						System.out.println("Create room successful ... ");
-						showInfoMessage(Language.MessageType.RoomCreated);
+				this::createRoomResponseHandler,
+				this::playerJoinedHandler);
 
-						System.out.println("Staring game ... ");
-						onGameReady.execute(username, roomName);
+		showInfoMessage(Language.MessageType.CreateRequestSent);
+	}
 
-					} else if (response.responseType == JoinResponseType.InvalidRoom) {
-						System.out.println("Requested room already exists ... ");
-						showInfoMessage(Language.MessageType.RoomExists);
+	private void createRoomResponseHandler(RoomResponseMsg response) {
+		System.out.println("Handling room response ... ");
+		if (response.responseType == RoomResponseType.Success) {
+			System.out.println("Create room successful ... ");
+			showInfoMessage(Language.MessageType.RoomCreated);
+			initialPage.disableCreateRoom();
+			initialPage.disableJoinRoom();
 
-					} else if (response.responseType == JoinResponseType.AlreadyIn) {
-						System.out.println("You are already in this room ... ");
+			initialPage.enableLeaveRoom();
+
+			this.roomName = response.roomName;
+			this.players.add(username);
+
+			initialPage.showPlayers();
+			initialPage.addPlayer(response.players.get(0));
+
+			initialPage.enableGameStart();
+
+		} else if (response.responseType == RoomResponseType.InvalidRoom) {
+			System.out.println("Requested room already exists ... ");
+			showInfoMessage(Language.MessageType.RoomExists);
+
+		} else if (response.responseType == RoomResponseType.AlreadyIn) {
+			System.out.println("You are already in this room ... ");
+			showInfoMessage(Language.MessageType.AlreadyInRoom);
+		}
+	}
+
+	private void playerJoinedHandler(RoomResponseMsg response) {
+		System.out.println("New player joined to this room ... ");
+	}
+
+	private void joinRoomActionHandler(String roomName, String roomPassword) {
+		if (roomServer == null || !roomServer.isReady()) {
+			System.out.println("RoomServerProxy is not ready or already in use ... ");
+			showInfoMessage(Language.MessageType.PleaseWaitForRoomServer);
+			return;
+		}
+
+		System.out.println("room server is ready ... will try to join room ... ");
+		roomServer.JoinRoom(roomName, roomPassword, username,
+				(RoomResponseMsg response) -> {
+					System.out.println("Handling join response ... ");
+					showInfoMessage(Language.MessageType.SuccessfulJoin);
+					initialPage.disableCreateRoom();
+					initialPage.disableJoinRoom();
+
+					initialPage.enableLeaveRoom();
+
+					if (response.responseType == RoomResponseType.Success) {
+						System.out.println("Join room successful ... ");
+
+						initialPage.showPlayers();
+						for (var player : response.players) {
+							initialPage.addPlayer(player);
+						}
+
+					} else if (response.responseType == RoomResponseType.WrongPassword) {
+						System.out.println("Wrong room password ... ");
+						showInfoMessage(Language.MessageType.WrongRoomPassword);
+
+					} else if (response.responseType == RoomResponseType.InvalidRoom) {
+						System.out.println("This room does not exist ... ");
+						showInfoMessage(Language.MessageType.RoomDoesntExists);
+
+					} else if (response.responseType == RoomResponseType.AlreadyIn) {
+						System.out.println("Already in the room ... ");
 						showInfoMessage(Language.MessageType.AlreadyInRoom);
 					}
 
 				});
 
-		showInfoMessage(Language.MessageType.CreateRequestSent);
+		showInfoMessage(Language.MessageType.JoinRequestSent);
 	}
 
-	private void joinRoomActionHandler(String roomName, String roomPassword) {
+	public void leaveRoomActionHandler(String roomName, String roomPassword) {
+		System.out.println("Attempt to leave room ... ");
+		if (roomServer == null || !roomServer.isReady()) {
+			System.out.println("RoomServerProxy is not ready or already in use ... ");
+			showInfoMessage(Language.MessageType.PleaseWaitForRoomServer);
+			return;
+		}
 
+		roomServer.LeaveRoom(roomName, username,
+				(RoomResponseMsg response) -> {
+					System.out.println("Handling leaver room response ... ");
+
+					if (response.responseType == RoomResponseType.Success) {
+						System.out.println("Successful left the room ... ");
+						showInfoMessage(Language.MessageType.SuccessfulLeft);
+
+						initialPage.disableLeaveRoom();
+						initialPage.clearPlayers();
+						initialPage.hidePlayers();
+						initialPage.disableGameStart();
+
+						initialPage.enableCreateRoom();
+						initialPage.enableJoinRoom();
+
+					} else {
+						System.out.println("There was an error while trying to leave the room ... ");
+						System.out.println("Message intentionally omitted ... ");
+
+					}
+				});
+
+	}
+
+	public void startGameActionHandler() {
+		System.out.println("Attempt to start the game ... ");
+		System.out.println("Assuming everything is ok and starting the game ... ");
+		if (onGameReady != null) {
+			onGameReady.execute(username, roomName);
+		}
 	}
 
 	public void hideInitialPage() {
@@ -163,7 +262,6 @@ public class StartPageController implements GameReadyEventProducer, ActiveCompon
 		this.initialPage.showPage();
 	}
 
-	// GameReadyEventProducer interface
 	@Override
 	public void setOnGameReadyHandler(GameReadyHandler handler) {
 		this.onGameReady = handler;
@@ -193,6 +291,14 @@ public class StartPageController implements GameReadyEventProducer, ActiveCompon
 			((ActiveComponent) roomServer).shutdown();
 		}
 
+	}
+
+	public String getUsername() {
+		return this.username;
+	}
+
+	public String getRoomName() {
+		return this.roomName;
 	}
 
 }

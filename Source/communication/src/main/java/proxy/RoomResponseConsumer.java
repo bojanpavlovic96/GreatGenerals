@@ -6,7 +6,7 @@ import com.rabbitmq.client.AMQP.BasicProperties;
 
 import root.communication.ProtocolTranslator;
 import root.communication.RoomServerResponseHandler;
-import root.communication.messages.JoinResponseMsg;
+import root.communication.messages.RoomResponseMsg;
 
 import com.rabbitmq.client.Consumer;
 import com.rabbitmq.client.Envelope;
@@ -64,7 +64,7 @@ public class RoomResponseConsumer implements Consumer {
 		System.out.println(new String(body));
 
 		var message = translator.toMessage(body);
-		handler.handle((JoinResponseMsg) message);
+		handler.handle((RoomResponseMsg) message);
 
 		proxy.clearHandlers();
 		return;

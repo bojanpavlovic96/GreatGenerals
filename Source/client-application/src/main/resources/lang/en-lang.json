@@ -76,5 +76,21 @@
 	"roomExists": {
 		"message": "Room already exists",
 		"color": "#ff6666"
+	},
+	"wrongRoomPassword": {
+		"message": "Wrong room password.",
+		"color": "#ff6666"
+	},
+	"roomDoesntExists": {
+		"message": "Room does not exist.",
+		"color": "#ff6666"
+	},
+	"successfulJoin": {
+		"message": "Join Successful",
+		"color": "#ff6666"
+	},
+	"successfulLeft": {
+		"message": "Successfully left room",
+		"color": "#ff6666"
 	}
 }

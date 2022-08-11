@@ -15,6 +15,6 @@ public interface FormMessageProducer {
 
 	FormMessageHandler getStatusMessageHandler();
 
-	FormMessageHandler getInfoMessageHanlder();
+	FormMessageHandler getInfoMessageHandler();
 
 }

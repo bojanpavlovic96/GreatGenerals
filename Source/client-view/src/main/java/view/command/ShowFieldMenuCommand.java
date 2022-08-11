@@ -10,7 +10,6 @@ import root.view.View;
 import root.view.field.ViewField;
 import root.view.menu.Menu;
 
-// TODO rename this to showFieldMenuCommand
 public class ShowFieldMenuCommand extends Command {
 
 	public static final String commandName = "display-field-info-view-command";

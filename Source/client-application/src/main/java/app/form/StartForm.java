@@ -4,26 +4,29 @@ import java.awt.Dimension;
 import java.awt.Toolkit;
 
 import app.event.RoomFormActionHandler;
+import app.event.StartGameEventHandler;
 import app.event.UserFormActionHandler;
 import app.resource_manager.Language;
+import app.resource_manager.StringResourceManager;
 import javafx.application.Platform;
+import javafx.event.ActionEvent;
+import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
+import javafx.scene.control.Button;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
+import root.communication.PlayerDescription;
 
-public class StartForm extends Stage implements InitialPage {
+public class StartForm extends Stage implements InitialPage, HasLabels {
 
+	// width being hardcoded is semi-ok but height ... doesn't look good ... 
 	private double WIDTH = 200;
-	// attention height may be unused
-	// attention hard-coded, find better solution for height
 	private double HEIGHT = 640;
 
 	private VBox mainContainer;
 	private Scene mainScene;
-
-	// page forms
 
 	// messages, image and title
 	private HeaderForm headerForm;
@@ -31,9 +34,13 @@ public class StartForm extends Stage implements InitialPage {
 	// username, password, login, register
 	private UserForm userForm;
 
-	// logout, roomName, roomPassword, createRoom, joinRoom, startGame,
-	// listOfPlayers
+	// logout, roomName, roomPassword, createRoom, joinRoom, listOfPlayers
 	private RoomForm roomForm;
+
+	private Language language;
+	private Button startButton;
+	private StartGameEventHandler onStartGame;
+
 	// version number, language
 	private BottomForm bottomForm;
 
@@ -41,21 +48,21 @@ public class StartForm extends Stage implements InitialPage {
 
 	public StartForm() {
 
-		this.initStage();
+		initStage();
 
-		this.initHeader();
+		initHeader();
 
-		this.initUserForm();
+		initUserForm();
+		userForm.setVisible(true);
 
-		this.initRoomForm();
+		initRoomForm();
+		roomForm.setVisible(false);
 
-		this.initBottomForm();
+		initStartButton();
 
-		this.roomForm.setVisible(false);
-		// this.user_form.setVisible(false);
+		initBottomForm();
 
-		this.setScene(this.mainScene);
-
+		setScene(this.mainScene);
 	}
 
 	private void initStage() {
@@ -77,7 +84,7 @@ public class StartForm extends Stage implements InitialPage {
 				+ "height: " + dimension.getHeight() + "\n");
 
 		this.setWidth(this.WIDTH);
-		// this.setHeight(this.HEIGHT);
+		this.setHeight(this.HEIGHT);
 
 		this.setX(dimension.getWidth() / 2 - this.WIDTH / 2);
 		// using dimension.getHeight() / 2 wont really work great
@@ -119,6 +126,21 @@ public class StartForm extends Stage implements InitialPage {
 		this.mainContainer.getChildren().add(this.roomForm);
 	}
 
+	private void initStartButton() {
+
+		language = StringResourceManager.getLanguage();
+		startButton = new Button(language.startGame);
+		// font = new Font(this.FONT_NAME, this.FONT_SIZE);
+		// startButton.setFont(font);
+		startButton.managedProperty().bind(startButton.visibleProperty());
+
+		mainContainer.getChildren().add(startButton);
+
+		VBox.setMargin(startButton, new Insets(10, 0, 0, 5));
+
+		disableGameStart();
+	}
+
 	private void initBottomForm() {
 
 		this.bottomForm = new BottomForm();
@@ -126,8 +148,6 @@ public class StartForm extends Stage implements InitialPage {
 		this.mainContainer.getChildren().add(this.bottomForm);
 
 	}
-
-	// public methods
 
 	// messageDisplay interface
 
@@ -179,10 +199,19 @@ public class StartForm extends Stage implements InitialPage {
 		this.roomForm.setOnJoinRoomHandler(handler);
 	}
 
-	// implement
 	@Override
-	public void setOnStartGameHandler() {
+	public void setOnLeaveRoomHandler(RoomFormActionHandler handler) {
+		roomForm.setOnLeaveRoomHandler(handler);
+	}
 
+	@Override
+	public void setOnStartGameHandler(StartGameEventHandler handler) {
+		this.onStartGame = handler;
+		startButton.setOnAction((ActionEvent event) -> {
+			if (onStartGame != null) {
+				onStartGame.handle();
+			}
+		});
 	}
 
 	@Override
@@ -245,6 +274,78 @@ public class StartForm extends Stage implements InitialPage {
 		Platform.runLater(() -> {
 			super.hide();
 		});
+	}
+
+	@Override
+	public void addPlayer(PlayerDescription playerDesc) {
+		roomForm.addPlayer(playerDesc);
+	}
+
+	@Override
+	public void removePlayer(String player) {
+		roomForm.removePlayer(player);
+	}
+
+	@Override
+	public void clearPlayers() {
+		roomForm.clearPlayers();
+	}
+
+	@Override
+	public void showPlayers() {
+		roomForm.showPlayers();
+	}
+
+	@Override
+	public void hidePlayers() {
+		roomForm.hidePlayers();
+	}
+
+	@Override
+	public void enableGameStart() {
+		startButton.setVisible(true);
+	}
+
+	@Override
+	public void disableGameStart() {
+		startButton.setVisible(false);
+	}
+
+	@Override
+	public void loadLabels(Language newLanguage) {
+		this.language = newLanguage;
+
+		this.startButton.setText(this.language.startGame);
+	}
+
+	@Override
+	public void disableCreateRoom() {
+		roomForm.disableCreateRoom();
+	}
+
+	@Override
+	public void enableCreateRoom() {
+		roomForm.enableCreateRoom();
+	}
+
+	@Override
+	public void disableJoinRoom() {
+		roomForm.disableJoinRoom();
+	}
+
+	@Override
+	public void enableJoinRoom() {
+		roomForm.enableJoinRoom();
+	}
+
+	@Override
+	public void enableLeaveRoom() {
+		roomForm.enableLeaveRoom();
+	}
+
+	@Override
+	public void disableLeaveRoom() {
+		roomForm.disableLeaveRoom();
 	}
 
 }

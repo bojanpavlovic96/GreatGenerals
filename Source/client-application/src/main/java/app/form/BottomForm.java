@@ -1,11 +1,9 @@
 package app.form;
 
-import app.event.LanguageEvent;
 import app.resource_manager.Language;
 import app.resource_manager.AppConfig;
 import app.resource_manager.StringResourceManager;
 import javafx.application.Platform;
-import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.ComboBox;

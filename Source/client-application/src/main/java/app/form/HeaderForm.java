@@ -180,17 +180,21 @@ public class HeaderForm extends VBox implements MessageDisplay, HasLabels {
 
 		this.language = newLanguage;
 
-		Platform.runLater(() -> {
-			if (this.statusName != null) {
-				this.showStatusMessage(this.statusName);
-			}
+		// I don't think this should be wrapped inside the runLater
+		// language change can only be triggered from the dropbox
+		// that action is executed on the main thread so ... yeah 
+		
+		// Platform.runLater(() -> {
+		if (this.statusName != null) {
+			this.showStatusMessage(this.statusName);
+		}
 
-			// start new 2s with info in new language
-			if (this.infoMessage.isVisible() && this.infoName != null) {
-				this.showInfoMessage(this.infoName);
-			}
+		// start new 2s with info in new language
+		if (this.infoMessage.isVisible() && this.infoName != null) {
+			this.showInfoMessage(this.infoName);
+		}
 
-		});
+		// });
 
 	}
 

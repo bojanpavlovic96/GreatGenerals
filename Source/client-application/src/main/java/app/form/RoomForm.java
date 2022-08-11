@@ -7,7 +7,6 @@ import app.event.RoomFormActionHandler;
 import app.resource_manager.Language;
 import app.resource_manager.StringResourceManager;
 import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
@@ -18,6 +17,7 @@ import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Font;
+import root.communication.PlayerDescription;
 
 public class RoomForm extends VBox
 		implements FormMessageProducer, HasLabels {
@@ -47,21 +47,25 @@ public class RoomForm extends VBox
 
 	private Button createRoomBtn;
 	private Button joinRoomBtn;
+	private Button leaveRoomBtn;
 
 	private Label playersLb;
 
-	private ScrollPane playersScrollPane;
 	private VBox playersVb;
+	private ScrollPane playersScrollPane;
 
-	private Button startGameBtn;
+	// private Button startGameBtn;
 
 	private FormMessageHandler onStatusMessage;
 	private FormMessageHandler onInfoMessage;
 
 	private Font font;
 
-	private RoomFormActionHandler on_create_room;
-	private RoomFormActionHandler on_join_room;
+	private RoomFormActionHandler onCreateRoom;
+	private RoomFormActionHandler onJoinRoom;
+	private RoomFormActionHandler onLeaveRoom;
+
+	// private GameReadyHandler onStartGame;
 
 	public RoomForm() {
 
@@ -77,7 +81,7 @@ public class RoomForm extends VBox
 
 	private void initForm() {
 
-		this.font = new Font(this.FONT_NAME, this.FONT_SIZE);
+		font = new Font(this.FONT_NAME, this.FONT_SIZE);
 
 		// up-right-down-left
 		this.setPadding(new Insets(10, 5, 10, 5));
@@ -103,13 +107,19 @@ public class RoomForm extends VBox
 		this.joinRoomBtn = new Button(this.language.joinRoom);
 		this.joinRoomBtn.setFont(this.font);
 
+		this.leaveRoomBtn = new Button(this.language.leaveRoom);
+		this.leaveRoomBtn.setFont(this.font);
+
 		this.playersLb = new Label(this.language.playersInRoom);
 		this.playersLb.setFont(this.font);
 
 		this.playersVb = new VBox();
+		this.playersVb.setVisible(false);
 		// attention next line is ignored
 		this.playersVb.setAlignment(Pos.TOP_CENTER);
 		this.playersVb.setPadding(new Insets(5, 0, 0, 10));
+		this.playersVb.setMinWidth(100);
+		this.playersVb.setMinHeight(100);
 
 		this.playersScrollPane = new ScrollPane(this.playersVb);
 		// next line actually aligns content horizontally
@@ -117,19 +127,9 @@ public class RoomForm extends VBox
 		this.playersScrollPane.setMinHeight(70);
 		this.playersScrollPane.setMaxHeight(70);
 
-		this.startGameBtn = new Button(this.language.startGame);
-		this.startGameBtn.setFont(this.font);
-		this.startGameBtn.managedProperty().bind(this.startGameBtn.visibleProperty());
-
-		// test labels (start)
-
-		// this.addPlayer("player 1");
-		// this.addPlayer("player 2");
-		// this.addPlayer("player 3");
-		// this.addPlayer("player 4");
-		// this.addPlayer("player 5");
-
-		// test labels (end)
+		// this.startGameBtn = new Button(language.startGame);
+		// this.startGameBtn.setFont(font);
+		// this.startGameBtn.managedProperty().bind(startGameBtn.visibleProperty());
 
 		// add components to container in the right order
 
@@ -143,16 +143,17 @@ public class RoomForm extends VBox
 
 		this.getChildren().add(this.createRoomBtn);
 		this.getChildren().add(this.joinRoomBtn);
+		this.getChildren().add(this.leaveRoomBtn);
 
 		this.getChildren().add(this.playersLb);
 
 		this.getChildren().add(this.playersScrollPane);
 
-		this.getChildren().add(this.startGameBtn);
+		// this.getChildren().add(this.startGameBtn);
 
 		// disable starting game
-		// enable it after server response about creating new room
-		this.disableStartingGame();
+		// enable it after you requirements are met 
+		// this.disableStartingGame();
 
 		// elements margins (up, right, down, left)
 		VBox.setMargin(this.roomNameTf, new Insets(2, 0, 5, 0));
@@ -163,34 +164,35 @@ public class RoomForm extends VBox
 
 		VBox.setMargin(this.playersLb, new Insets(10, 0, 0, 0));
 
-		VBox.setMargin(this.startGameBtn, new Insets(10, 0, 0, 5));
+		// VBox.setMargin(this.startGameBtn, new Insets(10, 0, 0, 5));
 
 		StringResourceManager.subscribeForLanguageChange(this);
 	}
 
 	private void setHandlers() {
-		this.createRoomBtn.setOnAction(new EventHandler<ActionEvent>() {
-
-			public void handle(ActionEvent event) {
-
-				if (on_create_room != null) {
-					on_create_room.handleFormAction(getRoomName(), getRoomPassword());
-				}
-
-			}
-
-		});
-
-		this.joinRoomBtn.setOnAction(new EventHandler<ActionEvent>() {
-
-			public void handle(ActionEvent event) {
-
-				if (on_join_room != null) {
-					on_join_room.handleFormAction(getRoomName(), getRoomPassword());
-				}
-
+		this.createRoomBtn.setOnAction((ActionEvent event) -> {
+			if (onCreateRoom != null) {
+				onCreateRoom.handleFormAction(getRoomName(), getRoomPassword());
 			}
 		});
+
+		this.joinRoomBtn.setOnAction((ActionEvent event) -> {
+			if (onJoinRoom != null) {
+				onJoinRoom.handleFormAction(getRoomName(), getRoomPassword());
+			}
+		});
+
+		this.leaveRoomBtn.setOnAction((ActionEvent event) -> {
+			if (onLeaveRoom != null) {
+				onLeaveRoom.handleFormAction(getRoomName(), "");
+			}
+		});
+
+		// this.startGameBtn.setOnAction((ActionEvent event) -> {
+		// 	if (onStartGame != null) {
+		// 		onStartGame.execute(username, roomName);
+		// 	}
+		// });
 	}
 
 	// this is not "wrapped" in interface because startForm already extends
@@ -208,12 +210,11 @@ public class RoomForm extends VBox
 		return this.roomPasswordPf.getText();
 	}
 
-	public void addPlayer(String new_player) {
-		Label new_label = new Label(new_player);
-		new_label.setFont(this.font);
+	public void addPlayer(PlayerDescription playerDesc) {
+		Label newLabel = new Label(playerDesc.getUsername());
+		// newLabel.setFont(this.font);
 
-		this.playersVb.getChildren().add(new_label);
-
+		playersVb.getChildren().add(newLabel);
 	}
 
 	public void removePlayer(final String player) {
@@ -224,15 +225,26 @@ public class RoomForm extends VBox
 		});
 	}
 
-	public void disableStartingGame() {
-		this.startGameBtn.setVisible(false);
+	public void clearPlayers() {
+		this.playersVb.getChildren().clear();
 	}
 
-	public void enableStartingGame() {
-		this.startGameBtn.setVisible(true);
+	public void showPlayers() {
+		playersVb.setVisible(true);
 	}
 
-	// action handlers
+	public void hidePlayers() {
+		playersVb.setVisible(false);
+	}
+
+	// public void disableStartingGame() {
+	// 	this.startGameBtn.setVisible(false);
+	// }
+
+	// public void enableStartingGame() {
+	// 	this.startGameBtn.setVisible(true);
+	// }
+
 	// implement
 
 	public void setOnLogoutHandler() {
@@ -240,18 +252,20 @@ public class RoomForm extends VBox
 	}
 
 	public void setOnCreateRoomHandler(RoomFormActionHandler handler) {
-		this.on_create_room = handler;
+		this.onCreateRoom = handler;
 	}
 
 	public void setOnJoinRoomHandler(RoomFormActionHandler handler) {
-		this.on_join_room = handler;
+		this.onJoinRoom = handler;
 	}
 
-	// implement
-
-	public void setOnStartGameHandler() {
-
+	public void setOnLeaveRoomHandler(RoomFormActionHandler handler) {
+		this.onLeaveRoom = handler;
 	}
+
+	// public void setOnStartGameHandler(GameReadyHandler handler) {
+	// 	this.onStartGame = handler;
+	// }
 
 	// hasLabels interface
 
@@ -265,7 +279,7 @@ public class RoomForm extends VBox
 		this.createRoomBtn.setText(this.language.createRoom);
 		this.joinRoomBtn.setText(this.language.joinRoom);
 		this.playersLb.setText(this.language.playersInRoom);
-		this.startGameBtn.setText(this.language.startGame);
+		// this.startGameBtn.setText(this.language.startGame);
 
 	}
 
@@ -283,8 +297,32 @@ public class RoomForm extends VBox
 		return this.onStatusMessage;
 	}
 
-	public FormMessageHandler getInfoMessageHanlder() {
+	public FormMessageHandler getInfoMessageHandler() {
 		return this.onInfoMessage;
+	}
+
+	public void disableCreateRoom() {
+		this.createRoomBtn.setVisible(false);
+	}
+
+	public void enableCreateRoom() {
+		this.createRoomBtn.setVisible(true);
+	}
+
+	public void disableJoinRoom() {
+		this.joinRoomBtn.setVisible(false);
+	}
+
+	public void enableJoinRoom() {
+		this.joinRoomBtn.setVisible(true);
+	}
+
+	public void enableLeaveRoom() {
+		this.leaveRoomBtn.setVisible(true);
+	}
+
+	public void disableLeaveRoom() {
+		this.leaveRoomBtn.setVisible(false);
 	}
 
 }

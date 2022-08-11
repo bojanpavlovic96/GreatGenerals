@@ -1,7 +1,7 @@
 package root.communication;
 
-import root.communication.messages.JoinResponseMsg;
+import root.communication.messages.RoomResponseMsg;
 
 public interface RoomServerResponseHandler {
-	void handle(JoinResponseMsg response);
+	void handle(RoomResponseMsg response);
 }

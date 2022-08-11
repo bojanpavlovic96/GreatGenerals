@@ -29,8 +29,7 @@ public class BasicCommandProcessor implements CommandProcessor {
 
 	@Override
 	public void shutdown() {
-		if (this.executor != null &&
-				!this.executor.isShutdown()) {
+		if (this.executor != null && !this.executor.isShutdown()) {
 			this.executor.shutdown();
 		}
 	}

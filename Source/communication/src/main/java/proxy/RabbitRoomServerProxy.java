@@ -10,6 +10,7 @@ import root.communication.ProtocolTranslator;
 import root.communication.RoomServerProxy;
 import root.communication.RoomServerResponseHandler;
 import root.communication.messages.CreateRoomRequestMsg;
+import root.communication.messages.LeaveRoomRequestMsg;
 
 public class RabbitRoomServerProxy implements RoomServerProxy, ActiveComponent {
 
@@ -21,7 +22,6 @@ public class RabbitRoomServerProxy implements RoomServerProxy, ActiveComponent {
 
 	// one request at the time can he sent/handled
 	private RoomServerResponseHandler handler;
-	private String consumerTag;
 	private String recvQueue;
 
 	public RabbitRoomServerProxy(RabbitRoomServerProxyConfig config,
@@ -34,7 +34,6 @@ public class RabbitRoomServerProxy implements RoomServerProxy, ActiveComponent {
 		this.translator = translator;
 
 		this.handler = null;
-		this.consumerTag = null;
 		this.recvQueue = null;
 
 	}
@@ -73,15 +72,19 @@ public class RabbitRoomServerProxy implements RoomServerProxy, ActiveComponent {
 					null);
 
 			recvQueue = channel.queueDeclare().getQueue();
+			System.out.println("Will receive on route: "
+					+ formRoute(config.roomResponseRoutePrefix, roomName, playerName));
+
 			channel.queueBind(recvQueue,
 					config.roomResponseExchange,
-					// formRoute(config.roomResponseRoutePrefix, roomName, playerName)
-					"#");
+					formRoute(config.roomResponseRoutePrefix, roomName, playerName)
+			// "#"
+			);
 
 			this.handler = handler;
 
 			var consumer = new RoomResponseConsumer(this, handler, translator);
-			consumerTag = channel.basicConsume(recvQueue, consumer);
+			channel.basicConsume(recvQueue, consumer);
 
 			// actually send createRoomRequest
 			channel.exchangeDeclare(config.newRoomRequestExchange,
@@ -115,12 +118,89 @@ public class RabbitRoomServerProxy implements RoomServerProxy, ActiveComponent {
 	}
 
 	private String formRoute(String prefix, String room, String user) {
-		return prefix + "room." + user;
+		return prefix + room + "." + user;
 	}
 
 	@Override
 	public void JoinRoom(String roomName, String password, String playerName,
 			RoomServerResponseHandler handler) {
+
+	}
+
+	@Override
+	public void LeaveRoom(String roomName, String username, RoomServerResponseHandler handler) {
+
+		if (alreadyInUse()) {
+			System.out.println("Rabbit room server proxy is already handling request ...  ");
+			return;
+		}
+
+		if (channelProvider == null || !channelProvider.isConnected()) {
+			System.out.println("Broker channel is not open ... ");
+			System.out.println("Cant send createRoom request ... ");
+			return;
+		}
+
+		try {
+			// subscribe for a joinResponse before sending create/join request 
+
+			if (channel == null) {
+				channel = channelProvider.getChannel();
+			}
+
+			if (channel == null) {
+				System.out.println("Channel provider is connected but returned null ... ");
+				return;
+			}
+
+			channel.exchangeDeclare(config.roomResponseExchange,
+					config.rabbitTopicExchangeKeyword,
+					false,
+					true,
+					null);
+
+			recvQueue = channel.queueDeclare().getQueue();
+			var recvRoute = formRoute(config.roomResponseRoutePrefix, roomName, username));
+			System.out.println("Will receive on route: " + recvRoute);
+
+			channel.queueBind(recvQueue,
+					config.roomResponseExchange,
+					recvRoute);
+
+			this.handler = handler;
+
+			var consumer = new RoomResponseConsumer(this, handler, translator);
+			channel.basicConsume(recvQueue, consumer);
+
+			// actually send createRoomRequest
+			channel.exchangeDeclare(config.leaveRoomRequestExchange,
+					config.rabbitTopicExchangeKeyword,
+					false,
+					true,
+					null);
+
+			var message = new LeaveRoomRequestMsg(roomName, username);
+			var byteMsg = translator.toByteData(message);
+
+			var sendRoute = formRoute(config.leaveRoomRequestRoutePrefix, roomName, username);
+			channel.basicPublish(config.leaveRoomRequestExchange,
+					sendRoute,
+					null,
+					byteMsg);
+
+			System.out.println("Topic: " + config.leaveRoomRequestExchange +
+					" Route: " + sendRoute);
+
+			System.out.println("Leave room request successfully sent ... ");
+			System.out.println(translator.toStrData(message));
+
+		} catch (Exception e) {
+			System.out.println("Exception while leaving room ... ");
+			e.printStackTrace();
+			System.out.println(e.getMessage());
+
+			return;
+		}
 
 	}
 
@@ -130,21 +210,25 @@ public class RabbitRoomServerProxy implements RoomServerProxy, ActiveComponent {
 		try {
 			if (channel != null) {
 				channel.queueDelete(recvQueue);
-				channel.basicCancel(consumerTag);
 			}
+
 		} catch (Exception e) {
 			System.out.println("Exception while trying to clear roomServerProxy ... ");
 			System.out.println(e.getMessage());
 		}
-		consumerTag = null;
+		// if exception happens it's questionable if channel is gonna be closed 
+		// this is kinda ... "channel leak" problem
+		channel = null;
 		recvQueue = null;
+
+		System.out.println("RabbitRoomServerProxy ready to be used again ... ");
 		return;
 	}
 
 	@Override
 
 	public boolean alreadyInUse() {
-		return (handler != null || consumerTag != null || recvQueue != null);
+		return (handler != null || recvQueue != null);
 	}
 
 	@Override

@@ -1,8 +1,10 @@
 package root.communication.messages;
 
-public enum JoinResponseType {
+public enum RoomResponseType {
 	Success,
 	InvalidRoom,
 	WrongPassword,
-	AlreadyIn
+	AlreadyIn,
+	UnknownFail,
+	PlayerJoined
 }

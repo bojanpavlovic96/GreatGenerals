@@ -15,8 +15,7 @@ import javafx.scene.control.TextField;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Font;
 
-public class UserForm
-		extends VBox
+public class UserForm extends VBox
 		implements FormMessageProducer, HasLabels {
 
 	// Noto Sans CJK TC Black
@@ -177,7 +176,7 @@ public class UserForm
 		return this.onStatusMessage;
 	}
 
-	public FormMessageHandler getInfoMessageHanlder() {
+	public FormMessageHandler getInfoMessageHandler() {
 		return this.onInfoMessage;
 	}
 

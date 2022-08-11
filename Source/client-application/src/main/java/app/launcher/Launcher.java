@@ -12,7 +12,6 @@ import controller.GameBrain;
 import controller.command.CtrlInitializeCommand;
 
 import javafx.application.Application;
-import javafx.application.Platform;
 import javafx.stage.Stage;
 
 import model.DataModel;
@@ -191,14 +190,10 @@ public class Launcher extends Application {
 
 		System.out.println("Calling application stop ... @ Launcher.start");
 
-		// not every implementation of this components has to be activeCompoenent
+		// not every implementation of this components has to be activeComponent
 		// that is why I am doing check with every component
 
 		// close connection on shutdown
-		if (connectionTask != null && connectionTask instanceof ActiveComponent) {
-			System.out.println("Closing connection ... @ Launcher.stop");
-			((ActiveComponent) this.connectionTask).shutdown();
-		}
 
 		if (gameController != null && gameController instanceof ActiveComponent) {
 			System.out.println("Shutting down controller ... @ Launcher.stop");
@@ -206,7 +201,13 @@ public class Launcher extends Application {
 		}
 
 		if (startPageController != null && startPageController instanceof ActiveComponent) {
+			System.out.println("Shutting down start page controller ... @ Launcher.stop");
 			((ActiveComponent) startPageController).shutdown();
+		}
+
+		if (connectionTask != null && connectionTask instanceof ActiveComponent) {
+			System.out.println("Closing connection ... @ Launcher.stop");
+			((ActiveComponent) this.connectionTask).shutdown();
 		}
 
 	}

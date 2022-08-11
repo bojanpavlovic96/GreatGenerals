@@ -17,8 +17,12 @@ public class Language {
 		RegisterFailed,
 		PleaseWaitForRoomServer,
 		RoomCreated,
+		SuccessfulJoin,
+		SuccessfulLeft,
 		AlreadyInRoom,
-		RoomExists
+		RoomExists,
+		WrongRoomPassword,
+		RoomDoesntExists
 
 	}
 
@@ -28,20 +32,21 @@ public class Language {
 		public String color;
 	}
 
-	public String langIconPath; // lang-icon
+	public String langIconPath;
 	public String title;
 	public String username;
 	public String password;
 	public String login;
 	public String register;
 	public String logout;
-	public String roomName; // room-name
-	public String roomPassword; // room-password
-	public String createRoom; // create-room
-	public String joinRoom; // join-room
-	public String startGame; // start-game
+	public String roomName;
+	public String roomPassword;
+	public String createRoom;
+	public String joinRoom;
+	public String leaveRoom;
+	public String startGame;
 	public String playersInRoom;
-	public String bottomText; // bottom-text
+	public String bottomText;
 
 	public Language.Message waitingForServer;
 	public Language.Message connectionEstablished;
@@ -59,8 +64,13 @@ public class Language {
 	public Language.Message pleaseWaitForRoomServer;
 
 	public Language.Message roomCreated;
+	public Language.Message successfulJoin;
+	public Language.Message successfulLeft;
 	public Language.Message alreadyInRoom;
 	public Language.Message roomExists;
+	public Language.Message roomDoesntExists;
+
+	public Language.Message wrongRoomPassword;
 
 	public Language() {
 
@@ -100,6 +110,14 @@ public class Language {
 				return this.alreadyInRoom;
 			case RoomExists:
 				return this.roomExists;
+			case WrongRoomPassword:
+				return this.wrongRoomPassword;
+			case RoomDoesntExists:
+				return this.roomDoesntExists;
+			case SuccessfulJoin:
+				return this.successfulJoin;
+			case SuccessfulLeft:
+				return this.successfulLeft;
 			default:
 				break;
 		}

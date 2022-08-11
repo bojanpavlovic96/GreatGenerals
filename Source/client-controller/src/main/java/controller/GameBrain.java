@@ -189,7 +189,7 @@ public class GameBrain implements Controller {
 
 		});
 
-		view.addEventHandler("key-event-char-2", (ViewEventArg arg)-> {
+		view.addEventHandler("key-event-char-2", (ViewEventArg arg) -> {
 
 			ZoomOutCommand command = new ZoomOutCommand(model.getFields());
 			viewCommandQueue.enqueue(command);

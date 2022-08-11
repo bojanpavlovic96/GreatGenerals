@@ -4,7 +4,7 @@ import protocol.NameTypeResolver;
 import root.command.Command;
 import root.communication.messages.CreateRoomRequestMsg;
 import root.communication.messages.InitializeMsg;
-import root.communication.messages.JoinResponseMsg;
+import root.communication.messages.RoomResponseMsg;
 import root.communication.messages.JoinRoomRequestMsg;
 import root.communication.messages.MessageType;
 import root.communication.messages.MoveMsg;
@@ -29,7 +29,7 @@ public class StupidStaticTypeResolver implements NameTypeResolver {
 				return JoinRoomRequestMsg.class;
 
 			case JoinResponse:
-				return JoinResponseMsg.class;
+				return RoomResponseMsg.class;
 
 		}
 

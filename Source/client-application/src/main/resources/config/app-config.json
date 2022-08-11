@@ -61,6 +61,8 @@
 		"newRoomRequestRoutePrefix": "new_game.",
 		"joinRoomRequestExchange": "gg_rooms_req",
 		"joinRoomRequestRoutePrefix": "join_game.",
+		"leaveRoomRequestExchange": "gg_roms_req",
+		"leaveRoomRequestRoutePrefix": "leave_game.",
 		"roomResponseExchange": "gg_rooms_res",
 		"roomResponseRoutePrefix": "room_response."
 	},
