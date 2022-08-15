@@ -30,6 +30,7 @@ public class RoomResponseConsumer implements Consumer {
 	}
 
 	// region unused
+
 	@Override
 	public void handleConsumeOk(String consumerTag) {
 	}
@@ -66,7 +67,7 @@ public class RoomResponseConsumer implements Consumer {
 		var message = translator.toMessage(body);
 		handler.handle((RoomResponseMsg) message);
 
-		proxy.clearHandlers();
+		proxy.clearResponseAwaiter();
 		return;
 	}
 

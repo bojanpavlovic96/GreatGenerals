@@ -2,7 +2,6 @@ using Microsoft.Extensions.Options;
 using RabbitGameServer.Service;
 using RabbitGameServer.SharedModel;
 using RabbitGameServer.SharedModel.Messages;
-using RabbitGameServer.Util;
 using RabbitMQ.Client;
 
 namespace RabbitGameServer.Client
@@ -28,38 +27,40 @@ namespace RabbitGameServer.Client
 
 		}
 
-		public void sendMessage(string roomName, string playerId, Message newMessage)
+		public void sendResponse(string roomName, string playerId, Message newMessage)
 		{
 
 			// already done in constructor
 			// channel = connection.GetChannel();
 
-			Console.WriteLine("Channel created inside proxy ... ");
 			var byteContent = translator.ToByteData(newMessage);
 
 			channel.ExchangeDeclare(config.RoomsResponseTopic, "topic",
 								false,
 								true,
 								null);
-			Console.WriteLine($"Publishing on: {config.RoomsResponseTopic} - {routingKeyFor(roomName, playerId)}");
+
+			var topic = config.RoomsResponseTopic;
+			var route = responseRoutingKeyFor(roomName, playerId);
+			Console.WriteLine($"Publishing on: {topic} - {route}");
 
 			try
 			{
 				channel.BasicPublish(
 					config.RoomsResponseTopic,
-					routingKeyFor(roomName, playerId),
+					responseRoutingKeyFor(roomName, playerId),
 					null,
 					byteContent);
 			}
 			catch (Exception e)
 			{
-				Console.WriteLine("Failed to publish message ... ");
+				Console.WriteLine("Failed to publish response message ... ");
 				Console.WriteLine(e.Message);
 			}
 
 		}
 
-		private string routingKeyFor(string roomName, string playerId)
+		private string responseRoutingKeyFor(string roomName, string playerId)
 		{
 			return $"{config.RoomResponseRoute}{roomName}.{playerId}";
 		}
@@ -71,6 +72,39 @@ namespace RabbitGameServer.Client
 			{
 				channel.Close();
 			}
+		}
+
+		public void sendUpdate(string roomName, string player, Message update)
+		{
+			var byteContent = translator.ToByteData(update);
+
+			channel.ExchangeDeclare(config.RoomsResponseTopic, "topic",
+								false,
+								true,
+								null);
+
+			var topic = config.RoomsResponseTopic;
+			var route = updateRoutingKeyFor(roomName, player);
+			Console.WriteLine($"Publishing on: {topic} - {route}");
+
+			try
+			{
+				channel.BasicPublish(
+					config.RoomsResponseTopic,
+					responseRoutingKeyFor(roomName, player),
+					null,
+					byteContent);
+			}
+			catch (Exception e)
+			{
+				Console.WriteLine("Failed to publish update message ... ");
+				Console.WriteLine(e.Message);
+			}
+		}
+
+		private string updateRoutingKeyFor(string roomName, string player)
+		{
+			return $"{config.RoomUpdateRoute}{roomName}.{player}";
 		}
 
 	}

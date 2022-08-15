@@ -1,0 +1,10 @@
+.git
+.vscode
+
+**/bin/
+**/obj/
+**/out/
+
+**/target/
+
+./resources/*

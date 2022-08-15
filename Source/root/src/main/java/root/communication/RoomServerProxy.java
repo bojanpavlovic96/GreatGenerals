@@ -3,18 +3,22 @@ package root.communication;
 public interface RoomServerProxy {
 
 	void CreateRoom(String roomName, String password, String playerName,
-			RoomServerResponseHandler responseHandler,
-			RoomServerResponseHandler newJoinHandler);
+			RoomServerResponseHandler responseHandler);
 
 	void JoinRoom(String roomName, String password, String playerName,
 			RoomServerResponseHandler handler);
 
 	void LeaveRoom(String roomName, String username, RoomServerResponseHandler handler);
 
-	void clearHandlers();
+	void SubscribeForRoomUpdates(String roomName, String username,
+			RoomServerResponseHandler handler);
 
 	boolean isReady();
 
-	boolean alreadyInUse();
+	void clearResponseAwaiter();
+
+	boolean isWaitingForResponse();
+
+	boolean isReceivingUpdates();
 
 }

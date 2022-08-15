@@ -2,6 +2,7 @@ package proxy;
 
 public class RabbitRoomServerProxyConfig {
 
+	public String rabbitMatchAllWildcard;
 	public String rabbitTopicExchangeKeyword;
 
 	public String newRoomRequestExchange;
@@ -15,6 +16,8 @@ public class RabbitRoomServerProxyConfig {
 
 	public String roomResponseExchange;
 	public String roomResponseRoutePrefix;
+
+	public String roomUpdateRoutePrefix;
 
 	public RabbitRoomServerProxyConfig() {
 

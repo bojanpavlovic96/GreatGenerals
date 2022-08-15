@@ -7,39 +7,43 @@ using RabbitGameServer.Service;
 using RabbitGameServer.SharedModel;
 using RabbitGameServer.Util;
 
-var builder = Host.CreateDefaultBuilder(args);
-
-builder.ConfigureServices((hostContext, services) =>
-{
-	services.Configure<RabbitConfig>(
-		hostContext.Configuration.GetSection(RabbitConfig.ConfigSection));
-
-	services.Configure<QueuesConfig>(
-		hostContext.Configuration.GetSection(QueuesConfig.ConfigSection));
-
-	services.Configure<MongoConfig>(
-		hostContext.Configuration.GetSection(MongoConfig.ConfigSection));
-
-	services.AddMediatR(typeof(Program).Assembly);
-
-	services.AddSingleton<IGamePool, GamePool>();
-	services.AddSingleton<IRabbitConnection, RabbitConnection>();
-
-	services.AddTransient<ISerializer, NSoftSerializer>();
-	services.AddTransient<IDatabase, MongoDb>();
-	services.AddTransient<INameTypeMapper, StupidStaticTypeMapper>();
-	services.AddTransient<IProtocolTranslator, NamedWrapperTranslator>();
-	services.AddTransient<IPlayerProxy, RabbitPlayerProxy>();
-
-	services.AddHostedService<RabbitReceiver>();
-
-});
-
 // to use Development settings (appsettings.Development.json)
 // $ export DOTNET_ENVIRONMENT Development
 // similar, to use production settings (appsettings.Production.json)
 // $ export DOTNET_ENVIRONMENT Development
 
-var host = builder.Build();
+var wBuilder = WebApplication.CreateBuilder();
 
-await host.RunAsync();
+wBuilder.Services.Configure<RabbitConfig>(
+	wBuilder.Configuration.GetSection(RabbitConfig.ConfigSection));
+
+wBuilder.Services.Configure<QueuesConfig>(
+	wBuilder.Configuration.GetSection(QueuesConfig.ConfigSection));
+
+wBuilder.Services.Configure<MongoConfig>(
+	wBuilder.Configuration.GetSection(MongoConfig.ConfigSection));
+
+wBuilder.Services.AddControllers();
+
+wBuilder.Services.AddMediatR(typeof(Program).Assembly);
+
+wBuilder.Services.AddSingleton<IGamePool, GamePool>();
+wBuilder.Services.AddSingleton<IRabbitConnection, RabbitConnection>();
+
+wBuilder.Services.AddTransient<ISerializer, NSoftSerializer>();
+wBuilder.Services.AddTransient<IDatabase, MongoDb>();
+wBuilder.Services.AddTransient<INameTypeMapper, StupidStaticTypeMapper>();
+wBuilder.Services.AddTransient<IProtocolTranslator, NamedWrapperTranslator>();
+wBuilder.Services.AddTransient<IPlayerProxy, RabbitPlayerProxy>();
+
+wBuilder.Services.AddHostedService<RabbitReceiver>();
+
+var wApp = wBuilder.Build();
+
+wApp.UseRouting();
+wApp.UseEndpoints((ep) =>
+{
+	ep.MapControllers();
+});
+
+await wApp.RunAsync();

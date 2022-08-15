@@ -3,7 +3,6 @@ using Microsoft.Extensions.Options;
 using RabbitGameServer.Mediator;
 using RabbitGameServer.SharedModel;
 using RabbitGameServer.SharedModel.Messages;
-using RabbitGameServer.Util;
 using RabbitMQ.Client;
 using RabbitMQ.Client.Events;
 
@@ -18,7 +17,6 @@ namespace RabbitGameServer.Service
 		private IMediator mediator;
 
 		private IProtocolTranslator protocolTranslator;
-		private ISerializer serializer;
 
 		private IRabbitConnection rabbitConnection;
 		private IModel? modelEventChannel;
@@ -29,8 +27,7 @@ namespace RabbitGameServer.Service
 		public RabbitReceiver(IMediator mediator,
 			IProtocolTranslator protocolTranslator,
 			IRabbitConnection rabbitConnection,
-			IOptions<QueuesConfig> queuesConfig,
-			ISerializer serializer)
+			IOptions<QueuesConfig> queuesConfig)
 		{
 
 			this.mediator = mediator;
@@ -39,7 +36,6 @@ namespace RabbitGameServer.Service
 			this.rabbitConnection = rabbitConnection;
 
 			this.queuesConfig = queuesConfig.Value;
-			this.serializer = serializer;
 
 		}
 
@@ -47,11 +43,15 @@ namespace RabbitGameServer.Service
 		{
 			masterToken = stoppingToken; // might be useful ... you never know 
 
-			setupNewRoomEventConsumer();
-			setupJoinGameConsumer();
-			setupModelEventConsumer();
+			await Task.Run(() =>
+			{
+				setupNewRoomEventConsumer();
+				setupJoinGameConsumer();
+				setupModelEventConsumer();
 
-			Console.WriteLine("RabbitReceiver started");
+				Console.WriteLine("RabbitReceiver started");
+			});
+
 		}
 
 		private void setupNewRoomEventConsumer()
@@ -68,7 +68,7 @@ namespace RabbitGameServer.Service
 
 			roomChannel.QueueBind(newGameQueue,
 						queuesConfig.RoomsRequestTopic,
-						queuesConfig.NewGameRoute + "#",
+						queuesConfig.NewGameRoute + queuesConfig.MatchAllWildcard,
 						null);
 
 			var consumer = new EventingBasicConsumer(roomChannel);
@@ -77,6 +77,8 @@ namespace RabbitGameServer.Service
 			roomChannel.BasicConsume(newGameQueue, false, consumer);
 
 			Console.WriteLine("NewGameEventConsumer started");
+
+			return;
 		}
 
 		private void NewGameEventHandler(object? sender, BasicDeliverEventArgs ea)
@@ -106,7 +108,7 @@ namespace RabbitGameServer.Service
 
 			modelEventChannel.QueueBind(modelEventQueue,
 						queuesConfig.ModelEventTopic,
-						queuesConfig.ModelEventRoute + "*",
+						queuesConfig.ModelEventRoute + queuesConfig.MatchAllWildcard,
 						null);
 
 			var consumer = new EventingBasicConsumer(modelEventChannel);
@@ -131,11 +133,18 @@ namespace RabbitGameServer.Service
 			var joinGameQueue = roomChannel.QueueDeclare().QueueName;
 			roomChannel.QueueBind(joinGameQueue,
 						queuesConfig.RoomsRequestTopic,
-						queuesConfig.JoinGameRoute + "*",
+						queuesConfig.JoinGameRoute + queuesConfig.MatchAllWildcard,
 						null);
 
 			var consumer = new EventingBasicConsumer(roomChannel);
 			consumer.Received += JoinGameEventHandler;
+
+			roomChannel.BasicConsume(joinGameQueue, false, consumer);
+
+			Console.WriteLine($"JoinGameEventConsumer started ... ");
+			Console.WriteLine($"{queuesConfig.RoomsRequestTopic} - {queuesConfig.JoinGameRoute}{queuesConfig.MatchAllWildcard}");
+
+			return;
 		}
 
 		private void JoinGameEventHandler(object? sender, BasicDeliverEventArgs ea)
@@ -144,7 +153,7 @@ namespace RabbitGameServer.Service
 
 			var message = protocolTranslator.ToMessage(ea.Body.ToArray());
 
-			var request = new JoinGameRequest(message.roomName,
+			var request = new JoinRoomRequest(message.roomName,
 					message.player,
 					((JoinRoomMessage)message).password);
 

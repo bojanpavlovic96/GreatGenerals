@@ -10,6 +10,7 @@
 	"roomPassword": "Room password",
 	"createRoom": "Create room",
 	"joinRoom": "Join room",
+	"leaveRoom":"Leave room",
 	"startGame": "Start game",
 	"playersInRoom": "Players in room",
 	"bottomText": "version 0.2 ",
@@ -67,7 +68,7 @@
 	},
 	"roomCreated": {
 		"message": "Room created",
-		"color": "#ff6666"
+		"color": "#99ff66"
 	},
 	"alreadyInRoom": {
 		"message": "Already in room",

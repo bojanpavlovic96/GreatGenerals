@@ -10,6 +10,7 @@
 	"roomPassword": "FR Room password",
 	"createRoom": "FR Create room",
 	"joinRoom": "FR Join room",
+	"leaveRoom": "FR Leave room",
 	"startGame": "FR Start game",
 	"playersInRoom": "FR Players in room",
 	"bottomText": "FR version 0.2 ",
@@ -67,7 +68,7 @@
 	},
 	"roomCreated": {
 		"message": "FR Room created",
-		"color": "#ff6666"
+		"color": "#99ff66"
 	},
 	"alreadyInRoom": {
 		"message": "FR Already in room",

@@ -63,7 +63,7 @@ namespace RabbitGameServer.SharedModel
 				else if (wrappedMsg.name == MessageType.JoinResponse.ToString())
 				{
 					Console.WriteLine("Translating JoinResponse ... ");
-					return serializer.ToObj<JoinResponseMsg>(wrappedMsg.payload);
+					return serializer.ToObj<RoomResponseMsg>(wrappedMsg.payload);
 				}
 			}
 			catch (Exception e)

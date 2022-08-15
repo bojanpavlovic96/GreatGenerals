@@ -7,6 +7,8 @@ namespace RabbitGameServer.Service
 	public class RabbitConnection : IRabbitConnection, IDisposable
 	{
 
+		// private const int DEFAULT_RABBIT_PORT = 5672;
+
 		private RabbitConfig config;
 
 		private IConnection connection;
@@ -21,7 +23,17 @@ namespace RabbitGameServer.Service
 
 			var factory = new ConnectionFactory();
 			factory.HostName = this.config.HostName;
-			factory.Port = this.config.Port;
+
+			factory.Port = (int)this.config.Port;
+			// if (this.config.Port != null)
+			// {
+			// 	factory.Port = (int)this.config.Port;
+			// }
+			// else
+			// {
+			// 	factory.Port = DEFAULT_RABBIT_PORT;
+			// }
+
 			factory.VirtualHost = this.config.VHost;
 			factory.UserName = this.config.UserName;
 			factory.Password = this.config.Password;

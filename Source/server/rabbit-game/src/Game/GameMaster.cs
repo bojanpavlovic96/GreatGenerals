@@ -16,11 +16,10 @@ namespace RabbitGameServer.Game
 		public List<string> Players { get; set; }
 		private IDatabase Database;
 
-		public BasicStats Stats { get; set; }
+		private int recEventsCnt;
+		private int sendEventsCnt;
 
 		public event GameDoneHandler onGameDone;
-
-		// public GameMaster() { }
 
 		public GameMaster(string roomName,
 					string password,
@@ -35,15 +34,17 @@ namespace RabbitGameServer.Game
 			this.Players = new List<string>();
 			this.Players.Add(masterPlayer);
 
+			this.recEventsCnt = 0;
+			this.sendEventsCnt = 0;
+
 			this.Database = db;
 
 			this.onGameDone += onGameDone;
-
-			this.Stats = new BasicStats();
 		}
 
 		public void AddModelEvent(ModelEvent newEvent)
 		{
+			recEventsCnt++;
 			// based on the newEven.type/name
 			// run predifined set of 'validators'
 			// which are (based on the current state of the game)
@@ -61,6 +62,13 @@ namespace RabbitGameServer.Game
 		public void addPlayer(string name)
 		{
 			Players.Add(name);
+		}
+
+		public GameSummary getSummary()
+		{
+			return new GameSummary(Players.Count,
+				recEventsCnt,
+				sendEventsCnt);
 		}
 
 	}

@@ -5,5 +5,6 @@ public enum MessageType {
 	MoveMessage,
 	CreateRoomRequest,
 	JoinRoomRequest,
+	LeaveRoomRequest,
 	JoinResponse
 }

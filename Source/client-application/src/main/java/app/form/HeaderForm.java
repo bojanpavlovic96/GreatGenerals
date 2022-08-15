@@ -84,7 +84,9 @@ public class HeaderForm extends VBox implements MessageDisplay, HasLabels {
 		this.statusMessage = new Label();
 		this.statusMessage.setFont(this.messageFont);
 
-		this.showStatusMessage(Language.MessageType.WaitingForServer);
+		// should not be set from here and current model is not really transparent 
+		// about when connection is established 
+		// this.showStatusMessage(Language.MessageType.WaitingForServer);
 
 		this.infoMessage = new Label();
 		this.infoMessage.setFont(this.messageFont);
@@ -183,7 +185,7 @@ public class HeaderForm extends VBox implements MessageDisplay, HasLabels {
 		// I don't think this should be wrapped inside the runLater
 		// language change can only be triggered from the dropbox
 		// that action is executed on the main thread so ... yeah 
-		
+
 		// Platform.runLater(() -> {
 		if (this.statusName != null) {
 			this.showStatusMessage(this.statusName);

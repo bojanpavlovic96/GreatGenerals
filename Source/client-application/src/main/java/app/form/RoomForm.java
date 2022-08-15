@@ -6,15 +6,20 @@ import app.event.FormMessageHandler;
 import app.event.RoomFormActionHandler;
 import app.resource_manager.Language;
 import app.resource_manager.StringResourceManager;
+import javafx.application.Platform;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.control.ListView;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TextField;
+import javafx.scene.layout.Border;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Font;
 import root.communication.PlayerDescription;
@@ -51,8 +56,11 @@ public class RoomForm extends VBox
 
 	private Label playersLb;
 
-	private VBox playersVb;
-	private ScrollPane playersScrollPane;
+	private ObservableList<String> players;
+	private ListView<String> playersLW;
+
+	// private VBox playersVb;
+	// private ScrollPane playersScrollPane;
 
 	// private Button startGameBtn;
 
@@ -92,6 +100,8 @@ public class RoomForm extends VBox
 
 		this.logoutBtn = new Button(this.language.logout);
 		this.logoutBtn.setFont(this.font);
+		// this will allow other components to rearrange when logoutBtn is hidden 
+		this.logoutBtn.managedProperty().bind(logoutBtn.visibleProperty());
 
 		this.roomNameLb = new Label(this.language.roomName);
 		this.roomNameLb.setFont(this.font);
@@ -103,9 +113,13 @@ public class RoomForm extends VBox
 
 		this.createRoomBtn = new Button(this.language.createRoom);
 		this.createRoomBtn.setFont(this.font);
+		this.createRoomBtn.managedProperty().bind(createRoomBtn.visibleProperty());
 
 		this.joinRoomBtn = new Button(this.language.joinRoom);
 		this.joinRoomBtn.setFont(this.font);
+		this.joinRoomBtn.managedProperty().bind(joinRoomBtn.visibleProperty());
+
+		System.out.println("Leave label: " + this.language.leaveRoom);
 
 		this.leaveRoomBtn = new Button(this.language.leaveRoom);
 		this.leaveRoomBtn.setFont(this.font);
@@ -113,19 +127,28 @@ public class RoomForm extends VBox
 		this.playersLb = new Label(this.language.playersInRoom);
 		this.playersLb.setFont(this.font);
 
-		this.playersVb = new VBox();
-		this.playersVb.setVisible(false);
-		// attention next line is ignored
-		this.playersVb.setAlignment(Pos.TOP_CENTER);
-		this.playersVb.setPadding(new Insets(5, 0, 0, 10));
-		this.playersVb.setMinWidth(100);
-		this.playersVb.setMinHeight(100);
+		// this.playersVb = new VBox();
+		// this.playersVb.setVisible(false);
+		// // attention next line is ignored
+		// this.playersVb.setAlignment(Pos.TOP_CENTER);
+		// this.playersVb.setPadding(new Insets(5, 0, 0, 10));
+		// this.playersVb.setMinWidth(100);
+		// this.playersVb.setMinHeight(100);
 
-		this.playersScrollPane = new ScrollPane(this.playersVb);
-		// next line actually aligns content horizontally
-		this.playersScrollPane.setFitToWidth(true);
-		this.playersScrollPane.setMinHeight(70);
-		this.playersScrollPane.setMaxHeight(70);
+		// this.playersScrollPane = new ScrollPane(this.playersVb);
+		// // next line actually aligns content horizontally
+		// this.playersScrollPane.setFitToWidth(true);
+		// this.playersScrollPane.setMinHeight(80);
+		// this.playersScrollPane.setMaxHeight(70);
+
+		this.players = FXCollections.observableArrayList();
+		this.playersLW = new ListView<String>(players);
+		this.playersLW.setVisible(false);
+		this.playersLW.setEditable(true);
+		this.playersLW.setPrefSize(100, 80);
+		// this.playersLW.setMinWidth(20);
+		// this.playersLW.setMinHeight(20);
+		// this.playersLW.setStyle("-fx-background-color: #332299 ;");
 
 		// this.startGameBtn = new Button(language.startGame);
 		// this.startGameBtn.setFont(font);
@@ -147,7 +170,8 @@ public class RoomForm extends VBox
 
 		this.getChildren().add(this.playersLb);
 
-		this.getChildren().add(this.playersScrollPane);
+		// this.getChildren().add(this.playersScrollPane);
+		this.getChildren().add(playersLW);
 
 		// this.getChildren().add(this.startGameBtn);
 
@@ -162,7 +186,11 @@ public class RoomForm extends VBox
 
 		VBox.setMargin(this.createRoomBtn, new Insets(5, 0, 5, 0));
 
+		VBox.setMargin(this.leaveRoomBtn, new Insets(10, 0, 0, 0));
+
 		VBox.setMargin(this.playersLb, new Insets(10, 0, 0, 0));
+
+		VBox.setMargin(this.playersLW, new Insets(10, 0, 0, 0));
 
 		// VBox.setMargin(this.startGameBtn, new Insets(10, 0, 0, 5));
 
@@ -211,30 +239,44 @@ public class RoomForm extends VBox
 	}
 
 	public void addPlayer(PlayerDescription playerDesc) {
-		Label newLabel = new Label(playerDesc.getUsername());
-		// newLabel.setFont(this.font);
+		Platform.runLater(() -> {
+			// Label newLabel = new Label(playerDesc.getUsername());
+			// newLabel.setFont(this.font);
 
-		playersVb.getChildren().add(newLabel);
+			players.add(playerDesc.getUsername());
+			playersLW.setItems(players);
+
+			System.out.println("Player added to the list: " + playerDesc.getUsername());
+		});
+
+		// playersVb.getChildren().add(newLabel);
 	}
 
 	public void removePlayer(final String player) {
-		this.playersVb.getChildren().removeIf(new Predicate<Node>() {
-			public boolean test(Node single_label) {
-				return ((Label) single_label).getText().equals(player);
-			}
+		this.players.removeIf((String node) -> {
+			return (node.equals(player));
 		});
+
+		// this.playersVb.getChildren().removeIf(new Predicate<Node>() {
+		// 	public boolean test(Node single_label) {
+		// 		return ((Label) single_label).getText().equals(player);
+		// 	}
+		// });
 	}
 
 	public void clearPlayers() {
-		this.playersVb.getChildren().clear();
+		this.players.clear();
+		// this.playersVb.getChildren().clear();
 	}
 
 	public void showPlayers() {
-		playersVb.setVisible(true);
+		this.playersLW.setVisible(true);
+		// playersVb.setVisible(true);
 	}
 
 	public void hidePlayers() {
-		playersVb.setVisible(false);
+		this.playersLW.setVisible(false);
+		// playersVb.setVisible(false);
 	}
 
 	// public void disableStartingGame() {

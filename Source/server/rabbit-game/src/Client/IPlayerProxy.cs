@@ -4,6 +4,8 @@ namespace RabbitGameServer.Client
 {
 	public interface IPlayerProxy
 	{
-		void sendMessage(string roomName, string playerId, Message newMessage);
+		void sendResponse(string roomName, string playerId, Message newMessage);
+
+		void sendUpdate(string roomName, string player, Message update);
 	}
 }

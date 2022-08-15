@@ -1,5 +1,6 @@
 package app.launcher;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import app.event.GameReadyHandler;
@@ -45,6 +46,8 @@ public class StartPageController implements GameReadyEventProducer, ActiveCompon
 		this.roomServer = roomServer;
 		this.onGameReady = onGameReady;
 
+		this.players = new ArrayList<String>();
+
 		this.showInitialPage();
 
 		initialPage.setOnLoginHandler(this::loginActionHandler);
@@ -72,19 +75,21 @@ public class StartPageController implements GameReadyEventProducer, ActiveCompon
 				(response) -> {
 					if (response.getStatus() == LoginServerResponseStatus.SUCCESS) {
 						System.out.println("Login successful ... ");
+						showInfoMessage(Language.MessageType.LoginSuccessful);
 
 						this.username = username;
 						this.password = password;
 
 						initialPage.hideUserForm();
 						initialPage.showRoomForm();
+
 					} else {
 						System.out.println("Login failed ... ");
 						showInfoMessage(Language.MessageType.LoginFailed);
 					}
 				});
 
-		showInfoMessage(Language.MessageType.LoginRequestSent);
+		// showInfoMessage(Language.MessageType.LoginRequestSent);
 
 		return;
 	}
@@ -132,8 +137,7 @@ public class StartPageController implements GameReadyEventProducer, ActiveCompon
 		System.out.println("room server is ready ... will try to create room ... ");
 
 		roomServer.CreateRoom(roomName, roomPassword, username,
-				this::createRoomResponseHandler,
-				this::playerJoinedHandler);
+				this::createRoomResponseHandler);
 
 		showInfoMessage(Language.MessageType.CreateRequestSent);
 	}
@@ -143,6 +147,7 @@ public class StartPageController implements GameReadyEventProducer, ActiveCompon
 		if (response.responseType == RoomResponseType.Success) {
 			System.out.println("Create room successful ... ");
 			showInfoMessage(Language.MessageType.RoomCreated);
+
 			initialPage.disableCreateRoom();
 			initialPage.disableJoinRoom();
 
@@ -150,11 +155,15 @@ public class StartPageController implements GameReadyEventProducer, ActiveCompon
 
 			this.roomName = response.roomName;
 			this.players.add(username);
+			System.out.println("Message displayed ... ");
 
 			initialPage.showPlayers();
+			System.out.println("Will add player to the list ... ");
 			initialPage.addPlayer(response.players.get(0));
 
 			initialPage.enableGameStart();
+
+			roomServer.SubscribeForRoomUpdates(roomName, username, this::roomUpdateHandler);
 
 		} else if (response.responseType == RoomResponseType.InvalidRoom) {
 			System.out.println("Requested room already exists ... ");
@@ -166,8 +175,8 @@ public class StartPageController implements GameReadyEventProducer, ActiveCompon
 		}
 	}
 
-	private void playerJoinedHandler(RoomResponseMsg response) {
-		System.out.println("New player joined to this room ... ");
+	private void roomUpdateHandler(RoomResponseMsg response) {
+		System.out.println("New room update received ... ");
 	}
 
 	private void joinRoomActionHandler(String roomName, String roomPassword) {

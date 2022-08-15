@@ -12,3 +12,4 @@ then
 fi
 
 mysql -u $username -p$password --host "$addr" --database "$database" --execute "$1"
+

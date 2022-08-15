@@ -1,0 +1,1 @@
+alias build='prev="$(pwd)"; echo "Was at: $prev"; cd ~/workspace/GreatGenerals/Source; echo "Will build at: $(pwd)"; mvn clean install -q ; cd $prev'

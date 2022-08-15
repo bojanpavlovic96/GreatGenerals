@@ -56,6 +56,7 @@
 		"modelEventsRoutePrefix": "model_event."
 	},
 	"rabbitRoomServerProxyConfig": {
+		"rabbitMatchAllWildcard":"#",
 		"rabbitTopicExchangeKeyword": "topic",
 		"newRoomRequestExchange": "gg_rooms_req",
 		"newRoomRequestRoutePrefix": "new_game.",
@@ -64,7 +65,8 @@
 		"leaveRoomRequestExchange": "gg_roms_req",
 		"leaveRoomRequestRoutePrefix": "leave_game.",
 		"roomResponseExchange": "gg_rooms_res",
-		"roomResponseRoutePrefix": "room_response."
+		"roomResponseRoutePrefix": "room_response.",
+		"roomUpdateRoutePrefix":"room_update."
 	},
 	"restLoginServerConfig": {
 		"stage": "dev",

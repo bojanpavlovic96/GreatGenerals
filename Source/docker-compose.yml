@@ -51,5 +51,5 @@ services:
       context: ./
       dockerfile: ./docker/GameServer-DotNet.Dockerfile
     image: gg/game-server-dotnet
-    # ports:
-    # - "0.0.0.0:9000:9000"
+    ports:
+    - "0.0.0.0:9001:9091"

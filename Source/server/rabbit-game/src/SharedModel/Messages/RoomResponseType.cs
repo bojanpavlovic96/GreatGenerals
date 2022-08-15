@@ -1,6 +1,6 @@
 namespace RabbitGameServer.SharedModel.Messages
 {
-	public enum JoinResponseType
+	public enum RoomResponseType
 	{
 		Success,
 		InvalidRoom,

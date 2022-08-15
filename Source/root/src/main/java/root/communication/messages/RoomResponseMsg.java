@@ -12,7 +12,7 @@ public class RoomResponseMsg extends Message {
 	// add one element containing description of request sender
 	public List<PlayerDescription> players;
 
-	public RoomResponseMsg(RoomResponseType responseType,List<PlayerDescription> players) {
+	public RoomResponseMsg(RoomResponseType responseType, List<PlayerDescription> players) {
 		super(MessageType.JoinResponse);
 
 		this.responseType = responseType;

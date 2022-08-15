@@ -6,8 +6,11 @@ namespace RabbitGameServer.Game
 
 		GameMaster GetGame(string roomName);
 
-		BasicStats GetBasicPoolStats();
+		PoolSummary GetPoolSummary();
 
+		List<GameSummary> GetGameSummaries();
+
+		GameSummary GetGameSummary(string room);
 	}
 
 }

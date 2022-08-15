@@ -64,8 +64,6 @@ public class Launcher extends Application {
 
 		connectionTask = new RabbitConnectionTask(brokerConfig);
 
-		var msgInterpreter = new MockupMsgInterpreter();
-
 		var loginProxy = new RestLoginServerProxy(
 				AppConfig.getInstance().restLoginServerConfig.getActive(),
 				new GsonJsonParser());
@@ -194,7 +192,6 @@ public class Launcher extends Application {
 		// that is why I am doing check with every component
 
 		// close connection on shutdown
-
 		if (gameController != null && gameController instanceof ActiveComponent) {
 			System.out.println("Shutting down controller ... @ Launcher.stop");
 			((ActiveComponent) this.gameController).shutdown();

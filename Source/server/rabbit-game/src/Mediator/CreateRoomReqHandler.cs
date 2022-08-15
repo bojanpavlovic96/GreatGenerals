@@ -1,11 +1,13 @@
 using MediatR;
 using Microsoft.Extensions.Options;
 using RabbitGameServer.Game;
+using RabbitGameServer.SharedModel;
+// using RabbitGameServer.SharedModel;
 using RabbitGameServer.SharedModel.Messages;
 
 namespace RabbitGameServer.Mediator
 {
-	public class CreateRoomReqHandler : IRequestHandler<CreateRoomRequest, Unit>
+	public class CreateRoomReqHandler : IRequestHandler<CreateRoomRequest, MediatR.Unit>
 	{
 		private IMediator mediator;
 
@@ -23,7 +25,7 @@ namespace RabbitGameServer.Mediator
 			this.pool = pool;
 		}
 
-		public Task<Unit> Handle(CreateRoomRequest request, CancellationToken cancelToken)
+		public Task<MediatR.Unit> Handle(CreateRoomRequest request, CancellationToken cancelToken)
 		{
 			Console.WriteLine("Handling create game request for:  " + request.roomName);
 
@@ -33,9 +35,10 @@ namespace RabbitGameServer.Mediator
 			{
 				Console.WriteLine("Requested room already exists ... ");
 
-				message = new JoinResponseMsg(request.masterPlayer,
+				message = new RoomResponseMsg(request.masterPlayer,
 					request.roomName,
-					JoinResponseType.InvalidRoom);
+					RoomResponseType.InvalidRoom,
+					new List<PlayerData>());
 			}
 			else
 			{
@@ -45,18 +48,22 @@ namespace RabbitGameServer.Mediator
 					request.masterPlayer,
 					request.password);
 
-				message = new JoinResponseMsg(request.masterPlayer,
+				var players = new List<PlayerData>();
+				players.Add(new PlayerData(request.masterPlayer, Color.RED));
+
+				message = new RoomResponseMsg(request.masterPlayer,
 					request.roomName,
-					JoinResponseType.Success);
+					RoomResponseType.Success,
+					players);
 			}
 
-			var publishRequest = new SendMessageRequest(request.roomName,
+			var publishRequest = new SendResponseRequest(request.roomName,
 					request.masterPlayer,
 					message);
 
 			mediator.Send(publishRequest);
 
-			return Task.FromResult(Unit.Value);
+			return Task.FromResult(MediatR.Unit.Value);
 		}
 	}
 }

@@ -5,7 +5,11 @@ namespace RabbitGameServer.Game
 {
 	public class GamePool : IGamePool
 	{
-		public int GamesCount { get; set; }
+
+		// at this point just a random generated number
+		public int id;
+
+		public DateTime startedDate;
 
 		// TODO this should probably be concurrent dict. 
 		public Dictionary<string, GameMaster> games;
@@ -17,10 +21,12 @@ namespace RabbitGameServer.Game
 		public GamePool(IDatabase database, IPlayerProxy playerProxy)
 		{
 			Console.WriteLine("Creating gamePool ... ");
+
+			this.id = (int)(new Random()).NextInt64();
+			this.startedDate = DateTime.Now;
+
 			this.database = database;
 			this.playerProxy = playerProxy;
-
-			GamesCount = 0;
 
 			games = new Dictionary<string, GameMaster>();
 
@@ -40,8 +46,6 @@ namespace RabbitGameServer.Game
 
 			games.Add(roomName, newGame);
 
-			GamesCount++;
-
 			return newGame;
 		}
 
@@ -51,26 +55,54 @@ namespace RabbitGameServer.Game
 			Console.WriteLine($"Game in a room {gameMaster.RoomName} is finally done ... ");
 			games.Remove(gameMaster.RoomName);
 
-			GamesCount--;
 		}
 
 		public GameMaster GetGame(string roomName)
 		{
-			GameMaster game = null;
+			GameMaster game;
 			games.TryGetValue(roomName, out game);
 			return game;
 		}
 
-		public BasicStats GetBasicPoolStats()
+		public PoolSummary GetPoolSummary()
 		{
-			BasicStats stats = new BasicStats();
-
-			foreach (var game in games.Values)
+			var playersCount = 0;
+			foreach (var game in this.games.Values)
 			{
-				stats.Add(game.Stats);
+				playersCount += game.Players.Count;
 			}
 
-			return stats;
+			return new PoolSummary(this.id,
+				this.startedDate.ToString(),
+				this.games.Values.Count,
+				playersCount);
+		}
+
+		public List<GameSummary> GetGameSummaries()
+		{
+			var summaries = new List<GameSummary>();
+			foreach (var game in games.Values)
+			{
+				summaries.Add(game.getSummary());
+			}
+
+			return summaries;
+		}
+
+		public GameSummary GetGameSummary(string room)
+		{
+
+			GameMaster? game;
+			games.TryGetValue(room, out game);
+			if (game != null)
+			{
+				return game.getSummary();
+			}
+			else
+			{
+				return null;
+			}
+
 		}
 
 	}
