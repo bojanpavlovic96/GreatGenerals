@@ -10,6 +10,7 @@ import app.form.MessageDisplay;
 import app.resource_manager.Language;
 import root.ActiveComponent;
 import root.communication.LoginServerProxy;
+import root.communication.PlayerDescription;
 import root.communication.RoomServerProxy;
 import root.communication.messages.RoomResponseMsg;
 import root.communication.messages.RoomResponseType;
@@ -161,7 +162,7 @@ public class StartPageController implements GameReadyEventProducer, ActiveCompon
 			System.out.println("Will add player to the list ... ");
 			initialPage.addPlayer(response.players.get(0));
 
-			initialPage.enableGameStart();
+			// initialPage.enableGameStart();
 
 			roomServer.SubscribeForRoomUpdates(roomName, username, this::roomUpdateHandler);
 
@@ -177,6 +178,77 @@ public class StartPageController implements GameReadyEventProducer, ActiveCompon
 
 	private void roomUpdateHandler(RoomResponseMsg response) {
 		System.out.println("New room update received ... ");
+
+		if (response.responseType == RoomResponseType.PlayerJoined) {
+
+			showInfoMessage(Language.MessageType.NewPlayerJoined);
+
+			var newPlayer = filterNewPlayer(response.players);
+
+			if (newPlayer == null) {
+				System.out.println("ERROR, new player has null as a username ... ");
+				return;
+			}
+
+			players.add(newPlayer.getUsername());
+
+			initialPage.addPlayer(newPlayer);
+			initialPage.enableGameStart();
+
+		} else if (response.responseType == RoomResponseType.PlayerLeft) {
+			System.out.println("Player left update ... ");
+
+			showInfoMessage(Language.MessageType.PlayerLeft);
+
+			var whoLeft = filterWhoLeft(response.players);
+
+			initialPage.removePlayer(whoLeft);
+
+			if (this.players.size() < 2) {
+				initialPage.disableGameStart();
+			}
+
+		} else if (response.responseType == RoomResponseType.RoomDestroyed) {
+			// this will be called with the leaveRoomResponse 
+			// nothing bad will happen ... but ... but 
+			showInfoMessage(Language.MessageType.RoomDestoryed);
+			System.out.println("Room destroyed update ... ");
+
+			players.clear();
+
+			roomServer.UnsubFromRoomUpdates();
+
+			initialPage.clearPlayers();
+			initialPage.disableGameStart();
+			initialPage.enableCreateRoom();
+			initialPage.enableJoinRoom();
+		} else {
+			System.out.println("Inappropriate message received as an roomUpdate ... ");
+			System.out.println("Type: " + response.responseType.toString());
+		}
+
+	}
+
+	private PlayerDescription filterNewPlayer(List<PlayerDescription> newPlayers) {
+		for (var newPlayer : newPlayers) {
+			if (!players.contains(newPlayer.getUsername())) {
+				return newPlayer;
+			}
+		}
+
+		return null;
+	}
+
+	private String filterWhoLeft(List<PlayerDescription> currPlayers) {
+		var updatedNames = currPlayers.stream().map((player) -> player.getUsername()).toList();
+
+		for (var name : this.players) {
+			if (!updatedNames.contains(name)) {
+				return name;
+			}
+		}
+
+		return null;
 	}
 
 	private void joinRoomActionHandler(String roomName, String roomPassword) {
@@ -232,15 +304,19 @@ public class StartPageController implements GameReadyEventProducer, ActiveCompon
 
 		roomServer.LeaveRoom(roomName, username,
 				(RoomResponseMsg response) -> {
-					System.out.println("Handling leaver room response ... ");
+					System.out.println("Handling leave room response ... ");
 
 					if (response.responseType == RoomResponseType.Success) {
 						System.out.println("Successful left the room ... ");
 						showInfoMessage(Language.MessageType.SuccessfulLeft);
+						
+						roomServer.UnsubFromRoomUpdates();
 
-						initialPage.disableLeaveRoom();
+						players.clear();
+
 						initialPage.clearPlayers();
 						initialPage.hidePlayers();
+						initialPage.disableLeaveRoom();
 						initialPage.disableGameStart();
 
 						initialPage.enableCreateRoom();

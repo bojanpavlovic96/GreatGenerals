@@ -6,6 +6,7 @@ namespace RabbitGameServer.SharedModel.Messages
 		MoveCommand,
 		CreateRoomRequest,
 		JoinRoomRequest,
+		LeaveRoomRequest,
 		JoinResponse
 	}
 }

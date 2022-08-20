@@ -9,8 +9,9 @@ namespace RabbitGameServer
 		public string? MatchAllWildcard { get; set; }
 		public string? RoomsRequestTopic { get; set; }
 		public string? RoomsResponseTopic { get; set; }
-		public string? NewGameRoute { get; set; }
-		public string? JoinGameRoute { get; set; }
+		public string? NewRoomRoute { get; set; }
+		public string? JoinRoomRoute { get; set; }
+		public string? LeaveRoomRoute { get; set; }
 		public string? RoomResponseRoute { get; set; }
 		public string? RoomUpdateRoute { get; set; }
 		public string? ModelEventTopic { get; set; }

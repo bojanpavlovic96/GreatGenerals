@@ -64,11 +64,26 @@ namespace RabbitGameServer.Game
 			Players.Add(name);
 		}
 
+		public void removePlayer(string name)
+		{
+			Players.Remove(name);
+		}
+
 		public GameSummary getSummary()
 		{
 			return new GameSummary(Players.Count,
 				recEventsCnt,
 				sendEventsCnt);
+		}
+
+		public bool isMaster(string player)
+		{
+			return masterPlayer.Equals(player);
+		}
+
+		public void endGame()
+		{
+			Console.WriteLine($"{RoomName} is dead ... ");
 		}
 
 	}

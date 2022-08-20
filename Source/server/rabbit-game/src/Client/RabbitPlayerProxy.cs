@@ -89,11 +89,7 @@ namespace RabbitGameServer.Client
 
 			try
 			{
-				channel.BasicPublish(
-					config.RoomsResponseTopic,
-					responseRoutingKeyFor(roomName, player),
-					null,
-					byteContent);
+				channel.BasicPublish(topic, route, null, byteContent);
 			}
 			catch (Exception e)
 			{

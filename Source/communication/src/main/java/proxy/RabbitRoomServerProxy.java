@@ -143,7 +143,7 @@ public class RabbitRoomServerProxy implements RoomServerProxy, ActiveComponent {
 		}
 
 		try {
-			// subscribe for a joinResponse before sending create/join request 
+			// subscribe for a leave before sending create/join request 
 
 			if (channel == null) {
 				channel = channelProvider.getChannel();
@@ -173,7 +173,7 @@ public class RabbitRoomServerProxy implements RoomServerProxy, ActiveComponent {
 			var consumer = new RoomResponseConsumer(this, handler, translator);
 			channel.basicConsume(responseQueue, consumer);
 
-			// actually send createRoomRequest
+			// actually send leaveRoomRequest
 			channel.exchangeDeclare(config.leaveRoomRequestExchange,
 					config.rabbitTopicExchangeKeyword,
 					false,
@@ -225,26 +225,49 @@ public class RabbitRoomServerProxy implements RoomServerProxy, ActiveComponent {
 
 		try {
 
-			channel.exchangeDeclare(config.roomResponseExchange,
+			var topic = config.roomResponseExchange;
+			var route = formUpdateRoute(roomName, username);
+
+			channel.exchangeDeclare(topic,
 					config.rabbitTopicExchangeKeyword,
 					false,
 					true,
 					null);
 
 			updateQueue = channel.queueDeclare().getQueue();
-			channel.queueBind(updateQueue,
-					config.roomResponseExchange,
-					formUpdateRoute(roomName, username));
+			channel.queueBind(updateQueue, topic, route);
 
 			this.updateHandler = handler;
 
-			var consumer = new RoomResponseConsumer(this, updateHandler, translator);
+			var consumer = new RoomUpdateConsumer(this, updateHandler, translator);
 			channel.basicConsume(updateQueue, consumer);
+
+			System.out.println("Subscribed for room updates ... ");
+			System.out.println("Topic: " + topic);
+			System.out.println("Route: " + route);
 
 		} catch (IOException e) {
 			System.out.println("EXC while subscribing for room updates ... ");
 			System.out.println("EXC: " + e.getMessage());
 			return;
+		}
+
+	}
+
+	@Override
+	public void UnsubFromRoomUpdates() {
+		if (updateQueue != null) {
+			if (channel != null && channel.isOpen()) {
+				try {
+					channel.queueDelete(updateQueue);
+				} catch (IOException e) {
+					System.out.println("Exception while trying to delete roomUpdateQueue");
+					System.out.println("Exc: " + e.getMessage());
+				}
+				updateQueue = null;
+			}
+
+			this.updateHandler = null;
 		}
 
 	}
@@ -266,14 +289,14 @@ public class RabbitRoomServerProxy implements RoomServerProxy, ActiveComponent {
 				channel.queueDelete(responseQueue);
 			}
 
-			channel.close();
+			// channel.close();
 		} catch (Exception e) {
 			System.out.println("Exception while trying to clear roomServerProxy ... ");
 			System.out.println(e.getMessage());
 		}
 		// if exception happens it's questionable if channel is gonna be closed 
 		// this is kinda ... "channel leak" problem
-		channel = null;
+		// channel = null;
 		responseQueue = null;
 
 		System.out.println("RabbitRoomServerProxy is ready to receive responses... ");

@@ -155,24 +155,24 @@ public class HeaderForm extends VBox implements MessageDisplay, HasLabels {
 		var messageObj = this.language.getMessage(infoMessageName);
 
 		Platform.runLater(() -> {
-			if (!this.infoMessage.isVisible()) {
-				this.infoMessage.setVisible(true);
+			if (!infoMessage.isVisible()) {
+				infoMessage.setVisible(true);
 			}
 
 			if (messageObj != null) {
-				this.infoMessage.setText(messageObj.message);
-				this.infoMessage.setStyle("-fx-background-color: "
+				infoMessage.setText(messageObj.message);
+				infoMessage.setStyle("-fx-background-color: "
 						+ messageObj.color
 						+ AppConfig.getInstance().headerAlphaValue);
 			} else {
 				// just passed message with white background
-				this.infoMessage.setText("unknown - " + this.infoName);
-				this.infoMessage.setStyle("-fx-background-color: #aacc91"
+				infoMessage.setText("unknown - " + this.infoName);
+				infoMessage.setStyle("-fx-background-color: #aacc91"
 						+ AppConfig.getInstance().headerAlphaValue);
 			}
 
-			this.infoMessageTimer.stop();
-			this.infoMessageTimer.play();
+			infoMessageTimer.stop();
+			infoMessageTimer.play();
 
 		});
 	}

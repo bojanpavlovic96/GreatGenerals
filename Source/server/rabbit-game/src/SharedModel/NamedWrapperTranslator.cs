@@ -34,8 +34,8 @@ namespace RabbitGameServer.SharedModel
 		{
 			var wrappedMsg = serializer.ToObj<NamedWrapper>(payload);
 			Console.WriteLine("We are unwrapping ... ");
-			Console.WriteLine("Name: " + wrappedMsg.name);
-			Console.WriteLine("Payload: " + wrappedMsg.payload);
+			Console.WriteLine("/tName: " + wrappedMsg.name);
+			Console.WriteLine("/tPayload: " + wrappedMsg.payload);
 
 			// TODO try catch can be removed after testing 
 			try
@@ -64,12 +64,25 @@ namespace RabbitGameServer.SharedModel
 				{
 					Console.WriteLine("Translating JoinResponse ... ");
 					return serializer.ToObj<RoomResponseMsg>(wrappedMsg.payload);
+
+				}
+				else if (wrappedMsg.name == MessageType.LeaveRoomRequest.ToString())
+				{
+					Console.WriteLine("Translating LeaveRoomRequest ... ");
+					return serializer.ToObj<LeaveRoomMessage>(wrappedMsg.payload);
+				}
+				else
+				{
+					Console.WriteLine("Unwrapping unknown message type ... ");
+					Console.WriteLine("Please check your WrapperTranslator ... :)");
 				}
 			}
 			catch (Exception e)
 			{
 				Console.WriteLine("Exc while casting message to concrete type ... ");
 				Console.WriteLine(e.Message);
+
+				return null;
 			}
 
 			return null;

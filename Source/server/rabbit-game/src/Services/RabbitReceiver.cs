@@ -46,7 +46,8 @@ namespace RabbitGameServer.Service
 			await Task.Run(() =>
 			{
 				setupNewRoomEventConsumer();
-				setupJoinGameConsumer();
+				setupJoinRoomConsumer();
+				setupLeaveRoomConsumer();
 				setupModelEventConsumer();
 
 				Console.WriteLine("RabbitReceiver started");
@@ -68,7 +69,7 @@ namespace RabbitGameServer.Service
 
 			roomChannel.QueueBind(newGameQueue,
 						queuesConfig.RoomsRequestTopic,
-						queuesConfig.NewGameRoute + queuesConfig.MatchAllWildcard,
+						queuesConfig.NewRoomRoute + queuesConfig.MatchAllWildcard,
 						null);
 
 			var consumer = new EventingBasicConsumer(roomChannel);
@@ -128,26 +129,26 @@ namespace RabbitGameServer.Service
 			mediator.Send(request, masterToken).Wait();
 		}
 
-		private void setupJoinGameConsumer()
+		private void setupJoinRoomConsumer()
 		{
-			var joinGameQueue = roomChannel.QueueDeclare().QueueName;
-			roomChannel.QueueBind(joinGameQueue,
+			var joinRoomQueue = roomChannel.QueueDeclare().QueueName;
+			roomChannel.QueueBind(joinRoomQueue,
 						queuesConfig.RoomsRequestTopic,
-						queuesConfig.JoinGameRoute + queuesConfig.MatchAllWildcard,
+						queuesConfig.JoinRoomRoute + queuesConfig.MatchAllWildcard,
 						null);
 
 			var consumer = new EventingBasicConsumer(roomChannel);
-			consumer.Received += JoinGameEventHandler;
+			consumer.Received += JoinRoomEventHandler;
 
-			roomChannel.BasicConsume(joinGameQueue, false, consumer);
+			roomChannel.BasicConsume(joinRoomQueue, false, consumer);
 
 			Console.WriteLine($"JoinGameEventConsumer started ... ");
-			Console.WriteLine($"{queuesConfig.RoomsRequestTopic} - {queuesConfig.JoinGameRoute}{queuesConfig.MatchAllWildcard}");
+			Console.WriteLine($"{queuesConfig.RoomsRequestTopic} - {queuesConfig.JoinRoomRoute}{queuesConfig.MatchAllWildcard}");
 
 			return;
 		}
 
-		private void JoinGameEventHandler(object? sender, BasicDeliverEventArgs ea)
+		private void JoinRoomEventHandler(object? sender, BasicDeliverEventArgs ea)
 		{
 			Console.WriteLine("Received join room event... ;");
 
@@ -156,6 +157,36 @@ namespace RabbitGameServer.Service
 			var request = new JoinRoomRequest(message.roomName,
 					message.player,
 					((JoinRoomMessage)message).password);
+
+			mediator.Send(request);
+		}
+
+		private void setupLeaveRoomConsumer()
+		{
+			var leaveRoomQueue = roomChannel.QueueDeclare().QueueName;
+			roomChannel.QueueBind(leaveRoomQueue,
+						queuesConfig.RoomsRequestTopic,
+						queuesConfig.LeaveRoomRoute + queuesConfig.MatchAllWildcard,
+						null);
+
+			var consumer = new EventingBasicConsumer(roomChannel);
+			consumer.Received += LeaveRoomEventHandler;
+
+			roomChannel.BasicConsume(leaveRoomQueue, false, consumer);
+
+			Console.WriteLine($"LeaveGameEventConsumer started ... ");
+			Console.WriteLine($"{queuesConfig.RoomsRequestTopic} - {queuesConfig.LeaveRoomRoute}{queuesConfig.MatchAllWildcard}");
+
+			return;
+		}
+
+		private void LeaveRoomEventHandler(object? sender, BasicDeliverEventArgs ea)
+		{
+			Console.WriteLine("Received leave room event ... ");
+
+			var message = protocolTranslator.ToMessage(ea.Body.ToArray());
+
+			var request = new LeaveRoomRequest(message.roomName, message.player);
 
 			mediator.Send(request);
 		}

@@ -4,7 +4,12 @@ namespace RabbitGameServer.SharedModel.Messages
 	{
 		Success,
 		InvalidRoom,
+		InvalidPlayer,
 		WrongPassword,
-		AlreadyIn
+		AlreadyIn,
+		UnknownFail,
+		PlayerJoined,
+		PlayerLeft,
+		RoomDestroyed
 	}
 }

@@ -56,17 +56,17 @@
 		"modelEventsRoutePrefix": "model_event."
 	},
 	"rabbitRoomServerProxyConfig": {
-		"rabbitMatchAllWildcard":"#",
+		"rabbitMatchAllWildcard": "#",
 		"rabbitTopicExchangeKeyword": "topic",
 		"newRoomRequestExchange": "gg_rooms_req",
-		"newRoomRequestRoutePrefix": "new_game.",
+		"newRoomRequestRoutePrefix": "new_room.",
 		"joinRoomRequestExchange": "gg_rooms_req",
-		"joinRoomRequestRoutePrefix": "join_game.",
-		"leaveRoomRequestExchange": "gg_roms_req",
-		"leaveRoomRequestRoutePrefix": "leave_game.",
+		"joinRoomRequestRoutePrefix": "join_room.",
+		"leaveRoomRequestExchange": "gg_rooms_req",
+		"leaveRoomRequestRoutePrefix": "leave_room.",
 		"roomResponseExchange": "gg_rooms_res",
 		"roomResponseRoutePrefix": "room_response.",
-		"roomUpdateRoutePrefix":"room_update."
+		"roomUpdateRoutePrefix": "room_update."
 	},
 	"restLoginServerConfig": {
 		"stage": "dev",

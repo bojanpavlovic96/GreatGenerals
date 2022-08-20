@@ -93,5 +93,17 @@
 	"successfulLeft": {
 		"message": "FR Successfully left room",
 		"color": "#ff6666"
+	},
+	"newPlayerJoined": {
+		"message": "FR New player joined",
+		"color": "#ff6666"
+	},
+	"playerLeft": {
+		"message": "FR Player left",
+		"color": "#ff6666"
+	},
+	"roomDestroyed": {
+		"message": "FR Room destroyed",
+		"color": "#ff6666"
 	}
 }

@@ -253,19 +253,22 @@ public class RoomForm extends VBox
 	}
 
 	public void removePlayer(final String player) {
-		this.players.removeIf((String node) -> {
-			return (node.equals(player));
+		Platform.runLater(() -> {
+			players.remove(player);
 		});
-
-		// this.playersVb.getChildren().removeIf(new Predicate<Node>() {
-		// 	public boolean test(Node single_label) {
-		// 		return ((Label) single_label).getText().equals(player);
-		// 	}
-		// });
 	}
 
+	// this.playersVb.getChildren().removeIf(new Predicate<Node>() {
+	// 	public boolean test(Node single_label) {
+	// 		return ((Label) single_label).getText().equals(player);
+	// 	}
+	// });
+
 	public void clearPlayers() {
-		this.players.clear();
+		Platform.runLater(() -> {
+			this.players.clear();
+		});
+
 		// this.playersVb.getChildren().clear();
 	}
 

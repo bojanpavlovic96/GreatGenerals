@@ -22,8 +22,10 @@ public class Language {
 		AlreadyInRoom,
 		RoomExists,
 		WrongRoomPassword,
-		RoomDoesntExists
-
+		RoomDoesntExists,
+		NewPlayerJoined,
+		PlayerLeft,
+		RoomDestoryed
 	}
 
 	public static class Message {
@@ -72,6 +74,10 @@ public class Language {
 
 	public Language.Message wrongRoomPassword;
 
+	public Language.Message newPlayerJoined;
+	public Language.Message playerLeft;
+	public Language.Message roomDestroyed;
+
 	public Language() {
 
 	}
@@ -118,6 +124,12 @@ public class Language {
 				return this.successfulJoin;
 			case SuccessfulLeft:
 				return this.successfulLeft;
+			case NewPlayerJoined:
+				return this.newPlayerJoined;
+			case PlayerLeft:
+				return this.playerLeft;
+			case RoomDestoryed:
+				return this.roomDestroyed;
 			default:
 				break;
 		}

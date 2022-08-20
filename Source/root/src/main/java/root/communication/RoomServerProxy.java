@@ -13,6 +13,8 @@ public interface RoomServerProxy {
 	void SubscribeForRoomUpdates(String roomName, String username,
 			RoomServerResponseHandler handler);
 
+	void UnsubFromRoomUpdates();
+
 	boolean isReady();
 
 	void clearResponseAwaiter();

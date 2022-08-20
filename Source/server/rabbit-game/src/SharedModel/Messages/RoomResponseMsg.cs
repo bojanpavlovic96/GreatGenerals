@@ -7,7 +7,7 @@ namespace RabbitGameServer.SharedModel.Messages
 
 		public List<PlayerData> players;
 
-		public RoomResponseMsg(string player, 
+		public RoomResponseMsg(string player,
 			string roomName,
 			RoomResponseType type,
 			List<PlayerData> players)

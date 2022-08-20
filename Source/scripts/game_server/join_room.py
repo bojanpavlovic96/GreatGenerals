@@ -12,12 +12,12 @@ BROKER_PWD = "gg_password"
 
 MESSAGE_NAME = "JoinRoomRequest"
 
-ROOM_NAME = "some_room"
-ROOM_PASSWORD = "room_pwd_1"
+ROOM_NAME = "some"
+ROOM_PASSWORD = "room"
 ROOM_USER = "some_user_2"
 
 PUBLISH_TOPIC = "gg_rooms_req"
-PUBLISH_ROUTE = "join_game" + "." + ROOM_NAME + "." + ROOM_USER
+PUBLISH_ROUTE = "join_room" + "." + ROOM_NAME + "." + ROOM_USER
 
 RESPONSE_TOPIC = "gg_rooms_res"
 RESPONSE_ROUTE = "room_response." + ROOM_NAME + ".#"

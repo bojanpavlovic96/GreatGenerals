@@ -52,32 +52,43 @@ namespace RabbitGameServer.Mediator
 
 			room.addPlayer(request.playerName);
 
-			var players = new List<PlayerData>();
-			foreach (var sPlayer in room.Players)
-			{
-				players.Add(new PlayerData(sPlayer, null));
-			}
+			var players = room.Players
+				.Select(inRoomP => new PlayerData(inRoomP, Color.BLUE))
+				.ToList<PlayerData>();
+			// var players = new List<PlayerData>();
+			// foreach (var sPlayer in room.Players)
+			// {
+			// 	players.Add(new PlayerData(sPlayer, null));
+			// }
 
 			Console.WriteLine($"{request.playerName} successfully joined {roomName} ... ");
+			
 			sendResponse(playerName, roomName, RoomResponseType.Success, players);
+			sendUpdate(playerName, roomName, RoomResponseType.PlayerJoined, players);
 
 			return Task.FromResult(MediatR.Unit.Value);
 		}
 
-		private void sendResponse(string player,
-				string room,
-				RoomResponseType status,
+		private void sendResponse(string player, string room, RoomResponseType status,
 				List<PlayerData> players)
 		{
 			var message = new RoomResponseMsg(player, room, status, players);
 			var sendResponseReq = new SendResponseRequest(room, player, message);
 
-			var sendUpdateReq = new SendUpdateRequest(room, player, message);
-
 			mediator.Send(sendResponseReq);
-			mediator.Send(sendUpdateReq);
 
 			return;
+		}
+
+		private void sendUpdate(string player,
+			string room,
+			RoomResponseType type,
+			List<PlayerData> players)
+		{
+			var message = new RoomResponseMsg(player, room, type, players);
+			var sendReq = new SendUpdateRequest(room, player, message);
+
+			mediator.Send(sendReq);
 		}
 
 	}
