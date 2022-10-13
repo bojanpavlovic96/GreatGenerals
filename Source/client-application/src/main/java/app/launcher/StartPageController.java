@@ -262,16 +262,19 @@ public class StartPageController implements GameReadyEventProducer, ActiveCompon
 		roomServer.JoinRoom(roomName, roomPassword, username,
 				(RoomResponseMsg response) -> {
 					System.out.println("Handling join response ... ");
-					showInfoMessage(Language.MessageType.SuccessfulJoin);
-					initialPage.disableCreateRoom();
-					initialPage.disableJoinRoom();
-
-					initialPage.enableLeaveRoom();
 
 					if (response.responseType == RoomResponseType.Success) {
 						System.out.println("Join room successful ... ");
 
+						showInfoMessage(Language.MessageType.SuccessfulJoin);
+
+						initialPage.disableCreateRoom();
+						initialPage.disableJoinRoom();
+
+						initialPage.enableLeaveRoom();
+
 						initialPage.showPlayers();
+
 						for (var player : response.players) {
 							initialPage.addPlayer(player);
 						}
@@ -309,7 +312,7 @@ public class StartPageController implements GameReadyEventProducer, ActiveCompon
 					if (response.responseType == RoomResponseType.Success) {
 						System.out.println("Successful left the room ... ");
 						showInfoMessage(Language.MessageType.SuccessfulLeft);
-						
+
 						roomServer.UnsubFromRoomUpdates();
 
 						players.clear();

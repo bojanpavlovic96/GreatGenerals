@@ -10,6 +10,7 @@ import root.communication.ProtocolTranslator;
 import root.communication.RoomServerProxy;
 import root.communication.RoomServerResponseHandler;
 import root.communication.messages.CreateRoomRequestMsg;
+import root.communication.messages.JoinRoomRequestMsg;
 import root.communication.messages.LeaveRoomRequestMsg;
 
 public class RabbitRoomServerProxy implements RoomServerProxy, ActiveComponent {
@@ -41,9 +42,52 @@ public class RabbitRoomServerProxy implements RoomServerProxy, ActiveComponent {
 
 	}
 
+	private boolean setupReceiver(String roomName, String playerName,
+			RoomServerResponseHandler handler) {
+		if (channel == null) {
+			channel = channelProvider.getChannel();
+		}
+
+		if (channel == null) {
+			System.out.println("Channel provider is connected but returned null ... ");
+			return false;
+		}
+
+		try {
+
+			channel.exchangeDeclare(config.roomResponseExchange,
+					config.rabbitTopicExchangeKeyword,
+					false,
+					true,
+					null);
+
+			responseQueue = channel.queueDeclare().getQueue();
+			var recvRoute = formResponseRoute(roomName, playerName);
+			System.out.println("Will receive on route: " + recvRoute);
+
+			channel.queueBind(responseQueue,
+					config.roomResponseExchange,
+					recvRoute);
+
+			this.responseHandler = handler;
+
+			var consumer = new RoomResponseConsumer(this, responseHandler, translator);
+			channel.basicConsume(responseQueue, consumer);
+
+		} catch (IOException e) {
+			System.out.println("Got exception while setting up room response receiver ... ");
+			System.out.println(e.getMessage());
+			e.printStackTrace();
+
+			return false;
+		}
+
+		return true;
+	}
+
 	@Override
 	public void CreateRoom(String roomName, String password, String playerName,
-			RoomServerResponseHandler responseHandler) {
+			RoomServerResponseHandler handler) {
 
 		if (isWaitingForResponse()) {
 			System.out.println("Rabbit room server proxy is already handling request ...  ");
@@ -59,33 +103,11 @@ public class RabbitRoomServerProxy implements RoomServerProxy, ActiveComponent {
 		try {
 			// subscribe for a joinResponse before sending create/join request 
 
-			if (channel == null) {
-				channel = channelProvider.getChannel();
-			}
-
-			if (channel == null) {
-				System.out.println("Channel provider is connected but returned null ... ");
+			var setupSuccess = setupReceiver(roomName, playerName, handler);
+			if (!setupSuccess) {
+				System.out.println("Failed to setup receiver ... ");
 				return;
 			}
-
-			channel.exchangeDeclare(config.roomResponseExchange,
-					config.rabbitTopicExchangeKeyword,
-					false,
-					true,
-					null);
-
-			responseQueue = channel.queueDeclare().getQueue();
-			System.out.println("Will receive on route: "
-					+ formResponseRoute(roomName, playerName));
-
-			channel.queueBind(responseQueue,
-					config.roomResponseExchange,
-					formResponseRoute(roomName, playerName));
-
-			this.responseHandler = responseHandler;
-
-			var consumer = new RoomResponseConsumer(this, responseHandler, translator);
-			channel.basicConsume(responseQueue, consumer);
 
 			// actually send createRoomRequest
 			channel.exchangeDeclare(config.newRoomRequestExchange,
@@ -109,7 +131,7 @@ public class RabbitRoomServerProxy implements RoomServerProxy, ActiveComponent {
 			System.out.println(translator.toStrData(message));
 
 		} catch (Exception e) {
-			System.out.println("Exception while creating room ... ");
+			System.out.println("Exception while sending create room request ... ");
 			e.printStackTrace();
 			System.out.println(e.getMessage());
 
@@ -126,10 +148,65 @@ public class RabbitRoomServerProxy implements RoomServerProxy, ActiveComponent {
 	public void JoinRoom(String roomName, String password, String playerName,
 			RoomServerResponseHandler handler) {
 
+		if (isWaitingForResponse()) {
+			System.out.println("Rabbit room server proxy is already handling request ...  ");
+			return;
+		}
+
+		if (channelProvider == null || !channelProvider.isConnected()) {
+			System.out.println("Broker channel is not open ... ");
+			System.out.println("Cant send createRoom request ... ");
+			return;
+		}
+
+		try {
+
+			// subscribe for a joinResponse before sending create/join request 
+
+			var setupSuccess = setupReceiver(roomName, playerName, handler);
+			if (!setupSuccess) {
+				System.out.println("Failed to setup receiver ... ");
+				return;
+			}
+
+			// actually send joinRoomRequest
+
+			channel.exchangeDeclare(config.joinRoomRequestExchange,
+					config.rabbitTopicExchangeKeyword,
+					false,
+					true,
+					null);
+
+			var message = new JoinRoomRequestMsg(roomName, password, playerName);
+			var byteMsg = translator.toByteData(message);
+
+			channel.basicPublish(config.joinRoomRequestExchange,
+					formJoinRequestRoute(roomName, playerName),
+					null,
+					byteMsg);
+
+			System.out.println("Topic: " + config.joinRoomRequestExchange +
+					" Route: " + formJoinRequestRoute(roomName, playerName));
+
+			System.out.println("Join room request successfully sent ... ");
+			System.out.println(translator.toStrData(message));
+
+		} catch (Exception e) {
+			System.out.println("Exception while sending join room request ... ");
+			e.printStackTrace();
+			System.out.println(e.getMessage());
+
+			return;
+		}
+
+	}
+
+	private String formJoinRequestRoute(String room, String user) {
+		return config.joinRoomRequestRoutePrefix + room + "." + user;
 	}
 
 	@Override
-	public void LeaveRoom(String roomName, String username, RoomServerResponseHandler handler) {
+	public void LeaveRoom(String roomName, String playerName, RoomServerResponseHandler handler) {
 
 		if (isWaitingForResponse()) {
 			System.out.println("Rabbit room server proxy is already handling request ...  ");
@@ -145,33 +222,11 @@ public class RabbitRoomServerProxy implements RoomServerProxy, ActiveComponent {
 		try {
 			// subscribe for a leave before sending create/join request 
 
-			if (channel == null) {
-				channel = channelProvider.getChannel();
-			}
-
-			if (channel == null) {
-				System.out.println("Channel provider is connected but returned null ... ");
+			var setupSuccess = setupReceiver(roomName, playerName, handler);
+			if (!setupSuccess) {
+				System.out.println("Failed to setup receiver ... ");
 				return;
 			}
-
-			channel.exchangeDeclare(config.roomResponseExchange,
-					config.rabbitTopicExchangeKeyword,
-					false,
-					true,
-					null);
-
-			responseQueue = channel.queueDeclare().getQueue();
-			var recvRoute = formResponseRoute(roomName, username);
-			System.out.println("Will receive on route: " + recvRoute);
-
-			channel.queueBind(responseQueue,
-					config.roomResponseExchange,
-					recvRoute);
-
-			this.responseHandler = handler;
-
-			var consumer = new RoomResponseConsumer(this, handler, translator);
-			channel.basicConsume(responseQueue, consumer);
 
 			// actually send leaveRoomRequest
 			channel.exchangeDeclare(config.leaveRoomRequestExchange,
@@ -180,10 +235,10 @@ public class RabbitRoomServerProxy implements RoomServerProxy, ActiveComponent {
 					true,
 					null);
 
-			var message = new LeaveRoomRequestMsg(roomName, username);
+			var message = new LeaveRoomRequestMsg(roomName, playerName);
 			var byteMsg = translator.toByteData(message);
 
-			var sendRoute = formLeaveRequestRoute(roomName, username);
+			var sendRoute = formLeaveRequestRoute(roomName, playerName);
 			channel.basicPublish(config.leaveRoomRequestExchange,
 					sendRoute,
 					null,
