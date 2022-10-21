@@ -4,8 +4,8 @@ public class RabbitGameServerProxyConfig {
 
 	public String rabbitTopicExchangeKeyword;
 
-	public String serverCommandsExchange;
-	public String serverCommandsRoutePrefix;
+	public String serverMessageExchange;
+	public String serverMessageRoutePrefix;
 
 	public String modelEventsExchange;
 	public String modelEventsRoutePrefix;

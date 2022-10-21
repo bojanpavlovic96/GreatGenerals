@@ -6,7 +6,7 @@ public class LeaveRoomRequestMsg extends Message {
 		super(MessageType.LeaveRoomRequest);
 
 		this.roomName = roomName;
-		this.player = playerName;
+		this.username = playerName;
 	}
 
 }

@@ -18,7 +18,7 @@ namespace RabbitGameServer.Mediator
 		{
 
 			Console.WriteLine("Handling sendUpdate request ... ");
-			proxy.sendUpdate(request.RoomName, request.PlayerName, request.Message);
+			proxy.sendRoomUpdate(request.RoomName, request.PlayerName, request.Message);
 
 			return Task.FromResult(Unit.Value);
 		}

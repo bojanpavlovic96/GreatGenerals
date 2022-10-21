@@ -1,52 +1,27 @@
 package root.communication.messages;
 
-public class LoginServerResponse {
+import root.communication.PlayerDescription;
 
-	private String username;
-	private int level;
-	private int points;
+public class LoginServerResponse {
 
 	private LoginServerResponseStatus status;
 
-	public LoginServerResponse() {
-	}
+	private PlayerDescription player;
 
-	private LoginServerResponse(LoginServerResponseStatus status) {
-		this.status = status;
-	}
 
-	public LoginServerResponse(String username,
-			int level,
-			int points,
+	public LoginServerResponse(PlayerDescription playerData,
 			LoginServerResponseStatus status) {
-		this.username = username;
-		this.level = level;
-		this.points = points;
+
+		this.player = playerData;
 		this.status = status;
 	}
 
-	public String getUsername() {
-		return this.username;
+	public PlayerDescription getPlayer() {
+		return player;
 	}
 
-	public void setUsername(String username) {
-		this.username = username;
-	}
-
-	public int getLevel() {
-		return this.level;
-	}
-
-	public void setLevel(int level) {
-		this.level = level;
-	}
-
-	public int getPoints() {
-		return this.points;
-	}
-
-	public void setPoints(int points) {
-		this.points = points;
+	public void setPlayer(PlayerDescription player) {
+		this.player = player;
 	}
 
 	public LoginServerResponseStatus getStatus() {
@@ -60,15 +35,15 @@ public class LoginServerResponse {
 	@Override
 	public String toString() {
 		return "{" +
-				" username='" + getUsername() + "'" +
-				", level='" + getLevel() + "'" +
-				", points='" + getPoints() + "'" +
+				" username='" + player.getUsername() + "'" +
+				", level='" + player.getLevel() + "'" +
+				", points='" + player.getPoints() + "'" +
 				", status='" + getStatus() + "'" +
 				"}";
 	}
 
 	public static LoginServerResponse failed() {
-		return new LoginServerResponse(LoginServerResponseStatus.SERVER_ERROR);
+		return new LoginServerResponse(null, LoginServerResponseStatus.SERVER_ERROR);
 	}
 
 }

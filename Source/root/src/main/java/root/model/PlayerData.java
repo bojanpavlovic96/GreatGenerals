@@ -8,4 +8,8 @@ public interface PlayerData {
 
 	Color getColor();
 
+	int getLevel();
+
+	int getPoints();
+
 }

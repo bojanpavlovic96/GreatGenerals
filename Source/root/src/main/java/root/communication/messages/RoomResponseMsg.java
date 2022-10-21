@@ -8,8 +8,8 @@ public class RoomResponseMsg extends Message {
 
 	public RoomResponseType responseType;
 
-	// initialize even in createRoom request
-	// add one element containing description of request sender
+	// initialize even in createRoom request and 
+	// add only one element containing description of request sender
 	public List<PlayerDescription> players;
 
 	public RoomResponseMsg(RoomResponseType responseType, List<PlayerDescription> players) {

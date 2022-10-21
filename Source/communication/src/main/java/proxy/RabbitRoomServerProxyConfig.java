@@ -14,6 +14,9 @@ public class RabbitRoomServerProxyConfig {
 	public String leaveRoomRequestExchange;
 	public String leaveRoomRequestRoutePrefix;
 
+	public String startGameRequestExchange;
+	public String startGameRequestRoutePrefix;
+
 	public String roomResponseExchange;
 
 	public String roomResponseRoutePrefix;

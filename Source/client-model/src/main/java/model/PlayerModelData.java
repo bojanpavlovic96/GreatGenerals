@@ -9,11 +9,14 @@ public class PlayerModelData implements PlayerData {
 
 	private Color fieldColor;
 
-	public PlayerModelData(String username, Color field_color) {
-		super();
+	private int level;
+	private int points;
 
+	public PlayerModelData(String username, Color fieldColor, int level, int points) {
 		this.username = username;
-		this.fieldColor = field_color;
+		this.fieldColor = fieldColor;
+		this.level = level;
+		this.points = points;
 	}
 
 	@Override
@@ -24,6 +27,16 @@ public class PlayerModelData implements PlayerData {
 	@Override
 	public Color getColor() {
 		return this.fieldColor;
+	}
+
+	@Override
+	public int getLevel() {
+		return this.level;
+	}
+
+	@Override
+	public int getPoints() {
+		return this.points;
 	}
 
 }

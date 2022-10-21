@@ -14,10 +14,10 @@ MESSAGE_NAME = "CreateRoomRequest"
 
 ROOM_NAME = "some_room"
 ROOM_PASSWORD = "room_pwd_1"
-ROOM_USER = "some_user"
+ROOM_USER = "some"
 
 TARGET_TOPIC = "gg_rooms_req"
-TARGET_ROUTE = "new_game" + "." + ROOM_NAME + "." + ROOM_USER
+TARGET_ROUTE = "new_room" + "." + ROOM_NAME + "." + ROOM_USER
 
 RESPONSE_TOPIC = "gg_rooms_res"
 RESPONSE_ROUTE = "room_response." + ROOM_NAME + ".#"

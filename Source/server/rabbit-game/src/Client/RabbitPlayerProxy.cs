@@ -27,11 +27,24 @@ namespace RabbitGameServer.Client
 
 		}
 
-		public void sendResponse(string roomName, string playerId, Message newMessage)
+		public void sendRoomResponse(string roomName, string playerId, Message newMessage)
 		{
 
-			// already done in constructor
-			// channel = connection.GetChannel();
+			try
+			{
+				send(newMessage,
+					config.RoomsResponseTopic,
+					formResponseRoute(roomName, playerId));
+			}
+			catch (Exception e)
+			{
+				Console.WriteLine("Exception while sending room response ... ");
+				Console.WriteLine(e.Message);
+
+				Console.WriteLine(e.StackTrace);
+			}
+
+			return;
 
 			var byteContent = translator.ToByteData(newMessage);
 
@@ -41,14 +54,13 @@ namespace RabbitGameServer.Client
 								null);
 
 			var topic = config.RoomsResponseTopic;
-			var route = responseRoutingKeyFor(roomName, playerId);
+			var route = formResponseRoute(roomName, playerId);
 			Console.WriteLine($"Publishing on: {topic} - {route}");
 
 			try
 			{
-				channel.BasicPublish(
-					config.RoomsResponseTopic,
-					responseRoutingKeyFor(roomName, playerId),
+				channel.BasicPublish(config.RoomsResponseTopic,
+					formResponseRoute(roomName, playerId),
 					null,
 					byteContent);
 			}
@@ -60,7 +72,7 @@ namespace RabbitGameServer.Client
 
 		}
 
-		private string responseRoutingKeyFor(string roomName, string playerId)
+		private string formResponseRoute(string roomName, string playerId)
 		{
 			return $"{config.RoomResponseRoute}{roomName}.{playerId}";
 		}
@@ -74,8 +86,25 @@ namespace RabbitGameServer.Client
 			}
 		}
 
-		public void sendUpdate(string roomName, string player, Message update)
+		public void sendRoomUpdate(string roomName, string player, Message update)
 		{
+
+			try
+			{
+				send(update,
+					config.RoomsResponseTopic,
+					formUpdateRoute(roomName, player));
+			}
+			catch (Exception e)
+			{
+				Console.WriteLine("Exception while sending room update ... ");
+				Console.WriteLine(e.Message);
+
+				Console.WriteLine(e.StackTrace);
+			}
+
+			return;
+
 			var byteContent = translator.ToByteData(update);
 
 			channel.ExchangeDeclare(config.RoomsResponseTopic, "topic",
@@ -84,7 +113,7 @@ namespace RabbitGameServer.Client
 								null);
 
 			var topic = config.RoomsResponseTopic;
-			var route = updateRoutingKeyFor(roomName, player);
+			var route = formUpdateRoute(roomName, player);
 			Console.WriteLine($"Publishing on: {topic} - {route}");
 
 			try
@@ -98,9 +127,51 @@ namespace RabbitGameServer.Client
 			}
 		}
 
-		private string updateRoutingKeyFor(string roomName, string player)
+		private string formUpdateRoute(string roomName, string player)
 		{
 			return $"{config.RoomUpdateRoute}{roomName}.{player}";
+		}
+
+		public void sendMessage(string roomName, string player, Message message)
+		{
+
+			try
+			{
+				send(message,
+					config.ServerMessageTopic,
+					formMessageRoute(roomName, player));
+			}
+			catch (Exception e)
+			{
+				Console.WriteLine("Exception while sending game message ... ");
+				Console.WriteLine(e.Message);
+
+				Console.WriteLine(e.StackTrace);
+			}
+		}
+
+		private string formMessageRoute(string room, string player)
+		{
+			return $"{config.ServerMessageRoutePrefix}{room}.{player}";
+		}
+
+		// throws exception in case of an error 
+
+		// instead of Message it could be byte[] but this way I can print 
+		// adequate message using message.Type.ToString() ... 
+		private void send(Message message, String topic, String route)
+		{
+			var byteContent = translator.ToByteData(message);
+
+			channel.ExchangeDeclare(topic,
+					"topic",
+					false,
+					true,
+					null);
+
+			Console.WriteLine($"Publishing: {message.type.ToString()} => {topic} => {route}");
+
+			channel.BasicPublish(topic, route, null, byteContent);
 		}
 
 	}

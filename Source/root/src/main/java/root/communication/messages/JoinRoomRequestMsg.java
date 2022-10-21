@@ -8,7 +8,7 @@ public class JoinRoomRequestMsg extends Message {
 		super(MessageType.JoinRoomRequest);
 
 		super.roomName = room;
-		super.player = player;
+		super.username = player;
 
 		this.password = password;
 	}

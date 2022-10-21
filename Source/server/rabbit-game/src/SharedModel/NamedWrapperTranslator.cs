@@ -34,10 +34,10 @@ namespace RabbitGameServer.SharedModel
 		{
 			var wrappedMsg = serializer.ToObj<NamedWrapper>(payload);
 			Console.WriteLine("We are unwrapping ... ");
-			Console.WriteLine("/tName: " + wrappedMsg.name);
-			Console.WriteLine("/tPayload: " + wrappedMsg.payload);
+			Console.WriteLine("Name: " + wrappedMsg.name);
+			Console.WriteLine("Payload: " + wrappedMsg.payload);
 
-			// TODO try catch can be removed after testing 
+			// TODO try&catch can be removed after testing 
 			try
 			{
 				if (wrappedMsg.name == MessageType.InitializeMessage.ToString())
@@ -70,6 +70,11 @@ namespace RabbitGameServer.SharedModel
 				{
 					Console.WriteLine("Translating LeaveRoomRequest ... ");
 					return serializer.ToObj<LeaveRoomMessage>(wrappedMsg.payload);
+				}
+				else if (wrappedMsg.name == MessageType.StartGameRequest.ToString())
+				{
+					Console.WriteLine("Translating StartGameRequest ... ");
+					return serializer.ToObj<StartGameMessage>(wrappedMsg.payload);
 				}
 				else
 				{

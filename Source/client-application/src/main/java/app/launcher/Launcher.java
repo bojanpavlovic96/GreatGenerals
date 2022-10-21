@@ -114,8 +114,8 @@ public class Launcher extends Application {
 				username,
 				roomName);
 
-		var initCommand = getFakeInitCommand();
-		serverProxy.getConsumerQueue().enqueue(initCommand);
+		// var initCommand = getFakeInitCommand();
+		// serverProxy.getConsumerQueue().enqueue(initCommand);
 
 		var viewConfig = AppConfig.getInstance().viewConfig;
 		View view = new DrawingStage(
@@ -126,7 +126,7 @@ public class Launcher extends Application {
 
 		// attention controller still null at this moment
 		// modelEventHandler is set from controller constructor
-		// this is empty model (only timer and unit creator)
+		// this is empty model (only timer and unitCreator)
 		Model model = new DataModel();
 
 		gameController = new GameBrain(serverProxy, view, model);
@@ -138,9 +138,9 @@ public class Launcher extends Application {
 
 	private Command getFakeInitCommand() {
 		List<PlayerData> players = new ArrayList<PlayerData>();
-		players.add(new PlayerModelData("user 1", Color.RED));
-		players.add(new PlayerModelData("user 2", Color.GREEN));
-		players.add(new PlayerModelData("user 3", Color.BLACK));
+		players.add(new PlayerModelData("user 1", Color.RED, 128, 256));
+		players.add(new PlayerModelData("user 2", Color.GREEN, 128, 256));
+		players.add(new PlayerModelData("user 3", Color.BLACK, 128, 256));
 
 		List<Field> fieldModels = new ArrayList<Field>();
 

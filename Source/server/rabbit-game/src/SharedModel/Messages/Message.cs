@@ -6,13 +6,13 @@ namespace RabbitGameServer.SharedModel.Messages
 		public MessageType type { get; set; }
 
 		public string roomName { get; set; }
-		public string player { get; set; }
+		public string username { get; set; }
 
 		public Message(MessageType type, string player, string roomName)
 		{
 			this.type = type;
 
-			this.player = player;
+			this.username = player;
 			this.roomName = roomName;
 		}
 

@@ -20,6 +20,8 @@ namespace RabbitGameServer.Mediator
 
 			var game = pool.GetGame(request.message.roomName);
 
+			Console.WriteLine("Handling model events still not implemented ... ");
+
 			// TODO at this point message should be converted to modelEvent ... ? 
 			// game.AddModelEvent(request.modelEvent);
 

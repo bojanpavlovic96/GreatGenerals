@@ -119,8 +119,6 @@ public class RoomForm extends VBox
 		this.joinRoomBtn.setFont(this.font);
 		this.joinRoomBtn.managedProperty().bind(joinRoomBtn.visibleProperty());
 
-		System.out.println("Leave label: " + this.language.leaveRoom);
-
 		this.leaveRoomBtn = new Button(this.language.leaveRoom);
 		this.leaveRoomBtn.setFont(this.font);
 

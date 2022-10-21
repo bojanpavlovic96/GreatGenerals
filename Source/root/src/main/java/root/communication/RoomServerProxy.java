@@ -19,6 +19,8 @@ public interface RoomServerProxy {
 
 	void clearResponseAwaiter();
 
+	void StartGame(String roomName, String username, RoomServerResponseHandler handler);
+
 	boolean isWaitingForResponse();
 
 	boolean isReceivingUpdates();

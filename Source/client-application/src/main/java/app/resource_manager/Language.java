@@ -25,7 +25,9 @@ public class Language {
 		RoomDoesntExists,
 		NewPlayerJoined,
 		PlayerLeft,
-		RoomDestoryed
+		RoomDestroyed,
+		GameStarted,
+		UnknownError
 	}
 
 	public static class Message {
@@ -78,6 +80,10 @@ public class Language {
 	public Language.Message playerLeft;
 	public Language.Message roomDestroyed;
 
+	public Language.Message gameStarted;
+
+	public Language.Message unknownError;
+
 	public Language() {
 
 	}
@@ -128,8 +134,12 @@ public class Language {
 				return this.newPlayerJoined;
 			case PlayerLeft:
 				return this.playerLeft;
-			case RoomDestoryed:
+			case RoomDestroyed:
 				return this.roomDestroyed;
+			case GameStarted:
+				return this.gameStarted;
+			case UnknownError:
+				return this.unknownError;
 			default:
 				break;
 		}

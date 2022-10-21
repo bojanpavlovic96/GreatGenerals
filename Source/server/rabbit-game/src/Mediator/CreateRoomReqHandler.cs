@@ -1,8 +1,6 @@
 using MediatR;
-using Microsoft.Extensions.Options;
 using RabbitGameServer.Game;
 using RabbitGameServer.SharedModel;
-// using RabbitGameServer.SharedModel;
 using RabbitGameServer.SharedModel.Messages;
 
 namespace RabbitGameServer.Mediator
@@ -11,25 +9,22 @@ namespace RabbitGameServer.Mediator
 	{
 		private IMediator mediator;
 
-		private RabbitConfig config;
-
 		private IGamePool pool;
 
-		public CreateRoomReqHandler(IMediator mediator,
-			IOptions<RabbitConfig> config,
-			IGamePool pool)
+		public CreateRoomReqHandler(IMediator mediator, IGamePool pool)
 		{
 			this.mediator = mediator;
 
-			this.config = config.Value;
 			this.pool = pool;
 		}
 
-		public Task<MediatR.Unit> Handle(CreateRoomRequest request, CancellationToken cancelToken)
+		public async Task<MediatR.Unit> Handle(CreateRoomRequest request, CancellationToken cancelToken)
 		{
-			Console.WriteLine("Handling create game request for:  " + request.roomName);
+			Console.WriteLine($"Handling create game request for: ");
+			Console.WriteLine($"\tRoom: {request.roomName}");
+			Console.WriteLine($"\tUser: {request.masterPlayer} ... ");
 
-			Message message;
+			Message message = null;
 
 			if (pool.GetGame(request.roomName) != null)
 			{
@@ -42,19 +37,30 @@ namespace RabbitGameServer.Mediator
 			}
 			else
 			{
-				Console.WriteLine("Requested room created ... ");
+				var dataRequest = new GetPlayerRequest(request.masterPlayer);
+				var playerData = await mediator.Send(dataRequest);
 
-				pool.CreateGame(request.roomName,
-					request.masterPlayer,
-					request.password);
+				if (playerData != null)
+				{
 
-				var players = new List<PlayerData>();
-				players.Add(new PlayerData(request.masterPlayer, Color.RED));
+					Console.WriteLine("User data successfully obtained ... ");
 
-				message = new RoomResponseMsg(request.masterPlayer,
-					request.roomName,
-					RoomResponseType.Success,
-					players);
+					var newGame = pool.CreateGame(request.roomName,
+						request.password,
+						playerData);
+
+					message = new RoomResponseMsg(request.masterPlayer,
+						request.roomName,
+						RoomResponseType.Success,
+						newGame.Players);
+				}
+				else
+				{
+					Console.WriteLine("Failed to obtain player data ... ");
+
+					message = RoomResponseMsg.unknownFail();
+				}
+
 			}
 
 			var publishRequest = new SendResponseRequest(request.roomName,
@@ -63,7 +69,8 @@ namespace RabbitGameServer.Mediator
 
 			mediator.Send(publishRequest);
 
-			return Task.FromResult(MediatR.Unit.Value);
+			// return Task.FromResult(MediatR.Unit.Value);
+			return MediatR.Unit.Value;
 		}
 	}
 }

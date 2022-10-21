@@ -1,8 +1,10 @@
+using RabbitGameServer.SharedModel;
+
 namespace RabbitGameServer.Game
 {
 	public interface IGamePool
 	{
-		GameMaster CreateGame(string roomName, string masterPlayer, string password);
+		GameMaster CreateGame(string roomName, string password, PlayerData master);
 
 		GameMaster GetGame(string roomName);
 

@@ -88,15 +88,15 @@
 	},
 	"successfulJoin": {
 		"message": "Join Successful",
-		"color": "#ff6666"
+		"color": "#00ff66"
 	},
 	"successfulLeft": {
 		"message": "Successfully left room",
-		"color": "#ff6666"
+		"color": "#00ff66"
 	},
 	"newPlayerJoined": {
 		"message": "New player joined",
-		"color": "#ff6666"
+		"color": "#00ff66"
 	},
 	"playerLeft": {
 		"message": "Player left",
@@ -105,5 +105,13 @@
 	"roomDestroyed": {
 		"message": "Room destroyed",
 		"color": "#ff6666"
+	},
+	"gameStarted": {
+		"message": "Game started",
+		"color": "#00ff66"
+	},
+	"unknownError": {
+		"message": "Unknown error",
+		"color": "#ff0000"
 	}
 }

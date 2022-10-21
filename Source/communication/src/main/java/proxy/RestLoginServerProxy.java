@@ -75,7 +75,7 @@ public class RestLoginServerProxy implements LoginServerProxy, ActiveComponent {
 				.thenAccept(handler::handle)
 				// .exceptionally(this::exceptionHandler)
 				.exceptionally((Throwable t) -> {
-					System.out.println("Got and exception while sending login request ... ");
+					System.out.println("Got and exception while sending/handling login request ... ");
 					System.out.println("Exc: " + t.getMessage());
 
 					handler.handle(LoginServerResponse.failed());

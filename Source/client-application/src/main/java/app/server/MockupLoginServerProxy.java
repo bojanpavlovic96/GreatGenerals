@@ -2,6 +2,7 @@ package app.server;
 
 import root.communication.LoginServerProxy;
 import root.communication.LoginServerResponseHandler;
+import root.communication.PlayerDescription;
 import root.communication.messages.LoginRequest;
 import root.communication.messages.LoginServerResponse;
 import root.communication.messages.LoginServerResponseStatus;
@@ -19,9 +20,7 @@ public class MockupLoginServerProxy implements LoginServerProxy {
 		System.out.println("Requesting login: " + request.toString());
 
 		handler.handle(new LoginServerResponse(
-				request.getUsername(),
-				10,
-				200,
+				new PlayerDescription(request.getUsername(), 128, 256),
 				LoginServerResponseStatus.SUCCESS));
 	}
 
@@ -31,9 +30,7 @@ public class MockupLoginServerProxy implements LoginServerProxy {
 		System.out.println("Requesting registration: " + request.toString());
 
 		handler.handle(new LoginServerResponse(
-				request.getUsername(),
-				10,
-				200,
+				new PlayerDescription(request.getUsername(), 128, 256),
 				LoginServerResponseStatus.SUCCESS));
 	}
 

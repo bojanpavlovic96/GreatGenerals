@@ -23,6 +23,12 @@ wBuilder.Services.Configure<QueuesConfig>(
 wBuilder.Services.Configure<MongoConfig>(
 	wBuilder.Configuration.GetSection(MongoConfig.ConfigSection));
 
+wBuilder.Services.Configure<GameConfig>(
+	wBuilder.Configuration.GetSection(GameConfig.ConfigSection));
+
+wBuilder.Services.Configure<LoginServerConfig>(
+	wBuilder.Configuration.GetSection(LoginServerConfig.ConfigSection));
+
 wBuilder.Services.AddControllers();
 
 wBuilder.Services.AddMediatR(typeof(Program).Assembly);

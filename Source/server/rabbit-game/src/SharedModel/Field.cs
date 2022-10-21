@@ -11,7 +11,11 @@ namespace RabbitGameServer.SharedModel
 
 		public bool inBattle;
 
-		public Field(bool isVisible, Unit unit, Terrain terrain, PlayerData playerData, bool inBattle)
+		public Field(bool isVisible,
+			Unit unit,
+			Terrain terrain,
+			PlayerData playerData,
+			bool inBattle)
 		{
 			this.isVisible = isVisible;
 			this.unit = unit;

@@ -12,6 +12,8 @@ import root.communication.RoomServerResponseHandler;
 import root.communication.messages.CreateRoomRequestMsg;
 import root.communication.messages.JoinRoomRequestMsg;
 import root.communication.messages.LeaveRoomRequestMsg;
+import root.communication.messages.Message;
+import root.communication.messages.StartGameRequestMsg;
 
 public class RabbitRoomServerProxy implements RoomServerProxy, ActiveComponent {
 
@@ -110,25 +112,10 @@ public class RabbitRoomServerProxy implements RoomServerProxy, ActiveComponent {
 			}
 
 			// actually send createRoomRequest
-			channel.exchangeDeclare(config.newRoomRequestExchange,
-					config.rabbitTopicExchangeKeyword,
-					false,
-					true,
-					null);
 
-			var message = new CreateRoomRequestMsg(roomName, password, playerName);
-			var byteMsg = translator.toByteData(message);
-
-			channel.basicPublish(config.newRoomRequestExchange,
-					formCreateRequestRoute(roomName, playerName),
-					null,
-					byteMsg);
-
-			System.out.println("Topic: " + config.newRoomRequestExchange +
-					" Route: " + formCreateRequestRoute(roomName, playerName));
-
-			System.out.println("Create room request successfully sent ... ");
-			System.out.println(translator.toStrData(message));
+			sendRequest(new CreateRoomRequestMsg(roomName, password, playerName),
+					config.newRoomRequestExchange,
+					formCreateRequestRoute(roomName, playerName));
 
 		} catch (Exception e) {
 			System.out.println("Exception while sending create room request ... ");
@@ -171,25 +158,9 @@ public class RabbitRoomServerProxy implements RoomServerProxy, ActiveComponent {
 
 			// actually send joinRoomRequest
 
-			channel.exchangeDeclare(config.joinRoomRequestExchange,
-					config.rabbitTopicExchangeKeyword,
-					false,
-					true,
-					null);
-
-			var message = new JoinRoomRequestMsg(roomName, password, playerName);
-			var byteMsg = translator.toByteData(message);
-
-			channel.basicPublish(config.joinRoomRequestExchange,
-					formJoinRequestRoute(roomName, playerName),
-					null,
-					byteMsg);
-
-			System.out.println("Topic: " + config.joinRoomRequestExchange +
-					" Route: " + formJoinRequestRoute(roomName, playerName));
-
-			System.out.println("Join room request successfully sent ... ");
-			System.out.println(translator.toStrData(message));
+			sendRequest(new JoinRoomRequestMsg(roomName, password, playerName),
+					config.joinRoomRequestExchange,
+					formJoinRequestRoute(roomName, playerName));
 
 		} catch (Exception e) {
 			System.out.println("Exception while sending join room request ... ");
@@ -222,33 +193,17 @@ public class RabbitRoomServerProxy implements RoomServerProxy, ActiveComponent {
 		try {
 			// subscribe for a leave before sending create/join request 
 
-			var setupSuccess = setupReceiver(roomName, playerName, handler);
-			if (!setupSuccess) {
+			var setupRes = setupReceiver(roomName, playerName, handler);
+			if (!setupRes) {
 				System.out.println("Failed to setup receiver ... ");
 				return;
 			}
 
 			// actually send leaveRoomRequest
-			channel.exchangeDeclare(config.leaveRoomRequestExchange,
-					config.rabbitTopicExchangeKeyword,
-					false,
-					true,
-					null);
 
-			var message = new LeaveRoomRequestMsg(roomName, playerName);
-			var byteMsg = translator.toByteData(message);
-
-			var sendRoute = formLeaveRequestRoute(roomName, playerName);
-			channel.basicPublish(config.leaveRoomRequestExchange,
-					sendRoute,
-					null,
-					byteMsg);
-
-			System.out.println("Topic: " + config.leaveRoomRequestExchange +
-					" Route: " + sendRoute);
-
-			System.out.println("Leave room request successfully sent ... ");
-			System.out.println(translator.toStrData(message));
+			sendRequest(new LeaveRoomRequestMsg(roomName, playerName),
+					config.leaveRoomRequestExchange,
+					formLeaveRequestRoute(roomName, playerName));
 
 		} catch (Exception e) {
 			System.out.println("Exception while leaving room ... ");
@@ -262,6 +217,44 @@ public class RabbitRoomServerProxy implements RoomServerProxy, ActiveComponent {
 
 	private String formLeaveRequestRoute(String room, String user) {
 		return config.leaveRoomRequestRoutePrefix + room + "." + user;
+	}
+
+	@Override
+	public void StartGame(String roomName, String username, RoomServerResponseHandler handler) {
+
+		if (isWaitingForResponse()) {
+			System.out.println("Rabbit room server proxy is already handling request ...  ");
+			return;
+		}
+
+		if (channelProvider == null || !channelProvider.isConnected()) {
+			System.out.println("Broker channel is not open ... ");
+			System.out.println("Cant send createRoom request ... ");
+			return;
+		}
+
+		var setupRes = setupReceiver(roomName, username, handler);
+		if (!setupRes) {
+			System.out.println("Failed to setup receiver ... ");
+			return;
+		}
+
+		try {
+
+			sendRequest(new StartGameRequestMsg(roomName, username),
+					config.startGameRequestExchange,
+					formStartGameRoute(roomName, username));
+
+		} catch (IOException e) {
+			System.out.println("Exception while sending start game request ... ");
+			System.out.println(e.getMessage());
+			e.printStackTrace();
+		}
+
+	}
+
+	private String formStartGameRoute(String roomName, String playerName) {
+		return config.startGameRequestRoutePrefix + roomName + "." + playerName;
 	}
 
 	@Override
@@ -366,6 +359,23 @@ public class RabbitRoomServerProxy implements RoomServerProxy, ActiveComponent {
 	@Override
 	public boolean isReceivingUpdates() {
 		return (updateHandler != null || updateQueue != null);
+	}
+
+	private void sendRequest(Message message, String topic, String route) throws IOException {
+
+		channel.exchangeDeclare(topic,
+				config.rabbitTopicExchangeKeyword,
+				false,
+				true,
+				null);
+
+		var byteMsg = translator.toByteData(message);
+
+		channel.basicPublish(topic, route, null, byteMsg);
+
+		System.out.println(message.type.toString() + " sent => "
+				+ " topic: " + topic
+				+ " rotue: " + route);
 	}
 
 	@Override

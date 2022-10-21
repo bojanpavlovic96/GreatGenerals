@@ -5,10 +5,13 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import root.communication.PlayerDescription;
 import root.communication.messages.LoginRequest;
 import root.communication.messages.LoginServerResponse;
 import root.communication.messages.LoginServerResponseStatus;
 import root.communication.messages.RegisterRequest;
+import server.model.Player;
+import server.model.PlayerRepository;
 import server.service.LoginResult;
 import server.service.LoginService;
 import server.service.LoginStatus;
@@ -33,9 +36,8 @@ public class LoginController {
 
 	@GetMapping("/ping")
 	public LoginServerResponse ping() {
-		return new LoginServerResponse("ping_username",
-				128,
-				256,
+		return new LoginServerResponse(
+				new PlayerDescription("ping_username", 128, 256),
 				LoginServerResponseStatus.SUCCESS);
 	}
 
@@ -45,8 +47,7 @@ public class LoginController {
 		var username = request.getUsername();
 		var password = request.getPassword();
 
-		var response = new LoginServerResponse();
-		response.setUsername(username);
+		LoginServerResponse response = null;
 
 		LoginResult loginResult = null;
 		try {
@@ -57,14 +58,16 @@ public class LoginController {
 			System.out.println(e.getMessage());
 		}
 
-		if (loginResult == null || loginResult.getLoginStatus() != LoginStatus.Valid) {
-			response.setStatus(mapStatus(loginResult.getLoginStatus()));
+		if (loginResult == null) {
+			response = LoginServerResponse.failed();
+		} else if (loginResult.getLoginStatus() != LoginStatus.Valid) {
+			response = new LoginServerResponse(
+					null,
+					mapStatus(loginResult.getLoginStatus()));
 		} else {
-			// success
-			response.setStatus(mapStatus(loginResult.getLoginStatus()));
-
-			response.setLevel(loginResult.getPlayer().getLevel());
-			response.setPoints(loginResult.getPlayer().getPoints());
+			response = new LoginServerResponse(
+					mapPlayerData(loginResult.getPlayer()),
+					mapStatus(LoginStatus.Valid));
 		}
 
 		return response;
@@ -74,8 +77,7 @@ public class LoginController {
 	@PostMapping("/register")
 	public LoginServerResponse registerPlayer(@RequestBody RegisterRequest request) {
 
-		LoginServerResponse response = new LoginServerResponse();
-		response.setUsername(request.getUsername());
+		LoginServerResponse response = null;
 
 		LoginResult result = null;
 
@@ -84,21 +86,32 @@ public class LoginController {
 					request.getUsername(),
 					request.getPassword())
 					.get();
+
 		} catch (Exception e) {
 			System.out.println("Exception while using login service... ");
 			System.out.println(e.getMessage());
 		}
 
-		if (result == null || result.getLoginStatus() != LoginStatus.Valid) {
-			response.setStatus(mapStatus(result.getLoginStatus()));
+		if (result == null) {
+			response = LoginServerResponse.failed();
+		} else if (result.getLoginStatus() != LoginStatus.Valid) {
+			response = new LoginServerResponse(
+					null,
+					mapStatus(result.getLoginStatus()));
 		} else {
-			response.setStatus(mapStatus(result.getLoginStatus()));
 
-			response.setLevel(result.getPlayer().getLevel());
-			response.setPoints(result.getPlayer().getPoints());
+			response = new LoginServerResponse(
+					mapPlayerData(result.getPlayer()),
+					mapStatus(LoginStatus.Valid));
 		}
 
 		return response;
+	}
+
+	private PlayerDescription mapPlayerData(Player dbPlayer) {
+		return new PlayerDescription(dbPlayer.getName(),
+				dbPlayer.getLevel(),
+				dbPlayer.getPoints());
 	}
 
 	private LoginServerResponseStatus mapStatus(LoginStatus loginStatus) {

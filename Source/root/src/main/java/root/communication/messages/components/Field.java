@@ -1,6 +1,7 @@
 package root.communication.messages.components;
 
 import root.Point2D;
+import root.model.PlayerData;
 
 public class Field {
 
@@ -9,8 +10,9 @@ public class Field {
 	public boolean isVisible;
 	public Unit unit;
 	public Terrain terrain;
-	public PlayerData playerData; // TODO is this necessary ... ? 
 
 	public boolean inBattle;
+
+	public PlayerData owner;
 
 }

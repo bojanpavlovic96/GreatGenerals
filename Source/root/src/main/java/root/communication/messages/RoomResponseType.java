@@ -1,6 +1,6 @@
 package root.communication.messages;
 
-// use form single action responses and room updates
+// used for single action responses and room updates
 public enum RoomResponseType {
 	Success,
 	InvalidRoom,
@@ -10,5 +10,6 @@ public enum RoomResponseType {
 	UnknownFail,
 	PlayerJoined,
 	PlayerLeft,
-	RoomDestroyed
+	RoomDestroyed,
+	GameStarted
 }

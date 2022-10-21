@@ -88,7 +88,7 @@ public class RabbitGameServerProxy
 
 			try {
 				channel.exchangeDeclare(
-						config.serverCommandsExchange,
+						config.serverMessageExchange,
 						config.rabbitTopicExchangeKeyword);
 
 				channel.exchangeDeclare(
@@ -98,7 +98,7 @@ public class RabbitGameServerProxy
 				rcvQueueName = channel.queueDeclare().getQueue();
 				channel.queueBind(
 						rcvQueueName,
-						config.serverCommandsExchange,
+						config.serverMessageExchange,
 						genCommandRoutingKey());
 
 				channel.basicConsume(rcvQueueName, this);
@@ -117,7 +117,7 @@ public class RabbitGameServerProxy
 	}
 
 	private String genCommandRoutingKey() {
-		return config.serverCommandsRoutePrefix + "." + roomName + "." + username;
+		return config.serverMessageRoutePrefix + "." + roomName + "." + username;
 	}
 
 	private String genEventRoutingKey() {
@@ -175,7 +175,7 @@ public class RabbitGameServerProxy
 			BasicProperties properties,
 			byte[] body) throws IOException {
 
-		var newMessage = this.protocolTranslator.toMessage(new String(body));
+		var newMessage = protocolTranslator.toMessage(new String(body));
 		if (newMessage == null) {
 			// debug
 			System.out.println("Failed to translate message ... ");

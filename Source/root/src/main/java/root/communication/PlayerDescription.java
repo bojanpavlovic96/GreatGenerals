@@ -9,12 +9,21 @@ public class PlayerDescription implements PlayerData {
 
 	private Color color;
 
-	public PlayerDescription() {
+	private int level;
+
+	private int points;
+
+	public PlayerDescription(String username, int level, int points) {
+		this.username = username;
+		this.level = level;
+		this.points = points;
 	}
 
-	public PlayerDescription(String username, Color color) {
+	public PlayerDescription(String username, Color color, int level, int points) {
 		this.username = username;
 		this.color = color;
+		this.level = level;
+		this.points = points;
 	}
 
 	@Override
@@ -22,18 +31,37 @@ public class PlayerDescription implements PlayerData {
 		return this.username;
 	}
 
-	// setters could be required for serialization
-	public void setUsername(String username) {
-		this.username = username;
-	}
-
 	@Override
 	public Color getColor() {
 		return this.color;
 	}
 
-	// setters could be required for serialization
+	@Override
+	public int getLevel() {
+		return this.level;
+	}
+
+	@Override
+	public int getPoints() {
+		return this.points;
+	}
+
+	// required for serialization ... 
+
+	public void setPoints(int points) {
+		this.points = points;
+	}
+
+	public void setLevel(int level) {
+		this.level = level;
+	}
+
 	public void setColor(Color color) {
 		this.color = color;
 	}
+
+	public void setUsername(String username) {
+		this.username = username;
+	}
+
 }

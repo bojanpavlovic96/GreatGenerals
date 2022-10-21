@@ -41,11 +41,11 @@ namespace RabbitGameServer.Mediator
 				}
 				else
 				{
-					// player that requested to leave will receive roomResponse
-					// other players will receive roomUpdate
-					// if player that requested to leave was room master other players
-					// will receive roomDestroyed update
-					// if not others will receive playerLeft update
+					// Player that requested to leave will receive roomResponse and
+					// other players will receive roomUpdate.
+					// If player that requested to leave was room master other players
+					// will receive roomDestroyed update and
+					// if not others will receive playerLeft update.
 
 					Console.WriteLine("Player successfully left the room ... ");
 					responseMsg.responseType = RoomResponseType.Success;
@@ -53,9 +53,7 @@ namespace RabbitGameServer.Mediator
 					game.removePlayer(request.username);
 
 					var responseType = RoomResponseType.PlayerLeft;
-					var playersData = game.Players
-						.Select(player => new PlayerData(player, Color.BLUE))
-						.ToList();
+					var playersData = game.Players;
 
 					if (game.isMaster(request.username))
 					{
@@ -73,7 +71,7 @@ namespace RabbitGameServer.Mediator
 						var updateReq = new SendUpdateRequest(request.roomName,
 								player.username,
 								message);
-								
+
 						mediator.Send(updateReq);
 					}
 

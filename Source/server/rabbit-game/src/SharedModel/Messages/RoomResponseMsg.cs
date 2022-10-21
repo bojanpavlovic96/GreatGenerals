@@ -16,5 +16,11 @@ namespace RabbitGameServer.SharedModel.Messages
 			this.responseType = type;
 			this.players = players;
 		}
+
+		public static RoomResponseMsg unknownFail()
+		{
+			return new RoomResponseMsg(null, null, RoomResponseType.UnknownFail, null);
+		}
+
 	}
 }

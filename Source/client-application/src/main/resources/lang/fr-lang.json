@@ -92,11 +92,11 @@
 	},
 	"successfulLeft": {
 		"message": "FR Successfully left room",
-		"color": "#ff6666"
+		"color": "#00ff66"
 	},
 	"newPlayerJoined": {
 		"message": "FR New player joined",
-		"color": "#ff6666"
+		"color": "#00ff66"
 	},
 	"playerLeft": {
 		"message": "FR Player left",
@@ -105,5 +105,13 @@
 	"roomDestroyed": {
 		"message": "FR Room destroyed",
 		"color": "#ff6666"
+	},
+	"gameStarted": {
+		"message": "Game started",
+		"color": "#00ff66"
+	},
+	"unknownError": {
+		"message": "Unknown error",
+		"color": "#ff0000"
 	}
 }

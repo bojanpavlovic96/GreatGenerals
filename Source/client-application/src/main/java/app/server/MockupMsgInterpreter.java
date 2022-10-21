@@ -35,12 +35,18 @@ public class MockupMsgInterpreter implements MessageInterpreter {
 
 			var players = new ArrayList<PlayerData>();
 			for (var player : initMsg.players) {
-				players.add(new PlayerModelData(player.username, player.color));
+				var newModel = new PlayerModelData(player.getUsername(),
+						player.getColor(),
+						player.getLevel(),
+						player.getPoints());
+
+				players.add(newModel);
 			}
 
 			var fieldsDesc = new ArrayList<CtrlInitializeCommand.FieldDesc>();
 			for (var msgField : initMsg.fields) {
-				var playerData = findPlayerIn(msgField.playerData.username, players);
+
+				var playerData = findPlayerIn(msgField.owner.getUsername(), players);
 				var unitDesc = new CtrlInitializeCommand.UnitDesc(
 						msgField.unit.unitName,
 						msgField.unit.moveType,

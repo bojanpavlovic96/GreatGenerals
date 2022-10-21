@@ -1,5 +1,7 @@
+using Microsoft.Extensions.Options;
 using RabbitGameServer.Client;
 using RabbitGameServer.Database;
+using RabbitGameServer.SharedModel;
 
 namespace RabbitGameServer.Game
 {
@@ -18,7 +20,11 @@ namespace RabbitGameServer.Game
 
 		private IPlayerProxy playerProxy;
 
-		public GamePool(IDatabase database, IPlayerProxy playerProxy)
+		private GameConfig config;
+
+		public GamePool(IDatabase database,
+				IPlayerProxy playerProxy,
+				IOptions<GameConfig> config)
 		{
 			Console.WriteLine("Creating gamePool ... ");
 
@@ -27,19 +33,21 @@ namespace RabbitGameServer.Game
 
 			this.database = database;
 			this.playerProxy = playerProxy;
+			this.config = config.Value;
 
 			games = new Dictionary<string, GameMaster>();
 
 		}
 
 		public GameMaster CreateGame(string roomName,
-							string masterPlayer,
-							string password)
+							string password,
+							PlayerData master)
 		{
 			var newGame = new GameMaster(
 				roomName,
 				password,
-				masterPlayer,
+				master,
+				config,
 				playerProxy,
 				database,
 				GameDoneHandler);

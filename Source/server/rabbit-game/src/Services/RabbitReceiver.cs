@@ -1,3 +1,4 @@
+using System.Text;
 using MediatR;
 using Microsoft.Extensions.Options;
 using RabbitGameServer.Mediator;
@@ -45,9 +46,20 @@ namespace RabbitGameServer.Service
 
 			await Task.Run(() =>
 			{
+				roomChannel = rabbitConnection.GetChannel();
+				modelEventChannel = rabbitConnection.GetChannel();
+
+				if (roomChannel == null || modelEventChannel == null)
+				{
+					Console.WriteLine("Failed to create channels for rabbit receiver ... ");
+					return;
+				}
+
 				setupNewRoomEventConsumer();
 				setupJoinRoomConsumer();
 				setupLeaveRoomConsumer();
+				setupStartGameConsumer();
+
 				setupModelEventConsumer();
 
 				Console.WriteLine("RabbitReceiver started");
@@ -57,8 +69,6 @@ namespace RabbitGameServer.Service
 
 		private void setupNewRoomEventConsumer()
 		{
-			roomChannel = rabbitConnection.GetChannel();
-
 			roomChannel.ExchangeDeclare(queuesConfig.RoomsRequestTopic,
 								"topic",
 								false,
@@ -77,7 +87,7 @@ namespace RabbitGameServer.Service
 
 			roomChannel.BasicConsume(newGameQueue, false, consumer);
 
-			Console.WriteLine("NewGameEventConsumer started");
+			Console.WriteLine("NewRoomEventConsumer started");
 
 			return;
 		}
@@ -90,14 +100,13 @@ namespace RabbitGameServer.Service
 			var roomMsg = (CreateRoomMsg)message;
 			var request = new CreateRoomRequest(roomMsg.roomName,
 								roomMsg.password,
-								roomMsg.player);
+								roomMsg.username);
 
 			mediator.Send(request);
 		}
 
 		private void setupModelEventConsumer()
 		{
-			modelEventChannel = rabbitConnection.GetChannel();
 
 			modelEventChannel.ExchangeDeclare(queuesConfig.ModelEventTopic,
 								"topic",
@@ -142,7 +151,7 @@ namespace RabbitGameServer.Service
 
 			roomChannel.BasicConsume(joinRoomQueue, false, consumer);
 
-			Console.WriteLine($"JoinGameEventConsumer started ... ");
+			Console.WriteLine($"JoinRoomEventConsumer started ... ");
 			Console.WriteLine($"{queuesConfig.RoomsRequestTopic} - {queuesConfig.JoinRoomRoute}{queuesConfig.MatchAllWildcard}");
 
 			return;
@@ -155,7 +164,7 @@ namespace RabbitGameServer.Service
 			var message = protocolTranslator.ToMessage(ea.Body.ToArray());
 
 			var request = new JoinRoomRequest(message.roomName,
-					message.player,
+					message.username,
 					((JoinRoomMessage)message).password);
 
 			mediator.Send(request);
@@ -174,7 +183,7 @@ namespace RabbitGameServer.Service
 
 			roomChannel.BasicConsume(leaveRoomQueue, false, consumer);
 
-			Console.WriteLine($"LeaveGameEventConsumer started ... ");
+			Console.WriteLine($"LeaveRoomEventConsumer started ... ");
 			Console.WriteLine($"{queuesConfig.RoomsRequestTopic} - {queuesConfig.LeaveRoomRoute}{queuesConfig.MatchAllWildcard}");
 
 			return;
@@ -185,10 +194,40 @@ namespace RabbitGameServer.Service
 			Console.WriteLine("Received leave room event ... ");
 
 			var message = protocolTranslator.ToMessage(ea.Body.ToArray());
-
-			var request = new LeaveRoomRequest(message.roomName, message.player);
+			var request = new LeaveRoomRequest(message.roomName, message.username);
 
 			mediator.Send(request);
+		}
+
+		private void setupStartGameConsumer()
+		{
+			var startGameQueue = roomChannel.QueueDeclare().QueueName;
+
+			roomChannel.QueueBind(startGameQueue,
+						queuesConfig.RoomsRequestTopic,
+						queuesConfig.StartGameRoute + queuesConfig.MatchAllWildcard,
+						null);
+			var consumer = new EventingBasicConsumer(roomChannel);
+			consumer.Received += StartGameEventHandler;
+
+			roomChannel.BasicConsume(startGameQueue, false, consumer);
+
+			Console.WriteLine($"StartGameEventConsumer started ... ");
+			Console.WriteLine($"{queuesConfig.RoomsRequestTopic} - {queuesConfig.StartGameRoute}{queuesConfig.MatchAllWildcard}");
+
+			return;
+		}
+
+		private void StartGameEventHandler(object? sender, BasicDeliverEventArgs ea)
+		{
+
+			Console.WriteLine("Received start game room request ... ");
+
+			var message = protocolTranslator.ToMessage(ea.Body.ToArray());
+			var request = new StartGameRequest(message.roomName, message.username);
+
+			mediator.Send(request);
+
 		}
 
 	}
