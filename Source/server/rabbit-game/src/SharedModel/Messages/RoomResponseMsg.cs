@@ -7,9 +7,9 @@ namespace RabbitGameServer.SharedModel.Messages
 
 		public List<PlayerData> players;
 
-		public RoomResponseMsg(string player,
+		public RoomResponseMsg(RoomResponseType type,
+			string player,
 			string roomName,
-			RoomResponseType type,
 			List<PlayerData> players)
 			: base(MessageType.JoinResponse, player, roomName)
 		{
@@ -19,7 +19,15 @@ namespace RabbitGameServer.SharedModel.Messages
 
 		public static RoomResponseMsg unknownFail()
 		{
-			return new RoomResponseMsg(null, null, RoomResponseType.UnknownFail, null);
+			return new RoomResponseMsg(RoomResponseType.UnknownFail, null, null, null);
+		}
+
+		public static RoomResponseMsg success(string requester,
+				string roomName,
+				List<PlayerData> players)
+		{
+
+			return new RoomResponseMsg(RoomResponseType.Success, requester, roomName, players);
 		}
 
 	}

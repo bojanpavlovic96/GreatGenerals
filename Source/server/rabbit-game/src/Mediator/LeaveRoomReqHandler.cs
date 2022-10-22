@@ -22,62 +22,78 @@ namespace RabbitGameServer.Mediator
 
 			var game = gamePool.GetGame(request.roomName);
 
-			var responseMsg = new RoomResponseMsg(request.username, request.roomName,
-					RoomResponseType.UnknownFail, new List<PlayerData>());
+			RoomResponseMsg responseMsg;
 
 			if (game == null)
 			{
 				Console.WriteLine($"Requested to leave nonexistent room: {request.roomName}");
+				responseMsg = new RoomResponseMsg(RoomResponseType.InvalidRoom,
+						request.username,
+						request.roomName,
+						null);
 
-				responseMsg.responseType = RoomResponseType.InvalidRoom;
+			}
+			else if (!game.hasPlayer(request.username))
+			{
+				Console.WriteLine($"There is not such player: " + request.username);
+				responseMsg = new RoomResponseMsg(RoomResponseType.InvalidPlayer,
+						request.username,
+						request.roomName,
+						null);
 			}
 			else
 			{
+				// Player that requested to leave will receive roomResponse.
 
-				if (!game.hasPlayer(request.username))
+				// If player that requested to leave was room master:
+				// others will receive roomDestroyed update.
+				// else
+				// others will receive playerLeft update.
+
+				Console.WriteLine("Player successfully left the room ... ");
+
+				responseMsg = RoomResponseMsg.success(request.username,
+						request.roomName,
+						game.Players);
+				// Since this player left the room he does't really need to know who
+				// else is till in the room but I will leave game.Players instead of null
+				// or empty list as the last argument just for debug purposes. 
+
+				game.removePlayer(request.username);
+
+
+				RoomResponseType updateType;
+
+				if (game.isMaster(request.username))
 				{
-					Console.WriteLine($"There is not such player: " + request.username);
-					responseMsg.responseType = RoomResponseType.InvalidPlayer;
+					updateType = RoomResponseType.RoomDestroyed;
 				}
 				else
 				{
-					// Player that requested to leave will receive roomResponse and
-					// other players will receive roomUpdate.
-					// If player that requested to leave was room master other players
-					// will receive roomDestroyed update and
-					// if not others will receive playerLeft update.
+					updateType = RoomResponseType.PlayerLeft;
+				}
 
-					Console.WriteLine("Player successfully left the room ... ");
-					responseMsg.responseType = RoomResponseType.Success;
+				foreach (var player in game.Players)
+				{
+					var updateMsg = new RoomResponseMsg(updateType,
+							request.username,
+							request.roomName,
+							game.Players);
 
-					game.removePlayer(request.username);
+					var updateReq = new SendUpdateRequest(request.roomName,
+							player.username,
+							updateMsg);
 
-					var responseType = RoomResponseType.PlayerLeft;
-					var playersData = game.Players;
+					mediator.Send(updateReq);
+				}
 
-					if (game.isMaster(request.username))
-					{
-						responseType = RoomResponseType.RoomDestroyed;
-						gamePool.destroyGame(request.roomName);
-					}
-
-					foreach (var player in playersData)
-					{
-						var message = new RoomResponseMsg(player.username,
-								request.roomName,
-								responseType,
-								playersData);
-
-						var updateReq = new SendUpdateRequest(request.roomName,
-								player.username,
-								message);
-
-						mediator.Send(updateReq);
-					}
-
+				if (game.isMaster(request.username))
+				{
+					gamePool.destroyGame(request.roomName);
 				}
 
 			}
+
 
 			var sendReq = new SendResponseRequest(request.roomName,
 					request.username,

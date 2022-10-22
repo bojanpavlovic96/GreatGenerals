@@ -1,7 +1,5 @@
 package app.form;
 
-import java.util.function.Predicate;
-
 import app.event.FormMessageHandler;
 import app.event.RoomFormActionHandler;
 import app.resource_manager.Language;
@@ -12,14 +10,11 @@ import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
-import javafx.scene.Node;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
 import javafx.scene.control.PasswordField;
-import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TextField;
-import javafx.scene.layout.Border;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Font;
 import root.communication.PlayerDescription;
@@ -271,13 +266,13 @@ public class RoomForm extends VBox
 	}
 
 	public void showPlayers() {
+		this.playersLb.setVisible(true);
 		this.playersLW.setVisible(true);
-		// playersVb.setVisible(true);
 	}
 
 	public void hidePlayers() {
+		this.playersLb.setVisible(false);
 		this.playersLW.setVisible(false);
-		// playersVb.setVisible(false);
 	}
 
 	// public void disableStartingGame() {

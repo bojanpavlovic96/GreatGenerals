@@ -84,7 +84,7 @@ namespace RabbitGameServer.Mediator
 		private void sendResponse(string player, string room, RoomResponseType status,
 				List<PlayerData> players)
 		{
-			var message = new RoomResponseMsg(player, room, status, players);
+			var message = new RoomResponseMsg(status, player, room, players);
 			var sendResponseReq = new SendResponseRequest(room, player, message);
 
 			mediator.Send(sendResponseReq);
@@ -97,7 +97,7 @@ namespace RabbitGameServer.Mediator
 			RoomResponseType type,
 			List<PlayerData> players)
 		{
-			var message = new RoomResponseMsg(player, room, type, players);
+			var message = new RoomResponseMsg(type, player, room, players);
 			var sendReq = new SendUpdateRequest(room, player, message);
 
 			mediator.Send(sendReq);

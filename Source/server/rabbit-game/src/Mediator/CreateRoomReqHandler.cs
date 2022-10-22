@@ -30,9 +30,9 @@ namespace RabbitGameServer.Mediator
 			{
 				Console.WriteLine("Requested room already exists ... ");
 
-				message = new RoomResponseMsg(request.masterPlayer,
+				message = new RoomResponseMsg(RoomResponseType.InvalidRoom,
+					request.masterPlayer,
 					request.roomName,
-					RoomResponseType.InvalidRoom,
 					new List<PlayerData>());
 			}
 			else
@@ -49,9 +49,9 @@ namespace RabbitGameServer.Mediator
 						request.password,
 						playerData);
 
-					message = new RoomResponseMsg(request.masterPlayer,
+					message = new RoomResponseMsg(RoomResponseType.Success,
+						request.masterPlayer,
 						request.roomName,
-						RoomResponseType.Success,
 						newGame.Players);
 				}
 				else

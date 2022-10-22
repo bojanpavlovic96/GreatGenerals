@@ -183,7 +183,7 @@ public class StartPageController implements GameReadyEventProducer, ActiveCompon
 			showInfoMessage(Language.MessageType.NewPlayerJoined);
 
 			// var newPlayer = filterNewPlayer(response.players);
-			var newPlayer = filterNewPlayer2(response.players, response.username);
+			var newPlayer = filterNewPlayer(response.players, response.username);
 
 			if (newPlayer == null) {
 				System.out.println("ERROR, new player has null as a username ... ");
@@ -200,7 +200,6 @@ public class StartPageController implements GameReadyEventProducer, ActiveCompon
 
 			showInfoMessage(Language.MessageType.PlayerLeft);
 
-			// var whoLeft = filterWhoLeft(response.players);
 			var whoLeft = response.username;
 
 			players.removeIf((player) -> player.getUsername().equals(whoLeft));
@@ -212,17 +211,17 @@ public class StartPageController implements GameReadyEventProducer, ActiveCompon
 			}
 
 		} else if (response.responseType == RoomResponseType.RoomDestroyed) {
-			// this will be called with the leaveRoomResponse 
-			// nothing bad will happen ... but ... but 
-			showInfoMessage(Language.MessageType.RoomDestroyed);
 			System.out.println("Room destroyed update ... ");
+			showInfoMessage(Language.MessageType.RoomDestroyed);
 
 			players.clear();
 
 			roomServer.UnsubFromRoomUpdates();
 
 			initialPage.clearPlayers();
+			initialPage.hidePlayers();
 			initialPage.disableGameStart();
+			initialPage.disableLeaveRoom();
 			initialPage.enableCreateRoom();
 			initialPage.enableJoinRoom();
 		} else if (response.responseType == RoomResponseType.GameStarted) {
@@ -241,17 +240,17 @@ public class StartPageController implements GameReadyEventProducer, ActiveCompon
 
 	}
 
-	private PlayerDescription filterNewPlayer(List<PlayerDescription> newPlayers) {
-		for (var newPlayer : newPlayers) {
-			if (!players.contains(newPlayer.getUsername())) {
-				return newPlayer;
-			}
-		}
+	// private PlayerDescription filterNewPlayer(List<PlayerDescription> newPlayers) {
+	// 	for (var newPlayer : newPlayers) {
+	// 		if (!players.contains(newPlayer.getUsername())) {
+	// 			return newPlayer;
+	// 		}
+	// 	}
 
-		return null;
-	}
+	// 	return null;
+	// }
 
-	private PlayerDescription filterNewPlayer2(List<PlayerDescription> newPlayers, String name) {
+	private PlayerDescription filterNewPlayer(List<PlayerDescription> newPlayers, String name) {
 		for (var player : newPlayers) {
 			if (player.getUsername().equals(name)) {
 				return player;
@@ -300,6 +299,10 @@ public class StartPageController implements GameReadyEventProducer, ActiveCompon
 						for (var player : response.players) {
 							initialPage.addPlayer(player);
 						}
+
+						roomServer.SubscribeForRoomUpdates(response.roomName,
+								response.username,
+								this::roomUpdateHandler);
 
 					} else if (response.responseType == RoomResponseType.WrongPassword) {
 						System.out.println("Wrong room password ... ");
@@ -363,7 +366,7 @@ public class StartPageController implements GameReadyEventProducer, ActiveCompon
 				(RoomResponseMsg response) -> {
 
 					if (response.responseType == RoomResponseType.Success) {
-						System.out.println("Successfull started game ... ");
+						System.out.println("Successfully started game ... ");
 						showInfoMessage(Language.MessageType.GameStarted);
 
 						initialPage.disableCreateRoom();
