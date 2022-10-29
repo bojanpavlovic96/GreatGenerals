@@ -7,12 +7,13 @@ import root.model.action.attack.AttackType;
 import root.model.action.move.MoveType;
 import root.model.component.Field;
 import root.model.component.Unit;
+import root.model.component.UnitType;
 import root.model.event.ModelEventHandler;
 
 public class BasicUnit implements Unit {
 
-	// TODO should be enum ? 
-	public static final String unitName = "basic-unit";
+	// public static final String unitName = "basic-unit"; // was 
+	// public static final String unitName = "basicunit";
 
 	private Field myField;
 
@@ -27,7 +28,6 @@ public class BasicUnit implements Unit {
 	}
 
 	public BasicUnit(MoveType move, List<AttackType> attacks) {
-
 		this.movementType = move;
 		this.attacks = attacks;
 	}
@@ -40,8 +40,8 @@ public class BasicUnit implements Unit {
 	}
 
 	@Override
-	public String getUnitName() {
-		return BasicUnit.unitName;
+	public UnitType getUnitType() {
+		return UnitType.basicunit;
 	}
 
 	@Override

@@ -11,8 +11,6 @@ import root.view.field.ViewField;
 // does not look like this is actually used ... 
 public class ComplexSelectFieldCommand extends Command {
 
-	public static final String commandName = "select-field-view-command";
-
 	private Color filterColor;
 
 	private Field modelField;
@@ -22,7 +20,6 @@ public class ComplexSelectFieldCommand extends Command {
 	private static Color default_filter_color = Color.rgb(100, 10, 10, 0.5);
 
 	public ComplexSelectFieldCommand(Field modelField) {
-		super(ComplexSelectFieldCommand.commandName);
 
 		this.filterColor = ComplexSelectFieldCommand.default_filter_color;
 

@@ -14,7 +14,6 @@ public class ComplexUnselectFieldCommand extends Command {
 	private ViewField viewField;
 
 	public ComplexUnselectFieldCommand(Field model) {
-		super("unselect-field-view-command");
 
 		this.modelField = model;
 

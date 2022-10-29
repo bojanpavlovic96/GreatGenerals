@@ -216,21 +216,21 @@ public class ResourceManager {
 		return ResourceManager.ASSETS_TYPE;
 	}
 
-	public Image getTerrain(String terrain_name, int intensity) {
+	public Image getTerrain(String terrainName, int intensity) {
 
-		return this.assets.get(this.constructTerrainKey(terrain_name, intensity));
-
-	}
-
-	public Image getUnit(String unit_name) {
-
-		return this.assets.get(this.constructUnitKey(unit_name));
+		return this.assets.get(this.constructTerrainKey(terrainName, intensity));
 
 	}
 
-	private String constructTerrainKey(String terrain_name, int intensity) {
+	public Image getUnit(String unitName) {
 
-		return ResourceManager.TERRAIN_KEY_PREFIX + terrain_name + "-" + this.scaleIntensity(intensity);
+		return this.assets.get(this.constructUnitKey(unitName));
+
+	}
+
+	private String constructTerrainKey(String terrainName, int intensity) {
+
+		return ResourceManager.TERRAIN_KEY_PREFIX + terrainName + "-" + this.scaleIntensity(intensity);
 
 	}
 
@@ -241,9 +241,9 @@ public class ResourceManager {
 
 	}
 
-	private String constructUnitKey(String unit_name) {
+	private String constructUnitKey(String unitName) {
 
-		return ResourceManager.UNIT_KEY_PREFIX + unit_name;
+		return ResourceManager.UNIT_KEY_PREFIX + unitName;
 
 	}
 

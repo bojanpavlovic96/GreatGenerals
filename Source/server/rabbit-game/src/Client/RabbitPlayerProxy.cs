@@ -24,7 +24,6 @@ namespace RabbitGameServer.Client
 			this.translator = translator;
 
 			channel = connection.GetChannel();
-
 		}
 
 		public void sendRoomResponse(string roomName, string playerId, Message newMessage)
@@ -44,37 +43,11 @@ namespace RabbitGameServer.Client
 				Console.WriteLine(e.StackTrace);
 			}
 
-			return;
-
-			var byteContent = translator.ToByteData(newMessage);
-
-			channel.ExchangeDeclare(config.RoomsResponseTopic, "topic",
-								false,
-								true,
-								null);
-
-			var topic = config.RoomsResponseTopic;
-			var route = formResponseRoute(roomName, playerId);
-			Console.WriteLine($"Publishing on: {topic} - {route}");
-
-			try
-			{
-				channel.BasicPublish(config.RoomsResponseTopic,
-					formResponseRoute(roomName, playerId),
-					null,
-					byteContent);
-			}
-			catch (Exception e)
-			{
-				Console.WriteLine("Failed to publish response message ... ");
-				Console.WriteLine(e.Message);
-			}
-
 		}
 
-		private string formResponseRoute(string roomName, string playerId)
+		private string formResponseRoute(string roomName, string playerName)
 		{
-			return $"{config.RoomResponseRoute}{roomName}.{playerId}";
+			return $"{config.RoomResponseRoute}{roomName}.{playerName}";
 		}
 
 
@@ -127,9 +100,9 @@ namespace RabbitGameServer.Client
 			}
 		}
 
-		private string formUpdateRoute(string roomName, string player)
+		private string formUpdateRoute(string roomName, string playerName)
 		{
-			return $"{config.RoomUpdateRoute}{roomName}.{player}";
+			return $"{config.RoomUpdateRoute}{roomName}.{playerName}";
 		}
 
 		public void sendMessage(string roomName, string player, Message message)
@@ -150,9 +123,9 @@ namespace RabbitGameServer.Client
 			}
 		}
 
-		private string formMessageRoute(string room, string player)
+		private string formMessageRoute(string room, string playerName)
 		{
-			return $"{config.ServerMessageRoutePrefix}{room}.{player}";
+			return $"{config.ServerMessageRoutePrefix}{room}.{playerName}";
 		}
 
 		// throws exception in case of an error 

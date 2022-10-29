@@ -6,6 +6,12 @@ namespace RabbitGameServer.SharedModel
 
 		public double y { get; set; }
 
+		public Point2D(double x, double y)
+		{
+			this.x = x;
+			this.y = y;
+		}
+
 		public override int GetHashCode()
 		{
 			return int.Parse($"{x}{y}");

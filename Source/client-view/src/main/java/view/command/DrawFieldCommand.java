@@ -12,7 +12,6 @@ public class DrawFieldCommand extends Command {
 	private ViewField viewField;
 
 	public DrawFieldCommand(Field model) {
-		super("draw-field-view-command");
 
 		this.model = model;
 

@@ -61,13 +61,24 @@ namespace RabbitGameServer.Mediator
 			if (playerData != null)
 			{
 				Console.WriteLine("User data successfully obtained ... ");
-				// maybe check level, points ... some requirements form the room ... 
+				// maybe check level, points ... some requirements for the room ... 
 				room.addPlayer(playerData);
 
 				Console.WriteLine($"{request.playerName} successfully joined {roomName} ... ");
 
 				sendResponse(playerName, roomName, RoomResponseType.Success, room.Players);
-				sendUpdate(playerName, roomName, RoomResponseType.PlayerJoined, room.Players);
+
+				foreach (var player in room.Players)
+				{
+					if (player.username != request.playerName)
+					{
+						sendUpdate(playerName, roomName, room.Players, player.username);
+					}
+					else
+					{
+						Console.WriteLine($"\tAvoiding {player.username} ... ");
+					}
+				}
 
 			}
 			else
@@ -92,13 +103,13 @@ namespace RabbitGameServer.Mediator
 			return;
 		}
 
-		private void sendUpdate(string player,
+		private void sendUpdate(string whoJoined,
 			string room,
-			RoomResponseType type,
-			List<PlayerData> players)
+			List<PlayerData> players,
+			string whomToSend)
 		{
-			var message = new RoomResponseMsg(type, player, room, players);
-			var sendReq = new SendUpdateRequest(room, player, message);
+			var message = new RoomResponseMsg(RoomResponseType.PlayerJoined, whoJoined, room, players);
+			var sendReq = new SendUpdateRequest(room, whomToSend, message);
 
 			mediator.Send(sendReq);
 		}

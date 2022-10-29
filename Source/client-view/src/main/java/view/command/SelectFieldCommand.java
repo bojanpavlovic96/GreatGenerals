@@ -11,8 +11,6 @@ import root.view.View;
 
 public class SelectFieldCommand extends Command {
 
-	public static final String commandName = "simple-select-field-view-command";
-
 	private Color filterColor;
 
 	private Field modelField;
@@ -22,7 +20,6 @@ public class SelectFieldCommand extends Command {
 	private static Color defaultFilterColor = Color.rgb(1, 0, 0, 0.3);
 
 	public SelectFieldCommand(Field modelField, Color highlightColor) {
-		super(SelectFieldCommand.commandName);
 
 		this.modelField = modelField;
 		this.filterColor = highlightColor;

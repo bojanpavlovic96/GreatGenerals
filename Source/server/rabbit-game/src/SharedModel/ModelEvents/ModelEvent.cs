@@ -1,17 +1,23 @@
 namespace RabbitGameServer.SharedModel.ModelEvents
 {
+
+	public enum ModelEventType
+	{
+		MoveModelEvent,
+		AttackModelEvent,
+		ReadyForInitEvent
+	}
+
 	public class ModelEvent
 	{
 
 		public ModelEventType type { get; set; }
 		public string playerName { get; set; }
-		// TODO move room name to modelEventRequest 
-		// I guess it should be extracted from routing key or something 
-		// because original ModelEventArg (client java version) does not have that
-		// field, but it could be added, this way ModelEventArg would get translated
-		// to the class defined in 'communication protocol' which should be part of
-		// the shared model 
-		public string roomName { get; set; }
 
+		public ModelEvent(ModelEventType type, string playerName)
+		{
+			this.type = type;
+			this.playerName = playerName;
+		}
 	}
 }

@@ -13,7 +13,10 @@ public class ViewTerrain {
 
 	public ViewTerrain(Terrain model) {
 
-		this.terrainName = model.getName();
+		// TODO this does not look good
+		// enum fields have to be the same as the file namse ... 
+		// maybe do some mapping in resouceManger
+		this.terrainName = model.getType().toString();
 		this.intensity = model.getIntensity();
 
 	}

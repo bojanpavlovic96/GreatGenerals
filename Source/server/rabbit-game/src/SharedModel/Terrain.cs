@@ -1,13 +1,19 @@
 namespace RabbitGameServer.SharedModel
 {
+	public enum TerrainType
+	{
+		mountains,
+		watter
+	}
+
 	public class Terrain
 	{
-		public String name;
+		public TerrainType type;
 		public int intensity;
 
-		public Terrain(string name, int intensity)
+		public Terrain(TerrainType type, int intensity)
 		{
-			this.name = name;
+			this.type = type;
 			this.intensity = intensity;
 		}
 	}

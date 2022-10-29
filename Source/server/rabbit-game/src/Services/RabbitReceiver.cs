@@ -1,4 +1,3 @@
-using System.Text;
 using MediatR;
 using Microsoft.Extensions.Options;
 using RabbitGameServer.Mediator;
@@ -94,8 +93,8 @@ namespace RabbitGameServer.Service
 
 		private void NewGameEventHandler(object? sender, BasicDeliverEventArgs ea)
 		{
-			Console.WriteLine("Received new game event");
 			var message = protocolTranslator.ToMessage(ea.Body.ToArray());
+			Console.WriteLine("Received new game event");
 
 			var roomMsg = (CreateRoomMsg)message;
 			var request = new CreateRoomRequest(roomMsg.roomName,
@@ -136,6 +135,10 @@ namespace RabbitGameServer.Service
 
 			var request = new ModelEventRequest(message);
 			mediator.Send(request, masterToken).Wait();
+			// I guess .Wait is so that all events are processed and executed in the
+			// order they were received but since there is single channel/receiver
+			// for all active games this is gonna be major bottleneck I would assume
+			// even with only two active games ... ? 
 		}
 
 		private void setupJoinRoomConsumer()

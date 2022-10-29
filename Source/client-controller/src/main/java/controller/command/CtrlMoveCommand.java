@@ -15,9 +15,6 @@ import view.command.UnselectFieldCommand;
 
 public class CtrlMoveCommand extends Command {
 
-	public static final String name = "move-command";
-
-	// TODO switch to root...Point2D
 	public Point2D startFieldPos;
 	public Field startField;
 
@@ -25,7 +22,7 @@ public class CtrlMoveCommand extends Command {
 	public Field secondField;
 
 	public CtrlMoveCommand(Point2D firstPosition, Point2D secondPosition) {
-		super(CtrlMoveCommand.name);
+		// super(CommandType.CtrlMove);
 
 		this.startFieldPos = firstPosition;
 		this.secondFieldPos = secondPosition;
@@ -107,7 +104,8 @@ public class CtrlMoveCommand extends Command {
 
 		return (Command currentCommand) -> {
 
-			if (currentCommand.getName().equals(SelectFieldCommand.commandName)) {
+			if (currentCommand instanceof SelectFieldCommand) {
+				// if (currentCommand.getName().equals(SelectFieldCommand.commandName)) {
 				var currentPos = ((SelectFieldCommand) currentCommand)
 						.getField()
 						.getStoragePosition();

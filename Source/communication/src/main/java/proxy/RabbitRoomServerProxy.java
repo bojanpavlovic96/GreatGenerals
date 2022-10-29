@@ -46,6 +46,7 @@ public class RabbitRoomServerProxy implements RoomServerProxy, ActiveComponent {
 
 	private boolean setupReceiver(String roomName, String playerName,
 			RoomServerResponseHandler handler) {
+
 		if (channel == null) {
 			channel = channelProvider.getChannel();
 		}
@@ -235,7 +236,7 @@ public class RabbitRoomServerProxy implements RoomServerProxy, ActiveComponent {
 
 		var setupRes = setupReceiver(roomName, username, handler);
 		if (!setupRes) {
-			System.out.println("Failed to setup receiver ... ");
+			System.out.println("Failed to setup startGame response receiver ... ");
 			return;
 		}
 
@@ -291,8 +292,8 @@ public class RabbitRoomServerProxy implements RoomServerProxy, ActiveComponent {
 			channel.basicConsume(updateQueue, consumer);
 
 			System.out.println("Subscribed for room updates ... ");
-			System.out.println("Topic: " + topic);
-			System.out.println("Route: " + route);
+			System.out.println("\tTopic: " + topic);
+			System.out.println("\tRoute: " + route);
 
 		} catch (IOException e) {
 			System.out.println("EXC while subscribing for room updates ... ");
@@ -321,7 +322,7 @@ public class RabbitRoomServerProxy implements RoomServerProxy, ActiveComponent {
 	}
 
 	private String formUpdateRoute(String room, String user) {
-		return config.roomUpdateRoutePrefix + room + "." + config.rabbitMatchAllWildcard;
+		return config.roomUpdateRoutePrefix + room + "." + user;
 	}
 
 	private String formResponseRoute(String room, String user) {

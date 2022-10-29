@@ -11,7 +11,6 @@ public class ZoomInCommand extends Command {
 	private List<Field> fields;
 
 	public ZoomInCommand(List<Field> fields) {
-		super("zoom-in-view-command");
 
 		this.fields = fields;
 	}

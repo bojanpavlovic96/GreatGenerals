@@ -11,11 +11,14 @@ namespace RabbitGameServer
 
 		public static string ConfigSection = "GameConfig";
 
-		public List<string> Colors;
-		public int DefaultPoints;
-		public int DefaultMapSizeX;
-		public int DefaultMapSizeY;
-		public List<Point> DefaultPositions;
+		public List<string> Colors { get; set; }
+		public int DefaultPoints { get; set; }
+		public int DefaultMapSizeX { get; set; }
+		public int DefaultMapSizeY { get; set; }
+		public List<Point> DefaultPositions { get; set; }
+
+		public int MinimumPlayers { get; set; }
+		public int MaximumPlayers { get; set; }
 
 	}
 }

@@ -1,5 +1,6 @@
 package root.command;
 
+// NOT USED
 // tried to replace string Command.name with the enum but ...
 // ctrl and view commands both extend single class
 public enum CommandType {

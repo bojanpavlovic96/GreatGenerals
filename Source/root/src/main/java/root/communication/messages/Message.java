@@ -11,8 +11,8 @@ public class Message {
 		this.type = type;
 	}
 
-	public void setOrigin(String player, String roomName) {
-		this.username = player;
+	public void setOrigin(String username, String roomName) {
+		this.username = username;
 		this.roomName = roomName;
 	}
 

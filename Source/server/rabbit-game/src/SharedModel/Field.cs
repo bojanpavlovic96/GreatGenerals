@@ -7,20 +7,21 @@ namespace RabbitGameServer.SharedModel
 		public bool isVisible;
 		public Unit unit;
 		public Terrain terrain;
-		public PlayerData playerData; // TODO is this necessary ... ? 
+
+		public string owner;
 
 		public bool inBattle;
 
 		public Field(bool isVisible,
 			Unit unit,
 			Terrain terrain,
-			PlayerData playerData,
+			string owner,
 			bool inBattle)
 		{
 			this.isVisible = isVisible;
 			this.unit = unit;
 			this.terrain = terrain;
-			this.playerData = playerData;
+			this.owner = owner;
 			this.inBattle = inBattle;
 		}
 	}

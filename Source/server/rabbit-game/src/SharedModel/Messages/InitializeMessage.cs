@@ -7,9 +7,10 @@ namespace RabbitGameServer.SharedModel.Messages
 		public List<Field> fields;
 
 		public InitializeMessage(string roomName,
+			string username,
 			List<PlayerData> players,
 			List<Field> fields)
-			: base(MessageType.InitializeMessage, "", roomName)
+			: base(MessageType.InitializeMessage, username, roomName)
 		{
 
 			this.players = players;

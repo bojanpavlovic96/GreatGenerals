@@ -11,8 +11,6 @@ import root.view.View;
 
 public class SelectUnitPathCommand extends Command {
 
-	public static final String commandName = "select-unit-path-command";
-
 	// TODO this should be read from some manager or config
 	private static final Color defaultHighlightColor = Color.rgb(100, 10, 10, 0.5);
 
@@ -23,7 +21,6 @@ public class SelectUnitPathCommand extends Command {
 
 	// TODO this command might be useless
 	public SelectUnitPathCommand(Field modelField) {
-		super(SelectUnitPathCommand.commandName);
 
 		this.modelField = modelField;
 		this.highlightColor = SelectUnitPathCommand.defaultHighlightColor;

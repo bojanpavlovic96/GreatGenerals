@@ -13,7 +13,7 @@ public interface Field {
 
 	Unit getUnit();
 
-	void setUnit(Unit new_unit);
+	void setUnit(Unit newUnit);
 
 	Terrain getTerrain();
 
@@ -21,17 +21,16 @@ public interface Field {
 
 	Point2D getStoragePosition();
 
-	void setModelEventHandler(ModelEventHandler event_handler);
+	void setModelEventHandler(ModelEventHandler eventHandler);
 
 	boolean isInBattle();
 
-	// TODO maybe better solution (next 2 methods) than initializeFieldOptions
 	void addFieldOptions(List<FieldOption> options);
 
 	void addFieldOption(FieldOption option);
 
 	List<FieldOption> getEnabledOptions();
 
-	void adjustOptionsFor(Field second_field);
+	void adjustOptionsFor(Field secondField);
 
 }

@@ -11,7 +11,6 @@ public class ZoomOutCommand extends Command {
 	private List<Field> fields;
 
 	public ZoomOutCommand(List<Field> fields) {
-		super("zoom-in-view-command");
 
 		this.fields = fields;
 	}
@@ -20,7 +19,6 @@ public class ZoomOutCommand extends Command {
 
 		// view.zoomOut return true if it is possible to zoom out
 		if (((View) super.targetComponent).zoomOut()) {
-
 
 			// note board is already cleared inside load board command
 			// ClearViewCommand clear_view_command = new ClearViewCommand();

@@ -9,13 +9,10 @@ import root.view.View;
 
 public class UnselectFieldCommand extends Command {
 
-	public static final String commandName = "simple-unselect-field-view-command";
-
 	private Field modelField;
 	private ViewField viewField;
 
 	public UnselectFieldCommand(Field modelField) {
-		super(UnselectFieldCommand.commandName);
 
 		this.modelField = modelField;
 	}

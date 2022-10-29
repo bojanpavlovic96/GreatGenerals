@@ -1,5 +1,6 @@
 package proxy;
 
 public enum RabbitConnectionEventType {
-	CONNECTION, DISCONNECTION
+	CONNECTION,
+	DISCONNECTION
 }

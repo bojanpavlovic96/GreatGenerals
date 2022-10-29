@@ -9,7 +9,7 @@ public class AttackModelEventArg extends ModelEventArg {
 	public Point2D destinationField;
 
 	public AttackModelEventArg(String playerName, Point2D srcField, Point2D destField) {
-		super(ModelEventArg.EventType.AttackModelEvent, playerName);
+		super(ModelEventArg.ModelEventType.Attack, playerName);
 
 		this.sourceField = srcField;
 		this.destinationField = destField;

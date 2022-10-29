@@ -4,14 +4,15 @@ import java.util.HashMap;
 import java.util.Map;
 
 import root.model.component.Unit;
+import root.model.component.UnitType;
 
 public class UnitFactory {
 
-	private Map<String, Unit> prototypes;
+	private Map<UnitType, Unit> prototypes;
 
 	public UnitFactory() {
 
-		this.prototypes = new HashMap<String, Unit>();
+		this.prototypes = new HashMap<UnitType, Unit>();
 
 	}
 
@@ -40,7 +41,7 @@ public class UnitFactory {
 
 	public void addPrototype(Unit newPrototype) {
 
-		this.prototypes.put(newPrototype.getUnitName(), newPrototype);
+		this.prototypes.put(newPrototype.getUnitType(), newPrototype);
 
 	}
 

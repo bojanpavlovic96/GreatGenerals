@@ -6,13 +6,10 @@ import root.view.field.ViewField;
 
 public class UnselectUnitPath extends Command {
 
-	public static final String commandName = "unselect-unit-path-command";
-
 	private Field modelField;
 	private ViewField viewField;
 
 	public UnselectUnitPath() {
-		super(UnselectUnitPath.commandName);
 	}
 
 	@Override

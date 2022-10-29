@@ -1,22 +1,20 @@
 package model.event;
 
 import root.Point2D;
-// import javafx.geometry.Point2D;
 import root.model.event.ModelEventArg;
 
 public class MoveModelEventArg extends ModelEventArg {
 
-	// TODO change this to private 
-	// switched to public with point2D serialization bug
-	public Point2D sourceField; // move from
-	public Point2D destinationField; // move to
+	private Point2D sourceField;
+	private Point2D destinationField;
 
-	public MoveModelEventArg(String player_name, Point2D sourceField, Point2D destinationField) {
-		super(ModelEventArg.EventType.MoveModelEvent, player_name);
+	public MoveModelEventArg(String playerName,
+			Point2D sourceField,
+			Point2D destinationField) {
+		super(ModelEventArg.ModelEventType.Move, playerName);
 
 		setSourceField(sourceField);
 		setDestinationField(destinationField);
-
 	}
 
 	public Point2D getSourceField() {

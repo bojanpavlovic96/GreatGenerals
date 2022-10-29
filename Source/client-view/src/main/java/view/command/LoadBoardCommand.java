@@ -12,7 +12,6 @@ public class LoadBoardCommand extends Command {
 	private List<Field> models;
 
 	public LoadBoardCommand(List<Field> fields) {
-		super("load-board-view-command");
 
 		this.models = fields;
 

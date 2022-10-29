@@ -7,7 +7,6 @@ import root.view.View;
 public class ClearViewCommand extends Command {
 
 	public ClearViewCommand() {
-		super("clear-view-view-command");
 	}
 
 	public void run() {

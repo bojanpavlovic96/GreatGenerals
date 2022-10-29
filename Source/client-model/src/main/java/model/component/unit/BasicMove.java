@@ -39,6 +39,7 @@ public class BasicMove extends MoveType {
 
 			Field nextField = path.get(0);
 
+			// TODO this logic should be at the server side 
 			if (nextField.getUnit() != null) {
 				// debug
 				System.out.println("Recalculating path ...");

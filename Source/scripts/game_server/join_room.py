@@ -14,7 +14,7 @@ MESSAGE_NAME = "JoinRoomRequest"
 
 ROOM_NAME = "some"
 ROOM_PASSWORD = "room"
-ROOM_USER = "some_user_2"
+ROOM_USER = "abc"
 
 PUBLISH_TOPIC = "gg_rooms_req"
 PUBLISH_ROUTE = "join_room" + "." + ROOM_NAME + "." + ROOM_USER

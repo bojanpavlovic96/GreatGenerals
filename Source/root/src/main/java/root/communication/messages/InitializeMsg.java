@@ -7,8 +7,6 @@ import root.communication.messages.components.Field;
 
 public class InitializeMsg extends Message {
 
-	public String username;
-
 	public List<PlayerDescription> players;
 	public List<Field> fields;
 

@@ -12,8 +12,6 @@ public class ClearFieldCommand extends Command {
 	private ViewField viewField;
 
 	public ClearFieldCommand(Field model) {
-		super("clear-field-view-command");
-
 		this.model = model;
 
 	}

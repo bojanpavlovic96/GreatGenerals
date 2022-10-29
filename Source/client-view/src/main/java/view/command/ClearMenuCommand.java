@@ -7,7 +7,6 @@ import root.view.View;
 public class ClearMenuCommand extends Command {
 
 	public ClearMenuCommand() {
-		super("clear-menu-view-command");
 	}
 
 	@Override

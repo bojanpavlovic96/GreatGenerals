@@ -27,7 +27,6 @@ public class StartPageController implements GameReadyEventProducer, ActiveCompon
 	private PlayerDescription player;
 
 	private String roomName;
-	private String roomPassword;
 
 	private List<PlayerDescription> players;
 
@@ -81,6 +80,7 @@ public class StartPageController implements GameReadyEventProducer, ActiveCompon
 
 						initialPage.hideUserForm();
 						initialPage.showRoomForm();
+						initialPage.disableLeaveRoom();
 
 					} else {
 						System.out.println("Login failed ... ");
@@ -175,7 +175,7 @@ public class StartPageController implements GameReadyEventProducer, ActiveCompon
 	}
 
 	private void roomUpdateHandler(RoomResponseMsg response) {
-		System.out.println("New room update received ... ");
+		System.out.println("Handling room update ... ");
 
 		if (response.responseType == RoomResponseType.PlayerJoined) {
 			System.out.println("Player joined update ... ");
@@ -226,10 +226,13 @@ public class StartPageController implements GameReadyEventProducer, ActiveCompon
 			initialPage.enableJoinRoom();
 		} else if (response.responseType == RoomResponseType.GameStarted) {
 
-			System.out.println("Game started ... ");
+			System.out.println("Successfully started game ... ");
+			showInfoMessage(Language.MessageType.GameStarted);
 
 			roomServer.UnsubFromRoomUpdates();
-			initialPage.hidePage();
+			// initialPage.hidePage();
+
+			// TODO maybe close rabbit connection in roomProxy 
 
 			onGameReady.execute(response.username, response.roomName);
 
@@ -240,16 +243,6 @@ public class StartPageController implements GameReadyEventProducer, ActiveCompon
 
 	}
 
-	// private PlayerDescription filterNewPlayer(List<PlayerDescription> newPlayers) {
-	// 	for (var newPlayer : newPlayers) {
-	// 		if (!players.contains(newPlayer.getUsername())) {
-	// 			return newPlayer;
-	// 		}
-	// 	}
-
-	// 	return null;
-	// }
-
 	private PlayerDescription filterNewPlayer(List<PlayerDescription> newPlayers, String name) {
 		for (var player : newPlayers) {
 			if (player.getUsername().equals(name)) {
@@ -259,18 +252,6 @@ public class StartPageController implements GameReadyEventProducer, ActiveCompon
 
 		return null;
 	}
-
-	// private String filterWhoLeft(List<PlayerDescription> currPlayers) {
-	// 	var updatedNames = currPlayers.stream().map((player) -> player.getUsername()).toList();
-
-	// 	for (var name : this.players) {
-	// 		if (!updatedNames.contains(name)) {
-	// 			return name;
-	// 		}
-	// 	}
-
-	// 	return null;
-	// }
 
 	private void joinRoomActionHandler(String roomName, String roomPassword) {
 		if (roomServer == null || !roomServer.isReady()) {
@@ -364,22 +345,26 @@ public class StartPageController implements GameReadyEventProducer, ActiveCompon
 
 		roomServer.StartGame(roomName, player.getUsername(),
 				(RoomResponseMsg response) -> {
+					System.out.println("Received start game response ... ");
 
 					if (response.responseType == RoomResponseType.Success) {
 						System.out.println("Successfully started game ... ");
 						showInfoMessage(Language.MessageType.GameStarted);
 
-						initialPage.disableCreateRoom();
-						initialPage.disableJoinRoom();
-						initialPage.disableLeaveRoom();
-						initialPage.disableGameStart();
+						// TODO maybe close rabbit connection in roomProxy 
 
-						// At this point do nothing, just wait for another message 
-						// that will notify all players that game is starting.
+						// initialPage.hidePage();
+
+						roomServer.UnsubFromRoomUpdates();
+
+						onGameReady.execute(response.username, response.roomName);
 					} else {
-						// I guess "server error" is the only thing that
-						// could go wrong ... ? 
+						// Game doesn't exists and not enough players are possible
+						// errors but due to client side validations they can't really
+						// happen. 
 						System.out.println("Error while starting game ... ");
+						System.out.println("Actuall error: " + response.type.toString());
+
 						showInfoMessage(Language.MessageType.UnknownError);
 					}
 

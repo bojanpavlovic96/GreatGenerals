@@ -6,7 +6,6 @@ import java.util.concurrent.TimeoutException;
 import com.rabbitmq.client.AMQP.BasicProperties;
 import com.rabbitmq.client.Channel;
 import com.rabbitmq.client.Consumer;
-import com.rabbitmq.client.DefaultConsumer;
 import com.rabbitmq.client.Envelope;
 import com.rabbitmq.client.ShutdownSignalException;
 
@@ -17,8 +16,10 @@ import root.communication.MessageInterpreter;
 import root.communication.ProtocolTranslator;
 import root.model.event.ModelEventArg;
 
-public class RabbitGameServerProxy
-		implements GameServerProxy, Consumer, ActiveComponent, ConnectionEventHandler {
+public class RabbitGameServerProxy implements GameServerProxy,
+		Consumer,
+		ActiveComponent,
+		ConnectionEventHandler {
 
 	private RabbitGameServerProxyConfig config;
 
@@ -42,9 +43,6 @@ public class RabbitGameServerProxy
 			String username,
 			String roomName) {
 
-		// TODO instead of using username and the roomName
-		// pass some token/key received from the server after login/register
-
 		this.config = config;
 
 		this.channelProvider = channelProvider;
@@ -56,13 +54,13 @@ public class RabbitGameServerProxy
 		this.commandQueue = new CommandQueue();
 
 		this.channelProvider.subscribeForEvents(this);
-
 	}
 
 	@Override
 	public void handleConnectionEvent(RabbitChannelProvider channelProvider, RabbitConnectionEventType eventType) {
 		if (eventType != RabbitConnectionEventType.CONNECTION) {
 			// disconnection
+			System.out.println("Received NON-connection event in gameSProxy ... ");
 			try {
 				if (channel != null) {
 
@@ -80,24 +78,30 @@ public class RabbitGameServerProxy
 
 			rcvQueueName = null;
 			channel = null;
+
 			return;
 		} else {
 			// connection 
-
+			System.out.println("Received CONNECTION event in gameSProxy ... ");
 			channel = channelProvider.getChannel();
 
 			try {
 				channel.exchangeDeclare(
 						config.serverMessageExchange,
-						config.rabbitTopicExchangeKeyword);
+						config.rabbitTopicExchangeKeyword,
+						false,
+						true,
+						null);
 
 				channel.exchangeDeclare(
 						config.modelEventsExchange,
-						config.rabbitTopicExchangeKeyword);
+						config.rabbitTopicExchangeKeyword,
+						false,
+						true,
+						null);
 
 				rcvQueueName = channel.queueDeclare().getQueue();
-				channel.queueBind(
-						rcvQueueName,
+				channel.queueBind(rcvQueueName,
 						config.serverMessageExchange,
 						genCommandRoutingKey());
 
@@ -133,10 +137,10 @@ public class RabbitGameServerProxy
 	public boolean sendIntention(ModelEventArg modelEvent) {
 
 		if (channel == null) {
-			// channel is gonna be created at each CONNECTION event 
-			// (channelProvider.subscribeForEvents ^ )
-			// if channel is null either DISCONNECT event happened
-			// or CONNECTION event still didn't happen
+			// Channel is gonna be created at each CONNECTION event 
+			// (channelProvider.subscribeForEvents).
+			// If channel is null either DISCONNECT event happened
+			// or CONNECTION event still didn't happen.
 
 			System.out.println("Failed ot send intention, channel not available ... ");
 
@@ -149,8 +153,7 @@ public class RabbitGameServerProxy
 		byte[] bytePayload = protocolTranslator.toByteData(message);
 
 		try {
-			channel.basicPublish(
-					config.modelEventsExchange,
+			channel.basicPublish(config.modelEventsExchange,
 					genEventRoutingKey(),
 					null,
 					bytePayload);
@@ -175,7 +178,7 @@ public class RabbitGameServerProxy
 			BasicProperties properties,
 			byte[] body) throws IOException {
 
-		var newMessage = protocolTranslator.toMessage(new String(body));
+		var newMessage = protocolTranslator.toMessage(body);
 		if (newMessage == null) {
 			// debug
 			System.out.println("Failed to translate message ... ");
@@ -189,7 +192,7 @@ public class RabbitGameServerProxy
 			return;
 		}
 
-		this.commandQueue.enqueue(newCommand);
+		commandQueue.enqueue(newCommand);
 	}
 
 	@Override
@@ -231,6 +234,16 @@ public class RabbitGameServerProxy
 			}
 		}
 
+	}
+
+	@Override
+	public String getUsername() {
+		return username;
+	}
+
+	@Override
+	public String getRoomName() {
+		return roomName;
 	}
 
 }

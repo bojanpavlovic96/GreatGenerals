@@ -9,6 +9,7 @@ import controller.option.AddToPathFieldOption;
 import controller.option.MoveFieldOption;
 import controller.option.SelectPathFieldOption;
 import controller.option.StopMovingFieldOption;
+import model.event.ReadyForInitEvent;
 import root.ActiveComponent;
 import root.command.BasicCommandProcessor;
 import root.command.Command;
@@ -26,9 +27,7 @@ import root.model.event.ModelEventArg;
 import root.model.event.ModelEventHandler;
 import root.view.View;
 import root.view.event.ViewEventArg;
-import root.view.menu.Menu;
 import view.command.ClearTopLayerCommand;
-import view.command.PopulateMenuCommand;
 import view.command.ShowFieldMenuCommand;
 import view.command.SelectFieldCommand;
 import view.command.ZoomInCommand;
@@ -53,11 +52,9 @@ public class GameBrain implements Controller {
 	private Field focusedField;
 
 	private UndoStack undoStack;
-	// private List<Command> undoStack;
 
 	private List<FieldOption> fieldOptions;
 
-	// constructors
 	public GameBrain(GameServerProxy serverProxy, View view, Model model) {
 		super();
 
@@ -86,11 +83,17 @@ public class GameBrain implements Controller {
 		// view events, click, key press ...
 		initViewEventHandlers();
 
+		// This may be a bit hacky way of doing it since getUsername/roomName methods
+		// are added to the interface just for this case. 
+		// Doesn't break anything I guess ... 
+		var readyEvent = new ReadyForInitEvent(
+				serverProxy.getUsername(),
+				serverProxy.getRoomName());
+
+		serverProxy.sendIntention(readyEvent);
+
 		view.showView();
-
 	}
-
-	// methods
 
 	private void initViewEventHandlers() {
 

@@ -7,7 +7,6 @@ import root.view.View;
 public class ClearTopLayerCommand extends Command {
 
 	public ClearTopLayerCommand() {
-		super("clear-top-layer-view-command");
 	}
 
 	public void run() {

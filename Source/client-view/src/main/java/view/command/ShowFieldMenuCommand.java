@@ -12,8 +12,6 @@ import root.view.menu.Menu;
 
 public class ShowFieldMenuCommand extends Command {
 
-	public static final String commandName = "display-field-info-view-command";
-
 	public static double INFO_WIDTH = 400;
 	public static double INFO_HEIGHT = 200;
 
@@ -23,7 +21,6 @@ public class ShowFieldMenuCommand extends Command {
 	private ViewField viewTarget;
 
 	public ShowFieldMenuCommand(Field selected_field, Field target_field) {
-		super(ShowFieldMenuCommand.commandName);
 
 		this.selectedField = selected_field;
 		this.targetField = target_field;

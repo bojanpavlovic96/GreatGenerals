@@ -38,8 +38,7 @@ import view.component.menu.ShortOptionsMenu;
 
 // attention 
 // attention scroll pane (sometimes) throws some exception but it is harmless
-// attention 
-// (somehow lost later in development... )
+// (somehow disappeared later in development... )
 
 public class DrawingStage extends Stage implements View {
 
@@ -83,13 +82,9 @@ public class DrawingStage extends Stage implements View {
 
 		this.fieldManager = fieldManager;
 
-		Platform.runLater(() -> {
+		this.initStage();
 
-			this.initStage();
-
-			this.initEventHandlers();
-
-		});
+		this.initEventHandlers();
 	}
 
 	// only stage specific things
@@ -233,6 +228,7 @@ public class DrawingStage extends Stage implements View {
 
 	}
 
+	// TODO replace name with an enum
 	@Override
 	public void addEventHandler(String event_name, ViewEventHandler event_handler) {
 

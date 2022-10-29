@@ -1,11 +1,16 @@
 package root.communication.messages;
 
 public enum MessageType {
-	InitializeMsg,
-	MoveMessage,
 	CreateRoomRequest,
 	JoinRoomRequest,
 	LeaveRoomRequest,
 	JoinResponse,
-	StartGameRequest
+	StartGameRequest,
+	InitializeMsg,
+	ReadyForInitMsg,
+	MoveMessage,
+	AttackMessage,
+	RecalculatePathMessage,
+	AbortMoveMessage,
+	ServerErrorMessage
 }

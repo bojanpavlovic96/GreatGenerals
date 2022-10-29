@@ -7,4 +7,8 @@ public interface GameServerProxy extends CommandProducer {
 
 	boolean sendIntention(ModelEventArg action);
 
+	String getUsername();
+
+	String getRoomName();
+
 }

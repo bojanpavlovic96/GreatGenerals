@@ -11,5 +11,6 @@ public enum RoomResponseType {
 	PlayerJoined,
 	PlayerLeft,
 	RoomDestroyed,
+	GameNotReady,
 	GameStarted
 }

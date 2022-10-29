@@ -18,8 +18,7 @@ public class NamedWrapperTranslator implements ProtocolTranslator {
 
 	@Override
 	public String toStrData(Message message) {
-		var wrapper = new NamedWrapper(
-				message.type.toString(),
+		var wrapper = new NamedWrapper(message.type.toString(),
 				parser.ToString(message));
 
 		return parser.ToString(wrapper);

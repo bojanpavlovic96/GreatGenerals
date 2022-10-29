@@ -97,6 +97,8 @@ public class RabbitConnectionTask
 	}
 
 	private void shutdownHandler(ShutdownSignalException cause) {
+		System.out.println("Handling connection shutdown in rabbitConnectionTask ... ");
+		System.out.println("Shutdown casue: " + cause.getMessage());
 		for (var connectionEventHandler : eventSubscribers) {
 			connectionEventHandler.handleConnectionEvent(
 					this,
@@ -105,7 +107,7 @@ public class RabbitConnectionTask
 	}
 
 	public void shutdown() {
-
+		System.out.println("ShuttingDown rabbitConnectionTask ... ");
 		try {
 			// close connection
 			if (this.getConnection() != null && this.getConnection().isOpen()) {

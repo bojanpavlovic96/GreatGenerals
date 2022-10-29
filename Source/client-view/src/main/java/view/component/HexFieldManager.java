@@ -15,7 +15,6 @@ public class HexFieldManager implements ViewFieldManager {
 			double fieldWidth,
 			double fieldBorderWidth) {
 
-		super();
 		this.fieldHeight = fieldHeight;
 		this.fieldWidth = fieldWidth;
 		this.fieldBorderWidth = fieldBorderWidth;
@@ -28,6 +27,7 @@ public class HexFieldManager implements ViewFieldManager {
 				this.fieldBorderWidth);
 	}
 
+	@Override
 	public Point2D calcStoragePosition(Point2D position) {
 
 		return HexagonField.calcStoragePosition(position, this.fieldWidth, this.fieldHeight);
@@ -39,18 +39,22 @@ public class HexFieldManager implements ViewFieldManager {
 		return HexagonField.calcRealPosition(storage_position, this.fieldHeight / 2);
 	}
 
+	@Override
 	public double getHeight() {
 		return this.fieldHeight;
 	}
 
+	@Override
 	public double getWidth() {
 		return this.fieldWidth;
 	}
 
+	@Override
 	public double getBorderWidth() {
 		return this.fieldBorderWidth;
 	}
 
+	@Override
 	public boolean zoomIn() {
 		if (this.fieldHeight < 200) {
 			this.fieldHeight += this.fieldHeight * 0.2;
@@ -63,6 +67,7 @@ public class HexFieldManager implements ViewFieldManager {
 		return false;
 	}
 
+	@Override
 	public boolean zoomOut() {
 		if (this.fieldHeight > 50) {
 

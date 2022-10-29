@@ -2,16 +2,22 @@ package root.model.component;
 
 public class Terrain {
 
-	private String name;
+	// these are lowercase beacuse they are mapped to the sampe-named res files
+	public static enum TerrainType {
+		mountains,
+		watter
+	}
+
+	private Terrain.TerrainType type;
 	private int intensity;
 
-	public Terrain(String name, int intensity) {
-		this.name = name;
+	public Terrain(Terrain.TerrainType type, int intensity) {
+		this.type = type;
 		this.intensity = intensity;
 	}
 
-	public String getName() {
-		return this.name;
+	public Terrain.TerrainType getType() {
+		return this.type;
 	}
 
 	public int getIntensity() {

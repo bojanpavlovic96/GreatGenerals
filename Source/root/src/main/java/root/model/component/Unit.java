@@ -8,9 +8,7 @@ import root.model.event.ModelEventHandler;
 
 public interface Unit extends Cloneable {
 
-	// TODO should this be enum ... ? 
-	// unit type ... basic, advanced, archers...
-	String getUnitName();
+	UnitType getUnitType();
 
 	Field getField();
 

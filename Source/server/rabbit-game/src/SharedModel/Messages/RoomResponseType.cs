@@ -10,6 +10,8 @@ namespace RabbitGameServer.SharedModel.Messages
 		UnknownFail,
 		PlayerJoined,
 		PlayerLeft,
-		RoomDestroyed
+		RoomDestroyed,
+		GameNotReady,
+		GameStarted
 	}
 }

@@ -13,7 +13,6 @@ public class PopulateMenuCommand extends Command {
 	private List<FieldOption> newOptions;
 
 	public PopulateMenuCommand(List<FieldOption> newOptions) {
-		super("populate-menu-view-command");
 
 		this.newOptions = newOptions;
 	}

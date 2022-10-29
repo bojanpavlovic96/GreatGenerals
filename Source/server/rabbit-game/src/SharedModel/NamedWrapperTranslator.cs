@@ -33,47 +33,43 @@ namespace RabbitGameServer.SharedModel
 		public Message ToMessage(string payload)
 		{
 			var wrappedMsg = serializer.ToObj<NamedWrapper>(payload);
-			Console.WriteLine("We are unwrapping ... ");
+			Console.WriteLine($"Unwrapping: {wrappedMsg.name}");
 			Console.WriteLine("Name: " + wrappedMsg.name);
 			Console.WriteLine("Payload: " + wrappedMsg.payload);
 
-			// TODO try&catch can be removed after testing 
 			try
 			{
-				if (wrappedMsg.name == MessageType.InitializeMessage.ToString())
+
+				if (wrappedMsg.name == MessageType.ReadyForInitMsg.ToString())
 				{
-					Console.WriteLine("Translating InitializeCommand ... ");
+					return serializer.ToObj<ReadyForInitMessage>(wrappedMsg.payload);
+				}
+				else if (wrappedMsg.name == MessageType.InitializeMessage.ToString())
+				{
 					return serializer.ToObj<InitializeMessage>(wrappedMsg.payload);
 				}
-				else if (wrappedMsg.name == MessageType.MoveCommand.ToString())
+				else if (wrappedMsg.name == MessageType.MoveMessage.ToString())
 				{
-					Console.WriteLine("Translating MoveCommand ... ");
-					return serializer.ToObj<MoveCmdMessage>(wrappedMsg.payload);
+					return serializer.ToObj<MoveMessage>(wrappedMsg.payload);
 				}
 				else if (wrappedMsg.name == MessageType.CreateRoomRequest.ToString())
 				{
-					Console.WriteLine("Translating CrateRoomMessage ... ");
 					return serializer.ToObj<CreateRoomMsg>(wrappedMsg.payload);
 				}
 				else if (wrappedMsg.name == MessageType.JoinRoomRequest.ToString())
 				{
-					Console.WriteLine("Translating JoinRoomRequest ... ");
 					return serializer.ToObj<JoinRoomMessage>(wrappedMsg.payload);
 				}
 				else if (wrappedMsg.name == MessageType.JoinResponse.ToString())
 				{
-					Console.WriteLine("Translating JoinResponse ... ");
 					return serializer.ToObj<RoomResponseMsg>(wrappedMsg.payload);
-
 				}
 				else if (wrappedMsg.name == MessageType.LeaveRoomRequest.ToString())
 				{
-					Console.WriteLine("Translating LeaveRoomRequest ... ");
 					return serializer.ToObj<LeaveRoomMessage>(wrappedMsg.payload);
 				}
 				else if (wrappedMsg.name == MessageType.StartGameRequest.ToString())
 				{
-					Console.WriteLine("Translating StartGameRequest ... ");
 					return serializer.ToObj<StartGameMessage>(wrappedMsg.payload);
 				}
 				else
@@ -84,7 +80,7 @@ namespace RabbitGameServer.SharedModel
 			}
 			catch (Exception e)
 			{
-				Console.WriteLine("Exc while casting message to concrete type ... ");
+				Console.WriteLine("Exc while casting unwrapped message to concrete type ... ");
 				Console.WriteLine(e.Message);
 
 				return null;

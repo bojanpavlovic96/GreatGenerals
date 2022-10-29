@@ -18,12 +18,28 @@ namespace RabbitGameServer.Mediator
 			CancellationToken cancellationToken)
 		{
 
+			Console.WriteLine($"Handling model event: {request.message.type.ToString()} ... ");
+			Console.WriteLine($"\tUser: {request.message.username}");
+			Console.WriteLine($"\tRoom: {request.message.roomName}");
+
 			var game = pool.GetGame(request.message.roomName);
 
-			Console.WriteLine("Handling model events still not implemented ... ");
+			var translateReq = new MapMessageToEventRequest(request.message);
 
-			// TODO at this point message should be converted to modelEvent ... ? 
-			// game.AddModelEvent(request.modelEvent);
+			// TODO Should this method be async or just force sync with Result 
+			// let it be .Result for testing I guess ... 
+			var modelEvent = mediator.Send(translateReq).Result;
+
+			var message = game.AddModelEvent(modelEvent);
+
+			if (message == null)
+			{
+				Console.WriteLine("Failed to handle model event ... ");
+				return Task.FromResult(Unit.Value);
+			}
+
+			var sendRequest = new SendMessageRequest(message);
+			mediator.Send(sendRequest);
 
 			return Task.FromResult(Unit.Value);
 		}

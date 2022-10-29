@@ -7,6 +7,8 @@ namespace RabbitGameServer.Game
 {
 	public delegate void GameDoneHandler(GameMaster gameMaster);
 
+	public delegate Message ModelEventHandler(ModelEvent e);
+
 	public class GameMaster
 	{
 
@@ -26,6 +28,10 @@ namespace RabbitGameServer.Game
 
 		public event GameDoneHandler onGameDone;
 
+		private List<Color> availableColors;
+
+		private Dictionary<ModelEventType, ModelEventHandler> handlers;
+
 		public GameMaster(string roomName,
 					string password,
 					PlayerData masterPlayer,
@@ -35,13 +41,14 @@ namespace RabbitGameServer.Game
 					GameDoneHandler onGameDone)
 		{
 			this.config = config;
-			readColors();
+			parseColors();
 
 			this.RoomName = roomName;
 			this.Password = password;
 
 			this.masterPlayer = masterPlayer;
-			this.masterPlayer.color = getMasterColor();
+			this.masterPlayer.color = getAvailableColor();
+			this.masterPlayer.points = config.DefaultPoints;
 			this.Players = new List<PlayerData>();
 			this.Players.Add(masterPlayer);
 
@@ -51,29 +58,164 @@ namespace RabbitGameServer.Game
 			this.Database = db;
 
 			this.onGameDone += onGameDone;
+
+			this.Fields = new Dictionary<Point2D, Field>();
+
 		}
 
-		public void AddModelEvent(ModelEvent newEvent)
+		private void initHandlers()
+		{
+			handlers = new Dictionary<ModelEventType, ModelEventHandler>();
+			handlers.Add(ModelEventType.ReadyForInitEvent, handleInitRequest);
+			handlers.Add(ModelEventType.MoveModelEvent, handleMoveEvent);
+			handlers.Add(ModelEventType.AttackModelEvent, handleAttackEvent);
+		}
+
+		public Message AddModelEvent(ModelEvent newEvent)
 		{
 			recEventsCnt++;
-			// based on the newEven.type/name
-			// run predifined set of 'validators'
-			// which are (based on the current state of the game)
-			// gonna generate adequate command as a result
 
-			// pass thiss command to the client proxy
+			ModelEventHandler? handler;
+			if (handlers.TryGetValue(newEvent.type, out handler))
+			{
+				handler.Invoke(newEvent);
+			}
+			else
+			{
+				Console.WriteLine($"Handlers for {newEvent.type.ToString()} is missing ... ");
+				// return some default (or error ... ?) action 
+			}
 
+
+			return null;
 		}
 
-		public Message initGame()
+		// region separate event handlers
+
+		private Message handleInitRequest(ModelEvent e)
 		{
-			// return new InitializeMessage(RoomName, Players, Fields.Values.ToList());
-			return null;
+			return new InitializeMessage(RoomName,
+				e.playerName,
+				Players,
+				Fields.Values.ToList());
+		}
+
+		private Message handleMoveEvent(ModelEvent e)
+		{
+			var mev = (MoveModelEvent)e;
+
+			var endField = getField(mev.destinationField);
+			if (endField != null)
+			{
+				if (isOccupied(endField))
+				{
+
+					return new MoveMessage(mev.playerName,
+						RoomName,
+						mev.sourceField,
+						mev.destinationField);
+				}
+				else
+				{
+					return new RecalculatePathMessage(mev.playerName,
+						RoomName,
+						mev.sourceField);
+				}
+			}
+			else
+			{
+				return new AbortMoveMessage(mev.playerName,
+					RoomName,
+					mev.sourceField);
+			}
+
+
+			return new ServerErrorMessage(mev.playerName, RoomName,
+				$"Unknown error occured while handling {e.type.ToString()}");
+		}
+
+		private Field getField(Point2D point)
+		{
+			Field? field;
+			Fields.TryGetValue(point, out field);
+			return field;
+		}
+
+		private bool isOccupied(Field field)
+		{
+			return (field.unit == null);
+		}
+
+		private Message handleAttackEvent(ModelEvent e)
+		{
+			return new ServerErrorMessage(e.playerName, RoomName,
+				"Attack event handler still not implemented ... "); ;
+		}
+
+		// endregion 
+
+		public bool initGame()
+		{
+
+			int left = 3;
+			int right = 17;
+
+			int playerCounter = 0;
+			// try
+			// {
+			for (int i = 1; i < 16; i++)
+			{
+
+				for (int j = left; j < right; j++)
+				{
+
+					Field newField;
+					if (i % 2 == 0 && j % 5 == 0)
+					{
+						newField = new Field(true,
+							null,
+							new Terrain(TerrainType.mountains, 1),
+							Players[playerCounter].username,
+							false);
+					}
+					else
+					{
+						newField = new Field(true,
+							null,
+							new Terrain(TerrainType.watter, 1),
+							Players[playerCounter].username,
+							false);
+					}
+
+					Fields.Add(new Point2D(j, i), newField);
+
+					playerCounter++;
+					playerCounter %= 2;
+
+				}
+
+				if (left > -3)
+					left--;
+			}
+			// }
+			// catch (Exception e)
+			// {
+			// 	Console.WriteLine("Exception in game initialization ... ");
+			// 	Console.WriteLine(e.Message);
+			// 	Console.WriteLine(e.StackTrace);
+			// }
+
+			return true;
 		}
 
 		public bool hasPlayer(string name)
 		{
 			return this.Players.Any<PlayerData>((player) => player.username == name);
+		}
+
+		public bool isReady()
+		{
+			return Players.Count >= config.MinimumPlayers;
 		}
 
 		public PlayerData addPlayer(PlayerData player)
@@ -92,6 +234,8 @@ namespace RabbitGameServer.Game
 				{
 					var player = Players[i];
 					Players.RemoveAt(i);
+
+					availableColors.Add(player.color);
 
 					return player;
 				}
@@ -122,22 +266,33 @@ namespace RabbitGameServer.Game
 			Console.WriteLine($"{RoomName} is dead ... ");
 		}
 
-		private void readColors()
+		private void parseColors()
 		{
-			// TODO implement
-			Console.WriteLine("Reading colors from config in gameMaster NOT IMPLEMENTED ... ");
+			Console.WriteLine("Parsing available colors ... ");
+
+			availableColors = new List<Color>();
+
+
+
+			foreach (var colorStr in config.Colors)
+			{
+				Console.WriteLine($"Parsing: {colorStr}");
+				availableColors.Add(Color.parse(colorStr));
+			}
+
 		}
 
-		// TODO read this from gameConfig
-		private Color getMasterColor()
-		{
-			return Color.RED;
-		}
-
-		// TODO as well read from gameConfig
 		private Color getAvailableColor()
 		{
-			return Color.BLUE;
+			if (availableColors.Count > 0)
+			{
+				var value = availableColors[0];
+				availableColors.RemoveAt(0);
+				return value;
+			}
+
+			Console.WriteLine("No more available colors, returned default color (RED ... ");
+			return Color.RED;
 		}
 
 	}

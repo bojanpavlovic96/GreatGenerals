@@ -2,17 +2,13 @@ package root.command;
 
 public abstract class Command implements Runnable {
 
-	protected String name;
+	// protected CommandType type;
 
 	protected CommandDrivenComponent targetComponent;
 
-	// constructors
-
-	public Command(String name) {
-		this.name = name;
+	public Command() {
+		// this.type = type;
 	}
-
-	// methods
 
 	public void setTargetComponent(CommandDrivenComponent target) {
 		this.targetComponent = target;
@@ -22,9 +18,9 @@ public abstract class Command implements Runnable {
 		return this.targetComponent;
 	}
 
-	public String getName() {
-		return this.name;
-	}
+	// public CommandType getType() {
+	// 	return this.type;
+	// }
 
 	public abstract Command getAntiCommand();
 
