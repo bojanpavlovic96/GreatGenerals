@@ -5,6 +5,8 @@ namespace RabbitGameServer.SharedModel
 	public class Color
 	{
 
+		private static double MAX_VALUE = 255;
+
 		private static string match_7 = "[a-fA-F0-9]{7}";
 		private static string match_6 = "[a-fA-F0-9]{6}";
 		private static string match_4 = "[a-fA-F0-9]{4}";
@@ -18,9 +20,9 @@ namespace RabbitGameServer.SharedModel
 		private static int LONG_FORMAT_LEN = 7;
 		private static int LONG_OP_FORMAT_LEN = 8;
 
-		public static Color RED = new Color(10, 0, 0, 1);
-		public static Color GREEN = new Color(0, 10, 0, 1);
-		public static Color BLUE = new Color(0, 0, 10, 1);
+		public static Color RED = Color.parse("#f00");
+		public static Color GREEN = Color.parse("#0f0");
+		public static Color BLUE = Color.parse("#00f");
 
 		public double red { get; set; }
 		public double green { get; set; }
@@ -51,37 +53,37 @@ namespace RabbitGameServer.SharedModel
 
 			if (text.Length == SHORT_FORMAT_LEN)
 			{
-				var r_value = parseHex(text.Substring(1, 1));
-				var g_value = parseHex(text.Substring(2, 1));
-				var b_value = parseHex(text.Substring(3, 1));
+				var r_value = scale(parseHex(text.Substring(1, 1)));
+				var g_value = scale(parseHex(text.Substring(2, 1)));
+				var b_value = scale(parseHex(text.Substring(3, 1)));
 
 				return new Color(r_value, g_value, b_value, 1);
 			}
 			else if (text.Length == SHORT_OP_FORMAT_LEN)
 			{
-				var r_value = parseHex(text.Substring(1, 1));
-				var g_value = parseHex(text.Substring(2, 1));
-				var b_value = parseHex(text.Substring(3, 1));
+				var r_value = scale(parseHex(text.Substring(1, 1)));
+				var g_value = scale(parseHex(text.Substring(2, 1)));
+				var b_value = scale(parseHex(text.Substring(3, 1)));
 
-				var op_value = parseHex(text.Substring(4, 1));
+				var op_value = scale(parseHex(text.Substring(4, 1)));
 
 				return new Color(r_value, g_value, b_value, op_value);
 			}
 			else if (text.Length == LONG_FORMAT_LEN)
 			{
-				var r_value = parseHex(text.Substring(1, 2));
-				var g_value = parseHex(text.Substring(3, 2));
-				var b_value = parseHex(text.Substring(5, 2));
+				var r_value = scale(parseHex(text.Substring(1, 2)));
+				var g_value = scale(parseHex(text.Substring(3, 2)));
+				var b_value = scale(parseHex(text.Substring(5, 2)));
 
 				return new Color(r_value, g_value, b_value, 1);
 			}
 			else if (text.Length == SHORT_OP_FORMAT_LEN)
 			{
-				var r_value = parseHex(text.Substring(1, 2));
-				var g_value = parseHex(text.Substring(3, 2));
-				var b_value = parseHex(text.Substring(5, 2));
+				var r_value = scale(parseHex(text.Substring(1, 2)));
+				var g_value = scale(parseHex(text.Substring(3, 2)));
+				var b_value = scale(parseHex(text.Substring(5, 2)));
 
-				var op_value = parseHex(text.Substring(7, 1));
+				var op_value = scale(parseHex(text.Substring(7, 1)));
 
 				return new Color(r_value, g_value, b_value, op_value);
 			}
@@ -96,6 +98,10 @@ namespace RabbitGameServer.SharedModel
 			return int.Parse(hexValue, System.Globalization.NumberStyles.HexNumber);
 		}
 
+		private static double scale(int value)
+		{
+			return (value / 255);
+		}
 
 	}
 }

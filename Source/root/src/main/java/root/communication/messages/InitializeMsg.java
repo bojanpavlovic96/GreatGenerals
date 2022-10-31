@@ -11,7 +11,7 @@ public class InitializeMsg extends Message {
 	public List<Field> fields;
 
 	public InitializeMsg() {
-		super(MessageType.InitializeMsg);
+		super(MessageType.InitializeMessage);
 
 	}
 

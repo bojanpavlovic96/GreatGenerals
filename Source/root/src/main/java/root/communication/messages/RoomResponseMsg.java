@@ -13,7 +13,7 @@ public class RoomResponseMsg extends Message {
 	public List<PlayerDescription> players;
 
 	public RoomResponseMsg(RoomResponseType responseType, List<PlayerDescription> players) {
-		super(MessageType.JoinResponse);
+		super(MessageType.RoomResponse);
 
 		this.responseType = responseType;
 		this.players = players;

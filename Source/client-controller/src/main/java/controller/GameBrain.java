@@ -90,6 +90,10 @@ public class GameBrain implements Controller {
 				serverProxy.getUsername(),
 				serverProxy.getRoomName());
 
+		System.out.println("Sent ready for init event: ");
+		System.out.println("\t" + serverProxy.getUsername());
+		System.out.println("\t" + serverProxy.getRoomName());
+
 		serverProxy.sendIntention(readyEvent);
 
 		view.showView();

@@ -110,6 +110,7 @@ namespace RabbitGameServer.Client
 
 			try
 			{
+				Console.WriteLine($"Proxy sending: {message.type.ToString()} .. ");
 				send(message,
 					config.ServerMessageTopic,
 					formMessageRoute(roomName, player));

@@ -101,9 +101,14 @@ public class RabbitGameServerProxy implements GameServerProxy,
 						null);
 
 				rcvQueueName = channel.queueDeclare().getQueue();
-				channel.queueBind(rcvQueueName,
-						config.serverMessageExchange,
-						genCommandRoutingKey());
+
+				var topic = config.serverMessageExchange;
+				var route = genCommandRoutingKey();
+				channel.queueBind(rcvQueueName, topic, route);
+
+				System.out.println("Listening for server messages on: ");
+				System.out.println("\ttopic: " + topic);
+				System.out.println("\troute: " + route);
 
 				channel.basicConsume(rcvQueueName, this);
 
@@ -121,11 +126,7 @@ public class RabbitGameServerProxy implements GameServerProxy,
 	}
 
 	private String genCommandRoutingKey() {
-		return config.serverMessageRoutePrefix + "." + roomName + "." + username;
-	}
-
-	private String genEventRoutingKey() {
-		return config.modelEventsRoutePrefix + "." + roomName + "." + username;
+		return config.serverMessageRoutePrefix + roomName + "." + username;
 	}
 
 	@Override
@@ -153,10 +154,15 @@ public class RabbitGameServerProxy implements GameServerProxy,
 		byte[] bytePayload = protocolTranslator.toByteData(message);
 
 		try {
-			channel.basicPublish(config.modelEventsExchange,
-					genEventRoutingKey(),
+			var topic = config.modelEventsExchange;
+			var route = genEventRoutingKey();
+			channel.basicPublish(topic,
+					route,
 					null,
 					bytePayload);
+			System.out.println("Publishing modelEvent on: ");
+			System.out.println("\ttopic: " + topic);
+			System.out.println("\troute: " + route);
 
 		} catch (IOException e) {
 			e.printStackTrace();
@@ -170,6 +176,10 @@ public class RabbitGameServerProxy implements GameServerProxy,
 		return true;
 	}
 
+	private String genEventRoutingKey() {
+		return config.modelEventsRoutePrefix + roomName + "." + username;
+	}
+
 	// region Consumer implementation
 
 	@Override
@@ -178,6 +188,8 @@ public class RabbitGameServerProxy implements GameServerProxy,
 			BasicProperties properties,
 			byte[] body) throws IOException {
 
+		System.out.println("Game proxy received message ... ");
+
 		var newMessage = protocolTranslator.toMessage(body);
 		if (newMessage == null) {
 			// debug
@@ -185,12 +197,17 @@ public class RabbitGameServerProxy implements GameServerProxy,
 			return;
 		}
 
+		System.out.println("GameProxy new message: ");
+		System.out.println("\t" + newMessage.type.toString());
+
 		var newCommand = messageInterpreter.ToCommand(newMessage);
 		if (newCommand == null) {
 			// debug
 			System.out.println("Failed to translate message to command ... ");
 			return;
 		}
+
+		System.out.println("\t" + newCommand.getClass().toString());
 
 		commandQueue.enqueue(newCommand);
 	}

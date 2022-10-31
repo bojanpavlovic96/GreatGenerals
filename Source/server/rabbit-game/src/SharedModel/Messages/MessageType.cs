@@ -5,7 +5,7 @@ namespace RabbitGameServer.SharedModel.Messages
 		CreateRoomRequest,
 		JoinRoomRequest,
 		LeaveRoomRequest,
-		JoinResponse, // this should be renamed to roomResponse
+		RoomResponse, // this should be renamed to roomResponse
 		StartGameRequest,
 		InitializeMessage,
 		ReadyForInitMsg,

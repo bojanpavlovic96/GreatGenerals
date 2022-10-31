@@ -14,27 +14,27 @@ namespace RabbitGameServer.Mediator
 
 			switch (request.message.type)
 			{
+				case MessageType.ReadyForInitMsg:
+					return Task.FromResult<ModelEvent>(new ReadyForInitModelEvent(
+						request.message.username,
+						request.message.roomName));
+
 				case MessageType.MoveMessage:
 					return Task.FromResult<ModelEvent>(new MoveModelEvent(
 						((MoveMessage)request.message).username,
 						((MoveMessage)request.message).startFieldPos,
 						((MoveMessage)request.message).endFieldPos));
 
-				case MessageType.ReadyForInitMsg:
-					return Task.FromResult<ModelEvent>(new ReadyForInitModelEvent(
-						request.message.username,
-						request.message.roomName));
-
 				case MessageType.AttackMessage:
 					return Task.FromResult<ModelEvent>(new AttackModelEvent(
 						request.message.username,
 						((AttackMessage)request.message).startFieldPos,
 						((AttackMessage)request.message).endFieldPos));
-
-
+				default:
+					Console.WriteLine($"Failed to map message-{request.message.type.ToString()} to modelEvent ... ");
+					return Task.FromResult<ModelEvent>(null); ;
 			};
 
-			return Task.FromResult<ModelEvent>(null);
 		}
 	}
 }

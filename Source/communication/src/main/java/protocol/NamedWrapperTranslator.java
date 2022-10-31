@@ -48,6 +48,7 @@ public class NamedWrapperTranslator implements ProtocolTranslator {
 		} catch (Exception e) {
 			System.out.println("exception while unwrapping/translating/casting received message ... ");
 			System.out.println(e.getMessage());
+			System.out.println(e.getStackTrace().toString());
 		}
 
 		return message;

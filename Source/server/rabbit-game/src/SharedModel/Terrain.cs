@@ -3,7 +3,7 @@ namespace RabbitGameServer.SharedModel
 	public enum TerrainType
 	{
 		mountains,
-		watter
+		water
 	}
 
 	public class Terrain

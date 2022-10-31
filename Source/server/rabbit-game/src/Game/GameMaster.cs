@@ -61,6 +61,7 @@ namespace RabbitGameServer.Game
 
 			this.Fields = new Dictionary<Point2D, Field>();
 
+			this.initHandlers();
 		}
 
 		private void initHandlers()
@@ -78,22 +79,23 @@ namespace RabbitGameServer.Game
 			ModelEventHandler? handler;
 			if (handlers.TryGetValue(newEvent.type, out handler))
 			{
-				handler.Invoke(newEvent);
+				Console.WriteLine($"Handler for {newEvent.type.ToString()} found ...  ");
+				return handler.Invoke(newEvent);
 			}
 			else
 			{
 				Console.WriteLine($"Handlers for {newEvent.type.ToString()} is missing ... ");
-				// return some default (or error ... ?) action 
+
+				return null;
 			}
 
-
-			return null;
 		}
 
 		// region separate event handlers
 
 		private Message handleInitRequest(ModelEvent e)
 		{
+			Console.WriteLine("Handling ready for init request ... ");
 			return new InitializeMessage(RoomName,
 				e.playerName,
 				Players,
@@ -172,7 +174,8 @@ namespace RabbitGameServer.Game
 					Field newField;
 					if (i % 2 == 0 && j % 5 == 0)
 					{
-						newField = new Field(true,
+						newField = new Field(new Point2D(j, i),
+							true,
 							null,
 							new Terrain(TerrainType.mountains, 1),
 							Players[playerCounter].username,
@@ -180,9 +183,10 @@ namespace RabbitGameServer.Game
 					}
 					else
 					{
-						newField = new Field(true,
+						newField = new Field(new Point2D(j, i),
+							true,
 							null,
-							new Terrain(TerrainType.watter, 1),
+							new Terrain(TerrainType.water, 1),
 							Players[playerCounter].username,
 							false);
 					}

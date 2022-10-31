@@ -20,6 +20,7 @@ public class BasicCommandProcessor implements CommandProcessor {
 
 		while (!commandQueue.isEmpty()) {
 			Command command = commandQueue.dequeue();
+			System.out.println("Processing: " + command.getClass().toString());
 			command.setTargetComponent(this.commandTarget);
 
 			this.executor.execute(command);

@@ -30,6 +30,8 @@ namespace RabbitGameServer.Mediator
 			// let it be .Result for testing I guess ... 
 			var modelEvent = mediator.Send(translateReq).Result;
 
+			Console.WriteLine("Message mapped to model event ... ");
+
 			var message = game.AddModelEvent(modelEvent);
 
 			if (message == null)
@@ -38,6 +40,7 @@ namespace RabbitGameServer.Mediator
 				return Task.FromResult(Unit.Value);
 			}
 
+			Console.WriteLine($"Request to send {message.type.ToString()} ... ");
 			var sendRequest = new SendMessageRequest(message);
 			mediator.Send(sendRequest);
 

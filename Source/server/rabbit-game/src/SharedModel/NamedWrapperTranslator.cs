@@ -60,7 +60,7 @@ namespace RabbitGameServer.SharedModel
 				{
 					return serializer.ToObj<JoinRoomMessage>(wrappedMsg.payload);
 				}
-				else if (wrappedMsg.name == MessageType.JoinResponse.ToString())
+				else if (wrappedMsg.name == MessageType.RoomResponse.ToString())
 				{
 					return serializer.ToObj<RoomResponseMsg>(wrappedMsg.payload);
 				}

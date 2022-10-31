@@ -18,7 +18,7 @@ public class HexagonField implements ViewField {
 	// pointy top hex
 
 	// storage_position.x -> q - column
-	// storage_positoin.y -> r - row
+	// storage_position.y -> r - row
 	private Point2D storagePosition;
 
 	// canvas coordinates
@@ -26,8 +26,7 @@ public class HexagonField implements ViewField {
 
 	private boolean visibility;
 
-	// attention
-	private Color borderColor = Color.rgb(200, 100, 100);
+	private Color borderColor;
 	private ViewTerrain terrain;
 	private ViewUnit unit;
 

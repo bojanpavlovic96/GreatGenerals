@@ -17,9 +17,6 @@ import root.communication.messages.MoveMsg;
 import root.communication.messages.ReadyForInitMsg;
 import root.communication.messages.RecalculatePathMsg;
 import root.communication.messages.ServerErrorMsg;
-import root.communication.messages.components.Field;
-import root.communication.messages.components.Terrain;
-import root.communication.messages.components.Unit;
 import root.model.PlayerData;
 import root.model.event.ModelEventArg;
 
@@ -29,7 +26,7 @@ public class SwitchCaseMsgInterpreter implements MessageInterpreter {
     public Command ToCommand(Message message) {
         switch (message.type) {
             case CreateRoomRequest:
-            case JoinResponse:
+            case RoomResponse:
             case JoinRoomRequest:
             case LeaveRoomRequest:
             case StartGameRequest:
@@ -42,7 +39,7 @@ public class SwitchCaseMsgInterpreter implements MessageInterpreter {
             // to commands. TODO Consider spliting message types to login, room and game 
             // related messages. 
 
-            case InitializeMsg:
+            case InitializeMessage:
                 return new CtrlInitializeCommand(
                         mapPlayers(((InitializeMsg) message).players),
                         ((InitializeMsg) message).fields);

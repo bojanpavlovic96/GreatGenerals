@@ -24,13 +24,16 @@ public class ViewTerrain {
 	public void drawTerrain(GraphicsContext gc,
 			Point2D hexCenter,
 			double hexSide,
-			double borederWidth) {
+			double borderWidth) {
 
 		Image image = ResourceManager.getInstance().getTerrain(this.terrainName, intensity);
 
 		if (image == null) {
-			System.out.println("Terrain image is null... " + this.terrainName
+			System.out.println("Terrain image is null... "
+					+ this.terrainName
 					+ "\t @ ViewTerrain.drawTerrain");
+
+			return;
 		}
 
 		double hex_width = (double) (Math.sqrt(3) * hexSide);
@@ -39,10 +42,10 @@ public class ViewTerrain {
 		gc.save();
 
 		gc.drawImage(image,
-				hexCenter.getX() - hex_width / 2 + borederWidth,
-				hexCenter.getY() - hex_height / 2 + borederWidth,
-				hex_width - 2 * borederWidth,
-				hex_height - 2 * borederWidth);
+				hexCenter.getX() - hex_width / 2 + borderWidth,
+				hexCenter.getY() - hex_height / 2 + borderWidth,
+				hex_width - 2 * borderWidth,
+				hex_height - 2 * borderWidth);
 
 		gc.restore();
 

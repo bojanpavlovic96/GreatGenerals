@@ -18,7 +18,7 @@ public class SwitchCaseTypeResolver implements NameTypeResolver {
 
 		switch (type) {
 
-			case InitializeMsg:
+			case InitializeMessage:
 				return InitializeMsg.class;
 
 			case MoveMessage:
@@ -30,7 +30,7 @@ public class SwitchCaseTypeResolver implements NameTypeResolver {
 			case JoinRoomRequest:
 				return JoinRoomRequestMsg.class;
 
-			case JoinResponse:
+			case RoomResponse:
 				return RoomResponseMsg.class;
 
 			case LeaveRoomRequest:
@@ -44,6 +44,15 @@ public class SwitchCaseTypeResolver implements NameTypeResolver {
 
 			case ReadyForInitMsg:
 				return ReadyForInitMsg.class;
+
+			// 
+
+			case AbortMoveMessage:
+				break;
+			case RecalculatePathMessage:
+				break;
+			case ServerErrorMessage:
+				break;
 
 		}
 

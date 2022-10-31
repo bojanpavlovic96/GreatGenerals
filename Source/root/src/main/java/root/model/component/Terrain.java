@@ -5,7 +5,7 @@ public class Terrain {
 	// these are lowercase beacuse they are mapped to the sampe-named res files
 	public static enum TerrainType {
 		mountains,
-		watter
+		water
 	}
 
 	private Terrain.TerrainType type;

@@ -11,7 +11,7 @@ namespace RabbitGameServer.SharedModel.Messages
 			string player,
 			string roomName,
 			List<PlayerData> players)
-			: base(MessageType.JoinResponse, player, roomName)
+			: base(MessageType.RoomResponse, player, roomName)
 		{
 			this.responseType = type;
 			this.players = players;

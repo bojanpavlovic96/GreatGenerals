@@ -7,6 +7,7 @@ import model.component.field.ModelField;
 import root.command.Command;
 import root.communication.messages.components.Field;
 import root.communication.messages.components.Terrain;
+import root.communication.messages.components.Unit;
 import root.controller.Controller;
 import root.model.Model;
 import root.model.PlayerData;
@@ -92,6 +93,10 @@ public class CtrlInitializeCommand extends Command {
 		return new root.model.component.Terrain(
 				root.model.component.Terrain.TerrainType.valueOf(pTerr.type),
 				pTerr.intensity);
+	}
+
+	private root.model.component.Unit mapUnit(Unit pUnit){
+		return null;
 	}
 
 	@Override
