@@ -11,7 +11,7 @@ import root.model.component.Field;
 
 public class BasicMove extends MoveType {
 
-	public static final String name = "BaicMove";
+	public static final String name = "BasicMove";
 
 	private ScheduledFuture<?> movingFuture;
 

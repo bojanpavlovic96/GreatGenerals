@@ -65,13 +65,12 @@ public class CtrlInitializeCommand extends Command {
 		// model.getField(new Point2D(4, 7))
 		// 		.setUnit(model.generateUnit(BasicUnit.unitName));
 
-		var clearCommand = new ClearViewCommand();
-		var loadBoardCommand = new LoadBoardCommand(modelFields);
-
 		System.out.println("Clear board command enqueued ... @ CtrlInitializeCommand.run");
+		var clearCommand = new ClearViewCommand();
 		controller.getConsumerQueue().enqueue(clearCommand);
 
 		System.out.println("Load board command enqueued ... @ CtrlInitializeCommand.run");
+		var loadBoardCommand = new LoadBoardCommand(modelFields);
 		controller.getConsumerQueue().enqueue(loadBoardCommand);
 
 	}
@@ -95,7 +94,7 @@ public class CtrlInitializeCommand extends Command {
 				pTerr.intensity);
 	}
 
-	private root.model.component.Unit mapUnit(Unit pUnit){
+	private root.model.component.Unit mapUnit(Unit pUnit) {
 		return null;
 	}
 

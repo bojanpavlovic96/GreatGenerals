@@ -8,6 +8,9 @@ import root.model.event.ModelEventHandler;
 
 public abstract class MoveType implements Cloneable, Runnable {
 
+	// TODO make this base class just a holder for parameters (speed, range ... etc)
+	// basic unit will be basic implementation that is using timer ... 
+
 	// this is "timer"
 	protected ScheduledExecutorService timer;
 
@@ -22,31 +25,27 @@ public abstract class MoveType implements Cloneable, Runnable {
 
 	protected ModelEventHandler onEvent;
 
-	// constructors
-
-	public MoveType(Field my_field,
-			PathFinder path_finder,
+	public MoveType(Field myField,
+			PathFinder pathFinder,
 			ScheduledExecutorService executor) {
 		super();
 
 		this.timer = executor;
-		this.myField = my_field;
-		this.pathFinder = path_finder;
+		this.myField = myField;
+		this.pathFinder = pathFinder;
 
 		this.path = null;
 	}
 
-	// methods
-
-	public void addToPath(Field next_field) {
+	public void addToPath(Field nextField) {
 		if (this.path != null) {
-			this.path.add(next_field);
+			this.path.add(nextField);
 		}
 	}
 
-	public void addToPath(List<Field> next_path) {
+	public void addToPath(List<Field> newPath) {
 		if (this.path != null) {
-			this.path.addAll(next_path);
+			this.path.addAll(newPath);
 		}
 	}
 
@@ -57,12 +56,12 @@ public abstract class MoveType implements Cloneable, Runnable {
 		return this.moveDelay;
 	}
 
-	public void setField(Field new_field) {
-		this.myField = new_field;
+	public void setField(Field newField) {
+		this.myField = newField;
 	}
 
-	public void setEventHandler(ModelEventHandler event_handler) {
-		this.onEvent = event_handler;
+	public void setEventHandler(ModelEventHandler eventHandler) {
+		this.onEvent = eventHandler;
 	}
 
 	@Override
@@ -93,7 +92,6 @@ public abstract class MoveType implements Cloneable, Runnable {
 
 	public abstract boolean isMoving();
 
-	
 	public boolean isOnPath(Field field) {
 		var fieldPos = field.getStoragePosition();
 
@@ -117,6 +115,8 @@ public abstract class MoveType implements Cloneable, Runnable {
 	// abstract methods
 
 	public abstract void move();
+
+	// TODO add isAtTheEnd method 
 
 	public abstract void stopMoving();
 
