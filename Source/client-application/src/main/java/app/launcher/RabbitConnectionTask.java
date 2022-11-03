@@ -30,6 +30,7 @@ public class RabbitConnectionTask
 		this.eventSubscribers = new ArrayList<ConnectionEventHandler>();
 
 		this.brokerConfig = brokerConfig;
+		System.out.println("Using broker config: \n" + brokerConfig.toString());
 
 	}
 

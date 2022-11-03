@@ -1,5 +1,6 @@
 using MediatR;
 using Microsoft.Extensions.Options;
+using RabbitGameServer.Config;
 using RabbitGameServer.SharedModel;
 using RabbitGameServer.Util;
 

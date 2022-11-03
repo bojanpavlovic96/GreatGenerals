@@ -64,9 +64,7 @@ public class GameBrain implements Controller {
 
 		undoStack = new UndoStack();
 
-		// attention let's say that every controller implementations has its own
-		// ModelEventHandler (maybe this isn't the best approach)
-		model.setEventHandler((ModelEventHandler) this);
+		model.setModelEventHandler((ModelEventHandler) this);
 
 		initFieldOptions();
 

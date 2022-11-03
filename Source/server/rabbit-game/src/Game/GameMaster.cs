@@ -1,4 +1,5 @@
 using RabbitGameServer.Client;
+using RabbitGameServer.Config;
 using RabbitGameServer.SharedModel;
 using RabbitGameServer.SharedModel.Messages;
 using RabbitGameServer.SharedModel.ModelEvents;
@@ -99,6 +100,9 @@ namespace RabbitGameServer.Game
 			return new InitializeMessage(RoomName,
 				e.playerName,
 				Players,
+				config.Moves,
+				config.Units,
+				config.Attacks,
 				Fields.Values.ToList());
 		}
 
@@ -172,9 +176,10 @@ namespace RabbitGameServer.Game
 				{
 
 					Field newField;
+					var position = new Point2D(j, i);
 					if (i % 2 == 0 && j % 5 == 0)
 					{
-						newField = new Field(new Point2D(j, i),
+						newField = new Field(position,
 							true,
 							null,
 							new Terrain(TerrainType.mountains, 1),
@@ -183,12 +188,17 @@ namespace RabbitGameServer.Game
 					}
 					else
 					{
-						newField = new Field(new Point2D(j, i),
+						newField = new Field(position,
 							true,
 							null,
 							new Terrain(TerrainType.water, 1),
 							Players[playerCounter].username,
 							false);
+					}
+
+					if (config.DefaultPositions.Contains(position))
+					{
+						newField.unit = UnitType.basicunit;
 					}
 
 					Fields.Add(new Point2D(j, i), newField);
@@ -201,6 +211,14 @@ namespace RabbitGameServer.Game
 				if (left > -3)
 					left--;
 			}
+
+			Field destField;
+			Fields.TryGetValue(new Point2D(3, 1), out destField);
+			destField.unit = UnitType.basicunit;
+
+			Fields.TryGetValue(new Point2D(4, 5), out destField);
+			destField.unit = UnitType.basicunit;
+
 			// }
 			// catch (Exception e)
 			// {
@@ -208,6 +226,8 @@ namespace RabbitGameServer.Game
 			// 	Console.WriteLine(e.Message);
 			// 	Console.WriteLine(e.StackTrace);
 			// }
+
+
 
 			return true;
 		}

@@ -1,4 +1,5 @@
 using Microsoft.Extensions.Options;
+using RabbitGameServer.Config;
 using RabbitMQ.Client;
 
 namespace RabbitGameServer.Service

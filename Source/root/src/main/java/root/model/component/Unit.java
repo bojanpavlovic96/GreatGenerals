@@ -2,11 +2,11 @@ package root.model.component;
 
 import java.util.List;
 
-import root.model.action.attack.AttackType;
-import root.model.action.move.MoveType;
+import root.model.action.attack.Attack;
+import root.model.action.move.Move;
 import root.model.event.ModelEventHandler;
 
-public interface Unit extends Cloneable {
+public interface Unit {
 
 	UnitType getUnitType();
 
@@ -16,15 +16,15 @@ public interface Unit extends Cloneable {
 
 	boolean canMove();
 
-	MoveType getMoveType();
+	Move getMoveType();
 
 	void relocateTo(Field nextField);
 
-	List<AttackType> getAttacks();
+	List<Attack> getAttacks();
 
 	boolean hasAttack();
 
-	Unit clone() throws CloneNotSupportedException;
+	// Unit clone() throws CloneNotSupportedException;
 
 	void setEventHandler(ModelEventHandler eventHandler);
 

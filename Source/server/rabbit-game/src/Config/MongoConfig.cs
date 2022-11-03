@@ -1,6 +1,5 @@
-namespace RabbitGameServer
+namespace RabbitGameServer.Config
 {
-
 	public class MongoConfig
 	{
 

@@ -8,7 +8,7 @@ namespace RabbitGameServer.SharedModel
 
 		public bool isVisible;
 
-		public Unit unit;
+		public UnitType? unit;
 		public Terrain terrain;
 
 		public bool inBattle;
@@ -17,7 +17,7 @@ namespace RabbitGameServer.SharedModel
 
 		public Field(Point2D position,
 			bool isVisible,
-			Unit unit,
+			UnitType? unit,
 			Terrain terrain,
 			string owner,
 			bool inBattle)

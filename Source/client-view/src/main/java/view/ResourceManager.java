@@ -216,9 +216,9 @@ public class ResourceManager {
 		return ResourceManager.ASSETS_TYPE;
 	}
 
-	public Image getTerrain(String terrainName, int intensity) {
+	public Image getTerrain(String terrainName, float intensity) {
 
-		return this.assets.get(this.constructTerrainKey(terrainName, intensity));
+		return this.assets.get(this.constructTerrainKey(terrainName, (int) intensity));
 
 	}
 

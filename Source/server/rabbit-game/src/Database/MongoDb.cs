@@ -1,5 +1,6 @@
 using Microsoft.Extensions.Options;
 using MongoDB.Driver;
+using RabbitGameServer.Config;
 
 namespace RabbitGameServer.Database
 {

@@ -1,11 +1,11 @@
 package root.communication.messages.components;
 
-public class Terrain {
+public class TerrainDesc {
 
 	public String type;
-	public int intensity;
+	public float intensity;
 
-	public Terrain() {
+	public TerrainDesc() {
 
 	}
 

@@ -33,4 +33,5 @@ public interface Field {
 
 	void adjustOptionsFor(Field secondField);
 
+	List<Point2D> getNeighbours();
 }

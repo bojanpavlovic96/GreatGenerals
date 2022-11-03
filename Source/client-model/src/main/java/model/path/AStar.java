@@ -10,18 +10,11 @@ import java.util.Map;
 import java.util.Set;
 
 import root.Point2D;
-// import javafx.geometry.Point2D;
 import root.model.Model;
 import root.model.action.move.PathFinder;
 import root.model.component.Field;
 
 public class AStar implements PathFinder {
-
-	private Model data_model;
-
-	public AStar(Model data_model) {
-		this.data_model = data_model;
-	}
 
 	/**
 	 * Find the path using the A* algorithm from start vertex to end vertex or NULL
@@ -36,34 +29,31 @@ public class AStar implements PathFinder {
 	 * 
 	 * @return List of Edges to get from start to end or NULL if no path exists.
 	 */
-	public List<Field> findPath(Field start, Field goal) {
+	public List<Field> findPath(Model dataModel, Field start, Field goal) {
 
 		// final int size = graph.getVertices().size(); // used to size data structures
 		// appropriately
 
-		final Set<Field> closedSet = new HashSet<Field>(); // The set of nodes already
-															// evaluated.
-		final List<Field> openSet = new ArrayList<Field>(); // The set of tentative nodes to be
-															// evaluated, initially containing
-															// the start node
+		// The set of nodes already evaluated.
+		final Set<Field> closedSet = new HashSet<Field>();
+		// The set of tentative nodes to be evaluated, initially containing
+		// the start node
+		final List<Field> openSet = new ArrayList<Field>();
 
 		Field starting_node = start;
 		openSet.add(starting_node);
 
-		final Map<Field, Field> cameFrom = new HashMap<Field, Field>(); // The
-																		// map
-																		// of
-																		// navigated
-																		// nodes.
+		// The map of navigated nodes.
+		final Map<Field, Field> cameFrom = new HashMap<Field, Field>();
 
-		final Map<Field, Integer> gScore = new HashMap<Field, Integer>(); // Cost from start along
-																			// best known path.
+		// Cost from start along best known path.
+		final Map<Field, Integer> gScore = new HashMap<Field, Integer>();
 		gScore.put(starting_node, 0);
 
 		// Estimated total cost from start to goal through y.
 		final Map<Field, Double> fScore = new HashMap<Field, Double>();
 
-		for (Field v : this.data_model.getFields())
+		for (Field v : dataModel.getFields())
 			fScore.put(v, (double) Integer.MAX_VALUE);
 
 		Field goal_node = goal;
@@ -93,10 +83,11 @@ public class AStar implements PathFinder {
 			openSet.remove(0);
 			closedSet.add(current);
 
-			for (Field neighbour : this.data_model.getFreeNeighbours(current)) { // current is Field should be field
+			for (Field neighbor : dataModel.getFreeNeighbours(current)) { // current is Field should be field
 
-				if (closedSet.contains(neighbour))
-					continue; // Ignore the neighbor which is already evaluated.
+				// Ignore the neighbor which is already evaluated.
+				if (closedSet.contains(neighbor))
+					continue;
 
 				// final int tenativeGScore = gScore.get(current) + distanceBetween(current,
 				// neighbor); // length of this
@@ -104,16 +95,16 @@ public class AStar implements PathFinder {
 
 				final int tenativeGScore = gScore.get(current) + 1;
 
-				if (!openSet.contains(neighbour))
-					openSet.add(neighbour); // Discover a new node
-				else if (tenativeGScore >= gScore.get(neighbour))
+				if (!openSet.contains(neighbor))
+					openSet.add(neighbor); // Discover a new node
+				else if (tenativeGScore >= gScore.get(neighbor))
 					continue;
 
 				// This path is the best until now. Record it!
-				cameFrom.put(neighbour, current);
-				gScore.put(neighbour, tenativeGScore);
-				final double estimatedFScore = gScore.get(neighbour) + heuristicCostEstimate(neighbour, goal_node);
-				fScore.put(neighbour, estimatedFScore);
+				cameFrom.put(neighbor, current);
+				gScore.put(neighbor, tenativeGScore);
+				final double estimatedFScore = gScore.get(neighbor) + heuristicCostEstimate(neighbor, goal_node);
+				fScore.put(neighbor, estimatedFScore);
 
 				// fScore has changed, re-sort the list
 				Collections.sort(openSet, comparator);

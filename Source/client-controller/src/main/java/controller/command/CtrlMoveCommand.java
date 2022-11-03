@@ -65,7 +65,7 @@ public class CtrlMoveCommand extends Command {
 			controller.setSelectedField(secondField);
 
 		} else {
-			// if startField is on currently selected field's path select startField
+			// if startField is on currently selected field's path THEN select startField
 			var selField = controller.getSelectedField();
 			if (selField.getUnit() != null
 					&& selField.getUnit().getMoveType() != null) {
@@ -87,7 +87,7 @@ public class CtrlMoveCommand extends Command {
 
 		unitPath.remove(0);
 
-		// note: unit is now on second_field
+		// note: unit is now on secondField
 		if (!unitPath.isEmpty()) {
 			// continue moving
 

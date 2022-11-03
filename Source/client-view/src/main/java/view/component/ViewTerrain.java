@@ -9,7 +9,7 @@ import view.ResourceManager;
 public class ViewTerrain {
 
 	private String terrainName;
-	private int intensity;
+	private float intensity;
 
 	public ViewTerrain(Terrain model) {
 
@@ -59,7 +59,7 @@ public class ViewTerrain {
 		String old_terrain_name = this.terrainName;
 		this.terrainName = "fog";
 
-		int old_intensity = this.intensity;
+		float old_intensity = this.intensity;
 		this.intensity = 1;
 
 		this.drawTerrain(gc, hexCenter, hexSide, borderWidth);

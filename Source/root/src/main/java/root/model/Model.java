@@ -4,11 +4,19 @@ import java.util.List;
 
 import root.ActiveComponent;
 import root.Point2D;
+import root.communication.PlayerDescription;
+import root.communication.messages.components.AttackDesc;
+import root.communication.messages.components.FieldDesc;
+import root.communication.messages.components.MoveDesc;
+import root.communication.messages.components.UnitDesc;
 import root.model.component.Field;
 import root.model.component.Unit;
+import root.model.component.UnitType;
+import root.model.component.option.FieldOption;
 import root.model.event.ModelEventHandler;
+import root.model.event.ModelEventProducer;
 
-public interface Model extends ActiveComponent {
+public interface Model extends ActiveComponent, ModelEventProducer {
 
 	List<Field> getFields();
 
@@ -18,12 +26,12 @@ public interface Model extends ActiveComponent {
 
 	void setField(Field field);
 
-	void setEventHandler(ModelEventHandler eventHandler);
+	void initializeModel(List<PlayerDescription> players,
+			List<UnitDesc> units,
+			List<MoveDesc> moves,
+			List<AttackDesc> attacks,
+			List<FieldDesc> fields,
+			List<FieldOption> options);
 
-	void initializeModel(List<PlayerData> listOfPlayers, List<Field> fields);
-
-	Unit generateUnit(String unitName);
-
-	
-
+	Unit generateUnit(UnitType type);
 }

@@ -36,12 +36,20 @@ public class SwitchCaseMsgInterpreter implements MessageInterpreter {
 
                 break;
             // Above types are used in roomServer and can not be translated
-            // to commands. TODO Consider spliting message types to login, room and game 
-            // related messages. 
+            // to commands. 
+            //TODO Consider spliting message types to login, room and game  related messages. 
+
+            // case InitializeMessage:
+            //     return new CtrlInitializeCommand(
+            //             mapPlayers(((InitializeMsg) message).players),
+            //             ((InitializeMsg) message).fields);
 
             case InitializeMessage:
                 return new CtrlInitializeCommand(
-                        mapPlayers(((InitializeMsg) message).players),
+                        ((InitializeMsg) message).players,
+                        ((InitializeMsg) message).moves,
+                        ((InitializeMsg) message).units,
+                        ((InitializeMsg) message).attacks,
                         ((InitializeMsg) message).fields);
 
             case MoveMessage:
@@ -73,50 +81,6 @@ public class SwitchCaseMsgInterpreter implements MessageInterpreter {
 
         return null;
     }
-
-    // region initMsg mapping
-
-    private List<PlayerData> mapPlayers(List<PlayerDescription> players) {
-        return players.stream()
-                .map((p) -> mapPlayer(p))
-                .collect(Collectors.toList());
-    }
-
-    private PlayerModelData mapPlayer(PlayerDescription player) {
-        return new PlayerModelData(player.getUsername(),
-                player.getColor(),
-                player.getLevel(),
-                player.getPoints());
-    }
-
-    // private List<FieldDesc> mapFields(List<Field> fields) {
-    //     return fields.stream()
-    //             .map((f) -> mapField(f))
-    //             .collect(Collectors.toList());
-    // }
-
-    // private CtrlInitializeCommand.FieldDesc mapField(Field field) {
-    //     return new CtrlInitializeCommand.FieldDesc(
-    //             field.isVisible,
-    //             field.position,
-    //             field.owner,
-    //             mapUnit(field.unit),
-    //             mapTerrain(field.terrain));
-    // }
-
-    // private CtrlInitializeCommand.UnitDesc mapUnit(Unit unit) {
-    //     return new CtrlInitializeCommand.UnitDesc(
-    //             unit.unitName,
-    //             unit.moveType,
-    //             unit.groundAttackType,
-    //             unit.airAttackType);
-    // }
-
-    // private CtrlInitializeCommand.TerrainDesc mapTerrain(Terrain terrain) {
-    //     return new CtrlInitializeCommand.TerrainDesc(
-    //             terrain.name,
-    //             terrain.intensity);
-    // }
 
     // endregion
 

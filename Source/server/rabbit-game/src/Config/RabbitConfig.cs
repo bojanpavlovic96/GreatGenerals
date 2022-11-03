@@ -1,9 +1,7 @@
-namespace RabbitGameServer
+namespace RabbitGameServer.Config
 {
-
 	public class RabbitConfig
 	{
-
 		public static string ConfigSection = "RabbitConfig";
 
 		public string? HostName { get; set; }

@@ -5,14 +5,16 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import root.Point2D;
+import root.communication.messages.components.FieldDesc;
 import root.model.PlayerData;
 import root.model.component.Field;
+import root.model.component.FieldFactory;
 import root.model.component.Terrain;
 import root.model.component.Unit;
 import root.model.component.option.FieldOption;
 import root.model.event.ModelEventHandler;
 
-public class ModelField implements Field {
+public class HexagonField implements Field {
 
 	private Point2D storagePosition;
 
@@ -35,7 +37,7 @@ public class ModelField implements Field {
 
 	// constructors
 
-	public ModelField(Point2D storagePosition,
+	public HexagonField(Point2D storagePosition,
 			PlayerData player,
 			boolean visibility,
 			Terrain terrain) {
@@ -49,14 +51,14 @@ public class ModelField implements Field {
 
 	}
 
-	public ModelField(Point2D storage_position,
+	public HexagonField(Point2D storagePosition,
 			PlayerData player,
 			boolean visibility,
 			Unit unit,
 			Terrain terrain) {
 		super();
 
-		this.storagePosition = storage_position;
+		this.storagePosition = storagePosition;
 		this.player = player;
 		this.visibility = visibility;
 		this.unit = unit;
@@ -166,6 +168,35 @@ public class ModelField implements Field {
 
 		this.selfOptionAdjust();
 
+	}
+
+	@Override
+	public List<Point2D> getNeighbours() {
+		var retList = new ArrayList<Point2D>();
+
+		var mx = storagePosition.x;
+		var my = storagePosition.y;
+
+		// up right
+		retList.add(new Point2D(mx - 1, my + 1));
+		// right 
+		retList.add(new Point2D(mx, my + 1));
+		// down right
+		retList.add(new Point2D(mx + 1, my));
+		// down left
+		retList.add(new Point2D(mx + 1, my - 1));
+		// left
+		retList.add(new Point2D(mx, my - 1));
+		// up left
+		retList.add(new Point2D(mx - 1, my));
+
+		return retList;
+	}
+
+	public static FieldFactory getFactory() {
+		return (visibility, position, unit, terrain, owner) -> {
+			return new HexagonField(position, owner, visibility, unit, terrain);
+		};
 	}
 
 }

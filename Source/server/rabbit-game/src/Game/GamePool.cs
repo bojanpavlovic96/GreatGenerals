@@ -1,5 +1,6 @@
 using Microsoft.Extensions.Options;
 using RabbitGameServer.Client;
+using RabbitGameServer.Config;
 using RabbitGameServer.Database;
 using RabbitGameServer.SharedModel;
 

@@ -1,4 +1,4 @@
-namespace RabbitGameServer
+namespace RabbitGameServer.Config
 {
 	public class LoginServerConfig
 	{

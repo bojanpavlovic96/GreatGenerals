@@ -1,4 +1,5 @@
 using Microsoft.Extensions.Options;
+using RabbitGameServer.Config;
 using RabbitGameServer.Service;
 using RabbitGameServer.SharedModel;
 using RabbitGameServer.SharedModel.Messages;

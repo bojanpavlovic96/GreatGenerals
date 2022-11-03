@@ -2,11 +2,9 @@ package controller.option;
 
 import java.util.List;
 
-import root.command.Command;
 import root.controller.Controller;
 import root.model.component.Field;
 import root.model.component.option.FieldOption;
-import view.command.ClearFieldCommand;
 import view.command.ClearTopLayerCommand;
 import view.command.SelectFieldCommand;
 import view.command.UnselectFieldCommand;
@@ -51,10 +49,12 @@ public class SelectPathFieldOption extends FieldOption {
 		}
 
 		// second field must be without unit in order to calculate path
-		for (Field pathField : primaryField
-				.getUnit()
-				.getMoveType()
-				.calculatePath(this.secondaryField)) {
+		var path = primaryField
+			.getUnit()
+			.getMoveType()
+			.calculatePath(controller.getModel(), primaryField, secondaryField);
+
+		for (Field pathField : path) {
 
 			var selectCommand = new SelectFieldCommand(pathField);
 			super.controller.getConsumerQueue().enqueue(selectCommand);

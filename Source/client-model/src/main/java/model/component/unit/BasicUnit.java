@@ -3,37 +3,35 @@ package model.component.unit;
 import java.util.ArrayList;
 import java.util.List;
 
-import root.model.action.attack.AttackType;
-import root.model.action.move.MoveType;
+import root.model.action.attack.Attack;
+import root.model.action.move.Move;
 import root.model.component.Field;
 import root.model.component.Unit;
 import root.model.component.UnitType;
 import root.model.event.ModelEventHandler;
+import root.model.event.ModelEventProducer;
 
-public class BasicUnit implements Unit {
+public class BasicUnit implements Unit, ModelEventProducer {
 
-	// public static final String unitName = "basic-unit"; // was 
 	// public static final String unitName = "basicunit";
+
+	private UnitType type;
 
 	private Field myField;
 
-	private MoveType movementType;
-	private List<AttackType> attacks;
+	private Move movementType;
+	private List<Attack> attacks;
 
 	private ModelEventHandler eventHandler;
 
-	public BasicUnit() {
-		// attention may be used only in clone
-		// protected is better solution than public
-	}
-
-	public BasicUnit(MoveType move, List<AttackType> attacks) {
+	public BasicUnit(UnitType type, Move move, List<Attack> attacks) {
+		this.type = type;
 		this.movementType = move;
 		this.attacks = attacks;
 	}
 
-	public BasicUnit(MoveType move, AttackType attack) {
-
+	public BasicUnit(UnitType type, Move move, Attack attack) {
+		this.type = type;
 		this.movementType = move;
 		this.attacks = new ArrayList<>();
 		this.attacks.add(attack);
@@ -41,7 +39,7 @@ public class BasicUnit implements Unit {
 
 	@Override
 	public UnitType getUnitType() {
-		return UnitType.basicunit;
+		return this.type;
 	}
 
 	@Override
@@ -54,10 +52,6 @@ public class BasicUnit implements Unit {
 
 		this.myField = newField;
 
-		if (this.canMove()) {
-			this.movementType.setField(newField);
-		}
-
 		// TODO do the same thing for attack
 
 	}
@@ -68,12 +62,12 @@ public class BasicUnit implements Unit {
 	}
 
 	@Override
-	public MoveType getMoveType() {
+	public Move getMoveType() {
 		return this.movementType;
 	}
 
 	@Override
-	public List<AttackType> getAttacks() {
+	public List<Attack> getAttacks() {
 		return this.attacks;
 	}
 
@@ -96,31 +90,41 @@ public class BasicUnit implements Unit {
 
 	}
 
-	@Override
-	public Unit clone() throws CloneNotSupportedException {
-		// exception just because... cloneable...
+	// @Override
+	// public Unit clone() throws CloneNotSupportedException {
+	// 	// exception just because... cloneable...
 
-		BasicUnit clone = (BasicUnit) super.clone();
+	// 	BasicUnit clone = (BasicUnit) super.clone();
 
-		clone.movementType = this.movementType.clone();
-		clone.attacks = new ArrayList<>();
-		for (AttackType attack : this.attacks) {
-			clone.attacks.add(attack.clone());
-		}
+	// 	clone.movementType = this.movementType.clone();
+	// 	clone.attacks = new ArrayList<>();
+	// 	for (AttackType attack : this.attacks) {
+	// 		clone.attacks.add(attack.clone());
+	// 	}
 
-		return clone;
-	}
+	// 	return clone;
+	// }
 
 	@Override
 	public void setEventHandler(ModelEventHandler handler) {
 		this.eventHandler = handler;
 
 		if (this.canMove()) {
-			this.movementType.setEventHandler(this.eventHandler);
+			this.movementType.setModelEventHandler(this.eventHandler);
 		}
 
 		// TODO do the same for attack
 
+	}
+
+	@Override
+	public ModelEventHandler getModelEventHandler() {
+		return eventHandler;
+	}
+
+	@Override
+	public void setModelEventHandler(ModelEventHandler handler) {
+		this.eventHandler = handler;
 	}
 
 }

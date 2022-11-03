@@ -40,8 +40,6 @@ public class HexagonField implements ViewField {
 
 	private List<Point2D> cornerPoints;
 
-	// constructors
-
 	public HexagonField(Field model,
 			double fieldWidth,
 			double fieldHeight,
@@ -74,8 +72,6 @@ public class HexagonField implements ViewField {
 		this.initCornerPoints();
 
 	}
-
-	// methods
 
 	private void initCornerPoints() {
 
@@ -360,8 +356,8 @@ public class HexagonField implements ViewField {
 		return borderWidth;
 	}
 
-	public void setBorderWidth(double border_width) {
-		this.borderWidth = border_width;
+	public void setBorderWidth(double borderWidth) {
+		this.borderWidth = borderWidth;
 	}
 
 	@Override

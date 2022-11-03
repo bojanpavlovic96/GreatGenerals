@@ -1,27 +1,31 @@
 package model.component.unit;
 
-import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
 
 import model.event.MoveModelEventArg;
-import root.model.action.move.MoveType;
+import root.model.action.move.Move;
 import root.model.action.move.PathFinder;
 import root.model.component.Field;
+import root.model.component.Terrain;
+import root.model.event.Timer;
 
-public class BasicMove extends MoveType {
+public class BasicMove extends Move implements Runnable {
 
 	public static final String name = "BasicMove";
 
+	protected Timer timer;
+
 	private ScheduledFuture<?> movingFuture;
 
-	public BasicMove(Field myField,
+	public BasicMove(long moveDelay,
+			float terrainMultiplier,
 			PathFinder pathFinder,
-			ScheduledExecutorService timer) {
+			Timer timer) {
 
-		super(myField, pathFinder, timer);
+		super(moveDelay, terrainMultiplier, pathFinder);
 
-		this.moveDelay = this.calculateDelay();
+		this.timer = timer;
 	}
 
 	// this implementation only starts timer for move.
@@ -31,25 +35,26 @@ public class BasicMove extends MoveType {
 
 		if (this.path != null && !this.path.isEmpty()) {
 
-			// debug
+			// TODO this.myfield should be path[0]
+			// and the next field to move at should be path[1]
 			System.out.println("Intention to move: "
-					+ this.myField.getStoragePosition() +
-					"->: "
+					// + this.myField.getStoragePosition()
+
+					+ "->: "
 					+ this.path.get(0).getStoragePosition());
 
 			Field nextField = path.get(0);
 
-			// TODO this logic should be at the server side 
-			if (nextField.getUnit() != null) {
-				// debug
-				System.out.println("Recalculating path ...");
-				this.path = this.pathFinder.findPath(
-						this.myField,
-						this.destinationField);
-			}
-
-			calculateDelay();
-			movingFuture = timer.schedule(this, moveDelay, TimeUnit.MILLISECONDS);
+			// // TODO this logic should be at the server side 
+			// if (nextField.getUnit() != null) {
+			// 	// debug
+			// 	System.out.println("Recalculating path ...");
+			// 	this.path = this.pathFinder.findPath(
+			// 			this.myField,
+			// 			this.destinationField);
+			// }
+			var delay = calculateDelay(nextField.getTerrain());
+			movingFuture = timer.schedule((Runnable) this, delay, TimeUnit.MILLISECONDS);
 			// this will just raise event (at every moveDelay seconds)
 			// that unit is ready to move
 			// this event is passed to the server and after confirmation from it's side
@@ -63,23 +68,27 @@ public class BasicMove extends MoveType {
 
 	}
 
-	@Override
-	public MoveType clone() throws CloneNotSupportedException {
-		return super.clone();
-	}
+	// @Override
+	// public Move clone() throws CloneNotSupportedException {
+	// 	return super.clone();
+	// }
 
-	// TODO implement calculate delay based on current terrain
 	@Override
-	public int calculateDelay() {
-		return 2500;
+	public long calculateDelay(Terrain terrain) {
+		return (long) (moveDelay * (terrainMultiplier * terrain.getIntensity()));
 	}
 
 	@Override
 	public void run() {
+		// onEvent.handleModelEvent(new MoveModelEventArg(
+		// 		myField.getPlayer().getUsername(),
+		// 		myField.getStoragePosition(),
+		// 		path.get(0).getStoragePosition()));
 		onEvent.handleModelEvent(new MoveModelEventArg(
-				myField.getPlayer().getUsername(),
-				myField.getStoragePosition(),
-				path.get(0).getStoragePosition()));
+				path.get(0).getPlayer().getUsername(),
+				path.get(0).getStoragePosition(),
+				path.get(1).getStoragePosition()));
+		// TODO path indices not adjuseted just a pseudocode
 	}
 
 	@Override

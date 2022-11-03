@@ -1,6 +1,7 @@
 using MediatR;
 using RabbitGameServer;
 using RabbitGameServer.Client;
+using RabbitGameServer.Config;
 using RabbitGameServer.Database;
 using RabbitGameServer.Game;
 using RabbitGameServer.Service;

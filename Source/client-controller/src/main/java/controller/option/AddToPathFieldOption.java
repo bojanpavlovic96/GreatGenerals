@@ -3,7 +3,7 @@ package controller.option;
 import java.util.List;
 
 import root.controller.Controller;
-import root.model.action.move.MoveType;
+import root.model.action.move.Move;
 import root.model.action.move.PathFinder;
 import root.model.component.Field;
 import root.model.component.option.FieldOption;
@@ -32,20 +32,24 @@ public class AddToPathFieldOption extends FieldOption {
 			return;
 		}
 
-		MoveType moveType = primaryField.getUnit().getMoveType();
+		Move moveType = primaryField.getUnit().getMoveType();
 		List<Field> oldPath = moveType.getPath();
 
 		List<Field> pathToAdd = null;
 
 		if (oldPath == null || oldPath.isEmpty()) {
 
-			pathToAdd = moveType.calculatePath(this.secondaryField);
+			pathToAdd = moveType.calculatePath(controller.getModel(),
+					primaryField,
+					secondaryField);
 
 		} else {
 
 			Field lastPathField = oldPath.get(oldPath.size() - 1);
 			PathFinder pathFinder = moveType.getPathFinder();
-			pathToAdd = pathFinder.findPath(lastPathField, this.secondaryField);
+			pathToAdd = pathFinder.findPath(controller.getModel(),
+					lastPathField,
+					secondaryField);
 
 			moveType.addToPath(pathToAdd);
 
