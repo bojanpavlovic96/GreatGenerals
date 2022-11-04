@@ -5,7 +5,6 @@ import root.command.Command;
 import root.command.CommandDrivenComponent;
 import root.model.component.Field;
 import root.view.field.ViewField;
-// import javafx.scene.paint.Color;
 import root.view.Color;
 import root.view.View;
 
@@ -14,7 +13,6 @@ public class SelectFieldCommand extends Command {
 	private Color filterColor;
 
 	private Field modelField;
-	private ViewField viewField;
 
 	// TODO this should be read from some manager or config
 	private static Color defaultFilterColor = Color.rgb(1, 0, 0, 0.3);
@@ -27,14 +25,6 @@ public class SelectFieldCommand extends Command {
 
 	public SelectFieldCommand(Field modelField) {
 		this(modelField, SelectFieldCommand.defaultFilterColor);
-	}
-
-	@Override
-	public void setTargetComponent(CommandDrivenComponent target) {
-		super.setTargetComponent(target);
-
-		this.viewField = ((View) super.targetComponent)
-				.convertToViewField(this.modelField);
 	}
 
 	@Override

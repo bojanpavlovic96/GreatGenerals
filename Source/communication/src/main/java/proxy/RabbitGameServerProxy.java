@@ -148,6 +148,9 @@ public class RabbitGameServerProxy implements GameServerProxy,
 			return false;
 		}
 
+		System.out.println("Game proxy is sending intention: "
+				+ modelEvent.getEventType().toString());
+
 		var message = messageInterpreter.ToMessage(modelEvent);
 		message.setOrigin(this.username, this.roomName);
 

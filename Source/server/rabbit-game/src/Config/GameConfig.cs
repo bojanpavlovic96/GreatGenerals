@@ -20,5 +20,10 @@ namespace RabbitGameServer.Config
 		public List<Unit> Units { get; set; }
 		public List<Attack> Attacks { get; set; }
 
+		public GameConfig()
+		{
+
+		}
+
 	}
 }

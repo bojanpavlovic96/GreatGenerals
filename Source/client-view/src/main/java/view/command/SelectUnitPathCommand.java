@@ -42,10 +42,10 @@ public class SelectUnitPathCommand extends Command {
 
 		Unit unit = this.modelField.getUnit();
 		if (unit != null
-				&& unit.getMoveType() != null
-				&& unit.getMoveType().getPath() != null) {
+				&& unit.getMove() != null
+				&& unit.getMove().getPath() != null) {
 
-			for (Field pathField : this.modelField.getUnit().getMoveType().getPath()) {
+			for (Field pathField : this.modelField.getUnit().getMove().getPath()) {
 
 				var selectFieldCommand = new SelectFieldCommand(pathField);
 				selectFieldCommand.setTargetComponent(this.targetComponent);

@@ -26,6 +26,7 @@ import root.model.component.UnitType;
 import root.model.component.Terrain.TerrainType;
 import root.model.component.option.FieldOption;
 import root.model.event.ModelEventHandler;
+import root.model.event.ModelEventProducer;
 import root.model.event.Timer;
 
 public class GameModel implements Model {
@@ -69,6 +70,14 @@ public class GameModel implements Model {
 		for (var field : mapFields(fields)) {
 
 			field.addFieldOptions(options);
+
+			if(field instanceof ModelEventProducer){
+				((ModelEventProducer)field).setModelEventHandler(eventHandler);
+			}
+
+			// if (field.getUnit() != null && field.getUnit() instanceof ModelEventProducer) {
+			// 	((ModelEventProducer) field.getUnit()).setModelEventHandler(eventHandler);
+			// }
 
 			this.fields.put(field.getStoragePosition(), field);
 

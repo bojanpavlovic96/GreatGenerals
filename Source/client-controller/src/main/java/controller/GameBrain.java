@@ -122,12 +122,12 @@ public class GameBrain implements Controller {
 				undoStack.push(selectField);
 
 				if (clickedField.getUnit() != null
-						&& clickedField.getUnit().getMoveType() != null
-						&& clickedField.getUnit().getMoveType().getPath() != null) {
+						&& clickedField.getUnit().getMove() != null
+						&& clickedField.getUnit().getMove().getPath() != null) {
 
 					for (Field pathField : clickedField
 							.getUnit()
-							.getMoveType()
+							.getMove()
 							.getPath()) {
 
 						var selectPathField = new SelectFieldCommand(pathField);

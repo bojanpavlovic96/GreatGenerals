@@ -11,6 +11,8 @@ import root.model.event.ModelEventProducer;
 public abstract class Move implements ModelEventProducer {
 
 	protected PathFinder pathFinder;
+	// TODO since every check is done by the server side this could be simply be 
+	// just the list of Point2D ... ? 
 	protected List<Field> path;
 
 	protected long moveDelay; // in ms

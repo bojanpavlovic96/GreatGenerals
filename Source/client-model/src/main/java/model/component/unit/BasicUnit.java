@@ -13,26 +13,25 @@ import root.model.event.ModelEventProducer;
 
 public class BasicUnit implements Unit, ModelEventProducer {
 
-	// public static final String unitName = "basicunit";
-
 	private UnitType type;
 
 	private Field myField;
 
-	private Move movementType;
+	private Move moveType;
 	private List<Attack> attacks;
 
 	private ModelEventHandler eventHandler;
 
 	public BasicUnit(UnitType type, Move move, List<Attack> attacks) {
 		this.type = type;
-		this.movementType = move;
+
+		this.moveType = move;
 		this.attacks = attacks;
 	}
 
 	public BasicUnit(UnitType type, Move move, Attack attack) {
 		this.type = type;
-		this.movementType = move;
+		this.moveType = move;
 		this.attacks = new ArrayList<>();
 		this.attacks.add(attack);
 	}
@@ -42,28 +41,26 @@ public class BasicUnit implements Unit, ModelEventProducer {
 		return this.type;
 	}
 
-	@Override
-	public Field getField() {
-		return this.myField;
-	}
+	// @Override
+	// public Field getField() {
+	// 	return this.myField;
+	// }
 
-	@Override
-	public void setField(Field newField) {
+	// @Override
+	// public void setField(Field newField) {
 
-		this.myField = newField;
+	// 	this.myField = newField;
 
-		// TODO do the same thing for attack
-
-	}
+	// }
 
 	@Override
 	public boolean canMove() {
-		return this.movementType != null;
+		return this.moveType != null;
 	}
 
 	@Override
-	public Move getMoveType() {
-		return this.movementType;
+	public Move getMove() {
+		return this.moveType;
 	}
 
 	@Override
@@ -76,46 +73,19 @@ public class BasicUnit implements Unit, ModelEventProducer {
 		return this.attacks != null && !this.attacks.isEmpty();
 	}
 
-	@Override
-	public void relocateTo(Field nextField) {
-
-		// remove from current field
-		this.myField.setUnit(null);
-		// set on next field
-		nextField.setUnit(this);
-
-		// update units reference to field
-		// and also movement type reference
-		this.setField(nextField);
-
-	}
-
 	// @Override
-	// public Unit clone() throws CloneNotSupportedException {
-	// 	// exception just because... cloneable...
+	// public void relocateTo(Field nextField) {
 
-	// 	BasicUnit clone = (BasicUnit) super.clone();
+	// 	// remove from current field
+	// 	this.myField.setUnit(null);
+	// 	// set on next field
+	// 	nextField.setUnit(this);
 
-	// 	clone.movementType = this.movementType.clone();
-	// 	clone.attacks = new ArrayList<>();
-	// 	for (AttackType attack : this.attacks) {
-	// 		clone.attacks.add(attack.clone());
-	// 	}
+	// 	// update units reference to field
+	// 	// and also movement type reference
+	// 	this.setField(nextField);
 
-	// 	return clone;
 	// }
-
-	@Override
-	public void setEventHandler(ModelEventHandler handler) {
-		this.eventHandler = handler;
-
-		if (this.canMove()) {
-			this.movementType.setModelEventHandler(this.eventHandler);
-		}
-
-		// TODO do the same for attack
-
-	}
 
 	@Override
 	public ModelEventHandler getModelEventHandler() {
@@ -125,6 +95,18 @@ public class BasicUnit implements Unit, ModelEventProducer {
 	@Override
 	public void setModelEventHandler(ModelEventHandler handler) {
 		this.eventHandler = handler;
+
+		if (moveType != null && moveType instanceof ModelEventProducer) {
+			((ModelEventProducer) moveType).setModelEventHandler(this.eventHandler);
+		}
+
+		if (attacks != null && !attacks.isEmpty()) {
+			for (var attack : attacks) {
+				if (attack instanceof ModelEventProducer) {
+					((ModelEventProducer) attack).setModelEventHandler(this.eventHandler);
+				}
+			}
+		}
 	}
 
 }

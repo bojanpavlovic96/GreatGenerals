@@ -5,9 +5,9 @@ import java.util.List;
 import root.Point2D;
 import root.model.PlayerData;
 import root.model.component.option.FieldOption;
-import root.model.event.ModelEventHandler;
+import root.model.event.ModelEventProducer;
 
-public interface Field {
+public interface Field extends ModelEventProducer {
 
 	boolean isVisible();
 
@@ -20,8 +20,6 @@ public interface Field {
 	PlayerData getPlayer();
 
 	Point2D getStoragePosition();
-
-	void setModelEventHandler(ModelEventHandler eventHandler);
 
 	boolean isInBattle();
 

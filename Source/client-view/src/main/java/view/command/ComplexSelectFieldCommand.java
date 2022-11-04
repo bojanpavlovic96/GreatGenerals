@@ -45,9 +45,9 @@ public class ComplexSelectFieldCommand extends Command {
 				.paintField(gc, filterColor);
 
 		if (this.modelField.getUnit() != null
-				&& this.modelField.getUnit().getMoveType().getPath() != null) {
+				&& this.modelField.getUnit().getMove().getPath() != null) {
 
-			for (Field pathField : this.modelField.getUnit().getMoveType().getPath()) {
+			for (Field pathField : this.modelField.getUnit().getMove().getPath()) {
 
 				((View) targetComponent)
 						.convertToViewField(pathField)

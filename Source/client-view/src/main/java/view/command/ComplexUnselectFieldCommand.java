@@ -35,9 +35,9 @@ public class ComplexUnselectFieldCommand extends Command {
 		this.viewField.drawOn(gc);
 
 		if (this.modelField.getUnit() != null
-				&& this.modelField.getUnit().getMoveType().getPath() != null) {
+				&& this.modelField.getUnit().getMove().getPath() != null) {
 
-			for (Field pathField : this.modelField.getUnit().getMoveType().getPath()) {
+			for (Field pathField : this.modelField.getUnit().getMove().getPath()) {
 
 				ViewField viewField = ((View) this.targetComponent).convertToViewField(pathField);
 

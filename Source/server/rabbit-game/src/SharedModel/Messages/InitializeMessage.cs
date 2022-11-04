@@ -3,11 +3,11 @@ namespace RabbitGameServer.SharedModel.Messages
 	public class InitializeMessage : Message
 	{
 
-		public List<PlayerData> players;
-		public List<Move> moves;
-		public List<Unit> units;
-		public List<Attack> attacks;
-		public List<Field> fields;
+		public List<PlayerData> players { get; set; }
+		public List<Move> moves { get; set; }
+		public List<Unit> units { get; set; }
+		public List<Attack> attacks { get; set; }
+		public List<Field> fields { get; set; }
 
 		public InitializeMessage(string roomName,
 			string username,

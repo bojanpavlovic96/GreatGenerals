@@ -1,14 +1,9 @@
 package controller.command;
 
-import java.util.List;
-import java.util.stream.Collectors;
-
-import model.PlayerModelData;
 import model.event.AttackModelEventArg;
 import model.event.MoveModelEventArg;
 import root.command.Command;
 import root.communication.MessageInterpreter;
-import root.communication.PlayerDescription;
 import root.communication.messages.AbortMoveMsg;
 import root.communication.messages.AttackMsg;
 import root.communication.messages.InitializeMsg;
@@ -17,7 +12,6 @@ import root.communication.messages.MoveMsg;
 import root.communication.messages.ReadyForInitMsg;
 import root.communication.messages.RecalculatePathMsg;
 import root.communication.messages.ServerErrorMsg;
-import root.model.PlayerData;
 import root.model.event.ModelEventArg;
 
 public class SwitchCaseMsgInterpreter implements MessageInterpreter {

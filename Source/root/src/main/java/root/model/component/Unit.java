@@ -10,22 +10,18 @@ public interface Unit {
 
 	UnitType getUnitType();
 
-	Field getField();
+	// Field getField();
 
-	void setField(Field field);
+	// void setField(Field field);
 
 	boolean canMove();
 
-	Move getMoveType();
+	Move getMove();
 
-	void relocateTo(Field nextField);
+	// void relocateTo(Field nextField);
 
 	List<Attack> getAttacks();
 
 	boolean hasAttack();
-
-	// Unit clone() throws CloneNotSupportedException;
-
-	void setEventHandler(ModelEventHandler eventHandler);
 
 }

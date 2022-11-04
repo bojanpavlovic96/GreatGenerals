@@ -34,10 +34,6 @@ public class Launcher extends Application {
 
 	private Controller gameController;
 
-	// just because of debugging 
-	// move this to local bariable
-	private Model model;
-
 	@Override
 	public void init() throws Exception {
 		// init() is not on main (UI) thread
@@ -97,16 +93,10 @@ public class Launcher extends Application {
 				roomName);
 
 		System.out.println("Game proxy initialized ... ");
-		try {
+		var timer = new ConcExecutorTimer();
+		var fieldFactory = HexagonField.getFactory();
+		Model model = new GameModel(timer, fieldFactory);
 
-			var timer = new ConcExecutorTimer();
-			var fieldFactory = HexagonField.getFactory();
-			model = new GameModel(timer, fieldFactory);
-
-		} catch (Exception e) {
-			System.out.println("Exception: " + e.getMessage());
-			e.printStackTrace();
-		}
 		System.out.println("Model created ... ");
 
 		var viewConfig = AppConfig.getInstance().viewConfig;

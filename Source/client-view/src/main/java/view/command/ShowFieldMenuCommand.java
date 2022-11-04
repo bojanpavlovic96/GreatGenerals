@@ -20,18 +20,16 @@ public class ShowFieldMenuCommand extends Command {
 	private Field targetField;
 	private ViewField viewTarget;
 
-	public ShowFieldMenuCommand(Field selected_field, Field target_field) {
+	public ShowFieldMenuCommand(Field selectedField, Field targetField) {
 
-		this.selectedField = selected_field;
-		this.targetField = target_field;
+		this.selectedField = selectedField;
+		this.targetField = targetField;
 	}
 
 	@Override
 	public void setTargetComponent(CommandDrivenComponent target) {
 		super.setTargetComponent(target);
 
-		// this.viewField = ((View)
-		// super.targetComponent).convertToViewField(this.selectedField);
 		this.viewTarget = ((View) super.targetComponent)
 				.convertToViewField(this.targetField);
 

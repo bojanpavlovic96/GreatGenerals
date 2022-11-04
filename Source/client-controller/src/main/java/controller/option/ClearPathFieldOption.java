@@ -31,7 +31,7 @@ public class ClearPathFieldOption extends FieldOption {
 			return;
 		}
 
-		List<Field> path = primaryField.getUnit().getMoveType().getPath();
+		List<Field> path = primaryField.getUnit().getMove().getPath();
 
 		if (path != null && !path.isEmpty()) {
 
@@ -59,9 +59,9 @@ public class ClearPathFieldOption extends FieldOption {
 	@Override
 	public boolean isAdequateFor(Field field) {
 		return (field.getUnit() != null &&
-				field.getUnit().getMoveType() != null &&
-				field.getUnit().getMoveType().getPath() != null &&
-				field.getUnit().getMoveType().getPath().size() > 0);
+				field.getUnit().getMove() != null &&
+				field.getUnit().getMove().getPath() != null &&
+				field.getUnit().getMove().getPath().size() > 0);
 	}
 
 }

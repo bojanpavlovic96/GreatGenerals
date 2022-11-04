@@ -32,7 +32,7 @@ public class AddToPathFieldOption extends FieldOption {
 			return;
 		}
 
-		Move moveType = primaryField.getUnit().getMoveType();
+		Move moveType = primaryField.getUnit().getMove();
 		List<Field> oldPath = moveType.getPath();
 
 		List<Field> pathToAdd = null;
@@ -43,6 +43,8 @@ public class AddToPathFieldOption extends FieldOption {
 					primaryField,
 					secondaryField);
 
+			pathToAdd.add(0, primaryField);
+
 		} else {
 
 			Field lastPathField = oldPath.get(oldPath.size() - 1);
@@ -52,7 +54,6 @@ public class AddToPathFieldOption extends FieldOption {
 					secondaryField);
 
 			moveType.addToPath(pathToAdd);
-
 		}
 
 		for (Field pathField : pathToAdd) {
@@ -76,7 +77,7 @@ public class AddToPathFieldOption extends FieldOption {
 	@Override
 	public boolean isAdequateFor(Field field) {
 		return (field.getUnit() != null &&
-				field.getUnit().getMoveType() != null);
+				field.getUnit().getMove() != null);
 	}
 
 }

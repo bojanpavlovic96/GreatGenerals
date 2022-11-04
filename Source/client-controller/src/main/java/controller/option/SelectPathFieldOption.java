@@ -30,7 +30,8 @@ public class SelectPathFieldOption extends FieldOption {
 			return;
 		}
 
-		List<Field> unitPath = primaryField.getUnit().getMoveType().getPath();
+		List<Field> unitPath = primaryField.getUnit().getMove().getPath();
+
 		if (unitPath != null && unitPath.size() > 0) {
 
 			for (Field pathField : unitPath) {
@@ -38,24 +39,28 @@ public class SelectPathFieldOption extends FieldOption {
 				var unselectCommand = new UnselectFieldCommand(pathField);
 				super.controller.getConsumerQueue().enqueue(unselectCommand);
 
-				// ClearFieldCommand clearFieldCmd = new ClearFieldCommand(pathField);
-				// DrawFieldCommand drawFieldCommand = new DrawFieldCommand(pathField);
-
-				// super.controller.getConsumerQueue().enqueue(clearFieldCmd);
-				// super.controller.getConsumerQueue().enqueue(drawFieldCommand);
-
 			}
 
 		}
 
-		// second field must be without unit in order to calculate path
+		// Second field must be without unit in order to calculate path.
+		// That should be checked in adjustOptins on click on the destination field.
 		var path = primaryField
-			.getUnit()
-			.getMoveType()
-			.calculatePath(controller.getModel(), primaryField, secondaryField);
+				.getUnit()
+				.getMove()
+				.calculatePath(controller.getModel(), primaryField, secondaryField);
+
+		System.out.println("FromField: " + primaryField.getStoragePosition()
+				+ "\tToField: " + secondaryField.getStoragePosition());
+
+		path.add(0, primaryField);
 
 		for (Field pathField : path) {
 
+			System.out.println("PathField: " + pathField.getStoragePosition());
+
+			// TODO maybe exclude first field from selection since it should 
+			// already be selected
 			var selectCommand = new SelectFieldCommand(pathField);
 			super.controller.getConsumerQueue().enqueue(selectCommand);
 			super.controller.getUndoStack().push(selectCommand);
@@ -75,7 +80,7 @@ public class SelectPathFieldOption extends FieldOption {
 	@Override
 	public boolean isAdequateFor(Field field) {
 		return (field.getUnit() != null &&
-				field.getUnit().getMoveType() != null);
+				field.getUnit().getMove() != null);
 	}
 
 }

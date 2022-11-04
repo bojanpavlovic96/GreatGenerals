@@ -46,7 +46,8 @@ public class CtrlMoveCommand extends Command {
 		Controller controller = (Controller) super.targetComponent;
 		CommandQueue viewCommandQueue = controller.getConsumerQueue();
 
-		this.startField.getUnit().relocateTo(this.secondField);
+		this.secondField.setUnit(this.startField.getUnit());
+		this.startField.setUnit(null);
 
 		var unselectFirst = new UnselectFieldCommand(this.startField);
 		var redrawSecond = new DrawFieldCommand(this.secondField);
@@ -67,15 +68,14 @@ public class CtrlMoveCommand extends Command {
 		} else {
 			// if startField is on currently selected field's path THEN select startField
 			var selField = controller.getSelectedField();
-			if (selField.getUnit() != null
-					&& selField.getUnit().getMoveType() != null) {
+			if (selField.getUnit() != null && selField.getUnit().getMove() != null) {
 
-				if (selField.getUnit().getMoveType().isOnPath(this.startField)) {
+				if (selField.getUnit().getMove().isOnPath(this.startField)) {
 					var selFirst = new SelectFieldCommand(this.startField);
 					viewCommandQueue.enqueue(selFirst);
 				}
 
-				if (selField.getUnit().getMoveType().isOnPath(this.secondField)) {
+				if (selField.getUnit().getMove().isOnPath(this.secondField)) {
 					var selSecond = new SelectFieldCommand(this.secondField);
 					viewCommandQueue.enqueue(selSecond);
 				}
@@ -83,16 +83,16 @@ public class CtrlMoveCommand extends Command {
 			}
 		}
 
-		List<Field> unitPath = this.secondField.getUnit().getMoveType().getPath();
+		var unitPath = this.secondField.getUnit().getMove().getPath();
 
 		unitPath.remove(0);
 
 		// note: unit is now on secondField
-		if (!unitPath.isEmpty()) {
+		if (!unitPath.isEmpty() && unitPath.size() > 1) {
 			// continue moving
 
 			// trigger timer
-			this.secondField.getUnit().getMoveType().move();
+			this.secondField.getUnit().getMove().move();
 		}
 
 		return;

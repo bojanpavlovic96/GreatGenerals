@@ -5,7 +5,6 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import root.Point2D;
-import root.communication.messages.components.FieldDesc;
 import root.model.PlayerData;
 import root.model.component.Field;
 import root.model.component.FieldFactory;
@@ -13,6 +12,7 @@ import root.model.component.Terrain;
 import root.model.component.Unit;
 import root.model.component.option.FieldOption;
 import root.model.event.ModelEventHandler;
+import root.model.event.ModelEventProducer;
 
 public class HexagonField implements Field {
 
@@ -85,9 +85,9 @@ public class HexagonField implements Field {
 		this.unit = unit;
 
 		// if method is used for inserting (not removing) unit
-		if (this.unit != null) {
-			this.unit.setEventHandler(this.eventHandler);
-			this.unit.setField(this);
+		if (this.unit != null && this.unit instanceof ModelEventProducer) {
+			((ModelEventProducer) this.unit).setModelEventHandler(this.eventHandler);
+			// this.unit.setField(this);
 		}
 
 	}
@@ -111,6 +111,16 @@ public class HexagonField implements Field {
 	@Override
 	public void setModelEventHandler(ModelEventHandler handler) {
 		this.eventHandler = handler;
+
+		if(this.unit!=null && this.unit instanceof ModelEventProducer){
+			((ModelEventProducer)this.unit).setModelEventHandler(this.eventHandler);
+		}
+
+	}
+
+	@Override
+	public ModelEventHandler getModelEventHandler() {
+		return this.eventHandler;
 	}
 
 	@Override

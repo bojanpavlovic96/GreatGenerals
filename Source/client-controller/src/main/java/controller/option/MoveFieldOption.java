@@ -32,15 +32,15 @@ public class MoveFieldOption extends FieldOption {
 			return;
 		}
 		if (primaryField.getUnit() == null ||
-				primaryField.getUnit().getMoveType() == null ||
-				primaryField.getUnit().getMoveType().getPath() == null) {
+				primaryField.getUnit().getMove() == null ||
+				primaryField.getUnit().getMove().getPath() == null) {
 			return;
 		}
 
-		List<Field> path = primaryField.getUnit().getMoveType().getPath();
+		List<Field> path = primaryField.getUnit().getMove().getPath();
 
 		if (path != null && !path.isEmpty()) {
-			primaryField.getUnit().getMoveType().move();
+			primaryField.getUnit().getMove().move();
 		}
 		// else {
 		// // this will never be executed because this command is not adequate
@@ -69,10 +69,10 @@ public class MoveFieldOption extends FieldOption {
 	@Override
 	public boolean isAdequateFor(Field field) {
 		return (field.getUnit() != null
-				&& field.getUnit().getMoveType() != null
-				&& field.getUnit().getMoveType().getPath() != null
-				&& field.getUnit().getMoveType().getPath().size() > 0
-				&& !field.getUnit().getMoveType().isMoving());
+				&& field.getUnit().getMove() != null
+				&& field.getUnit().getMove().getPath() != null
+				&& field.getUnit().getMove().getPath().size() > 0
+				&& !field.getUnit().getMove().isMoving());
 	}
 
 }

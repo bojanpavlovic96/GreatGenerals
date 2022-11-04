@@ -97,6 +97,9 @@ namespace RabbitGameServer.Game
 		private Message handleInitRequest(ModelEvent e)
 		{
 			Console.WriteLine("Handling ready for init request ... ");
+			Console.WriteLine($"AvailableUnits: {config.Units.Count}");
+			Console.WriteLine($"AvailableMoves: {config.Moves.Count}");
+
 			return new InitializeMessage(RoomName,
 				e.playerName,
 				Players,
@@ -108,13 +111,18 @@ namespace RabbitGameServer.Game
 
 		private Message handleMoveEvent(ModelEvent e)
 		{
+			Console.WriteLine("Handling move event ... ");
 			var mev = (MoveModelEvent)e;
 
 			var endField = getField(mev.destinationField);
 			if (endField != null)
 			{
-				if (isOccupied(endField))
+				if (!isOccupied(endField))
 				{
+					Console.WriteLine("Unit is free to move ... ");
+
+					var srcField = getField(mev.sourceField);
+					endField.unit = srcField.unit;
 
 					return new MoveMessage(mev.playerName,
 						RoomName,
@@ -123,6 +131,7 @@ namespace RabbitGameServer.Game
 				}
 				else
 				{
+					Console.WriteLine("Unit should recalculate path ... ");
 					return new RecalculatePathMessage(mev.playerName,
 						RoomName,
 						mev.sourceField);
@@ -130,14 +139,15 @@ namespace RabbitGameServer.Game
 			}
 			else
 			{
+				Console.WriteLine("Move should be aborted ... ");
 				return new AbortMoveMessage(mev.playerName,
 					RoomName,
 					mev.sourceField);
 			}
 
 
-			return new ServerErrorMessage(mev.playerName, RoomName,
-				$"Unknown error occured while handling {e.type.ToString()}");
+			// return new ServerErrorMessage(mev.playerName, RoomName,
+			// 	$"Unknown error occured while handling {e.type.ToString()}");
 		}
 
 		private Field getField(Point2D point)
@@ -149,7 +159,7 @@ namespace RabbitGameServer.Game
 
 		private bool isOccupied(Field field)
 		{
-			return (field.unit == null);
+			return (field.unit != null);
 		}
 
 		private Message handleAttackEvent(ModelEvent e)
@@ -212,12 +222,12 @@ namespace RabbitGameServer.Game
 					left--;
 			}
 
-			Field destField;
-			Fields.TryGetValue(new Point2D(3, 1), out destField);
-			destField.unit = UnitType.basicunit;
+			// Field destField;
+			// Fields.TryGetValue(new Point2D(3, 1), out destField);
+			// destField.unit = UnitType.basicunit;
 
-			Fields.TryGetValue(new Point2D(4, 5), out destField);
-			destField.unit = UnitType.basicunit;
+			// Fields.TryGetValue(new Point2D(4, 5), out destField);
+			// destField.unit = UnitType.basicunit;
 
 			// }
 			// catch (Exception e)

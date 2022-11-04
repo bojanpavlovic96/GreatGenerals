@@ -33,27 +33,17 @@ public class BasicMove extends Move implements Runnable {
 	@Override
 	public void move() {
 
-		if (this.path != null && !this.path.isEmpty()) {
+		if (path != null && !path.isEmpty()) {
 
-			// TODO this.myfield should be path[0]
-			// and the next field to move at should be path[1]
 			System.out.println("Intention to move: "
-					// + this.myField.getStoragePosition()
-
+					+ this.path.get(0).getStoragePosition()
 					+ "->: "
-					+ this.path.get(0).getStoragePosition());
+					+ this.path.get(1).getStoragePosition());
 
-			Field nextField = path.get(0);
+			Field nextField = path.get(1);
 
-			// // TODO this logic should be at the server side 
-			// if (nextField.getUnit() != null) {
-			// 	// debug
-			// 	System.out.println("Recalculating path ...");
-			// 	this.path = this.pathFinder.findPath(
-			// 			this.myField,
-			// 			this.destinationField);
-			// }
 			var delay = calculateDelay(nextField.getTerrain());
+			System.out.println("Calcualted delay: " + delay);
 			movingFuture = timer.schedule((Runnable) this, delay, TimeUnit.MILLISECONDS);
 			// this will just raise event (at every moveDelay seconds)
 			// that unit is ready to move
@@ -68,11 +58,6 @@ public class BasicMove extends Move implements Runnable {
 
 	}
 
-	// @Override
-	// public Move clone() throws CloneNotSupportedException {
-	// 	return super.clone();
-	// }
-
 	@Override
 	public long calculateDelay(Terrain terrain) {
 		return (long) (moveDelay * (terrainMultiplier * terrain.getIntensity()));
@@ -80,15 +65,18 @@ public class BasicMove extends Move implements Runnable {
 
 	@Override
 	public void run() {
-		// onEvent.handleModelEvent(new MoveModelEventArg(
-		// 		myField.getPlayer().getUsername(),
-		// 		myField.getStoragePosition(),
-		// 		path.get(0).getStoragePosition()));
-		onEvent.handleModelEvent(new MoveModelEventArg(
-				path.get(0).getPlayer().getUsername(),
-				path.get(0).getStoragePosition(),
-				path.get(1).getStoragePosition()));
-		// TODO path indices not adjuseted just a pseudocode
+		System.out.println("Move event raised ... ");
+		try {
+
+			onEvent.handleModelEvent(new MoveModelEventArg(
+					path.get(0).getPlayer().getUsername(),
+					path.get(0).getStoragePosition(),
+					path.get(1).getStoragePosition()));
+
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+
 	}
 
 	@Override

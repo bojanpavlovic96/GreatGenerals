@@ -22,10 +22,10 @@ public class StopMovingFieldOption extends FieldOption {
 		}
 
 		if (primaryField.getUnit() != null &&
-				primaryField.getUnit().getMoveType() != null &&
-				primaryField.getUnit().getMoveType().isMoving()) {
+				primaryField.getUnit().getMove() != null &&
+				primaryField.getUnit().getMove().isMoving()) {
 
-			primaryField.getUnit().getMoveType().stopMoving();
+			primaryField.getUnit().getMove().stopMoving();
 		}
 
 		super.controller.getConsumerQueue().enqueue(new ClearTopLayerCommand());
@@ -39,8 +39,8 @@ public class StopMovingFieldOption extends FieldOption {
 	@Override
 	public boolean isAdequateFor(Field field) {
 		return (field.getUnit() != null &&
-				field.getUnit().getMoveType() != null &&
-				field.getUnit().getMoveType().isMoving());
+				field.getUnit().getMove() != null &&
+				field.getUnit().getMove().isMoving());
 	}
 
 }

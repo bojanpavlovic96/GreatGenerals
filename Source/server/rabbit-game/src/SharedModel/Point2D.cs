@@ -6,6 +6,10 @@ namespace RabbitGameServer.SharedModel
 
 		public double y { get; set; }
 
+		public Point2D()
+		{
+		}
+
 		public Point2D(double x, double y)
 		{
 			this.x = x;
