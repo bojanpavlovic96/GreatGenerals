@@ -14,8 +14,8 @@ public class ViewTerrain {
 	public ViewTerrain(Terrain model) {
 
 		// TODO this does not look good
-		// enum fields have to be the same as the file namse ... 
-		// maybe do some mapping in resouceManger
+		// enum fields have to be the same as the file names ... 
+		// maybe do some mapping in resourceManger
 		this.terrainName = model.getType().toString();
 		this.intensity = model.getIntensity();
 

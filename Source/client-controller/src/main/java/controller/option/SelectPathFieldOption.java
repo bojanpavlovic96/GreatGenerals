@@ -1,7 +1,5 @@
 package controller.option;
 
-import java.util.List;
-
 import root.controller.Controller;
 import root.model.component.Field;
 import root.model.component.option.FieldOption;
@@ -17,11 +15,6 @@ public class SelectPathFieldOption extends FieldOption {
 		super(SelectPathFieldOption.Name, gameController);
 	}
 
-	public SelectPathFieldOption(boolean enabled, Controller controller, Field primary_field) {
-		super(SelectPathFieldOption.Name, enabled, controller, primary_field);
-		// Auto-generated constructor stub
-	}
-
 	@Override
 	public void run() {
 
@@ -30,21 +23,19 @@ public class SelectPathFieldOption extends FieldOption {
 			return;
 		}
 
-		List<Field> unitPath = primaryField.getUnit().getMove().getPath();
+		var currentPath = primaryField.getUnit().getMove().getPath();
 
-		if (unitPath != null && unitPath.size() > 0) {
+		if (currentPath != null && !currentPath.isEmpty()) {
 
-			for (Field pathField : unitPath) {
-
+			for (Field pathField : currentPath) {
 				var unselectCommand = new UnselectFieldCommand(pathField);
 				super.controller.getConsumerQueue().enqueue(unselectCommand);
-
 			}
 
 		}
 
 		// Second field must be without unit in order to calculate path.
-		// That should be checked in adjustOptins on click on the destination field.
+		// That should be checked in adjustOptions on click on the destination field.
 		var path = primaryField
 				.getUnit()
 				.getMove()
@@ -55,12 +46,9 @@ public class SelectPathFieldOption extends FieldOption {
 
 		path.add(0, primaryField);
 
-		for (Field pathField : path) {
+		// yes path.size() not path.size()-1 ... why ... I gues why not ... 
+		for (Field pathField : path.subList(1, path.size())) {
 
-			System.out.println("PathField: " + pathField.getStoragePosition());
-
-			// TODO maybe exclude first field from selection since it should 
-			// already be selected
 			var selectCommand = new SelectFieldCommand(pathField);
 			super.controller.getConsumerQueue().enqueue(selectCommand);
 			super.controller.getUndoStack().push(selectCommand);
@@ -72,9 +60,7 @@ public class SelectPathFieldOption extends FieldOption {
 
 	@Override
 	public FieldOption getCopy() {
-
-		return new SelectPathFieldOption(true, this.controller, null);
-
+		return new SelectPathFieldOption(this.controller);
 	}
 
 	@Override

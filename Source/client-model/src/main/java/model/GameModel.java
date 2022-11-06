@@ -71,8 +71,8 @@ public class GameModel implements Model {
 
 			field.addFieldOptions(options);
 
-			if(field instanceof ModelEventProducer){
-				((ModelEventProducer)field).setModelEventHandler(eventHandler);
+			if (field instanceof ModelEventProducer) {
+				((ModelEventProducer) field).setModelEventHandler(eventHandler);
 			}
 
 			// if (field.getUnit() != null && field.getUnit() instanceof ModelEventProducer) {

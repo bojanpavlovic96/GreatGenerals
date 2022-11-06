@@ -1,6 +1,5 @@
 package controller.command;
 
-import java.util.List;
 import java.util.function.Function;
 
 import root.Point2D;
@@ -80,6 +79,9 @@ public class CtrlMoveCommand extends Command {
 					viewCommandQueue.enqueue(selSecond);
 				}
 
+			} else {
+				System.out.println("Received moveCommand for field without the unit or a move type ... ");
+				System.out.println("Field: " + selField.getStoragePosition());
 			}
 		}
 
@@ -131,7 +133,6 @@ public class CtrlMoveCommand extends Command {
 
 	@Override
 	public Command getAntiCommand() {
-		// TODO maybe move one field backward ...
 		return null;
 	}
 

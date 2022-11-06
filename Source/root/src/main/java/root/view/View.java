@@ -48,4 +48,6 @@ public interface View extends ViewEventProducer, CommandDrivenComponent {
 	// attention bad approach
 	void adjustCanvasSize(Point2D point);
 
+	ViewConfig getActiveConfig();
+
 }

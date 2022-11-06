@@ -11,7 +11,7 @@ import root.model.event.ModelEventProducer;
 public abstract class Move implements ModelEventProducer {
 
 	protected PathFinder pathFinder;
-	// TODO since every check is done by the server side this could be simply be 
+	// Since every check is done by the server side this could be simply be 
 	// just the list of Point2D ... ? 
 	protected List<Field> path;
 
@@ -89,6 +89,15 @@ public abstract class Move implements ModelEventProducer {
 		}
 
 		return false;
+	}
+
+	public void clearPath() {
+		if (isMoving()) {
+			stopMoving();
+		}
+
+		this.path.clear();
+		this.path = null;
 	}
 
 	// abstract methods

@@ -160,7 +160,7 @@ public class StartPageController implements GameReadyEventProducer, ActiveCompon
 			System.out.println("Will add player to the list ... ");
 			initialPage.addPlayer(response.players.get(0));
 
-			// initialPage.enableGameStart();
+			initialPage.enableGameStart();
 
 			roomServer.SubscribeForRoomUpdates(roomName, player.getUsername(), this::roomUpdateHandler);
 
@@ -230,9 +230,6 @@ public class StartPageController implements GameReadyEventProducer, ActiveCompon
 			showInfoMessage(Language.MessageType.GameStarted);
 
 			roomServer.UnsubFromRoomUpdates();
-			// initialPage.hidePage();
-
-			// TODO maybe close rabbit connection in roomProxy 
 
 			onGameReady.execute(response.username, response.roomName);
 
@@ -350,10 +347,6 @@ public class StartPageController implements GameReadyEventProducer, ActiveCompon
 					if (response.responseType == RoomResponseType.Success) {
 						System.out.println("Successfully started game ... ");
 						showInfoMessage(Language.MessageType.GameStarted);
-
-						// TODO maybe close rabbit connection in roomProxy 
-
-						// initialPage.hidePage();
 
 						roomServer.UnsubFromRoomUpdates();
 

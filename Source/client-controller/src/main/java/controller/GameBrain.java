@@ -2,10 +2,10 @@ package controller;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.Executors;
 
 import controller.command.UndoStack;
 import controller.option.AddToPathFieldOption;
+import controller.option.ClearPathFieldOption;
 import controller.option.MoveFieldOption;
 import controller.option.SelectPathFieldOption;
 import controller.option.StopMovingFieldOption;
@@ -70,9 +70,7 @@ public class GameBrain implements Controller {
 
 		// connect serverProxy and controller
 		serverCommandQueue = ((CommandProducer) serverProxy).getConsumerQueue();
-		serverCommandProcessor = new BasicCommandProcessor(
-				Executors.newSingleThreadExecutor(),
-				(CommandDrivenComponent) this);
+		serverCommandProcessor = new BasicCommandProcessor((CommandDrivenComponent) this);
 		serverCommandQueue.setCommandProcessor(this.serverCommandProcessor);
 
 		viewCommandQueue = new CommandQueue();
@@ -99,53 +97,49 @@ public class GameBrain implements Controller {
 
 	private void initViewEventHandlers() {
 
-		// TODO maybe put this inside the ctrlInitializeCommand
-		// if server is very slow you could be able to click on the map before
-		// the fields are initialized (created)
-		// other approach would be put some loading screen above everything 
-		// until we get ctrlInitializeCommand ... 
 		view.addEventHandler("left-mouse-click-event", (ViewEventArg arg) -> {
 
 			Field clickedField = model.getField(arg.getFieldPosition());
-			if (clickedField != null) {
 
-				// undo all previous commands
-				Command doneCommand = null;
-				while ((doneCommand = undoStack.pop()) != null) {
-					var antiCommand = doneCommand.getAntiCommand();
-					viewCommandQueue.enqueue(antiCommand);
+			if (clickedField == null) {
+				return;
+			}
+
+			// undo all previous commands
+			Command doneCommand = null;
+			while ((doneCommand = undoStack.pop()) != null) {
+				var antiCommand = doneCommand.getAntiCommand();
+				viewCommandQueue.enqueue(antiCommand);
+			}
+
+			var selectCmd = new SelectFieldCommand(clickedField);
+
+			viewCommandQueue.enqueue(selectCmd);
+			undoStack.push(selectCmd);
+
+			if (clickedField.getUnit() != null
+					&& clickedField.getUnit().getMove() != null
+					&& clickedField.getUnit().getMove().getPath() != null) {
+
+				var path = clickedField.getUnit().getMove().getPath();
+				path = path.subList(1, path.size());
+
+				for (Field pathField : path) {
+
+					var selectPathField = new SelectFieldCommand(pathField);
+
+					viewCommandQueue.enqueue(selectPathField);
+					undoStack.push(selectPathField);
 				}
-
-				var selectField = new SelectFieldCommand(clickedField);
-
-				viewCommandQueue.enqueue(selectField);
-				undoStack.push(selectField);
-
-				if (clickedField.getUnit() != null
-						&& clickedField.getUnit().getMove() != null
-						&& clickedField.getUnit().getMove().getPath() != null) {
-
-					for (Field pathField : clickedField
-							.getUnit()
-							.getMove()
-							.getPath()) {
-
-						var selectPathField = new SelectFieldCommand(pathField);
-
-						viewCommandQueue.enqueue(selectPathField);
-						undoStack.push(selectPathField);
-					}
-
-				}
-
-				// remove
-				// var selectCommand = new ComplexSelectFieldCommand(clickedField);
-				// viewCommandQueue.enqueue(selectCommand);
-
-				selectedField = clickedField;
-				focusedField = null;
 
 			}
+
+			// remove
+			// var selectCommand = new ComplexSelectFieldCommand(clickedField);
+			// viewCommandQueue.enqueue(selectCommand);
+
+			selectedField = clickedField;
+			focusedField = null;
 
 		});
 
@@ -154,30 +148,30 @@ public class GameBrain implements Controller {
 			focusedField = model.getField(arg.getFieldPosition());
 
 			// valid click
-			if (focusedField != null) {
-
-				var clearCommand = new ClearTopLayerCommand();
-
-				Command showMenuCommand;
-				if (selectedField != null) {
-					showMenuCommand = new ShowFieldMenuCommand(selectedField, focusedField);
-				} else {
-					showMenuCommand = new ShowFieldMenuCommand(focusedField, focusedField);
-				}
-
-				viewCommandQueue.enqueue(clearCommand);
-				viewCommandQueue.enqueue(showMenuCommand);
-
-				undoStack.push(showMenuCommand);
-
+			if (focusedField == null) {
+				return;
 			}
+
+			var clearCommand = new ClearTopLayerCommand();
+
+			Command showMenuCommand;
+			if (selectedField != null) {
+				showMenuCommand = new ShowFieldMenuCommand(selectedField, focusedField);
+			} else {
+				showMenuCommand = new ShowFieldMenuCommand(focusedField, focusedField);
+			}
+
+			viewCommandQueue.enqueue(clearCommand);
+			viewCommandQueue.enqueue(showMenuCommand);
+
+			undoStack.push(showMenuCommand);
 
 		});
 
 		// 25.7.2022 - understanding: drawing path 
-		// i don't understand this comment 9.12.2021
+		// I don't understand this comment 9.12.2021
 		// TODO maybe for the purpose of redrawing path and similar options
-		// add additional list of command which are "stateless" and which execution wont
+		// add additional list of commands which are "stateless" and which execution wont
 		// do any damage to the current state if they are executed more than once
 
 		view.addEventHandler("key-event-char-1", (ViewEventArg arg) -> {
@@ -217,6 +211,7 @@ public class GameBrain implements Controller {
 		this.fieldOptions.add(new MoveFieldOption(this));
 		this.fieldOptions.add(new AddToPathFieldOption(this));
 		this.fieldOptions.add(new StopMovingFieldOption(this));
+		this.fieldOptions.add(new ClearPathFieldOption(this));
 
 	}
 

@@ -15,12 +15,12 @@ public class MoveFieldOption extends FieldOption {
 		super(MoveFieldOption.optionName, gameController);
 	}
 
-	public MoveFieldOption(boolean enabled,
-			Controller controller,
-			Field primary_field) {
-		super(MoveFieldOption.optionName, enabled, controller, primary_field);
+	// public MoveFieldOption(boolean enabled,
+	// 		Controller controller,
+	// 		Field primaryField) {
+	// 	super(MoveFieldOption.optionName, enabled, controller, primaryField);
 
-	}
+	// }
 
 	@Override
 	public void run() {
@@ -46,7 +46,7 @@ public class MoveFieldOption extends FieldOption {
 		// // this will never be executed because this command is not adequate
 		// // if paths == null -> isAdequateFor method
 		// var selectPathOption = new SelectPathFieldOption(
-		// true,
+		// true, 
 		// this.controller,
 		// primaryField);
 
@@ -63,7 +63,7 @@ public class MoveFieldOption extends FieldOption {
 
 	@Override
 	public FieldOption getCopy() {
-		return new MoveFieldOption(true, this.controller, null);
+		return new MoveFieldOption(controller);
 	}
 
 	@Override

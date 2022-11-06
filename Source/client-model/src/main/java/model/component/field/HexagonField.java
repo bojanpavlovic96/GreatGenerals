@@ -112,8 +112,8 @@ public class HexagonField implements Field {
 	public void setModelEventHandler(ModelEventHandler handler) {
 		this.eventHandler = handler;
 
-		if(this.unit!=null && this.unit instanceof ModelEventProducer){
-			((ModelEventProducer)this.unit).setModelEventHandler(this.eventHandler);
+		if (this.unit != null && this.unit instanceof ModelEventProducer) {
+			((ModelEventProducer) this.unit).setModelEventHandler(this.eventHandler);
 		}
 
 	}
@@ -150,13 +150,6 @@ public class HexagonField implements Field {
 		}
 	}
 
-	// TODO implement
-	// e.g. disable building options if terrain on this field is mountain or
-	// something similar
-	private void selfOptionAdjust() {
-
-	}
-
 	@Override
 	public void addFieldOptions(List<FieldOption> newOptions) {
 
@@ -173,10 +166,7 @@ public class HexagonField implements Field {
 			this.options = new ArrayList<FieldOption>();
 		}
 
-		// newOption.setPrimaryField(this);
 		this.options.add(newOption);
-
-		this.selfOptionAdjust();
 
 	}
 

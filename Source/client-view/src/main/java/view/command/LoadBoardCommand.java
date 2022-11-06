@@ -19,6 +19,8 @@ public class LoadBoardCommand extends Command {
 
 	public void run() {
 
+		System.out.println("Loading board from T: " + Thread.currentThread().getId());
+
 		// hide canvas
 		((View) targetComponent).setCanvasVisibility(false);
 

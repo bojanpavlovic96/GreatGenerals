@@ -1,13 +1,10 @@
 package controller.option;
 
-import java.util.List;
-
-import root.command.Command;
 import root.command.CommandQueue;
 import root.controller.Controller;
 import root.model.component.Field;
 import root.model.component.option.FieldOption;
-import view.command.ClearFieldCommand;
+import view.command.UnselectFieldCommand;
 
 public class ClearPathFieldOption extends FieldOption {
 
@@ -18,11 +15,6 @@ public class ClearPathFieldOption extends FieldOption {
 
 	}
 
-	public ClearPathFieldOption(boolean enabled, Controller controller, Field primary_field) {
-		super("clear-path-field-option", enabled, controller, primary_field);
-		// Auto-generated constructor stub
-	}
-
 	@Override
 	public void run() {
 
@@ -31,29 +23,33 @@ public class ClearPathFieldOption extends FieldOption {
 			return;
 		}
 
-		List<Field> path = primaryField.getUnit().getMove().getPath();
+		if (primaryField.getUnit() != null
+				&& primaryField.getUnit().getMove() != null
+				&& primaryField.getUnit().getMove().getPath() != null) {
 
-		if (path != null && !path.isEmpty()) {
+			primaryField.getUnit().getMove().stopMoving();
 
 			CommandQueue queue = this.controller.getConsumerQueue();
 
+			var path = primaryField.getUnit().getMove().getPath();
+			path = path.subList(1, path.size());
+
 			for (Field singleField : path) {
 
-				Command clearCommand = new ClearFieldCommand(singleField);
+				var unselectCmd = new UnselectFieldCommand(singleField);
 
-				queue.enqueue(clearCommand);
+				queue.enqueue(unselectCmd);
 
 			}
 
+			primaryField.getUnit().getMove().clearPath();
 		}
 
 	}
 
 	@Override
 	public FieldOption getCopy() {
-
-		return new ClearPathFieldOption(true, this.controller, null);
-
+		return new ClearPathFieldOption(this.controller);
 	}
 
 	@Override

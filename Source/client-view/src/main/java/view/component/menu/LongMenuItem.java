@@ -3,6 +3,7 @@ package view.component.menu;
 import root.model.component.option.FieldOption;
 import root.view.menu.MenuItem;
 
+// this does not look implemented ... 
 // also should extend some javafx class panel, or something ... 
 // look at shortMenuOption for reference
 public class LongMenuItem implements MenuItem {

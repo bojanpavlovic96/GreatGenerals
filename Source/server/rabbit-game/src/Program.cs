@@ -39,7 +39,6 @@ wBuilder.Services.AddSingleton<IRabbitConnection, RabbitConnection>();
 
 wBuilder.Services.AddTransient<ISerializer, NSoftSerializer>();
 wBuilder.Services.AddTransient<IDatabase, MongoDb>();
-wBuilder.Services.AddTransient<INameTypeMapper, StupidStaticTypeMapper>();
 wBuilder.Services.AddTransient<IProtocolTranslator, NamedWrapperTranslator>();
 wBuilder.Services.AddTransient<IPlayerProxy, RabbitPlayerProxy>();
 

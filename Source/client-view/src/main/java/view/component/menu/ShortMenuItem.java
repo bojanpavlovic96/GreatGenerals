@@ -19,8 +19,6 @@ public class ShortMenuItem extends Button implements MenuItem {
 		// FieldOption implements runnable
 		this.setOnClickHandler(option);
 
-		// TODO add some button style (borders, background color (image) ... )
-
 	}
 
 	@Override

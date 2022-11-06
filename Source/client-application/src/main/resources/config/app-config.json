@@ -13,10 +13,10 @@
 	"headerAlphaValue": 75,
 	"viewConfig": {
 		"selectColor": {
-			"red": 100,
-			"green": 10,
-			"blue": 10,
-			"opacity": 0.5
+			"red": 1,
+			"green": 0,
+			"blue": 0,
+			"opacity": 0.3
 		},
 		"fieldMenuWidth": 200,
 		"fieldMenuHeight": 299,
@@ -31,21 +31,14 @@
 			"port": "5672",
 			"username": "gg_user",
 			"password": "gg_password",
-			"vhost": "gg_host",
-			"queues": {
-				"loginExchange": "login-exc",
-				"loginRoutingKey": "login-request"
-			}
+			"vhost": "gg_host"
 		},
 		"production": {
 			"address": "some.address.com",
 			"port": "5672",
 			"username": "rabbit_user",
 			"password": "rabbit_password",
-			"queues": {
-				"loginExchange": "login-exc",
-				"loginRoutingKey": "login-request"
-			}
+			"vhost": "gg_host"
 		}
 	},
 	"rabbitGameServerProxyConfig": {

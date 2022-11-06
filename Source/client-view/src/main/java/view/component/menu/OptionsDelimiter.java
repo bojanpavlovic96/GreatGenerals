@@ -5,8 +5,6 @@ import root.view.menu.MenuItem;
 
 public class OptionsDelimiter extends Button implements MenuItem {
 
-	// TODO add some special style
-
 	private String label;
 
 	public OptionsDelimiter(String label) {

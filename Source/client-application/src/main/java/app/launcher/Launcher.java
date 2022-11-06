@@ -93,7 +93,9 @@ public class Launcher extends Application {
 				roomName);
 
 		System.out.println("Game proxy initialized ... ");
-		var timer = new ConcExecutorTimer();
+		// TODO not sure if 3 is gonna be enough if separate thread is required for
+		// each schedule call ... 
+		var timer = new ConcExecutorTimer(3);
 		var fieldFactory = HexagonField.getFactory();
 		Model model = new GameModel(timer, fieldFactory);
 
@@ -115,6 +117,9 @@ public class Launcher extends Application {
 			System.out.println("Initialized Controller ... ");
 
 			startPageController.hideInitialPage();
+			if (startPageController instanceof ActiveComponent) {
+				((ActiveComponent) startPageController).shutdown();
+			}
 			gameController.getView().showView();
 		});
 

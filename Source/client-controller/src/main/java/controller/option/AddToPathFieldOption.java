@@ -19,11 +19,6 @@ public class AddToPathFieldOption extends FieldOption {
 
 	}
 
-	public AddToPathFieldOption(boolean enabled, Controller controller, Field primary_field) {
-		super("add-to-path-field-option", enabled, controller, primary_field);
-		// Auto-generated constructor stub
-	}
-
 	@Override
 	public void run() {
 
@@ -32,10 +27,11 @@ public class AddToPathFieldOption extends FieldOption {
 			return;
 		}
 
-		Move moveType = primaryField.getUnit().getMove();
-		List<Field> oldPath = moveType.getPath();
+		var moveType = primaryField.getUnit().getMove();
+		var oldPath = moveType.getPath();
 
 		List<Field> pathToAdd = null;
+		List<Field> pathToSelect = null;
 
 		if (oldPath == null || oldPath.isEmpty()) {
 
@@ -44,6 +40,8 @@ public class AddToPathFieldOption extends FieldOption {
 					secondaryField);
 
 			pathToAdd.add(0, primaryField);
+
+			pathToSelect = pathToAdd.subList(1, pathToAdd.size());
 
 		} else {
 
@@ -54,9 +52,11 @@ public class AddToPathFieldOption extends FieldOption {
 					secondaryField);
 
 			moveType.addToPath(pathToAdd);
+
+			pathToSelect = pathToAdd;
 		}
 
-		for (Field pathField : pathToAdd) {
+		for (Field pathField : pathToSelect) {
 
 			var selectCommand = new SelectFieldCommand(pathField);
 			super.controller.getConsumerQueue().enqueue(selectCommand);
@@ -69,9 +69,7 @@ public class AddToPathFieldOption extends FieldOption {
 
 	@Override
 	public FieldOption getCopy() {
-
-		return new AddToPathFieldOption(true, this.controller, null);
-
+		return new AddToPathFieldOption(this.controller);
 	}
 
 	@Override

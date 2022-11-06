@@ -10,7 +10,6 @@ public class HexFieldManager implements ViewFieldManager {
 	private double fieldWidth;
 	private double fieldBorderWidth;
 
-	// TODO maybe just pass the viewConfig to the constructor
 	public HexFieldManager(double fieldHeight,
 			double fieldWidth,
 			double fieldBorderWidth) {

@@ -9,7 +9,6 @@ public abstract class FieldOption implements Runnable {
 
 	protected Controller controller;
 
-	// protected Field primaryField;
 	protected Field secondaryField;
 
 	protected boolean enabled;
@@ -19,24 +18,9 @@ public abstract class FieldOption implements Runnable {
 
 		this.name = optionName;
 		this.controller = gameController;
-		// this.primaryField = null;
 
 		this.enabled = false;
 	}
-
-	public FieldOption(String optionName,
-			boolean enabled,
-			Controller controller,
-			Field primaryField) {
-
-		this(optionName, controller);
-
-		this.enabled = enabled;
-		this.controller = controller;
-		// this.primaryField = primaryField;
-	}
-
-	// methods
 
 	public String getName() {
 		return this.name;
@@ -49,10 +33,6 @@ public abstract class FieldOption implements Runnable {
 
 		return controller.getSelectedField();
 	}
-
-	// public void setPrimaryField(Field field) {
-	// this.primaryField = field;
-	// }
 
 	public Field getSecondaryField() {
 		return this.secondaryField;
@@ -74,7 +54,8 @@ public abstract class FieldOption implements Runnable {
 		return this.enabled;
 	}
 
-	// TODO maybe just cloneable
+	// This method is never used. All field are just referencing single instace of
+	// every available option. Still issues with the current approach. 
 	public abstract FieldOption getCopy();
 
 	public abstract boolean isAdequateFor(Field field);

@@ -18,13 +18,12 @@ public class CtrlAttackCommand extends Command {
 
 	@Override
 	public void run() {
-		// TODO Auto-generated method stub
+		
 
 	}
 
 	@Override
 	public Command getAntiCommand() {
-		// TODO Auto-generated method stub
 		return null;
 	}
 

@@ -6,13 +6,24 @@ public class ViewEventArg {
 
 	private Point2D position;
 
-	public ViewEventArg(Point2D positoin) {
-		this.position = positoin;
+	private String key;
 
+	public ViewEventArg(Point2D position) {
+		this.position = position;
+		this.key = null;
+	}
+
+	public ViewEventArg(String key) {
+		this.position = null;
+		this.key = key;
 	}
 
 	public Point2D getFieldPosition() {
 		return this.position;
+	}
+
+	public String getKey() {
+		return this.key;
 	}
 
 }

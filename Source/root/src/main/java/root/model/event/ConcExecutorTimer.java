@@ -12,10 +12,9 @@ public class ConcExecutorTimer implements Timer, ActiveComponent {
 
 	private ScheduledExecutorService executor;
 
-	public ConcExecutorTimer() {
-		// TODO not sure if 3 is gonna be enough if thread is required for every
-		// schedule ... 
-		this.executor = Executors.newScheduledThreadPool(3);
+	public ConcExecutorTimer(int threadCount) {
+		
+		this.executor = Executors.newScheduledThreadPool(threadCount);
 		// remove task from waiting queue after it is cancelled
 		((ScheduledThreadPoolExecutor) this.executor).setRemoveOnCancelPolicy(true);
 	}

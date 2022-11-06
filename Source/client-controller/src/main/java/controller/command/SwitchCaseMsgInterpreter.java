@@ -24,7 +24,7 @@ public class SwitchCaseMsgInterpreter implements MessageInterpreter {
             case JoinRoomRequest:
             case LeaveRoomRequest:
             case StartGameRequest:
-                System.out.println("SwitchCaseMsgInterpretor intended for game "
+                System.out.println("SwitchCaseMsgInterpreter intended for game "
                         + "related messages translation received room/login related message ... ");
                 System.out.println(message.type.toString());
 
@@ -32,11 +32,7 @@ public class SwitchCaseMsgInterpreter implements MessageInterpreter {
             // Above types are used in roomServer and can not be translated
             // to commands. 
             //TODO Consider spliting message types to login, room and game  related messages. 
-
-            // case InitializeMessage:
-            //     return new CtrlInitializeCommand(
-            //             mapPlayers(((InitializeMsg) message).players),
-            //             ((InitializeMsg) message).fields);
+            // this is also considered as todo 
 
             case InitializeMessage:
                 return new CtrlInitializeCommand(

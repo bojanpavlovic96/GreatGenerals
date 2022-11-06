@@ -12,10 +12,6 @@ public class AttackFieldOption extends FieldOption {
 		super(AttackFieldOption.Name, gameController);
 	}
 
-	public AttackFieldOption(boolean enabled, Controller controller, Field primaryField) {
-		super("attack-field-option", enabled, controller, primaryField);
-	}
-
 	@Override
 	public void run() {
 		// show a new submenu with attack types if more than one is available 
@@ -25,9 +21,7 @@ public class AttackFieldOption extends FieldOption {
 
 	@Override
 	public FieldOption getCopy() {
-
-		return new AttackFieldOption(true, this.controller, null);
-
+		return new AttackFieldOption(this.controller);
 	}
 
 	@Override

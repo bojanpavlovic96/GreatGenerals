@@ -10,11 +10,6 @@ public class BrokerConfigFields {
 	public String password;
 	public String vhost;
 
-	// TODO this should be removed
-	// this part of config should be moved in rabbitLoginProxy
-	// (if ever gets impelemented)
-	public QueuesConfig queues;
-
 	public BrokerConfigFields() {
 
 	}
@@ -23,14 +18,12 @@ public class BrokerConfigFields {
 			int port,
 			String username,
 			String password,
-			String vhost,
-			QueuesConfig queues) {
+			String vhost) {
 		this.address = address;
 		this.port = port;
 		this.username = username;
 		this.password = password;
 		this.vhost = vhost;
-		this.queues = queues;
 	}
 
 	@Override

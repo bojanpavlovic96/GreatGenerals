@@ -198,10 +198,7 @@ public class DrawingStage extends Stage implements View {
 					if (handlers != null) {
 
 						for (ViewEventHandler handler : handlers) {
-							// argument of the execute method is never used for key pressed event...
-							// it is ok to be null
-							// TODO make null disappear
-							handler.execute(null);
+							handler.execute(new ViewEventArg(key));
 						}
 
 					}
@@ -230,9 +227,9 @@ public class DrawingStage extends Stage implements View {
 
 	// TODO replace name with an enum
 	@Override
-	public void addEventHandler(String event_name, ViewEventHandler event_handler) {
+	public void addEventHandler(String eventName, ViewEventHandler event_handler) {
 
-		List<ViewEventHandler> handlers = this.handlersMap.get(event_name);
+		List<ViewEventHandler> handlers = this.handlersMap.get(eventName);
 
 		if (handlers != null) {
 
@@ -243,7 +240,7 @@ public class DrawingStage extends Stage implements View {
 			handlers = new ArrayList<ViewEventHandler>();
 			handlers.add(event_handler);
 
-			this.handlersMap.put(event_name, handlers);
+			this.handlersMap.put(eventName, handlers);
 		}
 
 	}
@@ -418,6 +415,11 @@ public class DrawingStage extends Stage implements View {
 		Platform.runLater(() -> {
 			hide();
 		});
+	}
+
+	@Override
+	public ViewConfig getActiveConfig() {
+		return this.config;
 	}
 
 }

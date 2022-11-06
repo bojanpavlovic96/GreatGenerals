@@ -123,6 +123,7 @@ namespace RabbitGameServer.Game
 
 					var srcField = getField(mev.sourceField);
 					endField.unit = srcField.unit;
+					srcField.unit = null;
 
 					return new MoveMessage(mev.playerName,
 						RoomName,
@@ -214,7 +215,7 @@ namespace RabbitGameServer.Game
 					Fields.Add(new Point2D(j, i), newField);
 
 					playerCounter++;
-					playerCounter %= 2;
+					playerCounter %= 1;
 
 				}
 
@@ -302,15 +303,11 @@ namespace RabbitGameServer.Game
 
 		private void parseColors()
 		{
-			Console.WriteLine("Parsing available colors ... ");
 
 			availableColors = new List<Color>();
 
-
-
 			foreach (var colorStr in config.Colors)
 			{
-				Console.WriteLine($"Parsing: {colorStr}");
 				availableColors.Add(Color.parse(colorStr));
 			}
 
