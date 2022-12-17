@@ -65,7 +65,8 @@ public class SelectPathFieldOption extends FieldOption {
 
 	@Override
 	public boolean isAdequateFor(Field field) {
-		return (field.getUnit() != null &&
+		return (field != getSecondaryField() &&
+				field.getUnit() != null &&
 				field.getUnit().getMove() != null);
 	}
 

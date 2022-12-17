@@ -126,7 +126,7 @@ public class RabbitGameServerProxy implements GameServerProxy,
 	}
 
 	private String genCommandRoutingKey() {
-		return config.serverMessageRoutePrefix + roomName + "." + username;
+		return config.serverMessageRoutePrefix + roomName + "." + config.rabbitMatchAllWildcard;
 	}
 
 	@Override

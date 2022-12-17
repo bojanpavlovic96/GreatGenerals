@@ -77,28 +77,6 @@ namespace RabbitGameServer.Client
 				Console.WriteLine(e.StackTrace);
 			}
 
-			return;
-
-			var byteContent = translator.ToByteData(update);
-
-			channel.ExchangeDeclare(config.RoomsResponseTopic, "topic",
-								false,
-								true,
-								null);
-
-			var topic = config.RoomsResponseTopic;
-			var route = formUpdateRoute(roomName, player);
-			Console.WriteLine($"Publishing on: {topic} - {route}");
-
-			try
-			{
-				channel.BasicPublish(topic, route, null, byteContent);
-			}
-			catch (Exception e)
-			{
-				Console.WriteLine("Failed to publish update message ... ");
-				Console.WriteLine(e.Message);
-			}
 		}
 
 		private string formUpdateRoute(string roomName, string playerName)

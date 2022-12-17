@@ -177,68 +177,53 @@ namespace RabbitGameServer.Game
 			int left = 3;
 			int right = 17;
 
-			int playerCounter = 0;
-			// try
-			// {
+			int segLen = (right - left) / Players.Count;
+
 			for (int i = 1; i < 16; i++)
 			{
 
 				for (int j = left; j < right; j++)
 				{
 
-					Field newField;
 					var position = new Point2D(j, i);
+					var terrain = new Terrain(TerrainType.mountains, 1);
 					if (i % 2 == 0 && j % 5 == 0)
 					{
-						newField = new Field(position,
-							true,
-							null,
-							new Terrain(TerrainType.mountains, 1),
-							Players[playerCounter].username,
-							false);
+						terrain = new Terrain(TerrainType.water, 1);
 					}
-					else
+
+					var playerInd = j / segLen;
+
+					if (playerInd >= Players.Count)
 					{
-						newField = new Field(position,
-							true,
-							null,
-							new Terrain(TerrainType.water, 1),
-							Players[playerCounter].username,
-							false);
+						playerInd = Players.Count - 1;
 					}
+					else if (playerInd < 0)
+					{
+						playerInd = 0;
+					}
+
+					var playerName = Players[playerInd].username;
+
+					var newField = new Field(position,
+						true,
+						null,
+						terrain,
+						playerName,
+						false);
 
 					if (config.DefaultPositions.Contains(position))
 					{
 						newField.unit = UnitType.basicunit;
 					}
 
-					Fields.Add(new Point2D(j, i), newField);
-
-					playerCounter++;
-					playerCounter %= 1;
+					Fields.Add(newField.position, newField);
 
 				}
 
 				if (left > -3)
 					left--;
 			}
-
-			// Field destField;
-			// Fields.TryGetValue(new Point2D(3, 1), out destField);
-			// destField.unit = UnitType.basicunit;
-
-			// Fields.TryGetValue(new Point2D(4, 5), out destField);
-			// destField.unit = UnitType.basicunit;
-
-			// }
-			// catch (Exception e)
-			// {
-			// 	Console.WriteLine("Exception in game initialization ... ");
-			// 	Console.WriteLine(e.Message);
-			// 	Console.WriteLine(e.StackTrace);
-			// }
-
-
 
 			return true;
 		}

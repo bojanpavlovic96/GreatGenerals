@@ -3,7 +3,6 @@ package controller.option;
 import java.util.List;
 
 import root.controller.Controller;
-import root.model.action.move.Move;
 import root.model.action.move.PathFinder;
 import root.model.component.Field;
 import root.model.component.option.FieldOption;
@@ -74,7 +73,8 @@ public class AddToPathFieldOption extends FieldOption {
 
 	@Override
 	public boolean isAdequateFor(Field field) {
-		return (field.getUnit() != null &&
+		return (field != getSecondaryField() && 
+				field.getUnit() != null &&
 				field.getUnit().getMove() != null);
 	}
 

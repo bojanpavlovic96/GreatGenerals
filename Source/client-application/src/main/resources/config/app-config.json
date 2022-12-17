@@ -45,6 +45,7 @@
 		"rabbitTopicExchangeKeyword": "topic",
 		"serverMessageExchange": "gg_server_message",
 		"serverMessageRoutePrefix": "message.",
+		"rabbitMatchAllWildcard": "#",
 		"modelEventsExchange": "gg_model_event",
 		"modelEventsRoutePrefix": "model_event."
 	},

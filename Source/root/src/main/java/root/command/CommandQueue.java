@@ -61,7 +61,7 @@ public class CommandQueue {
 			commandProcessor.execute(this);
 
 			queueLock.unlock();
-		} 
+		}
 
 	}
 
