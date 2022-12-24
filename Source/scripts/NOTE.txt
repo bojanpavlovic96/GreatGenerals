@@ -101,6 +101,30 @@ select 'attach to mvnDebug'
 
 ====================================================================================
 
-> To launch rest login server (.../Source/server/rest-login/) 
+
+> To launch rest login server (.../Source/server/rest-login/)
+	(Not recommended since all backend stuff is now dockerized ... )
 	$ cd .../Source/server/rest-login/
 	$ mvn spring-boot:run
+
+> To start "Backend" (docker and docker-compose are required)
+	From project root (.../GreatGenerals/Source) run next commands: 
+
+	1) Build/pull all required images
+		$ docker-compose up --build --no-start 
+	
+	2) If no errors ocurred start broker service first: 
+		$ docker start gg-broker 
+
+	3) Wait few seconds (10-20 depending on your hardware) so that broker is 
+		properly initialized, started and ready to receive connections. If you don't
+		want to guess the time use the next command (from different terminal window)
+		$ docker logs --follow gg-broker 
+		and wait "Server startup complete; 3 plugins started" message.
+	
+	4) Start all other services: 
+		$ docker-compose up gg-users-db gg-game-db gg-login-server gg-game-server
+
+	
+
+
