@@ -105,11 +105,13 @@ public class GameModel implements Model {
 
 		for (var desc : descs) {
 
+			var fieldOwner = players.get(desc.owner);
+
 			var field = fieldFactory.getField(desc.isVisible,
 					desc.position,
-					mapUnit(desc.unit),
+					mapUnit(desc.unit, fieldOwner),
 					mapTerrain(desc.terrain),
-					players.get(desc.owner));
+					fieldOwner);
 
 			retList.add(field);
 		}
@@ -117,9 +119,9 @@ public class GameModel implements Model {
 		return retList;
 	}
 
-	private Unit mapUnit(String unitType) {
+	private Unit mapUnit(String unitType, PlayerData owner) {
 		if (unitType != null) {
-			return unitFactory.generateUnit(UnitType.valueOf(unitType));
+			return unitFactory.generateUnit(UnitType.valueOf(unitType), owner);
 		} else {
 			return null;
 		}

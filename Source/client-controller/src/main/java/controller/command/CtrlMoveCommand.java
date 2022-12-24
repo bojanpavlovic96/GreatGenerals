@@ -42,8 +42,8 @@ public class CtrlMoveCommand extends Command {
 	@Override
 	public void run() {
 
-		Controller controller = (Controller) super.targetComponent;
-		CommandQueue viewCommandQueue = controller.getConsumerQueue();
+		var controller = (Controller) super.targetComponent;
+		var  viewCommandQueue = controller.getConsumerQueue();
 
 		this.secondField.setUnit(this.startField.getUnit());
 		this.startField.setUnit(null);

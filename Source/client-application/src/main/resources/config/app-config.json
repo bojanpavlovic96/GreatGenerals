@@ -21,7 +21,7 @@
 		"fieldMenuWidth": 200,
 		"fieldMenuHeight": 299,
 		"fieldHeight": 80,
-		"fieldWdith": 30,
+		"fieldWidth": 30,
 		"fieldBorderWidth": 2
 	},
 	"brokerConfig": {

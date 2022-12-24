@@ -3,6 +3,7 @@ package model.component.unit;
 import java.util.ArrayList;
 import java.util.List;
 
+import root.model.PlayerData;
 import root.model.action.attack.Attack;
 import root.model.action.move.Move;
 import root.model.component.Field;
@@ -13,6 +14,8 @@ import root.model.event.ModelEventProducer;
 
 public class BasicUnit implements Unit, ModelEventProducer {
 
+	private PlayerData owner;
+
 	private UnitType type;
 
 	private Field myField;
@@ -22,7 +25,9 @@ public class BasicUnit implements Unit, ModelEventProducer {
 
 	private ModelEventHandler eventHandler;
 
-	public BasicUnit(UnitType type, Move move, List<Attack> attacks) {
+	public BasicUnit(PlayerData owner, UnitType type, Move move, List<Attack> attacks) {
+		this.owner = owner;
+
 		this.type = type;
 
 		this.moveType = move;
@@ -107,6 +112,11 @@ public class BasicUnit implements Unit, ModelEventProducer {
 				}
 			}
 		}
+	}
+
+	@Override
+	public PlayerData getOwner() {
+		return this.owner;
 	}
 
 }

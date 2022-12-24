@@ -13,7 +13,6 @@ import root.model.component.Field;
 import root.model.component.Unit;
 import root.model.component.UnitType;
 import root.model.component.option.FieldOption;
-import root.model.event.ModelEventHandler;
 import root.model.event.ModelEventProducer;
 
 public interface Model extends ActiveComponent, ModelEventProducer {

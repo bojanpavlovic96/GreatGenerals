@@ -2,11 +2,13 @@ package root.model.component;
 
 import java.util.List;
 
+import root.model.PlayerData;
 import root.model.action.attack.Attack;
 import root.model.action.move.Move;
-import root.model.event.ModelEventHandler;
 
 public interface Unit {
+
+	PlayerData getOwner();
 
 	UnitType getUnitType();
 

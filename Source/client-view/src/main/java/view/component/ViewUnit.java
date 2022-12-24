@@ -4,11 +4,14 @@ import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.Image;
 import root.Point2D;
 import root.model.component.Unit;
+import root.view.Color;
 import view.ResourceManager;
 
 public class ViewUnit {
 
 	private String unitName;
+
+	private Color highlightColor;
 
 	private int health;
 	private int attack;
@@ -16,6 +19,12 @@ public class ViewUnit {
 
 	public ViewUnit(Unit model) {
 		this.unitName = model.getUnitType().toString();
+
+		var pColor = model.getOwner().getColor();
+		this.highlightColor = new Color(pColor.red,
+				pColor.green,
+				pColor.blue,
+				0.3);
 	}
 
 	// attention it wont be used (you can't just create random unit)
@@ -44,6 +53,10 @@ public class ViewUnit {
 				image_height);
 		gc.restore();
 
+	}
+
+	public Color getHighlightColor(){
+		return this.highlightColor;
 	}
 
 }

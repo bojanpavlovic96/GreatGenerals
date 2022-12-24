@@ -1,15 +1,12 @@
 package controller.command;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
-import model.component.field.HexagonField;
 import root.command.Command;
 import root.communication.PlayerDescription;
 import root.communication.messages.components.AttackDesc;
 import root.communication.messages.components.FieldDesc;
 import root.communication.messages.components.MoveDesc;
-import root.communication.messages.components.TerrainDesc;
 import root.communication.messages.components.UnitDesc;
 import root.controller.Controller;
 import root.model.Model;

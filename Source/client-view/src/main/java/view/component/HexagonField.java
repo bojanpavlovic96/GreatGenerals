@@ -27,6 +27,7 @@ public class HexagonField implements ViewField {
 	private boolean visibility;
 
 	private Color borderColor;
+
 	private ViewTerrain terrain;
 	private ViewUnit unit;
 
@@ -247,7 +248,10 @@ public class HexagonField implements ViewField {
 
 		if (this.unit != null) {
 			if (this.unitsInBattle.isEmpty()) {
+
 				this.unit.drawUnit(gc, this.getFieldCenter(), this.getSideSize());
+				this.paintField(gc,this.unit.getHighlightColor());
+
 			} else {
 				this.drawBattle(gc);
 			}

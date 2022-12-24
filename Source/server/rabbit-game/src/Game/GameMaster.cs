@@ -267,7 +267,9 @@ namespace RabbitGameServer.Game
 		public GameSummary getSummary()
 		{
 
-			return new GameSummary(Players.Count,
+			return new GameSummary(RoomName, 
+				masterPlayer.username,
+				Players.Count,
 				Players
 					.Select<PlayerData, string>((player) => player.username)
 					.ToList(),

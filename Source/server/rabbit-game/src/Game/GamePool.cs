@@ -114,13 +114,19 @@ namespace RabbitGameServer.Game
 
 		}
 
-		public void destroyGame(string roomName)
+		public bool destroyGame(string roomName)
 		{
 			// maybe force it to write everything to the database
 			GameMaster game;
-			games.TryGetValue(roomName, out game);
-			game.endGame();
-			games.Remove(roomName);
+			if (games.TryGetValue(roomName, out game)){
+				game.endGame();
+				games.Remove(roomName);
+
+				return true;
+			}else{
+				return false;
+			}
+			
 		}
 	}
 }

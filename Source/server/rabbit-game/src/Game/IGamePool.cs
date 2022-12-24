@@ -8,7 +8,7 @@ namespace RabbitGameServer.Game
 
 		GameMaster GetGame(string roomName);
 
-		void destroyGame(String roomName);
+		bool destroyGame(String roomName);
 
 		PoolSummary GetPoolSummary();
 

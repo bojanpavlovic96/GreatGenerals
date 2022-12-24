@@ -7,6 +7,7 @@ import java.util.Map;
 import root.communication.messages.components.AttackDesc;
 import root.communication.messages.components.MoveDesc;
 import root.communication.messages.components.UnitDesc;
+import root.model.PlayerData;
 import root.model.action.attack.Attack;
 import root.model.action.move.Move;
 import root.model.action.move.PathFinder;
@@ -77,7 +78,7 @@ public class UnitFactory {
 		}
 	}
 
-	public Unit generateUnit(UnitType type) {
+	public Unit generateUnit(UnitType type, PlayerData owner) {
 
 		UnitDesc unitDesc = units.get(type.toString());
 
@@ -88,7 +89,8 @@ public class UnitFactory {
 			attacks.add(genAttack(attackType));
 		}
 
-		return new BasicUnit(UnitType.valueOf(unitDesc.unitName),
+		return new BasicUnit(owner,
+				UnitType.valueOf(unitDesc.unitName),
 				move,
 				attacks);
 	}
