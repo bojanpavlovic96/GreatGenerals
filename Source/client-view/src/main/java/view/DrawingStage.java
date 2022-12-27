@@ -36,10 +36,6 @@ import view.component.ViewFieldManager;
 import view.component.menu.LongOptionsMenu;
 import view.component.menu.ShortOptionsMenu;
 
-// attention 
-// attention scroll pane (sometimes) throws some exception but it is harmless
-// (somehow disappeared later in development... )
-
 public class DrawingStage extends Stage implements View {
 
 	private double STAGE_WIDTH;
@@ -56,8 +52,9 @@ public class DrawingStage extends Stage implements View {
 	private Canvas boardCanvas;
 	private Canvas secondLayerCanvas;
 
-	private ShortOptionsMenu shortOptionsMenu;
-	private LongOptionsMenu longOptionsMenu;
+	private ShortOptionsMenu mainOptionsMenu;
+	private ShortOptionsMenu submenu;
+	private LongOptionsMenu descriptionMenu;
 
 	private double canvasWidth;
 	private double canvasHeight;
@@ -136,21 +133,28 @@ public class DrawingStage extends Stage implements View {
 		System.out.println("Initial canvas width: " + this.canvasWidth);
 		System.out.println("Initial canvas height: " + this.canvasHeight);
 
-		this.shortOptionsMenu = new ShortOptionsMenu(
+		this.mainOptionsMenu = new ShortOptionsMenu(
 				config.fieldMenuWidth,
 				config.fieldMenuHeight);
 
-		this.longOptionsMenu = new LongOptionsMenu(
+		this.submenu = new ShortOptionsMenu(
 				config.fieldMenuWidth,
 				config.fieldMenuHeight);
 
-		this.shortOptionsMenu.setLayoutX(100);
-		this.shortOptionsMenu.setLayoutY(100);
-		this.shortOptionsMenu.setVisible(true);
+		this.descriptionMenu = new LongOptionsMenu(
+				config.fieldMenuWidth,
+				config.fieldMenuHeight);
+
+		this.mainOptionsMenu.setLayoutX(100);
+		this.mainOptionsMenu.setLayoutY(100);
+		this.mainOptionsMenu.setVisible(true);
+
+		this.submenu.setVisible(true);
+
+		this.root.getChildren().add(this.mainOptionsMenu);
+		this.root.getChildren().add(this.submenu);
 
 		Platform.setImplicitExit(true);
-
-		this.root.getChildren().add(this.shortOptionsMenu);
 
 		this.setScene(this.mainScene);
 	}
@@ -358,7 +362,8 @@ public class DrawingStage extends Stage implements View {
 	public void setMenuVisibility(boolean visibility) {
 		// with next line, vbox throws some outOfBoundsException: -1 ... don't touch it
 		// not anymore, but I will leave above comment ... just in case
-		this.shortOptionsMenu.setVisible(visibility);
+		this.mainOptionsMenu.setVisible(visibility);
+		this.submenu.setVisible(visibility);
 	}
 
 	@Override
@@ -372,18 +377,23 @@ public class DrawingStage extends Stage implements View {
 	}
 
 	@Override
-	public Menu getShortOptionMenu() {
-		return this.shortOptionsMenu;
+	public Menu getMainOptionsMenu() {
+		return this.mainOptionsMenu;
 	}
 
 	@Override
-	public Menu getLongOptionsMenu() {
-		return this.longOptionsMenu;
+	public Menu getSubmenu() {
+		return this.submenu;
+	}
+
+	@Override
+	public Menu getDescriptionMenu() {
+		return this.descriptionMenu;
 	}
 
 	@Override
 	public void setMenuPosition(Point2D position) {
-		this.shortOptionsMenu.setPosition(position);
+		this.mainOptionsMenu.setPosition(position);
 	}
 
 	@Override

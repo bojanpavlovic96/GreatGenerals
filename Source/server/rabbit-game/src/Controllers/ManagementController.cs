@@ -15,11 +15,14 @@ namespace RabbitGameServer.Controllers
 	{
 		public string RoomName { get; set; }
 		public ClearStatus result { get; set; }
+		public string strResult { get; set; }
 
 		public ClearResult(string roomName, ClearStatus result)
 		{
 			this.RoomName = roomName;
 			this.result = result;
+
+			this.strResult = result.ToString();
 		}
 	}
 
@@ -49,11 +52,9 @@ namespace RabbitGameServer.Controllers
 			}
 		}
 
-		// TODO this route is in conflict with clear/{room}
-		// just change route ... 
 		[HttpGet]
-		[Route("clear")]
-		public ActionResult<List<ClearResult>> clearAllRooms(string room)
+		[Route("all")]
+		public ActionResult<List<ClearResult>> clearAllRooms()
 		{
 			var games = pool.GetGameSummaries();
 

@@ -4,9 +4,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 import controller.command.UndoStack;
+import controller.option.AbortAttackFieldOption;
 import controller.option.AddToPathFieldOption;
+import controller.option.AttacksSubmenuFieldOption;
 import controller.option.ClearPathFieldOption;
 import controller.option.MoveFieldOption;
+import controller.option.RetreatFieldOption;
 import controller.option.SelectPathFieldOption;
 import controller.option.StopMovingFieldOption;
 import model.event.ReadyForInitEvent;
@@ -21,6 +24,7 @@ import root.communication.GameServerProxy;
 import root.controller.CommandStack;
 import root.controller.Controller;
 import root.model.Model;
+import root.model.PlayerData;
 import root.model.component.Field;
 import root.model.component.option.FieldOption;
 import root.model.event.ModelEventArg;
@@ -34,6 +38,8 @@ import view.command.ZoomInCommand;
 import view.command.ZoomOutCommand;
 
 public class GameBrain implements Controller {
+
+	private PlayerData player;
 
 	private GameServerProxy serverProxy;
 
@@ -55,8 +61,9 @@ public class GameBrain implements Controller {
 
 	private List<FieldOption> fieldOptions;
 
-	public GameBrain(GameServerProxy serverProxy, View view, Model model) {
-		super();
+	public GameBrain(PlayerData player, GameServerProxy serverProxy, View view, Model model) {
+
+		this.player = player;
 
 		this.serverProxy = serverProxy;
 		this.view = view;
@@ -205,14 +212,17 @@ public class GameBrain implements Controller {
 
 	private void initFieldOptions() {
 
-		this.fieldOptions = new ArrayList<FieldOption>();
+		fieldOptions = new ArrayList<FieldOption>();
 
-		this.fieldOptions.add(new SelectPathFieldOption(this));
-		this.fieldOptions.add(new MoveFieldOption(this));
-		this.fieldOptions.add(new AddToPathFieldOption(this));
-		this.fieldOptions.add(new StopMovingFieldOption(this));
-		this.fieldOptions.add(new ClearPathFieldOption(this));
+		fieldOptions.add(new SelectPathFieldOption(this));
+		fieldOptions.add(new MoveFieldOption(this));
+		fieldOptions.add(new AddToPathFieldOption(this));
+		fieldOptions.add(new StopMovingFieldOption(this));
+		fieldOptions.add(new ClearPathFieldOption(this));
 
+		fieldOptions.add(new AttacksSubmenuFieldOption(this));
+		fieldOptions.add(new AbortAttackFieldOption(this));
+		fieldOptions.add(new RetreatFieldOption(this));
 	}
 
 	// getters and setters
@@ -312,6 +322,16 @@ public class GameBrain implements Controller {
 	@Override
 	public CommandStack getUndoStack() {
 		return this.undoStack;
+	}
+
+	@Override
+	public PlayerData getPlayer() {
+		return player;
+	}
+
+	@Override
+	public boolean isOwner(String name) {
+		return player.getUsername().equals(name);
 	}
 
 }

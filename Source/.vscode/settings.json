@@ -2,8 +2,10 @@
     "java.configuration.updateBuildConfiguration": "automatic",
     "java.format.settings.url": "eclipse-formatter.xml",
     "cSpell.words": [
-        "amqp"
-    ],
+		"amqp",
+		"tenative"
+	],
     "todo-tree.tree.disableCompactFolders": false,
-    "C_Cpp.errorSquiggles": "Disabled"
+	"C_Cpp.errorSquiggles": "Disabled",
+	"java.compile.nullAnalysis.mode": "automatic"
 }

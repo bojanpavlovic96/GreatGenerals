@@ -118,15 +118,18 @@ namespace RabbitGameServer.Game
 		{
 			// maybe force it to write everything to the database
 			GameMaster game;
-			if (games.TryGetValue(roomName, out game)){
+			if (games.TryGetValue(roomName, out game))
+			{
 				game.endGame();
 				games.Remove(roomName);
 
 				return true;
-			}else{
+			}
+			else
+			{
 				return false;
 			}
-			
+
 		}
 	}
 }

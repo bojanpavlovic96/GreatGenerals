@@ -44,7 +44,7 @@ public class ShowFieldMenuCommand extends Command {
 
 		View view = (View) targetComponent;
 
-		Menu menu = view.getShortOptionMenu();
+		Menu menu = view.getMainOptionsMenu();
 		menu.clearOptions();
 
 		selectedField.adjustOptionsFor(targetField);
@@ -53,14 +53,17 @@ public class ShowFieldMenuCommand extends Command {
 		view.setMenuPosition(new Point2D(
 				viewTarget.getFieldCenter().getX(),
 				viewTarget.getFieldCenter().getY()));
-		view.setMenuVisibility(true);
+
+		menu.setVisible(true);
+		// view.setMenuVisibility(true);
 
 		// draw field info
 
 		GraphicsContext gc = ((View) targetComponent).getTopLayerGraphicContext();
 		gc.save();
 
-		gc.setFill(Color.GRAY);
+		// TODO should be read from view config 
+		gc.setFill(Color.ALICEBLUE);
 
 		gc.fillRect(viewTarget.getFieldCenter().getX() + menu.getMenuWidth(),
 				viewTarget.getFieldCenter().getY(),

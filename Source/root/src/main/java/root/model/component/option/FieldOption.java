@@ -54,7 +54,7 @@ public abstract class FieldOption implements Runnable {
 		return this.enabled;
 	}
 
-	// This method is never used. All field are just referencing single instace of
+	// This method is never used. All fields are just referencing single instance of
 	// every available option. Still issues with the current approach. 
 	public abstract FieldOption getCopy();
 

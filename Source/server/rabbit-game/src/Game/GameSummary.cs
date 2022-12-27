@@ -21,7 +21,7 @@ namespace RabbitGameServer.Game
 		{
 
 			RoomName = roomName;
-			MasterPlayer  = masterPlayer;
+			MasterPlayer = masterPlayer;
 
 			PlayersCount = playersCount;
 			Players = players;

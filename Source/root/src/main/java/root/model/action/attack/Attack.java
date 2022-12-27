@@ -1,5 +1,6 @@
 package root.model.action.attack;
 
+import root.model.component.Field;
 import root.model.event.ModelEventHandler;
 import root.model.event.ModelEventProducer;
 
@@ -14,7 +15,11 @@ public class Attack implements ModelEventProducer {
 
 	private ModelEventHandler handler;
 
-	public Attack(int hitDamage, int range, long duration, long cooldown) {
+	private Field target;
+
+	public Attack(String type, int hitDamage, int range, long duration, long cooldown) {
+		this.type = type;
+
 		this.hitDamage = hitDamage;
 		this.range = range;
 		this.duration = duration;
@@ -32,4 +37,11 @@ public class Attack implements ModelEventProducer {
 
 	}
 
+	public void setTarget(Field target){
+		this.target = target;
+	}
+
+	public Field getTarget(){
+		return this.target;
+	}
 }

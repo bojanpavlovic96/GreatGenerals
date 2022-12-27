@@ -1,7 +1,9 @@
 package app.event;
 
+import root.model.PlayerData;
+
 public interface GameReadyHandler {
 
-	void execute(String username, String roomName);
+	void execute(PlayerData player, String roomName);
 
 }

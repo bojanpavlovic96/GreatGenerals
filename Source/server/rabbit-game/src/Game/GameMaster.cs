@@ -99,6 +99,8 @@ namespace RabbitGameServer.Game
 			Console.WriteLine("Handling ready for init request ... ");
 			Console.WriteLine($"AvailableUnits: {config.Units.Count}");
 			Console.WriteLine($"AvailableMoves: {config.Moves.Count}");
+			Console.WriteLine($"AvailableAttacks: {config.Attacks.Count}");
+			Console.WriteLine($"attack: {config.Attacks[0].type.ToString()}");
 
 			return new InitializeMessage(RoomName,
 				e.playerName,
@@ -148,7 +150,7 @@ namespace RabbitGameServer.Game
 
 
 			// return new ServerErrorMessage(mev.playerName, RoomName,
-			// 	$"Unknown error occured while handling {e.type.ToString()}");
+			// 	$"Unknown error ocurred while handling {e.type.ToString()}");
 		}
 
 		private Field getField(Point2D point)
@@ -165,8 +167,15 @@ namespace RabbitGameServer.Game
 
 		private Message handleAttackEvent(ModelEvent e)
 		{
-			return new ServerErrorMessage(e.playerName, RoomName,
-				"Attack event handler still not implemented ... "); ;
+			var attackE = (AttackModelEvent)e;
+
+			var attackerField = getField(attackE.sourceField);
+			var targetField = getField(attackE.destinationField);
+
+			return new AttackMessage(e.playerName,
+				RoomName,
+				attackE.sourceField,
+				attackE.destinationField);
 		}
 
 		// endregion 
@@ -267,7 +276,7 @@ namespace RabbitGameServer.Game
 		public GameSummary getSummary()
 		{
 
-			return new GameSummary(RoomName, 
+			return new GameSummary(RoomName,
 				masterPlayer.username,
 				Players.Count,
 				Players

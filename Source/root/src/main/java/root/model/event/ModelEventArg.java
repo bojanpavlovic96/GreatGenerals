@@ -1,5 +1,7 @@
 package root.model.event;
 
+// TODO this is very bad name 
+// this events won't be only produced by the model 
 public abstract class ModelEventArg {
 
 	public static enum ModelEventType {

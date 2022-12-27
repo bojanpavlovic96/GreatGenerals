@@ -5,10 +5,10 @@ import root.command.Command;
 
 public class CtrlRecalculatePathCommand extends Command {
 
-	protected Point2D sourcePosition;
+	protected Point2D sourcePos;
 
 	public CtrlRecalculatePathCommand(Point2D sourcePos) {
-		this.sourcePosition = sourcePos;
+		this.sourcePos = sourcePos;
 	}
 
 	@Override

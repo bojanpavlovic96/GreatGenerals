@@ -45,6 +45,11 @@ public class LongOptionsMenu extends ListView<MenuItem> implements Menu {
 	}
 
 	@Override
+	public Point2D getPosition() {
+		return new Point2D(super.getLayoutX(), super.getLayoutY());
+	}
+
+	@Override
 	public double getMenuWidth() {
 		return super.getWidth();
 	}

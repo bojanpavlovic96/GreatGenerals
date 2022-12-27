@@ -250,7 +250,7 @@ public class HexagonField implements ViewField {
 			if (this.unitsInBattle.isEmpty()) {
 
 				this.unit.drawUnit(gc, this.getFieldCenter(), this.getSideSize());
-				this.paintField(gc,this.unit.getHighlightColor());
+				this.paintField(gc, this.unit.getHighlightColor());
 
 			} else {
 				this.drawBattle(gc);

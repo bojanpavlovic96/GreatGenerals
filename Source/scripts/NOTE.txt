@@ -1,3 +1,5 @@
+Everything about hex fields can be found on: https://www.redblobgames.com/grids/hexagons/
+
  !! To build and run project you will need java with a version >= 13 (java13+) !!
 
 > TO BUILD:

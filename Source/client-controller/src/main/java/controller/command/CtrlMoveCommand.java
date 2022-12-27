@@ -1,11 +1,12 @@
 package controller.command;
 
 import java.util.function.Function;
+import java.util.stream.Collectors;
 
+import model.event.AttackModelEventArg;
 import root.Point2D;
 import root.command.Command;
 import root.command.CommandDrivenComponent;
-import root.command.CommandQueue;
 import root.controller.Controller;
 import root.model.component.Field;
 import view.command.DrawFieldCommand;
@@ -43,10 +44,10 @@ public class CtrlMoveCommand extends Command {
 	public void run() {
 
 		var controller = (Controller) super.targetComponent;
-		var  viewCommandQueue = controller.getConsumerQueue();
+		var viewCommandQueue = controller.getConsumerQueue();
 
-		this.secondField.setUnit(this.startField.getUnit());
-		this.startField.setUnit(null);
+		secondField.setUnit(startField.getUnit());
+		startField.setUnit(null);
 
 		var unselectFirst = new UnselectFieldCommand(this.startField);
 		var redrawSecond = new DrawFieldCommand(this.secondField);
@@ -54,9 +55,9 @@ public class CtrlMoveCommand extends Command {
 		viewCommandQueue.enqueue(unselectFirst);
 		viewCommandQueue.enqueue(redrawSecond);
 
-		if (this.startField == controller.getSelectedField()) {
+		if (startField == controller.getSelectedField()) {
 
-			var selectSecond = new SelectFieldCommand(this.secondField);
+			var selectSecond = new SelectFieldCommand(secondField);
 			viewCommandQueue.enqueue(selectSecond);
 
 			var undoStack = controller.getUndoStack();
@@ -65,36 +66,77 @@ public class CtrlMoveCommand extends Command {
 			controller.setSelectedField(secondField);
 
 		} else {
-			// if startField is on currently selected field's path THEN select startField
+			// if one of the fields that are gonna be redrawn are on the selected
+			// field's path (not the one currently moving) then select them 
 			var selField = controller.getSelectedField();
-			if (selField.getUnit() != null && selField.getUnit().getMove() != null) {
 
-				if (selField.getUnit().getMove().isOnPath(this.startField)) {
-					var selFirst = new SelectFieldCommand(this.startField);
+			if (selField.getUnit() != null &&
+					selField.getUnit().getMove() != null &&
+					controller.isOwner(selField.getUnit().getOwner().getUsername())) {
+
+				if (selField.getUnit().getMove().isOnPath(startField)) {
+					var selFirst = new SelectFieldCommand(startField);
 					viewCommandQueue.enqueue(selFirst);
 				}
 
-				if (selField.getUnit().getMove().isOnPath(this.secondField)) {
-					var selSecond = new SelectFieldCommand(this.secondField);
+				if (selField.getUnit().getMove().isOnPath(secondField)) {
+					var selSecond = new SelectFieldCommand(secondField);
 					viewCommandQueue.enqueue(selSecond);
 				}
 
-			} else {
-				System.out.println("Received moveCommand for field without the unit or a move type ... ");
-				System.out.println("Field: " + selField.getStoragePosition());
 			}
 		}
 
-		var unitPath = this.secondField.getUnit().getMove().getPath();
+		// note, unit is now on secondField
 
-		unitPath.remove(0);
+		var unit = secondField.getUnit();
 
-		// note: unit is now on secondField
-		if (!unitPath.isEmpty() && unitPath.size() > 1) {
-			// continue moving
+		if (controller.isOwner(unit.getOwner().getUsername())) {
 
-			// trigger timer
-			this.secondField.getUnit().getMove().move();
+			var unitPath = unit.getMove().getPath();
+
+			unitPath.remove(0);
+
+			if (unit.isAttacking()) {
+				var destination = unitPath.get(unitPath.size() - 1);
+				var distance = controller.getModel().distance(secondField, destination);
+
+				if (distance <= unit.getActiveAttack().range) {
+
+					unit.getMove().stopMoving();
+
+					var intention = new AttackModelEventArg(unit.getOwner().getUsername(),
+							secondField.getStoragePosition(),
+							destination.getStoragePosition());
+
+					controller.getServerProxy().sendIntention(intention);
+
+				}
+			} else if (!unitPath.isEmpty() && unitPath.size() > 1) {
+				// continue moving
+
+				// trigger timer
+				this.secondField.getUnit().getMove().move();
+			}
+		} else {
+			var attackingUnits = controller
+					.getModel()
+					.getActiveUnits()
+					.stream()
+					.filter((units) -> unit.isAttacking() && unit.getActiveAttack().getTarget() == startField)
+					.collect(Collectors.toList());
+
+			for (var attacker : attackingUnits) {
+				var newPath = attacker.getMove().calculatePath(controller.getModel(),
+						attacker.getField(),
+						secondField);
+
+				attacker.getMove().clearPath();
+				attacker.getMove().addToPath(newPath);
+
+				attacker.getActiveAttack().setTarget(secondField);
+			}
+
 		}
 
 		return;

@@ -23,6 +23,8 @@ public class BasicUnit implements Unit, ModelEventProducer {
 	private Move moveType;
 	private List<Attack> attacks;
 
+	private Attack activeAttack;
+
 	private ModelEventHandler eventHandler;
 
 	public BasicUnit(PlayerData owner, UnitType type, Move move, List<Attack> attacks) {
@@ -46,17 +48,15 @@ public class BasicUnit implements Unit, ModelEventProducer {
 		return this.type;
 	}
 
-	// @Override
-	// public Field getField() {
-	// 	return this.myField;
-	// }
+	@Override
+	public Field getField() {
+		return this.myField;
+	}
 
-	// @Override
-	// public void setField(Field newField) {
-
-	// 	this.myField = newField;
-
-	// }
+	@Override
+	public void setField(Field newField) {
+		this.myField = newField;
+	}
 
 	@Override
 	public boolean canMove() {
@@ -74,23 +74,19 @@ public class BasicUnit implements Unit, ModelEventProducer {
 	}
 
 	@Override
-	public boolean hasAttack() {
+	public boolean hasAttacks() {
 		return this.attacks != null && !this.attacks.isEmpty();
 	}
 
-	// @Override
-	// public void relocateTo(Field nextField) {
-
-	// 	// remove from current field
-	// 	this.myField.setUnit(null);
-	// 	// set on next field
-	// 	nextField.setUnit(this);
-
-	// 	// update units reference to field
-	// 	// and also movement type reference
-	// 	this.setField(nextField);
-
-	// }
+	@Override
+	public boolean hasAttack(String type) {
+		for (var attack : attacks) {
+			if (attack.type.equals(type)) {
+				return true;
+			}
+		}
+		return false;
+	}
 
 	@Override
 	public ModelEventHandler getModelEventHandler() {
@@ -117,6 +113,21 @@ public class BasicUnit implements Unit, ModelEventProducer {
 	@Override
 	public PlayerData getOwner() {
 		return this.owner;
+	}
+
+	@Override
+	public boolean isAttacking() {
+		return activeAttack != null;
+	}
+
+	@Override
+	public void activateAttack(Attack attack) {
+		this.activeAttack = attack;
+	}
+
+	@Override
+	public Attack getActiveAttack() {
+		return this.activeAttack;
 	}
 
 }

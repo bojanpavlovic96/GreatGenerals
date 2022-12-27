@@ -5,6 +5,7 @@ import java.util.List;
 import root.command.CommandDrivenComponent;
 import root.command.CommandProducer;
 import root.model.Model;
+import root.model.PlayerData;
 import root.model.component.Field;
 import root.model.component.option.FieldOption;
 import root.model.event.ModelEventHandler;
@@ -33,5 +34,9 @@ public interface Controller extends ModelEventHandler,
 	Field getSelectedField();
 
 	void setSelectedField(Field newField);
+
+	PlayerData getPlayer();
+
+	boolean isOwner(String name);
 
 }

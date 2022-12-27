@@ -18,7 +18,6 @@ public class ShortMenuItem extends Button implements MenuItem {
 
 		// FieldOption implements runnable
 		this.setOnClickHandler(option);
-
 	}
 
 	@Override

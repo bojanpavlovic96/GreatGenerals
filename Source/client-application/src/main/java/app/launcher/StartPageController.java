@@ -231,7 +231,7 @@ public class StartPageController implements GameReadyEventProducer, ActiveCompon
 
 			roomServer.UnsubFromRoomUpdates();
 
-			onGameReady.execute(response.username, response.roomName);
+			onGameReady.execute(player, response.roomName);
 
 		} else {
 			System.out.println("Inappropriate message received as an roomUpdate ... ");
@@ -350,13 +350,13 @@ public class StartPageController implements GameReadyEventProducer, ActiveCompon
 
 						roomServer.UnsubFromRoomUpdates();
 
-						onGameReady.execute(response.username, response.roomName);
+						onGameReady.execute(player, response.roomName);
 					} else {
 						// Game doesn't exists and not enough players are possible
 						// errors but due to client side validations they can't really
 						// happen. 
 						System.out.println("Error while starting game ... ");
-						System.out.println("Actuall error: " + response.type.toString());
+						System.out.println("Actual error: " + response.type.toString());
 
 						showInfoMessage(Language.MessageType.UnknownError);
 					}

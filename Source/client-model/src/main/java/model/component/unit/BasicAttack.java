@@ -4,11 +4,12 @@ import root.model.action.attack.Attack;
 
 public class BasicAttack extends Attack {
 
-	public BasicAttack(int hitDamage,
+	public BasicAttack(String type, 
+			int hitDamage,
 			int range,
 			long duration,
 			long cooldown) {
-		super(hitDamage, range, duration, cooldown);
+		super(type, hitDamage, range, duration, cooldown);
 
 	}
 

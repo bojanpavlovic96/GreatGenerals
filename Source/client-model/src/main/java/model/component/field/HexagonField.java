@@ -62,6 +62,9 @@ public class HexagonField implements Field {
 		this.player = player;
 		this.visibility = visibility;
 		this.unit = unit;
+		if (this.unit != null) {
+			this.unit.setField(this);
+		}
 		this.terrain = terrain;
 
 	}
@@ -84,10 +87,12 @@ public class HexagonField implements Field {
 
 		this.unit = unit;
 
-		// if method is used for inserting (not removing) unit
-		if (this.unit != null && this.unit instanceof ModelEventProducer) {
-			((ModelEventProducer) this.unit).setModelEventHandler(this.eventHandler);
-			// this.unit.setField(this);
+		if (this.unit != null) {
+			this.unit.setField(this);
+
+			if (this.unit instanceof ModelEventProducer) {
+				((ModelEventProducer) this.unit).setModelEventHandler(this.eventHandler);
+			}
 		}
 
 	}
@@ -131,10 +136,11 @@ public class HexagonField implements Field {
 	@Override
 	public List<FieldOption> getEnabledOptions() {
 		// filter enabled options
-		return this.options.stream().filter(option -> option.isEnabled()).collect(Collectors.toList());
+		return options.stream()
+				.filter(option -> option.isEnabled())
+				.collect(Collectors.toList());
 	}
 
-	// implement
 	@Override
 	public void adjustOptionsFor(Field secondField) {
 

@@ -20,6 +20,7 @@ import root.ActiveComponent;
 import root.communication.parser.GsonJsonParser;
 import root.controller.Controller;
 import root.model.Model;
+import root.model.PlayerData;
 import root.model.event.ConcExecutorTimer;
 import root.view.View;
 import view.DrawingStage;
@@ -74,7 +75,7 @@ public class Launcher extends Application {
 		startPageController.showInitialPage();
 	}
 
-	private void startTheGame(String username, String roomName) {
+	private void startTheGame(PlayerData player, String roomName) {
 
 		System.out.println("Game ready handler called ... ");
 
@@ -89,7 +90,7 @@ public class Launcher extends Application {
 				connectionTask,
 				protocolTranslator,
 				msgInterpreter,
-				username,
+				player.getUsername(),
 				roomName);
 
 		System.out.println("Game proxy initialized ... ");
@@ -113,7 +114,7 @@ public class Launcher extends Application {
 			View view = new DrawingStage(fieldManager, viewConfig);
 			System.out.println("Initialized View ... ");
 
-			gameController = new GameBrain(serverProxy, view, model);
+			gameController = new GameBrain(player, serverProxy, view, model);
 			System.out.println("Initialized Controller ... ");
 
 			startPageController.hideInitialPage();

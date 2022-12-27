@@ -14,8 +14,8 @@ public interface JpaPlayerRepository
 	@Query("SELECT p FROM player p WHERE p.name = :username")
 	Player getByName(@Param("username") String username);
 
-	// this one doesn't require any special implementation
-	// call will be just passed to super.save
+	// This one doesn't require any special implementation.
+	// Call will be just passed to super.save
 	// Player save(Player player);
 
 }

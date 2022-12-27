@@ -12,9 +12,9 @@ public interface Unit {
 
 	UnitType getUnitType();
 
-	// Field getField();
+	Field getField();
 
-	// void setField(Field field);
+	void setField(Field field);
 
 	boolean canMove();
 
@@ -24,6 +24,14 @@ public interface Unit {
 
 	List<Attack> getAttacks();
 
-	boolean hasAttack();
+	boolean hasAttacks();
+
+	boolean hasAttack(String type);
+
+	void activateAttack(Attack attack);
+
+	Attack getActiveAttack();
+
+	boolean isAttacking(); // whom and using which attack to be added
 
 }

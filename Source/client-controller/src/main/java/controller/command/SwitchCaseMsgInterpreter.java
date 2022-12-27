@@ -29,10 +29,8 @@ public class SwitchCaseMsgInterpreter implements MessageInterpreter {
                 System.out.println(message.type.toString());
 
                 break;
-            // Above types are used in roomServer and can not be translated
-            // to commands. 
+            // Above types are used in roomServer and can not be translated to commands. 
             //TODO Consider spliting message types to login, room and game  related messages. 
-            // this is also considered as todo 
 
             case InitializeMessage:
                 return new CtrlInitializeCommand(

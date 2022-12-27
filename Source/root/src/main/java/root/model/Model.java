@@ -32,5 +32,11 @@ public interface Model extends ActiveComponent, ModelEventProducer {
 			List<FieldDesc> fields,
 			List<FieldOption> options);
 
-	Unit generateUnit(UnitType type);
+	Unit generateUnit(UnitType type, PlayerData owner);
+
+	boolean destroyUnit(Unit unit);
+
+	int distance(Field aField, Field bField);
+
+	List<Unit> getActiveUnits();
 }

@@ -34,6 +34,8 @@ public class GameModel implements Model {
 	private Map<Point2D, Field> fields;
 	private Map<String, PlayerData> players;
 
+	private List<Unit> activeUnits;
+
 	private UnitFactory unitFactory;
 
 	private Timer timer;
@@ -121,7 +123,7 @@ public class GameModel implements Model {
 
 	private Unit mapUnit(String unitType, PlayerData owner) {
 		if (unitType != null) {
-			return unitFactory.generateUnit(UnitType.valueOf(unitType), owner);
+			return this.generateUnit(UnitType.valueOf(unitType), owner);
 		} else {
 			return null;
 		}
@@ -185,8 +187,37 @@ public class GameModel implements Model {
 	}
 
 	@Override
-	public root.model.component.Unit generateUnit(UnitType type) {
-		return null;
+	public root.model.component.Unit generateUnit(UnitType type, PlayerData owner) {
+		var unit = unitFactory.generateUnit(type, owner);
+
+		if (activeUnits == null) {
+			activeUnits = new ArrayList<Unit>();
+		}
+
+		activeUnits.add(unit);
+
+		return unit;
+	}
+
+	@Override
+	public boolean destroyUnit(Unit unit) {
+		return activeUnits.remove(unit);
+	}
+
+	@Override
+	public int distance(Field aField, Field bField) {
+		var a = aField.getStoragePosition();
+		var b = bField.getStoragePosition();
+
+		return (int) (Math.abs(a.getX() - b.getX()) +
+				Math.abs(a.getX() + a.getY() - b.getX() - b.getY()) +
+				Math.abs(a.getY() - b.getY()))
+				/ 2;
+	}
+
+	@Override
+	public List<Unit> getActiveUnits() {
+		return this.activeUnits;
 	}
 
 }

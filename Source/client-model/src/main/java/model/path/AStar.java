@@ -9,7 +9,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import root.Point2D;
 import root.model.Model;
 import root.model.action.move.PathFinder;
 import root.model.component.Field;
@@ -58,7 +57,7 @@ public class AStar implements PathFinder {
 
 		Field goal_node = goal;
 
-		fScore.put(starting_node, heuristicCostEstimate(starting_node, goal_node));
+		fScore.put(starting_node, heuristicCostEstimate(dataModel, starting_node, goal_node));
 
 		final Comparator<Field> comparator = new Comparator<Field>() {
 
@@ -103,7 +102,7 @@ public class AStar implements PathFinder {
 				// This path is the best until now. Record it!
 				cameFrom.put(neighbor, current);
 				gScore.put(neighbor, tenativeGScore);
-				final double estimatedFScore = gScore.get(neighbor) + heuristicCostEstimate(neighbor, goal_node);
+				final double estimatedFScore = gScore.get(neighbor) + heuristicCostEstimate(dataModel, neighbor, goal_node);
 				fScore.put(neighbor, estimatedFScore);
 
 				// fScore has changed, re-sort the list
@@ -114,7 +113,7 @@ public class AStar implements PathFinder {
 		return null;
 	}
 
-	protected double heuristicCostEstimate(Field start, Field goal) {
+	protected double heuristicCostEstimate(Model dataModel, Field start, Field goal) {
 
 		/*
 		 * axial hex distance function hex_distance(a, b): return (abs(a.q - b.q) +
@@ -122,11 +121,12 @@ public class AStar implements PathFinder {
 		 * 
 		 */
 
-		Point2D a = start.getStoragePosition();
-		Point2D b = start.getStoragePosition();
+		// Point2D a = start.getStoragePosition();
+		// Point2D b = start.getStoragePosition();
 
-		return (Math.abs(a.getX() - b.getX()) + Math.abs(a.getX() + a.getY() - b.getX() - b.getY())
-				+ Math.abs(a.getY() + b.getY())) / 2;
+		// return (Math.abs(a.getX() - b.getX()) + Math.abs(a.getX() + a.getY() - b.getX() - b.getY())
+		// 		+ Math.abs(a.getY() + b.getY())) / 2;
+		return dataModel.distance(start, goal);
 
 	}
 

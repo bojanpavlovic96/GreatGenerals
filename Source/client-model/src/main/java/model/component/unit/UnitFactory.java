@@ -68,7 +68,8 @@ public class UnitFactory {
 		var desc = attacks.get(type);
 		if (desc != null) {
 
-			return new BasicAttack(desc.damage,
+			return new BasicAttack(type,
+					desc.damage,
 					desc.range,
 					desc.duration,
 					desc.cooldown);

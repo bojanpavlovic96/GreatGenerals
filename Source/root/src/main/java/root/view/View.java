@@ -41,9 +41,11 @@ public interface View extends ViewEventProducer, CommandDrivenComponent {
 
 	void setMenuPosition(Point2D position);
 
-	Menu getShortOptionMenu();
+	Menu getMainOptionsMenu();
 
-	Menu getLongOptionsMenu();
+	Menu getSubmenu();
+
+	Menu getDescriptionMenu();
 
 	// attention bad approach
 	void adjustCanvasSize(Point2D point);

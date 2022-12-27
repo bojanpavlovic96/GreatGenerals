@@ -17,6 +17,8 @@ public interface Menu {
 
 	void setPosition(Point2D position);
 
+	Point2D getPosition();
+
 	double getMenuWidth();
 
 	double getMenuHeight();

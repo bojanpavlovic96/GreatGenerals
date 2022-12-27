@@ -24,7 +24,7 @@ public class ViewUnit {
 		this.highlightColor = new Color(pColor.red,
 				pColor.green,
 				pColor.blue,
-				0.3);
+				0.3); // TODO this opacity should be in config
 	}
 
 	// attention it wont be used (you can't just create random unit)
@@ -37,18 +37,18 @@ public class ViewUnit {
 	// 	this.defense = defense;
 	// }
 
-	public void drawUnit(GraphicsContext gc, Point2D hex_center, double hex_side) {
+	public void drawUnit(GraphicsContext gc, Point2D hexCenter, double hexSide) {
 
 		Image image = ResourceManager.getInstance().getUnit(this.unitName);
 
 		gc.save();
 
-		double image_width = hex_side * 1.4;
-		double image_height = hex_side * 1.4;
+		double image_width = hexSide * 1.4;
+		double image_height = hexSide * 1.4;
 
 		gc.drawImage(image,
-				hex_center.getX() - image_width / 2,
-				hex_center.getY() - image_height / 2,
+				hexCenter.getX() - image_width / 2,
+				hexCenter.getY() - image_height / 2,
 				image_width,
 				image_height);
 		gc.restore();

@@ -44,6 +44,8 @@ public class CtrlInitializeCommand extends Command {
 		var controller = (Controller) super.targetComponent;
 		var model = (Model) controller.getModel();
 
+		System.out.println(attacks.get(0).type);
+
 		model.initializeModel(players,
 				units,
 				moves,
