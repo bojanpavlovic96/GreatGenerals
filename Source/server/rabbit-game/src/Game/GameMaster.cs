@@ -75,6 +75,7 @@ namespace RabbitGameServer.Game
 
 		public Message AddModelEvent(ModelEvent newEvent)
 		{
+			Console.WriteLine("Handling new model event ... ");
 			recEventsCnt++;
 
 			ModelEventHandler? handler;
@@ -167,15 +168,43 @@ namespace RabbitGameServer.Game
 
 		private Message handleAttackEvent(ModelEvent e)
 		{
-			var attackE = (AttackModelEvent)e;
+			var attackEvent = (AttackModelEvent)e;
 
-			var attackerField = getField(attackE.sourceField);
-			var targetField = getField(attackE.destinationField);
+			var attackerField = getField(attackEvent.sourceField);
+			var targetField = getField(attackEvent.destinationField);
+
+			var attack = getAttack(attackEvent.attackType);
+
+			// ignore the range check since distance is calculated based on the 
+			// fieldManager implementation which is at this point still 
+			// just on the client side 
+
+			targetField.unit.health -= attack.damage;
+
+			if (targetField.unit.health <= 0)
+			{
+				targetField.unit = null;
+				targetField.inBattle = false;
+			}
 
 			return new AttackMessage(e.playerName,
 				RoomName,
-				attackE.sourceField,
-				attackE.destinationField);
+				attack.type.ToString(),
+				attackEvent.sourceField,
+				attackEvent.destinationField);
+		}
+
+		private Attack getAttack(AttackType wantedType)
+		{
+			foreach (var att in config.Attacks)
+			{
+				if (att.type == wantedType)
+				{
+					return att;
+				}
+			}
+
+			return null;
 		}
 
 		// endregion 
@@ -195,10 +224,14 @@ namespace RabbitGameServer.Game
 				{
 
 					var position = new Point2D(j, i);
-					var terrain = new Terrain(TerrainType.mountains, 1);
+					Terrain? terrain = null;
 					if (i % 2 == 0 && j % 5 == 0)
 					{
 						terrain = new Terrain(TerrainType.water, 1);
+					}
+					else
+					{
+						terrain = new Terrain(TerrainType.mountains, 1);
 					}
 
 					var playerInd = j / segLen;
@@ -223,7 +256,8 @@ namespace RabbitGameServer.Game
 
 					if (config.DefaultPositions.Contains(position))
 					{
-						newField.unit = UnitType.basicunit;
+						newField.unit = generateUnit(UnitType.basicunit);
+						newField.unit.owner = playerName;
 					}
 
 					Fields.Add(newField.position, newField);
@@ -235,6 +269,19 @@ namespace RabbitGameServer.Game
 			}
 
 			return true;
+		}
+
+		public Unit? generateUnit(UnitType unitType)
+		{
+			foreach (var unit in config.Units)
+			{
+				if (unit.unitName == unitType)
+				{
+					return unit.copy();
+				}
+			}
+
+			return null;
 		}
 
 		public bool hasPlayer(string name)

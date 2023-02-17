@@ -1,4 +1,5 @@
 using MediatR;
+using RabbitGameServer.SharedModel;
 using RabbitGameServer.SharedModel.Messages;
 using RabbitGameServer.SharedModel.ModelEvents;
 
@@ -28,8 +29,10 @@ namespace RabbitGameServer.Mediator
 				case MessageType.AttackMessage:
 					return Task.FromResult<ModelEvent>(new AttackModelEvent(
 						request.message.username,
+						Enum.Parse<AttackType>(((AttackMessage)request.message).attackType),
 						((AttackMessage)request.message).startFieldPos,
 						((AttackMessage)request.message).endFieldPos));
+
 				default:
 					Console.WriteLine($"Failed to map message-{request.message.type.ToString()} to modelEvent ... ");
 					return Task.FromResult<ModelEvent>(null); ;

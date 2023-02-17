@@ -8,7 +8,17 @@ namespace RabbitGameServer.SharedModel
 
 		public bool isVisible;
 
-		public UnitType? unit;
+		// This field is ued in game master to keep track of the actual unit
+		private Unit? unitValue;
+		public Unit? unit
+		{
+			get { return unitValue; }
+			set { unitValue = value; unitName = value != null ? value.unitName : null; }
+		}
+
+		// This field is serialized and used in the client 
+		public UnitType? unitName;
+
 		public Terrain terrain;
 
 		public bool inBattle;
@@ -17,7 +27,7 @@ namespace RabbitGameServer.SharedModel
 
 		public Field(Point2D position,
 			bool isVisible,
-			UnitType? unit,
+			Unit? unit,
 			Terrain terrain,
 			string owner,
 			bool inBattle)
@@ -25,9 +35,14 @@ namespace RabbitGameServer.SharedModel
 			this.position = position;
 			this.isVisible = isVisible;
 			this.unit = unit;
+			if (this.unit != null)
+			{
+				this.unitName = this.unit.unitName;
+			}
 			this.terrain = terrain;
 			this.owner = owner;
 			this.inBattle = inBattle;
 		}
+
 	}
 }

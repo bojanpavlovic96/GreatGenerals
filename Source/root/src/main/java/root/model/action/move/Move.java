@@ -96,9 +96,9 @@ public abstract class Move implements ModelEventProducer {
 			stopMoving();
 		}
 
-		if (this.path != null) {
-			this.path.clear();
-			this.path = null;
+		if (path != null) {
+			path.clear();
+			path = null;
 		}
 	}
 

@@ -1,6 +1,5 @@
 package model.component.unit;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import root.model.PlayerData;
@@ -20,27 +19,29 @@ public class BasicUnit implements Unit, ModelEventProducer {
 
 	private Field myField;
 
-	private Move moveType;
+	private Move move;
 	private List<Attack> attacks;
+
+	private int health;
 
 	private Attack activeAttack;
 
 	private ModelEventHandler eventHandler;
 
-	public BasicUnit(PlayerData owner, UnitType type, Move move, List<Attack> attacks) {
+	public BasicUnit(PlayerData owner,
+			UnitType type,
+			Move move,
+			List<Attack> attacks,
+			int health) {
+
 		this.owner = owner;
-
 		this.type = type;
-
-		this.moveType = move;
+		this.move = move;
 		this.attacks = attacks;
-	}
-
-	public BasicUnit(UnitType type, Move move, Attack attack) {
-		this.type = type;
-		this.moveType = move;
-		this.attacks = new ArrayList<>();
-		this.attacks.add(attack);
+		for (var attack : this.attacks) {
+			attack.setAttacker(this);
+		}
+		this.health = health;
 	}
 
 	@Override
@@ -60,12 +61,12 @@ public class BasicUnit implements Unit, ModelEventProducer {
 
 	@Override
 	public boolean canMove() {
-		return this.moveType != null;
+		return this.move != null;
 	}
 
 	@Override
 	public Move getMove() {
-		return this.moveType;
+		return this.move;
 	}
 
 	@Override
@@ -97,8 +98,8 @@ public class BasicUnit implements Unit, ModelEventProducer {
 	public void setModelEventHandler(ModelEventHandler handler) {
 		this.eventHandler = handler;
 
-		if (moveType != null && moveType instanceof ModelEventProducer) {
-			((ModelEventProducer) moveType).setModelEventHandler(this.eventHandler);
+		if (move != null && move instanceof ModelEventProducer) {
+			((ModelEventProducer) move).setModelEventHandler(this.eventHandler);
 		}
 
 		if (attacks != null && !attacks.isEmpty()) {
@@ -120,14 +121,65 @@ public class BasicUnit implements Unit, ModelEventProducer {
 		return activeAttack != null;
 	}
 
+	// Refactor to accept string (or enum) as the attack name 
+	// and then search trough available attacks.
+	// That way attack activation can be controller by the server. 
 	@Override
 	public void activateAttack(Attack attack) {
 		this.activeAttack = attack;
 	}
 
 	@Override
+	public void deactivateAttack() {
+		if (this.activeAttack != null) {
+			this.activeAttack.setTarget(null);
+		}
+
+		this.activeAttack = null;
+	}
+
+	@Override
 	public Attack getActiveAttack() {
 		return this.activeAttack;
+	}
+
+	@Override
+	public int getHealth() {
+		return this.health;
+	}
+
+	@Override
+	public void attackWith(Attack attack) {
+		health -= attack.hitDamage;
+	}
+
+	@Override
+	public boolean isAlive() {
+		return health > 0;
+	}
+
+	@Override
+	public Attack getAttack(String requiredType) {
+		for (var attack : this.attacks) {
+			if (attack.type.equals(requiredType)) {
+				return attack;
+			}
+		}
+
+		return null;
+	}
+
+	@Override
+	public void deactivate() {
+		if (move != null && move.isMoving()) {
+			move.stopMoving();
+		}
+
+		if (activeAttack != null) {
+			activeAttack.stopAttack();
+			activeAttack = null;
+		}
+
 	}
 
 }

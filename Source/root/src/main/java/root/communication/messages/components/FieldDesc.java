@@ -9,8 +9,8 @@ public class FieldDesc {
 	public boolean isVisible;
 
 	// attention enum on the server side 
-	public String unit;
-	
+	public String unitName;
+
 	public TerrainDesc terrain;
 
 	public boolean inBattle;

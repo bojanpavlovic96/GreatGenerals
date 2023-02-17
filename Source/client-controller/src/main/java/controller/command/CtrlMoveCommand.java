@@ -98,44 +98,72 @@ public class CtrlMoveCommand extends Command {
 			unitPath.remove(0);
 
 			if (unit.isAttacking()) {
-				var destination = unitPath.get(unitPath.size() - 1);
+				var destination = unit.getActiveAttack().getTarget();
 				var distance = controller.getModel().distance(secondField, destination);
 
 				if (distance <= unit.getActiveAttack().range) {
 
 					unit.getMove().stopMoving();
+					unit.getMove().clearPath();
 
-					var intention = new AttackModelEventArg(unit.getOwner().getUsername(),
-							secondField.getStoragePosition(),
-							destination.getStoragePosition());
+					// var attackIntention = new AttackModelEventArg(unit.getOwner().getUsername(),
+					// 		secondField.getStoragePosition(),
+					// 		destination.getStoragePosition());
 
-					controller.getServerProxy().sendIntention(intention);
+					// controller.getServerProxy().sendIntention(attackIntention);
 
+					unit.getActiveAttack().attack();
+
+				} else {
+					this.secondField.getUnit().getMove().move();
 				}
-			} else if (!unitPath.isEmpty() && unitPath.size() > 1) {
-				// continue moving
 
-				// trigger timer
-				this.secondField.getUnit().getMove().move();
+			} else {
+				if (!unitPath.isEmpty() && unitPath.size() > 1) {
+					// continue moving
+
+					// trigger timer
+					this.secondField.getUnit().getMove().move();
+				} else {
+					this.secondField.getUnit().getMove().clearPath();
+				}
 			}
 		} else {
-			var attackingUnits = controller
-					.getModel()
-					.getActiveUnits()
-					.stream()
-					.filter((units) -> unit.isAttacking() && unit.getActiveAttack().getTarget() == startField)
-					.collect(Collectors.toList());
+			// follow the enemy 
 
-			for (var attacker : attackingUnits) {
-				var newPath = attacker.getMove().calculatePath(controller.getModel(),
-						attacker.getField(),
-						secondField);
+			// TODO this is a mess 
+			// AttackPath should not be calculated to the enemy unit, insted to the 
+			// closest field from which our unit can attack enemy (considering units's range).
+			// Look at the attackFieldOption logic.
+			// For now it "chased" unit moves, just stop the attack ... 
+			// var attackingUnits = controller.getModel()
+			// 		.getActiveUnits()
+			// 		.stream()
+			// 		.filter((actUnit) -> actUnit.isAttacking() && actUnit.getActiveAttack().getTarget() == startField)
+			// 		.collect(Collectors.toList());
 
-				attacker.getMove().clearPath();
-				attacker.getMove().addToPath(newPath);
+			controller.getModel()
+					.getActiveUnits().stream()
+					.filter((actUnit) -> actUnit.isAttacking() && actUnit.getActiveAttack().getTarget() == startField)
+					.forEach((actUnit) -> {
+						actUnit.getMove().stopMoving();
 
-				attacker.getActiveAttack().setTarget(secondField);
-			}
+						actUnit.activateAttack(null);
+						actUnit.getActiveAttack().setTarget(null);
+					});
+
+			// .collect(Collectors.toList());
+
+			// for (var attacker : attackingUnits) {
+			// 	var newPath = attacker.getMove().calculatePath(controller.getModel(),
+			// 			attacker.getField(),
+			// 			secondField);
+
+			// 	attacker.getMove().clearPath();
+			// 	attacker.getMove().addToPath(newPath);
+
+			// 	attacker.getActiveAttack().setTarget(secondField);
+			// }
 
 		}
 

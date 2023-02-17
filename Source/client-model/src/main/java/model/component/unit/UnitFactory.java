@@ -66,17 +66,18 @@ public class UnitFactory {
 
 	private Attack genAttack(String type) {
 		var desc = attacks.get(type);
-		if (desc != null) {
 
-			return new BasicAttack(type,
-					desc.damage,
-					desc.range,
-					desc.duration,
-					desc.cooldown);
-
-		} else {
+		if (desc == null) {
 			return null;
 		}
+
+		return new BasicAttack(type,
+				desc.damage,
+				desc.range,
+				desc.duration,
+				desc.cooldown,
+				timer);
+
 	}
 
 	public Unit generateUnit(UnitType type, PlayerData owner) {
@@ -93,7 +94,8 @@ public class UnitFactory {
 		return new BasicUnit(owner,
 				UnitType.valueOf(unitDesc.unitName),
 				move,
-				attacks);
+				attacks,
+				unitDesc.health);
 	}
 
 }

@@ -72,10 +72,12 @@ public class UserForm extends VBox
 		this.usernameLb = new Label(this.language.username);
 		this.usernameLb.setFont(this.font);
 		this.username_tf = new TextField();
+		this.username_tf.setText("some"); // TODO remove
 
 		this.passwordLb = new Label(this.language.password);
 		this.passwordLb.setFont(this.font);
 		this.password_pf = new PasswordField();
+		this.password_pf.setText("user"); // TODO remove
 
 		this.loginBtn = new Button(this.language.login);
 		this.loginBtn.setFont(this.font);

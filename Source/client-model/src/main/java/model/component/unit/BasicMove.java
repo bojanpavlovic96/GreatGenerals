@@ -33,28 +33,28 @@ public class BasicMove extends Move implements Runnable {
 	@Override
 	public void move() {
 
-		if (path != null && !path.isEmpty()) {
-
-			System.out.println("Intention to move: "
-					+ this.path.get(0).getStoragePosition()
-					+ "->: "
-					+ this.path.get(1).getStoragePosition());
-
-			Field nextField = path.get(1);
-
-			var delay = calculateDelay(nextField.getTerrain());
-			System.out.println("Calcualted delay: " + delay);
-			movingFuture = timer.schedule((Runnable) this, delay, TimeUnit.MILLISECONDS);
-			// this will just raise event (at every moveDelay seconds)
-			// that unit is ready to move
-			// this event is passed to the server and after confirmation from it's side
-			// controller is going to actually move unit using CtrlMoveCommand
-
-		} else {
+		if (path == null || path.isEmpty()) {
 			// debug
 			System.out.println("Move called on null or empty path ... @ BasicMove.move()");
 			movingFuture = null;
+
+			return;
 		}
+
+		System.out.println("Intention to move: "
+				+ this.path.get(0).getStoragePosition()
+				+ "->: "
+				+ this.path.get(1).getStoragePosition());
+
+		Field nextField = path.get(1);
+
+		var delay = calculateDelay(nextField.getTerrain());
+		System.out.println("Calculated delay: " + delay);
+		movingFuture = timer.schedule((Runnable) this, delay, TimeUnit.MILLISECONDS);
+		// this will just raise event (at every moveDelay seconds)
+		// that unit is ready to move
+		// this event is passed to the server and after confirmation from it's side
+		// controller is going to actually move unit using CtrlMoveCommand
 
 	}
 
@@ -66,27 +66,20 @@ public class BasicMove extends Move implements Runnable {
 	@Override
 	public void run() {
 		System.out.println("Move event raised ... ");
-		try {
+		movingFuture = null;
 
-			onEvent.handleModelEvent(new MoveModelEventArg(
-					path.get(0).getPlayer().getUsername(),
-					path.get(0).getStoragePosition(),
-					path.get(1).getStoragePosition()));
-
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-
+		onEvent.handleModelEvent(new MoveModelEventArg(
+				path.get(0).getPlayer().getUsername(),
+				path.get(0).getStoragePosition(),
+				path.get(1).getStoragePosition()));
 	}
 
 	@Override
 	public void stopMoving() {
-
 		if (movingFuture != null) {
-			// do not interrupt if started
-			movingFuture.cancel(false);
-			movingFuture = null;
+			movingFuture.cancel(false); // do not interrupt if started
 		}
+		movingFuture = null;
 	}
 
 	@Override

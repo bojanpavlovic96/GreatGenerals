@@ -59,6 +59,8 @@ public class AStar implements PathFinder {
 
 		fScore.put(starting_node, heuristicCostEstimate(dataModel, starting_node, goal_node));
 
+		// Comparator<Field> comparator = (f1, f2) -> ((Double) fScore.get(f1)).compareTo(fScore.get(f2));
+
 		final Comparator<Field> comparator = new Comparator<Field>() {
 
 			public int compare(Field o1, Field o2) {
@@ -81,8 +83,7 @@ public class AStar implements PathFinder {
 
 			openSet.remove(0);
 			closedSet.add(current);
-
-			for (Field neighbor : dataModel.getFreeNeighbours(current)) { // current is Field should be field
+			for (Field neighbor : dataModel.getFreeNeighbours(current, 1)) { // current is Field should be field
 
 				// Ignore the neighbor which is already evaluated.
 				if (closedSet.contains(neighbor))
@@ -102,8 +103,17 @@ public class AStar implements PathFinder {
 				// This path is the best until now. Record it!
 				cameFrom.put(neighbor, current);
 				gScore.put(neighbor, tenativeGScore);
-				final double estimatedFScore = gScore.get(neighbor) + heuristicCostEstimate(dataModel, neighbor, goal_node);
+				final double estimatedFScore = gScore.get(neighbor)
+						+ heuristicCostEstimate(dataModel, neighbor, goal_node);
 				fScore.put(neighbor, estimatedFScore);
+
+				// TODO refactor this so that the openSet is priorityQueue.
+				// In the case when better path is found and gScore has to be updated
+				// (using the priority queue) field has to be removed from the queue 
+				// first, gScore updated and field then put back so that the queue 
+				// remain the right order. This action might cost more than removing
+				// from standard list but again this cases will be rare since paths 
+				// are mostly gonna be straight forward. 
 
 				// fScore has changed, re-sort the list
 				Collections.sort(openSet, comparator);

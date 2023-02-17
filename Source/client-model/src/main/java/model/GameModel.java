@@ -111,7 +111,7 @@ public class GameModel implements Model {
 
 			var field = fieldFactory.getField(desc.isVisible,
 					desc.position,
-					mapUnit(desc.unit, fieldOwner),
+					mapUnit(desc.unitName, fieldOwner),
 					mapTerrain(desc.terrain),
 					fieldOwner);
 
@@ -151,14 +151,14 @@ public class GameModel implements Model {
 	}
 
 	@Override
-	public List<Field> getFreeNeighbours(Field forField) {
+	public List<Field> getFreeNeighbours(Field forField, int range) {
 
 		var neighbours = new ArrayList<Field>();
-		for (var nPoint : forField.getNeighbours()) {
+		for (var nPoint : forField.getNeighbours(range)) {
 
 			var field = getField(nPoint);
 
-			if (field != null && !field.isInBattle() && field.getUnit() == null) {
+			if (field != null && field.getUnit() == null) {
 				neighbours.add(field);
 			}
 
@@ -206,6 +206,7 @@ public class GameModel implements Model {
 
 	@Override
 	public int distance(Field aField, Field bField) {
+		// this should be inside the fieldManager
 		var a = aField.getStoragePosition();
 		var b = bField.getStoragePosition();
 
@@ -218,6 +219,11 @@ public class GameModel implements Model {
 	@Override
 	public List<Unit> getActiveUnits() {
 		return this.activeUnits;
+	}
+
+	@Override
+	public void removeUnit(Unit unit) {
+		this.activeUnits.remove(unit);
 	}
 
 }

@@ -72,6 +72,10 @@ namespace RabbitGameServer.SharedModel
 				{
 					return serializer.ToObj<StartGameMessage>(wrappedMsg.payload);
 				}
+				else if (wrappedMsg.name == MessageType.AttackMessage.ToString())
+				{
+					return serializer.ToObj<AttackMessage>(wrappedMsg.payload);
+				}
 				else
 				{
 					Console.WriteLine("Unwrapping unknown message type ... ");

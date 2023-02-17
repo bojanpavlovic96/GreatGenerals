@@ -17,8 +17,8 @@ import view.command.LoadBoardCommand;
 public class CtrlInitializeCommand extends Command {
 
 	private List<PlayerDescription> players;
-	private List<UnitDesc> units;
 	private List<MoveDesc> moves;
+	private List<UnitDesc> units;
 	private List<AttackDesc> attacks;
 	private List<FieldDesc> fields;
 

@@ -1,10 +1,11 @@
 package root.model.action.attack;
 
 import root.model.component.Field;
+import root.model.component.Unit;
 import root.model.event.ModelEventHandler;
 import root.model.event.ModelEventProducer;
 
-public class Attack implements ModelEventProducer {
+public abstract class Attack implements ModelEventProducer, Runnable {
 
 	public String type;
 
@@ -13,9 +14,10 @@ public class Attack implements ModelEventProducer {
 	public long duration;
 	public long cooldown;
 
-	private ModelEventHandler handler;
+	protected ModelEventHandler onEvent;
 
-	private Field target;
+	protected Unit attacker;
+	protected Field target;
 
 	public Attack(String type, int hitDamage, int range, long duration, long cooldown) {
 		this.type = type;
@@ -28,20 +30,28 @@ public class Attack implements ModelEventProducer {
 
 	@Override
 	public ModelEventHandler getModelEventHandler() {
-		return this.handler;
+		return this.onEvent;
 	}
 
 	@Override
 	public void setModelEventHandler(ModelEventHandler handler) {
-		this.handler = handler;
+		this.onEvent = handler;
 
 	}
 
-	public void setTarget(Field target){
+	public void setAttacker(Unit attacker) {
+		this.attacker = attacker;
+	}
+
+	public void setTarget(Field target) {
 		this.target = target;
 	}
 
-	public Field getTarget(){
+	public Field getTarget() {
 		return this.target;
 	}
+
+	public abstract void attack();
+
+	public abstract void stopAttack();
 }

@@ -24,10 +24,7 @@ public class AttacksSubmenuFieldOption extends FieldOption {
 				.map((attack) -> (FieldOption) new AttackFieldOption(controller, attack))
 				.collect(Collectors.toList());
 
-		options.forEach((option)->option.setSecondaryField(getSecondaryField()));
-
-		System.out.println("Found: " + options.size() + " attacks ... ");
-		System.out.println(options.get(0).getName());
+		options.forEach((option) -> option.setSecondaryField(getSecondaryField()));
 
 		var showSubmenu = new ShowSubmenuCommand(options);
 

@@ -121,6 +121,12 @@ public class GameBrain implements Controller {
 
 			var selectCmd = new SelectFieldCommand(clickedField);
 
+			// var neighs = clickedField.getNeighbours(1);
+			// for (var n : neighs) {
+			// 	var comm = new SelectFieldCommand(model.getField(n));
+			// 	viewCommandQueue.enqueue(comm);
+			// }
+
 			viewCommandQueue.enqueue(selectCmd);
 			undoStack.push(selectCmd);
 
@@ -159,6 +165,20 @@ public class GameBrain implements Controller {
 				return;
 			}
 
+			// var modelDist = model.distance(selectedField, focusedField);
+			// var ax = selectedField.getStoragePosition().x;
+			// var ay = selectedField.getStoragePosition().y;
+
+			// var bx = focusedField.getStoragePosition().x;
+			// var by = focusedField.getStoragePosition().y;
+
+			// var xDist = Math.abs(ax - bx);
+			// var yDist = Math.abs(ay - by);
+
+			// var myDist = Math.sqrt(Math.pow(xDist, 2) + Math.pow(yDist, 2));
+
+			// System.out.println("ModelDist: " + modelDist + " MyDist: " + myDist);
+
 			var clearCommand = new ClearTopLayerCommand();
 
 			Command showMenuCommand;
@@ -177,7 +197,7 @@ public class GameBrain implements Controller {
 
 		// 25.7.2022 - understanding: drawing path 
 		// I don't understand this comment 9.12.2021
-		// TODO maybe for the purpose of redrawing path and similar options
+		// .TODO maybe for the purpose of redrawing path and similar options
 		// add additional list of commands which are "stateless" and which execution wont
 		// do any damage to the current state if they are executed more than once
 

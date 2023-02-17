@@ -21,8 +21,6 @@ public interface Field extends ModelEventProducer {
 
 	Point2D getStoragePosition();
 
-	boolean isInBattle();
-
 	void addFieldOptions(List<FieldOption> options);
 
 	void addFieldOption(FieldOption option);
@@ -31,5 +29,5 @@ public interface Field extends ModelEventProducer {
 
 	void adjustOptionsFor(Field secondField);
 
-	List<Point2D> getNeighbours();
+	List<Point2D> getNeighbours(int r);
 }

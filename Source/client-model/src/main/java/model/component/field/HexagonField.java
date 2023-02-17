@@ -1,6 +1,7 @@
 package model.component.field;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -16,6 +17,20 @@ import root.model.event.ModelEventProducer;
 
 public class HexagonField implements Field {
 
+	// storage_position.x -> q - column
+	// storage_position.y -> r - row
+
+	// Neighbours have to be in this order.
+	// counter-clockwise starting from the bottom left corner	
+	private final Point2D[] neighboursOffsets = {
+			new Point2D(1, 0), // right 
+			new Point2D(1, -1), // top right
+			new Point2D(0, -1), // top left
+			new Point2D(-1, 0), // left
+			new Point2D(-1, +1), // down left
+			new Point2D(0, 1) // down right
+	};
+
 	private Point2D storagePosition;
 
 	private PlayerData player;
@@ -24,9 +39,6 @@ public class HexagonField implements Field {
 
 	private Unit unit;
 	private Terrain terrain;
-
-	// implement battle
-	private List<Unit> unitsInBattle;
 
 	// key format: name-field-option => move-to-field-option
 	// private Map<String, FieldOption> options;
@@ -129,11 +141,6 @@ public class HexagonField implements Field {
 	}
 
 	@Override
-	public boolean isInBattle() {
-		return false;
-	}
-
-	@Override
 	public List<FieldOption> getEnabledOptions() {
 		// filter enabled options
 		return options.stream()
@@ -176,25 +183,36 @@ public class HexagonField implements Field {
 
 	}
 
+	private Point2D getNeighbour(Point2D from, int i) {
+		return new Point2D(
+				from.x + neighboursOffsets[i].x,
+				from.y + neighboursOffsets[i].y);
+	}
+
 	@Override
-	public List<Point2D> getNeighbours() {
+	public List<Point2D> getNeighbours(int r) {
+		if (r == 0) {
+			return Arrays.asList(storagePosition);
+		}
+
 		var retList = new ArrayList<Point2D>();
 
-		var mx = storagePosition.x;
-		var my = storagePosition.y;
+		var f = storagePosition;
+		for (var i = 0; i < r; i++) {
+			f = getNeighbour(f, 4);
+			// Start from the bottom left corner.
+			// 4 is for that direction.
+		}
 
-		// up right
-		retList.add(new Point2D(mx - 1, my + 1));
-		// right 
-		retList.add(new Point2D(mx, my + 1));
-		// down right
-		retList.add(new Point2D(mx + 1, my));
-		// down left
-		retList.add(new Point2D(mx + 1, my - 1));
-		// left
-		retList.add(new Point2D(mx, my - 1));
-		// up left
-		retList.add(new Point2D(mx - 1, my));
+		var point = f;
+		for (var i = 0; i < 6; i++) {
+			var dir = neighboursOffsets[i];
+
+			for (var j = 0; j < r; j++) {
+				retList.add(point);
+				point = new Point2D(point.x + dir.x, point.y + dir.y);
+			}
+		}
 
 		return retList;
 	}

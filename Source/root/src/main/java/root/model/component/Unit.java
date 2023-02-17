@@ -28,10 +28,24 @@ public interface Unit {
 
 	boolean hasAttack(String type);
 
+	Attack getAttack(String type);
+
 	void activateAttack(Attack attack);
+
+	void deactivateAttack();
 
 	Attack getActiveAttack();
 
-	boolean isAttacking(); // whom and using which attack to be added
+	boolean isAttacking(); 
+	
+	//^ whom and using which attack to be added
+
+	int getHealth();
+
+	void attackWith(Attack attack);
+
+	boolean isAlive();
+
+	void deactivate();
 
 }

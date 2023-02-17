@@ -19,7 +19,7 @@ public interface Model extends ActiveComponent, ModelEventProducer {
 
 	List<Field> getFields();
 
-	List<Field> getFreeNeighbours(Field currentField);
+	List<Field> getFreeNeighbours(Field currentField, int range);
 
 	Field getField(Point2D storagePosition);
 
@@ -39,4 +39,6 @@ public interface Model extends ActiveComponent, ModelEventProducer {
 	int distance(Field aField, Field bField);
 
 	List<Unit> getActiveUnits();
+
+	void removeUnit(Unit unit);
 }

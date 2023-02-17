@@ -2,14 +2,14 @@ namespace RabbitGameServer.SharedModel.Messages
 {
 	public enum MessageType
 	{
+		ReadyForInitMsg,
+		InitializeMessage,
+		MoveMessage,
 		CreateRoomRequest,
 		JoinRoomRequest,
-		LeaveRoomRequest,
 		RoomResponse, // this should be renamed to roomResponse
+		LeaveRoomRequest,
 		StartGameRequest,
-		InitializeMessage,
-		ReadyForInitMsg,
-		MoveMessage,
 		AttackMessage,
 		RecalculatePathMessage,
 		AbortMoveMessage,

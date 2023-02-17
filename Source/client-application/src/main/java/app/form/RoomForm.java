@@ -101,10 +101,12 @@ public class RoomForm extends VBox
 		this.roomNameLb = new Label(this.language.roomName);
 		this.roomNameLb.setFont(this.font);
 		this.roomNameTf = new TextField();
+		this.roomNameTf.setText("some"); // TODO remove
 
 		this.roomPasswordLb = new Label(this.language.roomPassword);
 		this.roomPasswordLb.setFont(this.font);
 		this.roomPasswordPf = new PasswordField();
+		this.roomPasswordPf.setText("room"); // TODO remove
 
 		this.createRoomBtn = new Button(this.language.createRoom);
 		this.createRoomBtn.setFont(this.font);

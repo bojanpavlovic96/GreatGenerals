@@ -17,8 +17,6 @@ public class ShowSubmenuCommand extends Command {
 
 	@Override
 	public void run() {
-		System.out.println("Showing submenu ... ");
-
 		var view = (View) targetComponent;
 
 		var menu = view.getSubmenu();
@@ -28,13 +26,9 @@ public class ShowSubmenuCommand extends Command {
 
 		var mainPos = view.getMainOptionsMenu().getPosition();
 		var newPos = new Point2D(mainPos.x - menu.getMenuWidth(), mainPos.y);
-		// var newPos = new Point2D(20,20);
 
 		menu.setPosition(newPos);
-
 		menu.setVisible(true);
-
-		System.out.println("Submenu should be visible ... ");
 	}
 
 	@Override

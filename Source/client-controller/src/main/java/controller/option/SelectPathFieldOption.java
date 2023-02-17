@@ -46,7 +46,7 @@ public class SelectPathFieldOption extends FieldOption {
 
 		path.add(0, primaryField);
 
-		// yes path.size() not path.size()-1 ... why ... I gues why not ... 
+		// yes path.size() not path.size()-1 ... why ... I guess why not ... 
 		for (Field pathField : path.subList(1, path.size())) {
 
 			var selectCommand = new SelectFieldCommand(pathField);
@@ -68,17 +68,11 @@ public class SelectPathFieldOption extends FieldOption {
 
 	@Override
 	public boolean isAdequateFor(Field field) {
-		System.out.println("Owner: " + controller.isOwner(field.getPlayer().getUsername()));
-		System.out.println("Not same: " + (field != getSecondaryField()));
-		System.out.println("Has unit: " + (field.getUnit() != null));
-		if (field.getUnit() != null) {
-			System.out.println("Can move: " + (field.getUnit().getMove() != null));
-		}
-		return (controller.isOwner(field.getPlayer().getUsername()) &&
+		return (controller.isOwner(field.getUnit().getOwner().getUsername()) &&
 				field != getSecondaryField() &&
 				field.getUnit() != null &&
-				field.getUnit().getMove() != null&&
-				getSecondaryField().getUnit()==null);
+				field.getUnit().getMove() != null &&
+				getSecondaryField().getUnit() == null);
 	}
 
 }
