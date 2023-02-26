@@ -22,6 +22,8 @@ public class BasicUnit implements Unit, ModelEventProducer {
 	private Move move;
 	private List<Attack> attacks;
 
+	private Attack defense;
+
 	private int health;
 
 	private Attack activeAttack;
@@ -32,6 +34,7 @@ public class BasicUnit implements Unit, ModelEventProducer {
 			UnitType type,
 			Move move,
 			List<Attack> attacks,
+			Attack defense,
 			int health) {
 
 		this.owner = owner;
@@ -41,6 +44,8 @@ public class BasicUnit implements Unit, ModelEventProducer {
 		for (var attack : this.attacks) {
 			attack.setAttacker(this);
 		}
+		this.defense = defense;
+		this.defense.setAttacker(this);
 		this.health = health;
 	}
 
@@ -109,6 +114,10 @@ public class BasicUnit implements Unit, ModelEventProducer {
 				}
 			}
 		}
+
+		if (defense != null) {
+			defense.setModelEventHandler(this.eventHandler);
+		}
 	}
 
 	@Override
@@ -121,9 +130,9 @@ public class BasicUnit implements Unit, ModelEventProducer {
 		return activeAttack != null;
 	}
 
-	// Refactor to accept string (or enum) as the attack name 
+	// Refactor to accept string (or enum) as the attack name
 	// and then search trough available attacks.
-	// That way attack activation can be controller by the server. 
+	// That way attack activation can be controller by the server.
 	@Override
 	public void activateAttack(Attack attack) {
 		this.activeAttack = attack;
@@ -132,6 +141,7 @@ public class BasicUnit implements Unit, ModelEventProducer {
 	@Override
 	public void deactivateAttack() {
 		if (this.activeAttack != null) {
+			this.activeAttack.stopAttack();
 			this.activeAttack.setTarget(null);
 		}
 
@@ -150,7 +160,12 @@ public class BasicUnit implements Unit, ModelEventProducer {
 
 	@Override
 	public void attackWith(Attack attack) {
-		health -= attack.hitDamage;
+		health -= attack.attackDmg;
+	}
+
+	@Override
+	public void defendFromWith(Attack defense) {
+		health -= defense.defenseDmg;
 	}
 
 	@Override
@@ -175,11 +190,32 @@ public class BasicUnit implements Unit, ModelEventProducer {
 			move.stopMoving();
 		}
 
-		if (activeAttack != null) {
+		if (isAttacking()) {
 			activeAttack.stopAttack();
 			activeAttack = null;
 		}
 
+		if (isDefending()) {
+			defense.stopAttack();
+		}
+
+	}
+
+	@Override
+	public Attack getDefense() {
+		return this.defense;
+	}
+
+	@Override
+	public boolean isDefending() {
+		return defense.getTarget() != null;
+	}
+
+	@Override
+	public void deactivateDefense() {
+		if (isDefending()) {
+			defense.stopAttack();
+		}
 	}
 
 }

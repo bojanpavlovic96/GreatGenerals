@@ -10,15 +10,15 @@ public class ClearTopLayerCommand extends Command {
 	}
 
 	public void run() {
-		GraphicsContext gc = ((View) super.targetComponent).getTopLayerGraphicContext();
+		// GraphicsContext gc = ((View) super.targetComponent).getTopLayerGraphicContext();
 
-		gc.save();
+		// gc.save();
 
-		gc.clearRect(0, 0, gc.getCanvas().getWidth(), gc.getCanvas().getHeight());
+		// gc.clearRect(0, 0, gc.getCanvas().getWidth(), gc.getCanvas().getHeight());
 
 		((View) super.targetComponent).setMenuVisibility(false);
-
-		gc.restore();
+		((View)targetComponent).setDescriptionVisibility(false);
+		// gc.restore();
 
 	}
 

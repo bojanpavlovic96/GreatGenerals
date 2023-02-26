@@ -68,11 +68,4 @@ public class CtrlInitializeCommand extends Command {
 		return null;
 	}
 
-	private PlayerData findPlayer(String name) {
-		return players.stream()
-				.filter((p) -> p.getUsername().equals(name))
-				.findFirst()
-				.get();
-	}
-
 }

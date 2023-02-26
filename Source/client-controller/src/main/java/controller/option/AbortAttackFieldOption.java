@@ -14,8 +14,7 @@ public class AbortAttackFieldOption extends FieldOption {
 
 	@Override
 	public void run() {
-
-	}
+	}	
 
 	@Override
 	public FieldOption getCopy() {

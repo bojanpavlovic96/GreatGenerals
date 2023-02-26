@@ -6,6 +6,7 @@ import proxy.RabbitGameServerProxyConfig;
 import proxy.RabbitRoomServerProxyConfig;
 import proxy.RestLoginServerConfig;
 import root.ConfigLoader;
+import root.view.FormConfig;
 import root.view.ViewConfig;
 
 public class AppConfig {
@@ -39,13 +40,7 @@ public class AppConfig {
 
 	public String headerImagePath;
 
-	// TODO group these in form config or something 
-	public int titleFontSize;
-	public String titleFont;
-	public int messageFontSize;
-	public String messageFont;
-
-	public int headerAlphaValue;
+	public FormConfig formConfig;
 
 	public ViewConfig viewConfig;
 

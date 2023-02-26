@@ -38,11 +38,17 @@ public interface Unit {
 
 	boolean isAttacking(); 
 	
-	//^ whom and using which attack to be added
+	Attack getDefense();
+
+	boolean isDefending();
+
+	void deactivateDefense();
 
 	int getHealth();
 
 	void attackWith(Attack attack);
+
+	void defendFromWith(Attack defense);
 
 	boolean isAlive();
 

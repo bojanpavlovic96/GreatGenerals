@@ -45,6 +45,8 @@ public class CtrlAttackCommand extends Command {
 		var attack = startField.getUnit().getAttack(attackType);
 		endField.getUnit().attackWith(attack);
 
+		System.out.println("attackedWith: " + attack.attackDmg + "result h: " + endField.getUnit().getHealth());
+
 		if (!endField.getUnit().isAlive()) {
 			controller.getModel().removeUnit(endField.getUnit());
 
@@ -59,11 +61,27 @@ public class CtrlAttackCommand extends Command {
 			viewQueue.enqueue(new ClearFieldCommand(endField));
 			viewQueue.enqueue(new DrawFieldCommand(endField));
 		} else {
-			if (controller.isOwner(endField.getPlayer().getUsername())) {
+			if (iAmAttacking()) {
 				attack.attack();
+			} else {
+
+				var dist = controller.getModel().distance(startField, endField);
+				var inDefenseRange = dist <= endField.getUnit().getDefense().defenseRange;
+
+				if (!endField.getUnit().isDefending() && inDefenseRange) {
+					System.out.println("Strting defense ... ");
+					endField.getUnit().getDefense().setTarget(startField);
+					endField.getUnit().getDefense().defend();
+				} else {
+					System.out.println("I am already defending or the not in range for defense ... ");
+				}
 			}
 		}
 
+	}
+
+	private boolean iAmAttacking() {
+		return !((Controller) targetComponent).isOwner(endField.getPlayer().getUsername());
 	}
 
 	@Override

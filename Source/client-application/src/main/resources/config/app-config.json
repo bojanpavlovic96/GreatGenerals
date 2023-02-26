@@ -6,11 +6,13 @@
 	],
 	"defaultLanguage": "en",
 	"headerImagePath": "/battle_draw.jpg",
-	"titleFontSize": 20,
-	"titleFont": "Tlwg Typewriter Bold",
-	"messageFontSize": 14,
-	"messageFont": "Tlwg Typewriter Bold Oblique",
-	"headerAlphaValue": 75,
+	"formConfig": {
+		"titleFontSize": 20,
+		"titleFont": "Tlwg Typewriter Bold",
+		"messageFontSize": 14,
+		"messageFont": "Tlwg Typewriter Bold Oblique",
+		"headerAlphaValue": 75
+	},
 	"viewConfig": {
 		"selectColor": {
 			"red": 1,
@@ -19,7 +21,7 @@
 			"opacity": 0.3
 		},
 		"fieldMenuWidth": 200,
-		"fieldMenuHeight": 299,
+		"fieldMenuHeight": 300,
 		"fieldHeight": 80,
 		"fieldWidth": 30,
 		"fieldBorderWidth": 2

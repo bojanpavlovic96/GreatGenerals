@@ -76,6 +76,18 @@ namespace RabbitGameServer.SharedModel
 				{
 					return serializer.ToObj<AttackMessage>(wrappedMsg.payload);
 				}
+				else if (wrappedMsg.name == MessageType.DefendMessage.ToString())
+				{
+					return serializer.ToObj<DefendMessage>(wrappedMsg.payload);
+				}
+				else if (wrappedMsg.name == MessageType.AbortAttackMessage.ToString())
+				{
+					return serializer.ToObj<AbortAttackMessage>(wrappedMsg.payload);
+				}
+				else if (wrappedMsg.name == MessageType.AbortDefenseMessage.ToString())
+				{
+					return serializer.ToObj<AbortDefenseMessage>(wrappedMsg.payload);
+				}
 				else
 				{
 					Console.WriteLine("Unwrapping unknown message type ... ");

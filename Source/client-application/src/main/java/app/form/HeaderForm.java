@@ -15,6 +15,7 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Font;
 import javafx.util.Duration;
+import root.view.FormConfig;
 
 public class HeaderForm extends VBox implements MessageDisplay, HasLabels {
 
@@ -27,6 +28,8 @@ public class HeaderForm extends VBox implements MessageDisplay, HasLabels {
 	// Latin Modern Roman 10 Italic
 	// Norasi Italic
 	// Un Pilgi
+
+	private FormConfig config;
 
 	private Language language;
 
@@ -48,11 +51,13 @@ public class HeaderForm extends VBox implements MessageDisplay, HasLabels {
 
 	// methods
 
-	public HeaderForm(double img_width, double img_height) {
+	public HeaderForm(FormConfig config, double imgWidth, double imgHeight) {
 		super();
 
-		imageWidth = img_width;
-		imageHeight = img_height;
+		this.config = config;
+
+		imageWidth = imgWidth;
+		imageHeight = imgHeight;
 
 		this.language = StringResourceManager.getLanguage();
 
@@ -65,7 +70,6 @@ public class HeaderForm extends VBox implements MessageDisplay, HasLabels {
 			}
 
 		});
-		var config = AppConfig.getInstance();
 		this.titleFont = new Font(config.titleFont, config.titleFontSize);
 		this.messageFont = new Font(config.messageFont, config.messageFontSize);
 
@@ -137,12 +141,12 @@ public class HeaderForm extends VBox implements MessageDisplay, HasLabels {
 				this.statusMessage.setText(messageObj.message);
 				this.statusMessage.setStyle("-fx-background-color: "
 						+ messageObj.color
-						+ AppConfig.getInstance().headerAlphaValue);
+						+ config.headerAlphaValue);
 			} else {
 				// just passed message with white background
 				this.statusMessage.setText("unknown - " + this.statusName);
 				this.statusMessage.setStyle("-fx-background-color: #111111"
-						+ AppConfig.getInstance().headerAlphaValue
+						+ config.headerAlphaValue
 						+ ";\n");
 			}
 		});
@@ -163,12 +167,12 @@ public class HeaderForm extends VBox implements MessageDisplay, HasLabels {
 				infoMessage.setText(messageObj.message);
 				infoMessage.setStyle("-fx-background-color: "
 						+ messageObj.color
-						+ AppConfig.getInstance().headerAlphaValue);
+						+ config.headerAlphaValue);
 			} else {
 				// just passed message with white background
 				infoMessage.setText("unknown - " + this.infoName);
 				infoMessage.setStyle("-fx-background-color: #aacc91"
-						+ AppConfig.getInstance().headerAlphaValue);
+						+ config.headerAlphaValue);
 			}
 
 			infoMessageTimer.stop();

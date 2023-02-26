@@ -71,6 +71,7 @@ namespace RabbitGameServer.Game
 			handlers.Add(ModelEventType.ReadyForInitEvent, handleInitRequest);
 			handlers.Add(ModelEventType.MoveModelEvent, handleMoveEvent);
 			handlers.Add(ModelEventType.AttackModelEvent, handleAttackEvent);
+			handlers.Add(ModelEventType.DefendModelEvent, handleDefendEvent);
 		}
 
 		public Message AddModelEvent(ModelEvent newEvent)
@@ -135,6 +136,10 @@ namespace RabbitGameServer.Game
 				}
 				else
 				{
+					// QUESTIONABLE 
+					// Should I just stop unit so it can actually be a feature, 
+					// intercepting units in order to stop them ... ? 
+					// Or should i send RecalculatePath message ... ? 
 					Console.WriteLine("Unit should recalculate path ... ");
 					return new RecalculatePathMessage(mev.playerName,
 						RoomName,
@@ -173,13 +178,22 @@ namespace RabbitGameServer.Game
 			var attackerField = getField(attackEvent.sourceField);
 			var targetField = getField(attackEvent.destinationField);
 
+			if (attackerField.unit == null || targetField.unit == null)
+			{
+				Console.WriteLine("Attacker or defender do not exist on this fields ... ");
+
+				return new AbortAttackMessage(e.playerName,
+					RoomName,
+					((AttackModelEvent)e).sourceField);
+			}
+
 			var attack = getAttack(attackEvent.attackType);
 
-			// ignore the range check since distance is calculated based on the 
+			// Ignore the range check since distance is calculated based on the 
 			// fieldManager implementation which is at this point still 
-			// just on the client side 
+			// bound to the client side.
 
-			targetField.unit.health -= attack.damage;
+			targetField.unit.health -= attack.attackDmg;
 
 			if (targetField.unit.health <= 0)
 			{
@@ -187,12 +201,48 @@ namespace RabbitGameServer.Game
 				targetField.inBattle = false;
 			}
 
+			// return something else if unit dead or something ... 
+
 			return new AttackMessage(e.playerName,
 				RoomName,
 				attack.type.ToString(),
 				attackEvent.sourceField,
 				attackEvent.destinationField);
 		}
+
+		private Message handleDefendEvent(ModelEvent e)
+		{
+			var defendEvent = (DefendModelEvent)e;
+
+			var attackedField = getField(defendEvent.sourceField);
+			var attackerField = getField(defendEvent.destinationField);
+
+			var defense = getAttack(defendEvent.defenseType);
+
+			if (attackedField.unit == null || attackerField.unit == null)
+			{
+				Console.WriteLine("Defender or attacked do not exist on this fields ... ");
+
+				return new Abort
+			}
+
+			attackerField.unit.health -= defense.defenseDmg;
+
+			if (attackerField.unit.health <= 0)
+			{
+				attackerField.unit = null;
+				attackerField.inBattle = false;
+			}
+
+			// return something else if unit dead or something ... 
+
+			return new DefendMessage(e.playerName,
+				RoomName,
+				defendEvent.defenseType.ToString(),
+				defendEvent.sourceField,
+				defendEvent.destinationField);
+		}
+
 
 		private Attack getAttack(AttackType wantedType)
 		{

@@ -8,6 +8,8 @@ import root.controller.Controller;
 import root.model.action.attack.Attack;
 import root.model.component.Field;
 import root.model.component.option.FieldOption;
+import view.command.ClearTopLayerCommand;
+import view.command.SelectFieldCommand;
 
 public class AttackFieldOption extends FieldOption {
 
@@ -15,8 +17,8 @@ public class AttackFieldOption extends FieldOption {
 
 	public AttackFieldOption(Controller gameController, Attack attack) {
 		// TODO instead of just passing type which will represent attack name
-		// maybe form some string with damage and range 
-		// or create custom FieldOptions which would have more data then 
+		// maybe form some string with damage and range
+		// or create custom FieldOptions which would have more data then
 		// just a simple button with the label
 		super(attack.type, gameController);
 
@@ -30,20 +32,22 @@ public class AttackFieldOption extends FieldOption {
 		var distance = controller.getModel().distance(getPrimaryField(), getSecondaryField());
 		System.out.println("Calculated distance: " + distance);
 
-		if (distance <= attack.range) {
+		if (distance <= attack.attackRange) {
 			if (unit.getMove() != null && unit.getMove().isMoving()) {
 				unit.getMove().stopMoving();
 			}
 
 			// var intention = new AttackModelEventArg(unit.getOwner().getUsername(),
-			// 		getPrimaryField().getStoragePosition(),
-			// 		getSecondaryField().getStoragePosition());
+			// getPrimaryField().getStoragePosition(),
+			// getSecondaryField().getStoragePosition());
 
 			// controller.getServerProxy().sendIntention(intention);
 
 			attack.setTarget(secondaryField);
 			unit.activateAttack(attack);
 			attack.attack();
+
+			controller.getConsumerQueue().enqueue(new ClearTopLayerCommand());
 
 		} else if (unit.getMove() != null) {
 
@@ -56,7 +60,9 @@ public class AttackFieldOption extends FieldOption {
 			System.out.println("Primary: " + getPrimaryField().getStoragePosition());
 			System.out.println("Secondary: " + getSecondaryField().getStoragePosition());
 
-			var destinations = findDestinations(attack.range);
+			System.out.println("Looking for attack with range: " + attack.attackRange);
+
+			var destinations = findDestinations(attack.attackRange);
 			if (destinations.isEmpty()) {
 				System.out.println("Chosen field cannot be attacked ... ");
 				return;
@@ -79,17 +85,27 @@ public class AttackFieldOption extends FieldOption {
 			System.out.println("Calculated path of length: " + attackPath.size());
 			attackPath.add(0, getPrimaryField());
 			// unit.getMove().addToPath(attackPath);
-			// already done in calculate, but should not be 
+			// already done in calculate, but should not be
 
 			attack.setTarget(secondaryField);
+
 			unit.activateAttack(attack);
 
 			unit.getMove().move();
 
+			for (Field pathField : attackPath.subList(1, attackPath.size())) {
+
+				var selectCommand = new SelectFieldCommand(pathField);
+				super.controller.getConsumerQueue().enqueue(selectCommand);
+				super.controller.getUndoStack().push(selectCommand);
+			}
+
+			controller.getConsumerQueue().enqueue(new ClearTopLayerCommand());
+
 		} else {
-			// unit can't move and is not in range ... 
-			// just display some message 
-			System.out.println("Enemy is outside the attack's range ... ");
+			// unit can't move and is not in range ...
+			// just display some message
+			System.out.println("Enemy is outside the attack's range/abilities ... ");
 		}
 
 	}
@@ -116,29 +132,34 @@ public class AttackFieldOption extends FieldOption {
 
 		return retList.stream()
 				.map(this::distanceMap)
-				.sorted((df1, df2) -> ((Integer) df1.dist).compareTo(df2.dist))
+				.sorted()
 				.map((df) -> df.field)
 				.collect(Collectors.toList());
 
 		// Assumption ... ^
 		// If every field is traversed more than once inside the sort method
-		// it would be less expensive to calculate distances for every field, 
-		// sort them and then map back to just Field type insted of calling 
+		// it would be less expensive to calculate distances for every field,
+		// sort them and then map back to just Field type insted of calling
 		// model.distance(f1,f2) for each comparison.
 	}
 
-	private class FieldDist {
-		public Field field;
-		public int dist;
-
-		public FieldDist(Field field, int dist) {
-			this.field = field;
-			this.dist = dist;
-		}
+	private FieldWithDist distanceMap(Field f) {
+		return new FieldWithDist(f, controller.getModel().distance(getPrimaryField(), f));
 	}
 
-	private FieldDist distanceMap(Field f) {
-		return new FieldDist(f, controller.getModel().distance(getPrimaryField(), f));
-	}
+	// private class FieldDist implements Comparable<FieldDist> {
+	// public Field field;
+	// public int dist;
+
+	// public FieldDist(Field field, int dist) {
+	// this.field = field;
+	// this.dist = dist;
+	// }
+
+	// @Override
+	// public int compareTo(FieldDist f2) {
+	// return ((Integer) dist).compareTo(f2.dist);
+	// }
+	// }
 
 }

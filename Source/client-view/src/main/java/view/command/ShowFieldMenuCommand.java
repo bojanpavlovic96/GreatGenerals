@@ -1,14 +1,23 @@
 package view.command;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.stream.Collectors;
+
 import javafx.scene.canvas.GraphicsContext;
-import javafx.scene.paint.Color;
+
 import root.Point2D;
+
 import root.command.Command;
 import root.command.CommandDrivenComponent;
 import root.model.component.Field;
+
 import root.view.View;
 import root.view.field.ViewField;
+import root.view.menu.DescriptionItem;
 import root.view.menu.Menu;
+import view.component.menu.DescMenuItem;
 
 public class ShowFieldMenuCommand extends Command {
 
@@ -62,15 +71,24 @@ public class ShowFieldMenuCommand extends Command {
 		GraphicsContext gc = ((View) targetComponent).getTopLayerGraphicContext();
 		gc.save();
 
-		// TODO should be read from view config 
-		gc.setFill(Color.ALICEBLUE);
+		var descMenu = view.getDescriptionMenu();
+		var fieldDesc = viewTarget.getDescription();
 
-		gc.fillRect(viewTarget.getFieldCenter().getX() + menu.getMenuWidth(),
-				viewTarget.getFieldCenter().getY(),
-				ShowFieldMenuCommand.INFO_WIDTH,
-				ShowFieldMenuCommand.INFO_HEIGHT);
+		System.out.println("Descriptions ... ");
+		for (var desc : fieldDesc) {
+			System.out.println(desc);
+		}
 
-		gc.restore();
+		descMenu.populateWith(fieldDesc);
+
+		var descPosition = new Point2D(
+				menu.getPosition().x + menu.getMenuWidth(),
+				menu.getPosition().y);
+		descMenu.setPosition(descPosition);
+
+		// descMenu.setPosition(new Point2D(100, 200));
+		System.out.println("Showing description menu .. ");
+		descMenu.setVisible(true);
 
 	}
 

@@ -4,6 +4,7 @@ import root.command.CommandQueue;
 import root.controller.Controller;
 import root.model.component.Field;
 import root.model.component.option.FieldOption;
+import view.command.ClearTopLayerCommand;
 import view.command.UnselectFieldCommand;
 
 public class ClearPathFieldOption extends FieldOption {
@@ -45,6 +46,7 @@ public class ClearPathFieldOption extends FieldOption {
 			primaryField.getUnit().getMove().clearPath();
 		}
 
+		controller.getConsumerQueue().enqueue(new ClearTopLayerCommand());
 	}
 
 	@Override

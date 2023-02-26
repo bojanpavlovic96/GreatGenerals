@@ -8,8 +8,8 @@ import view.ResourceManager;
 
 public class ViewTerrain {
 
-	private String terrainName;
-	private float intensity;
+	public String terrainName;
+	public float intensity;
 
 	public ViewTerrain(Terrain model) {
 

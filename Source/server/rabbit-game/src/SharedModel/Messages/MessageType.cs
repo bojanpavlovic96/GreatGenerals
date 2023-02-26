@@ -7,12 +7,15 @@ namespace RabbitGameServer.SharedModel.Messages
 		MoveMessage,
 		CreateRoomRequest,
 		JoinRoomRequest,
-		RoomResponse, // this should be renamed to roomResponse
+		RoomResponse,
 		LeaveRoomRequest,
 		StartGameRequest,
 		AttackMessage,
+		DefendMessage,
 		RecalculatePathMessage,
 		AbortMoveMessage,
+		AbortAttackMessage,
+		AbortDefenseMessage,
 		ServerErrorMessage
 	}
 }

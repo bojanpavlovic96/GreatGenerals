@@ -2,18 +2,25 @@ package controller.command;
 
 import root.Point2D;
 import root.command.Command;
+import root.controller.Controller;
 
 public class CtrlAbortMoveCommand extends Command {
 
-	protected Point2D sourceField;
+	protected Point2D sourcePosition;
 
-	public CtrlAbortMoveCommand(Point2D sourceField) {
-		this.sourceField = sourceField;
+	public CtrlAbortMoveCommand(Point2D sourcePosition) {
+		this.sourcePosition = sourcePosition;
 	}
 
 	@Override
 	public void run() {
-		System.out.println("ABORT MOVE COMMAND NOT IMPLEMENTED ... ");
+		var controller = (Controller) targetComponent;
+		var field = controller.getModel().getField(sourcePosition);
+
+		if (field.getUnit() != null && field.getUnit().getMove() != null) {
+			field.getUnit().getMove().stopMoving();
+		}
+		// TODO do I clear the path as well ... ? 
 	}
 
 	@Override

@@ -1,11 +1,16 @@
 package controller.command;
 
 import model.event.AttackModelEventArg;
+import model.event.DefendModelEventArg;
 import model.event.MoveModelEventArg;
+
 import root.command.Command;
 import root.communication.MessageInterpreter;
+import root.communication.messages.AbortAttackMsg;
+import root.communication.messages.AbortDefenseMsg;
 import root.communication.messages.AbortMoveMsg;
 import root.communication.messages.AttackMsg;
+import root.communication.messages.DefendMsg;
 import root.communication.messages.InitializeMsg;
 import root.communication.messages.Message;
 import root.communication.messages.MoveMsg;
@@ -51,6 +56,12 @@ public class SwitchCaseMsgInterpreter implements MessageInterpreter {
 						((AttackMsg) message).startFieldPos,
 						((AttackMsg) message).endFieldPos);
 
+			case DefendMessage:
+				return new CtrlDefendCommand(
+						((DefendMsg) message).defendType,
+						((DefendMsg) message).startFieldPos,
+						((DefendMsg) message).endFieldPos);
+
 			case RecalculatePathMessage:
 				return new CtrlRecalculatePathCommand(
 						((RecalculatePathMsg) message).unitPosition);
@@ -58,6 +69,14 @@ public class SwitchCaseMsgInterpreter implements MessageInterpreter {
 			case AbortMoveMessage:
 				return new CtrlAbortMoveCommand(
 						((AbortMoveMsg) message).unitPosition);
+
+			case AbortAttackMessage:
+				return new CtrlAbortAttackCommand(
+						((AbortAttackMsg) message).unitPosition);
+
+			case AbortDefenseMessage:
+				return new CtrlAbortDefenseCommand(
+						((AbortDefenseMsg) message).unitPosition);
 
 			case ServerErrorMessage:
 				return new CtrlServerErrorMessage(
@@ -81,6 +100,12 @@ public class SwitchCaseMsgInterpreter implements MessageInterpreter {
 						((AttackModelEventArg) eventArg).attackType,
 						((AttackModelEventArg) eventArg).getSourceField(),
 						((AttackModelEventArg) eventArg).getDestinationField());
+
+			case Defend:
+				return new DefendMsg(
+						((DefendModelEventArg) eventArg).defenseType,
+						((DefendModelEventArg) eventArg).sourceField,
+						((DefendModelEventArg) eventArg).destinationField);
 
 			case Move:
 				return new MoveMsg(

@@ -5,27 +5,43 @@ import root.model.component.Unit;
 import root.model.event.ModelEventHandler;
 import root.model.event.ModelEventProducer;
 
-public abstract class Attack implements ModelEventProducer, Runnable {
+public abstract class Attack implements ModelEventProducer {
 
 	public String type;
 
-	public int hitDamage;
-	public int range;
+	public int attackDmg;
+	public long attackCooldown;
+	public int attackRange;
+
+	public int defenseDmg;
+	public long defenseCooldown;
+	public int defenseRange;
+
+	// I guess will only be used with the animations ... 
 	public long duration;
-	public long cooldown;
 
 	protected ModelEventHandler onEvent;
 
 	protected Unit attacker;
 	protected Field target;
 
-	public Attack(String type, int hitDamage, int range, long duration, long cooldown) {
-		this.type = type;
+	public Attack(String type,
+			int attackDmg,
+			long attackCooldown,
+			int attackRange,
+			int defenseDmg,
+			long defenseCooldown,
+			int defenseRange,
+			long duration) {
 
-		this.hitDamage = hitDamage;
-		this.range = range;
+		this.type = type;
+		this.attackDmg = attackDmg;
+		this.attackCooldown = attackCooldown;
+		this.attackRange = attackRange;
+		this.defenseDmg = defenseDmg;
+		this.defenseCooldown = defenseCooldown;
+		this.defenseRange = defenseRange;
 		this.duration = duration;
-		this.cooldown = cooldown;
 	}
 
 	@Override
@@ -53,5 +69,9 @@ public abstract class Attack implements ModelEventProducer, Runnable {
 
 	public abstract void attack();
 
+	public abstract void defend();
+
+	// A bit misleading but this will stop the defense as well, 
+	// since defense is basically attack just with different values ... 
 	public abstract void stopAttack();
 }

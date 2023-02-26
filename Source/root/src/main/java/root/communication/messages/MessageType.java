@@ -10,7 +10,10 @@ public enum MessageType {
 	ReadyForInitMsg,
 	MoveMessage,
 	AttackMessage,
+	DefendMessage,
 	RecalculatePathMessage,
 	AbortMoveMessage,
+	AbortAttackMessage,
+	AbortDefenseMessage,
 	ServerErrorMessage
 }

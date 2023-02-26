@@ -30,10 +30,11 @@ import root.view.ViewConfig;
 import root.view.event.ViewEventArg;
 import root.view.event.ViewEventHandler;
 import root.view.field.ViewField;
+import root.view.menu.FieldDescription;
 import root.view.menu.Menu;
 import view.command.FxCommandProcessor;
 import view.component.ViewFieldManager;
-import view.component.menu.LongOptionsMenu;
+import view.component.menu.DescriptionMenu;
 import view.component.menu.ShortOptionsMenu;
 
 public class DrawingStage extends Stage implements View {
@@ -54,7 +55,7 @@ public class DrawingStage extends Stage implements View {
 
 	private ShortOptionsMenu mainOptionsMenu;
 	private ShortOptionsMenu submenu;
-	private LongOptionsMenu descriptionMenu;
+	private DescriptionMenu descriptionMenu;
 
 	private double canvasWidth;
 	private double canvasHeight;
@@ -141,18 +142,18 @@ public class DrawingStage extends Stage implements View {
 				config.fieldMenuWidth,
 				config.fieldMenuHeight);
 
-		this.descriptionMenu = new LongOptionsMenu(
-				config.fieldMenuWidth,
-				config.fieldMenuHeight);
+		// TODO hardcoded ... 
+		this.descriptionMenu = new DescriptionMenu(400, 300);
 
-		this.mainOptionsMenu.setLayoutX(100);
-		this.mainOptionsMenu.setLayoutY(100);
+		// this.mainOptionsMenu.setLayoutX(100);
+		// this.mainOptionsMenu.setLayoutY(100);
 		this.mainOptionsMenu.setVisible(true);
 
 		this.submenu.setVisible(true);
 
 		this.root.getChildren().add(this.mainOptionsMenu);
 		this.root.getChildren().add(this.submenu);
+		this.root.getChildren().add(this.descriptionMenu);
 
 		Platform.setImplicitExit(true);
 
@@ -360,8 +361,8 @@ public class DrawingStage extends Stage implements View {
 
 	@Override
 	public void setMenuVisibility(boolean visibility) {
-		// with next line, vbox throws some outOfBoundsException: -1 ... don't touch it
-		// not anymore, but I will leave above comment ... just in case
+		// With next line, vbox throws some outOfBoundsException: -1 ... don't touch it.
+		// Not anymore ...  but I will leave above comment ... just in case.
 		this.mainOptionsMenu.setVisible(visibility);
 		this.submenu.setVisible(visibility);
 	}
@@ -387,7 +388,7 @@ public class DrawingStage extends Stage implements View {
 	}
 
 	@Override
-	public Menu getDescriptionMenu() {
+	public FieldDescription getDescriptionMenu() {
 		return this.descriptionMenu;
 	}
 
@@ -430,6 +431,16 @@ public class DrawingStage extends Stage implements View {
 	@Override
 	public ViewConfig getActiveConfig() {
 		return this.config;
+	}
+
+	@Override
+	public void setDescriptionVisibility(boolean visibility) {
+		this.descriptionMenu.setVisible(visibility);
+	}
+
+	@Override
+	public void setDescriptionPosition(Point2D position) {
+		this.descriptionMenu.setPosition(position);
 	}
 
 }

@@ -1,7 +1,11 @@
 package protocol;
 
+import root.communication.messages.AbortAttackMsg;
+import root.communication.messages.AbortDefenseMsg;
+import root.communication.messages.AbortMoveMsg;
 import root.communication.messages.AttackMsg;
 import root.communication.messages.CreateRoomRequestMsg;
+import root.communication.messages.DefendMsg;
 import root.communication.messages.InitializeMsg;
 import root.communication.messages.RoomResponseMsg;
 import root.communication.messages.StartGameRequestMsg;
@@ -42,16 +46,28 @@ public class SwitchCaseTypeResolver implements NameTypeResolver {
 			case AttackMessage:
 				return AttackMsg.class;
 
+			case DefendMessage:
+				return DefendMsg.class;
+
 			case ReadyForInitMsg:
 				return ReadyForInitMsg.class;
 
-			// 
-
 			case AbortMoveMessage:
-				break;
+				return AbortMoveMsg.class;
+
+			case AbortAttackMessage:
+				return AbortAttackMsg.class;
+
+			case AbortDefenseMessage:
+				return AbortDefenseMsg.class;
+
 			case RecalculatePathMessage:
 				break;
+
 			case ServerErrorMessage:
+				break;
+
+			default:
 				break;
 
 		}

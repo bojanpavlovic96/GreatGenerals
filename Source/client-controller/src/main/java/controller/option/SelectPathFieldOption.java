@@ -55,10 +55,6 @@ public class SelectPathFieldOption extends FieldOption {
 		}
 
 		super.controller.getConsumerQueue().enqueue(new ClearTopLayerCommand());
-
-		var dist = controller.getModel().distance(getPrimaryField(), getSecondaryField());
-		System.out.println("Select distance: " + dist);
-
 	}
 
 	@Override
@@ -68,9 +64,9 @@ public class SelectPathFieldOption extends FieldOption {
 
 	@Override
 	public boolean isAdequateFor(Field field) {
-		return (controller.isOwner(field.getUnit().getOwner().getUsername()) &&
+		return (field.getUnit() != null &&
+				controller.isOwner(field.getUnit().getOwner().getUsername()) &&
 				field != getSecondaryField() &&
-				field.getUnit() != null &&
 				field.getUnit().getMove() != null &&
 				getSecondaryField().getUnit() == null);
 	}

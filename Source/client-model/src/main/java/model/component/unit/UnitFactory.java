@@ -1,9 +1,10 @@
 package model.component.unit;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
+
 import root.communication.messages.components.AttackDesc;
 import root.communication.messages.components.MoveDesc;
 import root.communication.messages.components.UnitDesc;
@@ -37,13 +38,17 @@ public class UnitFactory {
 		}
 
 		this.attacks = new HashMap<>();
+		System.out.println("Attack Descriptions ... ");
 		for (var attack : attacksDesc) {
 			attacks.put(attack.type, attack);
+			System.out.println(attack);
 		}
 
 		this.units = new HashMap<String, UnitDesc>();
+		System.out.println("Units desc ... ");
 		for (var unit : unitsDesc) {
 			units.put(unit.unitName, unit);
+			System.out.println(unit);
 		}
 
 		this.pathFinder = pathFinder;
@@ -72,10 +77,13 @@ public class UnitFactory {
 		}
 
 		return new BasicAttack(type,
-				desc.damage,
-				desc.range,
+				desc.attackDmg,
+				desc.attackCooldown,
+				desc.attackRange,
+				desc.defenseDmg,
+				desc.defenseCooldown,
+				desc.defenseRange,
 				desc.duration,
-				desc.cooldown,
 				timer);
 
 	}
@@ -84,17 +92,18 @@ public class UnitFactory {
 
 		UnitDesc unitDesc = units.get(type.toString());
 
-		Move move = genMove(unitDesc.moveType);
+		var move = genMove(unitDesc.moveType);
+		var attacks = unitDesc.attacks.stream()
+				.map((uDesc) -> genAttack(uDesc))
+				.collect(Collectors.toList());
 
-		var attacks = new ArrayList<Attack>();
-		for (var attackType : unitDesc.attacks) {
-			attacks.add(genAttack(attackType));
-		}
+		var defense = genAttack(unitDesc.defense);
 
 		return new BasicUnit(owner,
 				UnitType.valueOf(unitDesc.unitName),
 				move,
 				attacks,
+				defense,
 				unitDesc.health);
 	}
 

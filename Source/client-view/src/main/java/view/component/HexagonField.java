@@ -1,6 +1,7 @@
 package view.component;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import javafx.geometry.Point3D;
@@ -10,7 +11,9 @@ import root.Point2D;
 import root.model.component.Field;
 import root.view.Color;
 import root.view.field.ViewField;
+import root.view.menu.DescriptionItem;
 import view.ResourceManager;
+import view.component.menu.DescMenuItem;
 
 public class HexagonField implements ViewField {
 
@@ -385,6 +388,34 @@ public class HexagonField implements ViewField {
 
 		this.initCornerPoints();
 
+	}
+
+	// TODO this should return the list of DescMenuItem 
+	// or just DescriptionItem(s)
+
+	@Override
+	public List<DescriptionItem> getDescription() {
+
+		var descriptions = new ArrayList<DescriptionItem>();
+
+		var terrainDesc = new DescMenuItem("Terrain",
+				Arrays.asList(terrain.terrainName, "Intensity: " + terrain.intensity),
+				null);
+		descriptions.add(terrainDesc);
+
+		if (this.unit != null) {
+			var unitDesc = unit.describeUnit();
+			var attacks = unit.describieAttacks();
+			var activeAttack = unit.describeActiveAttack();
+			var defense = unit.describeDefense();
+
+			descriptions.add(unitDesc);
+			descriptions.addAll(attacks);
+			descriptions.add(activeAttack);
+			descriptions.add(defense);
+		}
+
+		return descriptions;
 	}
 
 }

@@ -1,14 +1,13 @@
 package controller.command;
 
 import java.util.function.Function;
-import java.util.stream.Collectors;
 
-import model.event.AttackModelEventArg;
 import root.Point2D;
 import root.command.Command;
 import root.command.CommandDrivenComponent;
 import root.controller.Controller;
 import root.model.component.Field;
+
 import view.command.DrawFieldCommand;
 import view.command.SelectFieldCommand;
 import view.command.UnselectFieldCommand;
@@ -67,10 +66,11 @@ public class CtrlMoveCommand extends Command {
 
 		} else {
 			// if one of the fields that are gonna be redrawn are on the selected
-			// field's path (not the one currently moving) then select them 
+			// field's path (not the one currently moving) then select them
 			var selField = controller.getSelectedField();
 
-			if (selField.getUnit() != null &&
+			if (selField != null &&
+					selField.getUnit() != null &&
 					selField.getUnit().getMove() != null &&
 					controller.isOwner(selField.getUnit().getOwner().getUsername())) {
 
@@ -101,16 +101,19 @@ public class CtrlMoveCommand extends Command {
 				var destination = unit.getActiveAttack().getTarget();
 				var distance = controller.getModel().distance(secondField, destination);
 
-				if (distance <= unit.getActiveAttack().range) {
+				if (distance <= unit.getActiveAttack().attackRange) {
 
 					unit.getMove().stopMoving();
 					unit.getMove().clearPath();
 
 					// var attackIntention = new AttackModelEventArg(unit.getOwner().getUsername(),
-					// 		secondField.getStoragePosition(),
-					// 		destination.getStoragePosition());
+					// secondField.getStoragePosition(),
+					// destination.getStoragePosition());
 
 					// controller.getServerProxy().sendIntention(attackIntention);
+
+					System.out.println("Will attack: h: " + unit.getHealth() + " H: "
+							+ unit.getActiveAttack().getTarget().getUnit().getHealth());
 
 					unit.getActiveAttack().attack();
 
@@ -129,18 +132,20 @@ public class CtrlMoveCommand extends Command {
 				}
 			}
 		} else {
-			// follow the enemy 
+			// follow the enemy
 
-			// TODO this is a mess 
-			// AttackPath should not be calculated to the enemy unit, insted to the 
-			// closest field from which our unit can attack enemy (considering units's range).
+			// TODO this is a mess
+			// AttackPath should not be calculated to the enemy unit, insted to the
+			// closest field from which our unit can attack enemy (considering units's
+			// range).
 			// Look at the attackFieldOption logic.
-			// For now it "chased" unit moves, just stop the attack ... 
+			// For now it "chased" unit moves, just stop the attack ...
 			// var attackingUnits = controller.getModel()
-			// 		.getActiveUnits()
-			// 		.stream()
-			// 		.filter((actUnit) -> actUnit.isAttacking() && actUnit.getActiveAttack().getTarget() == startField)
-			// 		.collect(Collectors.toList());
+			// .getActiveUnits()
+			// .stream()
+			// .filter((actUnit) -> actUnit.isAttacking() &&
+			// actUnit.getActiveAttack().getTarget() == startField)
+			// .collect(Collectors.toList());
 
 			controller.getModel()
 					.getActiveUnits().stream()
@@ -155,14 +160,14 @@ public class CtrlMoveCommand extends Command {
 			// .collect(Collectors.toList());
 
 			// for (var attacker : attackingUnits) {
-			// 	var newPath = attacker.getMove().calculatePath(controller.getModel(),
-			// 			attacker.getField(),
-			// 			secondField);
+			// var newPath = attacker.getMove().calculatePath(controller.getModel(),
+			// attacker.getField(),
+			// secondField);
 
-			// 	attacker.getMove().clearPath();
-			// 	attacker.getMove().addToPath(newPath);
+			// attacker.getMove().clearPath();
+			// attacker.getMove().addToPath(newPath);
 
-			// 	attacker.getActiveAttack().setTarget(secondField);
+			// attacker.getActiveAttack().setTarget(secondField);
 			// }
 
 		}

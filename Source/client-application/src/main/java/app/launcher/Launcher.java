@@ -63,7 +63,9 @@ public class Launcher extends Application {
 				connectionTask,
 				protocolTranslator);
 
-		startPageController = new StartPageController(new StartForm(),
+		var formConfig = AppConfig.getInstance().formConfig;
+
+		startPageController = new StartPageController(new StartForm(formConfig),
 				loginProxy,
 				roomProxy,
 				this::startTheGame);

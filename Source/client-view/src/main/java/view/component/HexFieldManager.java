@@ -26,11 +26,11 @@ public class HexFieldManager implements ViewFieldManager {
 				this.fieldBorderWidth);
 	}
 
+	// TODO logic for next two methods should be inside this class ... ? 
+	// ViewField/View should use this class to determine 
 	@Override
 	public Point2D calcStoragePosition(Point2D position) {
-
 		return HexagonField.calcStoragePosition(position, this.fieldWidth, this.fieldHeight);
-
 	}
 
 	@Override

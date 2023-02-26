@@ -9,7 +9,9 @@ namespace RabbitGameServer.SharedModel
 		public MoveType moveType { get; set; }
 		public List<string> attacks { get; set; }
 
-		public int health;
+		public string defense { get; set; }
+
+		public int health { get; set; }
 
 		public Unit copy()
 		{
@@ -18,6 +20,7 @@ namespace RabbitGameServer.SharedModel
 				unitName = this.unitName,
 				moveType = this.moveType,
 				attacks = new List<string>(this.attacks),
+				defense = this.defense,
 				health = this.health
 			};
 		}

@@ -7,6 +7,7 @@ public abstract class ModelEventArg {
 	public static enum ModelEventType {
 		Move,
 		Attack,
+		Defend,
 		ReadyForInit
 	}
 

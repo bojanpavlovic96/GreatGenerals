@@ -33,6 +33,13 @@ namespace RabbitGameServer.Mediator
 						((AttackMessage)request.message).startFieldPos,
 						((AttackMessage)request.message).endFieldPos));
 
+				case MessageType.DefendMessage:
+					return Task.FromResult<ModelEvent>(new DefendModelEvent(
+						request.message.username,
+						Enum.Parse<AttackType>(((DefendMessage)request.message).defendType),
+						((DefendMessage)request.message).startFieldPos,
+						((DefendMessage)request.message).endFieldPos));
+
 				default:
 					Console.WriteLine($"Failed to map message-{request.message.type.ToString()} to modelEvent ... ");
 					return Task.FromResult<ModelEvent>(null); ;

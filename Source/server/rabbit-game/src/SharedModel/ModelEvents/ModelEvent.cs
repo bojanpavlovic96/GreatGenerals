@@ -5,6 +5,7 @@ namespace RabbitGameServer.SharedModel.ModelEvents
 	{
 		MoveModelEvent,
 		AttackModelEvent,
+		DefendModelEvent,
 		ReadyForInitEvent
 	}
 

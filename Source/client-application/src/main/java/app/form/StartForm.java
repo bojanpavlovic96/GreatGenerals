@@ -18,12 +18,15 @@ import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import root.communication.PlayerDescription;
+import root.view.FormConfig;
 
 public class StartForm extends Stage implements InitialPage, HasLabels {
 
 	// width being hardcoded is semi-ok but height ... doesn't look good ... 
 	private double WIDTH = 200;
 	private double HEIGHT = 640;
+
+	private FormConfig config;
 
 	private VBox mainContainer;
 	private Scene mainScene;
@@ -46,7 +49,9 @@ public class StartForm extends Stage implements InitialPage, HasLabels {
 
 	// methods
 
-	public StartForm() {
+	public StartForm(FormConfig config) {
+
+		this.config = config;
 
 		initStage();
 
@@ -98,7 +103,7 @@ public class StartForm extends Stage implements InitialPage, HasLabels {
 
 	private void initHeader() {
 
-		this.headerForm = new HeaderForm(this.WIDTH, 125);
+		this.headerForm = new HeaderForm(config, this.WIDTH, 125);
 		this.mainContainer.getChildren().add(this.headerForm);
 		this.headerForm.managedProperty();
 

@@ -7,6 +7,7 @@ import root.command.CommandDrivenComponent;
 import root.model.component.Field;
 import root.view.event.ViewEventProducer;
 import root.view.field.ViewField;
+import root.view.menu.FieldDescription;
 import root.view.menu.Menu;
 
 public interface View extends ViewEventProducer, CommandDrivenComponent {
@@ -41,11 +42,15 @@ public interface View extends ViewEventProducer, CommandDrivenComponent {
 
 	void setMenuPosition(Point2D position);
 
+	void setDescriptionVisibility(boolean visibility);
+
+	void setDescriptionPosition(Point2D position);
+
 	Menu getMainOptionsMenu();
 
 	Menu getSubmenu();
 
-	Menu getDescriptionMenu();
+	FieldDescription getDescriptionMenu();
 
 	// attention bad approach
 	void adjustCanvasSize(Point2D point);
