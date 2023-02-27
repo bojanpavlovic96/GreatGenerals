@@ -30,8 +30,12 @@ public class ViewUnit {
 
 	private String defense;
 
+	private String opponentName;
+	private int opponentHealth;
+	private AttackInfo opponentAttack;
+
 	public ViewUnit(Unit model) {
-		this.unitName = model.getUnitType().toString();
+		unitName = model.getUnitType().toString();
 
 		health = model.getHealth();
 		moveType = model.getMove().getName();
@@ -43,9 +47,19 @@ public class ViewUnit {
 
 		if (model.getActiveAttack() != null) {
 			activeAttack = model.getActiveAttack().type;
+
+			var target = model.getActiveAttack().getTarget();
+
+			opponentName = target.getPlayer().getUsername();
+			opponentHealth = target.getUnit().getHealth();
+			opponentAttack = AttackInfo.fromModel(target.getUnit().getDefense());
 		}
 
 		defense = model.getDefense().type;
+
+		if (model.isDefending()) {
+
+		}
 
 		var pColor = model.getOwner().getColor();
 		this.highlightColor = new Color(pColor.red,
@@ -75,14 +89,14 @@ public class ViewUnit {
 
 	public DescMenuItem describeUnit() {
 		return new DescMenuItem("Unit",
-				Arrays.asList("Name " + unitName,
-						"Health  " + health,
-						"MoveType " + moveType,
-						"MoveSpeed " + moveSpeed),
+				Arrays.asList("Name: " + unitName,
+						"Health: " + health,
+						"MoveType: " + moveType,
+						"MoveSpeed: " + moveSpeed),
 				null);
 	}
 
-	public List<DescMenuItem> describieAttacks() {
+	public List<DescMenuItem> describeAttacks() {
 		if (attacks == null) {
 			return Arrays.asList();
 		}
@@ -94,19 +108,43 @@ public class ViewUnit {
 	}
 
 	public DescMenuItem describeActiveAttack() {
-		if (activeAttack != null) {
+		if (activeAttack == null) {
 			return null;
 		}
 
-		return new DescMenuItem("Active", Arrays.asList(activeAttack), null);
+		return new DescMenuItem("Active",
+				Arrays.asList(
+						"Attacking: " + opponentName,
+						"With: " + activeAttack,
+						"OpponentHealth: " + opponentHealth,
+						"OpponentDefense: " + opponentAttack.name,
+						"\t dmg: " + opponentAttack.defenseDmg,
+						"\t cooldown: " + opponentAttack.defenseCooldown,
+						"\t range: " + opponentAttack.defenseRange),
+				null);
 	}
 
 	public DescMenuItem describeDefense() {
-		if (defense != null) {
+		if (defense == null) {
 			return null;
+		} else if (opponentName != null) {
+			// If defense is not null and opponents data is set it means that 
+			// we are under the attack.
+			return new DescMenuItem("Defense",
+					Arrays.asList(
+							"Defending from: " + opponentName,
+							"With: " + defense,
+							"OpponentHealth: " + opponentHealth,
+							"OpponentAttack: " + opponentAttack.name,
+							"\t dmg: " + opponentAttack.attackDmg,
+							"\t cooldown: " + opponentAttack.attackCooldown,
+							"\t range: " + opponentAttack.attackRange),
+					null);
+		} else {
+			// We have prepared defense but nobody is attacking us. 
+			return new DescMenuItem("Defense", Arrays.asList(defense), null);
 		}
 
-		return new DescMenuItem("Defense", Arrays.asList(defense), null);
 	}
 
 	public Color getHighlightColor() {
@@ -153,27 +191,14 @@ public class ViewUnit {
 
 		public static DescMenuItem describe(AttackInfo att) {
 			return new DescMenuItem(att.name,
-					Arrays.asList("attDmg: " + att.attackDmg,
-							"attCool: " + att.attackCooldown,
-							"attRange: " + att.attackRange,
-							"defnseDmg: " + att.defenseDmg,
-							"defCool: " + att.defenseCooldown,
-							"defRange" + att.defenseRange),
+					Arrays.asList("Attack Damage: " + att.attackDmg,
+							"Attack Cooldown: " + att.attackCooldown,
+							"Attack Range: " + att.attackRange,
+							"Defense Damage: " + att.defenseDmg,
+							"Defense Cool: " + att.defenseCooldown,
+							"Defense Range" + att.defenseRange),
 					null);
 		}
-
-		// public ViewFieldDescription.ViewAttackDesc describe() {
-		// 	return new ViewFieldDescription.ViewAttackDesc(
-		// 			name,
-		// 			Arrays.asList(
-		// 					"attDmg: " + attackDmg,
-		// 					"attCool: " + attackCooldown,
-		// 					"attackRange: " + attackRange,
-		// 					"defDmg :" + defenseDmg,
-		// 					"defCool: " + defenseCooldown,
-		// 					"defRange: " + defenseRange),
-		// 			null);
-		// }
 
 	}
 

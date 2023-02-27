@@ -7,6 +7,7 @@ import root.controller.Controller;
 import root.model.component.Field;
 import view.command.ClearFieldCommand;
 import view.command.DrawFieldCommand;
+import view.command.ShowFieldDescription;
 
 public class CtrlAttackCommand extends Command {
 
@@ -76,6 +77,17 @@ public class CtrlAttackCommand extends Command {
 					System.out.println("I am already defending or the not in range for defense ... ");
 				}
 			}
+		}
+
+		var descMenuVisible = controller.getView().getDescriptionMenu().isVisible();
+		var describingStartField = controller.getFocusedField() == startField;
+		var describingEndField = controller.getFocusedField() == endField;
+
+		if (descMenuVisible && (describingStartField || describingEndField)) {
+			controller
+					.getView()
+					.getCommandQueue()
+					.enqueue(new ShowFieldDescription(controller.getFocusedField()));
 		}
 
 	}

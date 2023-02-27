@@ -35,6 +35,8 @@ public interface Controller extends ModelEventHandler,
 
 	void setSelectedField(Field newField);
 
+	Field getFocusedField();
+
 	PlayerData getPlayer();
 
 	boolean isOwner(String name);

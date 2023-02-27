@@ -5,7 +5,7 @@ import java.util.List;
 import root.communication.parser.StaticParser;
 import root.view.menu.DescriptionItem;
 
-public  class DescMenuItem implements DescriptionItem {
+public class DescMenuItem implements DescriptionItem {
 
 	private String title;
 	private List<String> items;
@@ -46,7 +46,7 @@ public  class DescMenuItem implements DescriptionItem {
 	}
 
 	@Override
-	public String toString(){
+	public String toString() {
 		return StaticParser.ToString(this);
 
 	}

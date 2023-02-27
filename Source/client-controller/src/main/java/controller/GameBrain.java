@@ -34,6 +34,7 @@ import root.view.event.ViewEventArg;
 import view.command.ClearTopLayerCommand;
 import view.command.ShowFieldMenuCommand;
 import view.command.SelectFieldCommand;
+import view.command.ShowFieldDescription;
 import view.command.ZoomInCommand;
 import view.command.ZoomOutCommand;
 
@@ -188,16 +189,20 @@ public class GameBrain implements Controller {
 				showMenuCommand = new ShowFieldMenuCommand(focusedField, focusedField);
 			}
 
+			var showDescriptionCommand = new ShowFieldDescription(focusedField);
+
 			viewCommandQueue.enqueue(clearCommand);
 			viewCommandQueue.enqueue(showMenuCommand);
+			viewCommandQueue.enqueue(showDescriptionCommand);
 
 			undoStack.push(showMenuCommand);
+			undoStack.push(showDescriptionCommand);
 
 		});
 
 		// 25.7.2022 - understanding: drawing path 
 		// I don't understand this comment 9.12.2021
-		// .TODO maybe for the purpose of redrawing path and similar options
+		// . TODO maybe for the purpose of redrawing path and similar options
 		// add additional list of commands which are "stateless" and which execution wont
 		// do any damage to the current state if they are executed more than once
 
@@ -337,6 +342,11 @@ public class GameBrain implements Controller {
 	@Override
 	public void setSelectedField(Field newField) {
 		this.selectedField = newField;
+	}
+
+	@Override
+	public Field getFocusedField() {
+		return this.focusedField;
 	}
 
 	@Override

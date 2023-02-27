@@ -405,7 +405,7 @@ public class HexagonField implements ViewField {
 
 		if (this.unit != null) {
 			var unitDesc = unit.describeUnit();
-			var attacks = unit.describieAttacks();
+			var attacks = unit.describeAttacks();
 			var activeAttack = unit.describeActiveAttack();
 			var defense = unit.describeDefense();
 

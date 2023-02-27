@@ -17,7 +17,7 @@ public class ClearTopLayerCommand extends Command {
 		// gc.clearRect(0, 0, gc.getCanvas().getWidth(), gc.getCanvas().getHeight());
 
 		((View) super.targetComponent).setMenuVisibility(false);
-		((View)targetComponent).setDescriptionVisibility(false);
+		((View) targetComponent).setDescriptionVisibility(false);
 		// gc.restore();
 
 	}

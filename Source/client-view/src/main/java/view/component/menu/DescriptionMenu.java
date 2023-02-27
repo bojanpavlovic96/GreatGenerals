@@ -30,7 +30,6 @@ public class DescriptionMenu extends ListView<HBox> implements FieldDescription 
 		this.items.clear();
 		for (var desc : descriptions) {
 			if (desc != null) {
-				System.out.println("DescItem NOT null: " + desc.getTitle());
 				this.items.add(from(desc));
 			}
 		}
@@ -46,17 +45,16 @@ public class DescriptionMenu extends ListView<HBox> implements FieldDescription 
 		var root = new HBox();
 		var texts = new VBox();
 
-		
 		var title = new Label(desc.getTitle());
 		texts.getChildren().add(title);
 
 		for (var line : desc.getTextItems()) {
 			texts.getChildren().add(new Label(line));
 		}
-		
+
 		// // TODO hardcoded
 		// if (desc.getIconSource() != null) {
-			// var image = new ImageView(
+		// var image = new ImageView(
 		// 		new Image("/battle.jpg",
 		// 				50,
 		// 				50,
@@ -64,9 +62,9 @@ public class DescriptionMenu extends ListView<HBox> implements FieldDescription 
 		// 				false));
 		// root.getChildren().add(image);
 		// }
-		
+
 		root.getChildren().add(texts);
-		
+
 		return root;
 	}
 }

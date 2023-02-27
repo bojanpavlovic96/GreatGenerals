@@ -17,6 +17,6 @@ public interface ViewField {
 
 	Point2D getFieldCenter();
 
-	List<DescriptionItem>getDescription();
+	List<DescriptionItem> getDescription();
 
 }
