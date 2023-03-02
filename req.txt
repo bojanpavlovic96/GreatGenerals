@@ -1,0 +1,40 @@
+[1/2] 1.) snimanje crteza u relacionu bazu podataka koriscenjem ORM alata. 
+	// Imamo sql za logovanje, pamti username/password/points.
+	// Na serveru imamo mongo koji nije koriscen -> moze da postane sql.
+	// Server ce iz modelEventRequestHandler da pamti svaku Message vracenu iz game-a.
+	// Kasnijim sekvecnijalnim iscitavanjem poruka mozemo da napravimo replay ... ? 
+
+
+[1/2] 2.) podrska za istovremeni rad vise klijenata na jednom dokumentu pri cemu prvi 
+korisnik koji je otvorio dokumenet moze da unosi izmene, a svi ostali (obavezno podrzati vise)
+mogu da u realnom vremenu da prate izmene. Ukoliko prvi korisnik (onaj koji unosi izmene)
+zatvori dokument, prvi sledecei korisnik koji je imao read-only pogled dobija read-write
+privilegiju. 
+	// Kod nas svi u svakom trenutku mogu da "unose izmene".
+	// Da li je neophodno da budu "turn-based" ili i nas slucaj zadovoljava kriterijume.
+	// pretpostavimo da je paralelno "unosenje podatka" zadovoljavajuci use-case
+
+[2/2] 3.) implementirati sinhronizaciju dokumenata kod svih klijenata koriscenjem broker-a. 
+
+[2/2] 4.) omogciti istovremeni rad na vise dokumenata (veceg broja grupa korisnika)
+
+[2/2] 5.) omoguciti adekvatnu vizuelizaciju veeg broja razlicitih elemanta iz modela podataka
+pri cemu je moguce svakom elementu dodeliti tekstualnu labelu 
+	// Pretpostavimo da je ovaj zahtev prakticno samo neko iscratavanje onoga sa cim se radi
+	// ili mozda prikazivanje sadrzaja iz baze sto bi kod nas bilo nekako load-ovanje 
+	// replay-a iz baze ... ? 
+
+[2/2] 6.) omoguciti iscrtavanje veza izmedju objekata modela podataka
+	// Pretpotavljam da je bojenje mojih/neprijateljskih polja dovoljno ... to je veza ... 
+
+[nelazume] 7.) uvesti razlicita ogranicenja prilikom uvodjenja veza u model (nije moguce povezati 
+bilo koji objekat sa bilo kojim drugim, ograniciti broj veza po objektu itd.)
+
+[2/2] 8.) prilikom implementacije na odgovarajucim mestima iskoristiti barem 3 pattern-a
+	// proxy za komunikaciju izmedju client-server-a
+	// listener za obradu click-ova i key-press-ova
+	// command za komunikaciju proxy->controller & controller->view
+	// singleton za konfiguraciju i resurse
+	// strategy za moveType & attacks
+	// ? repository ili koji god za pamcenje u bazu
+	// ? mediator na back-end-u 

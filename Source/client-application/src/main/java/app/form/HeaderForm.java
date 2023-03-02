@@ -5,8 +5,6 @@ import app.resource_manager.AppConfig;
 import app.resource_manager.StringResourceManager;
 import javafx.animation.PauseTransition;
 import javafx.application.Platform;
-import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.Label;
@@ -61,14 +59,11 @@ public class HeaderForm extends VBox implements MessageDisplay, HasLabels {
 
 		this.language = StringResourceManager.getLanguage();
 
-		this.infoMessageTimer = new PauseTransition(Duration.seconds(2));
-		this.infoMessageTimer.setOnFinished(new EventHandler<ActionEvent>() {
-
-			public void handle(ActionEvent event) {
-				infoMessage.setVisible(false);
-				infoName = null;
-			}
-
+		var duration = Duration.seconds(config.infoMessageDuration);
+		this.infoMessageTimer = new PauseTransition(duration);
+		this.infoMessageTimer.setOnFinished((event) -> {
+			infoMessage.setVisible(false);
+			infoName = null;
 		});
 		this.titleFont = new Font(config.titleFont, config.titleFontSize);
 		this.messageFont = new Font(config.messageFont, config.messageFontSize);

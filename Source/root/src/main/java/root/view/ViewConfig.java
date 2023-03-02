@@ -6,6 +6,9 @@ public class ViewConfig {
 	public int fieldMenuWidth;
 	public int fieldMenuHeight;
 
+	public int descriptionWidth;
+	public int descriptionHeight;
+
 	public int fieldHeight;
 	public int fieldWidth;
 	public int fieldBorderWidth;

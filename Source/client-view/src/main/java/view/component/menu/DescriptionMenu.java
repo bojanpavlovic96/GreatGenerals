@@ -4,13 +4,17 @@ import java.util.List;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.geometry.Insets;
+import javafx.geometry.Pos;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
+import javafx.scene.image.ImageView;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import root.Point2D;
 import root.view.menu.DescriptionItem;
 import root.view.menu.FieldDescription;
+import view.ResourceManager;
 
 public class DescriptionMenu extends ListView<HBox> implements FieldDescription {
 
@@ -23,11 +27,14 @@ public class DescriptionMenu extends ListView<HBox> implements FieldDescription 
 		items = FXCollections.observableArrayList();
 
 		super.setItems(items);
+		// super.setStyle("-fx-control-inner-background: blue;");
+		// super.setStyle("-fx-control-inner-background-alt: derive(-fx-control-inner-background, 50%);");
 	}
 
 	@Override
 	public void populateWith(List<DescriptionItem> descriptions) {
 		this.items.clear();
+
 		for (var desc : descriptions) {
 			if (desc != null) {
 				this.items.add(from(desc));
@@ -42,28 +49,45 @@ public class DescriptionMenu extends ListView<HBox> implements FieldDescription 
 	}
 
 	private HBox from(DescriptionItem desc) {
+
 		var root = new HBox();
+		root.setAlignment(Pos.CENTER_LEFT);
+
+		var TEXT_WIDTH = 200;
+
 		var texts = new VBox();
+		texts.setMaxWidth(TEXT_WIDTH);
+		texts.setMinWidth(TEXT_WIDTH);
+		// texts.setStyle("-fx-background-color: #ffff10"); // yellowish
 
 		var title = new Label(desc.getTitle());
+		title.setStyle("-fx-background-color: #7F00FF"); // purple
+		title.setMaxWidth(TEXT_WIDTH);
+		title.setMinWidth(TEXT_WIDTH);
 		texts.getChildren().add(title);
 
 		for (var line : desc.getTextItems()) {
-			texts.getChildren().add(new Label(line));
+			var label = new Label("\t" + line);
+			// label.setStyle("-fx-background-color: #C0C0C0"); // gray
+			texts.getChildren().add(label);
 		}
-
-		// // TODO hardcoded
-		// if (desc.getIconSource() != null) {
-		// var image = new ImageView(
-		// 		new Image("/battle.jpg",
-		// 				50,
-		// 				50,
-		// 				false,
-		// 				false));
-		// root.getChildren().add(image);
-		// }
-
 		root.getChildren().add(texts);
+
+		if (desc.getIconSource() != null) {
+			var iconBox = new VBox();
+			// iconBox.setStyle("-fx-background-color: #FFCCE5"); // pink
+			// iconBox.setPadding(new Insets(0, 0, 0, 10));
+			iconBox.setMinWidth(90);
+			iconBox.setMaxWidth(90);
+			iconBox.setAlignment(Pos.CENTER);
+
+			var icon = ResourceManager.getInstance().getByKey(desc.getIconSource());
+			var imageView = new ImageView(icon);
+
+			iconBox.getChildren().add(imageView);
+
+			root.getChildren().add(iconBox);
+		}
 
 		return root;
 	}

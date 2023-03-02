@@ -151,6 +151,13 @@ public class HexagonField implements Field {
 	@Override
 	public void adjustOptionsFor(Field secondField) {
 
+		// options.stream()
+		// 	.filter((option) -> {
+		// 		option.setSecondaryField(secondField);
+		// 		return option.isAdequateFor(this);
+		// 	})
+		// 	.
+
 		for (FieldOption option : this.options) {
 			option.setSecondaryField(secondField);
 

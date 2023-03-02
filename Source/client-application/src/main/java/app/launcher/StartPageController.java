@@ -8,6 +8,7 @@ import app.form.GameReadyEventProducer;
 import app.form.InitialPage;
 import app.form.MessageDisplay;
 import app.resource_manager.Language;
+import app.resource_manager.Language.MessageType;
 import root.ActiveComponent;
 import root.communication.LoginServerProxy;
 import root.communication.PlayerDescription;
@@ -74,13 +75,15 @@ public class StartPageController implements GameReadyEventProducer, ActiveCompon
 				(LoginServerResponse response) -> {
 					if (response.getStatus() == LoginServerResponseStatus.SUCCESS) {
 						System.out.println("Login successful ... ");
-						showInfoMessage(Language.MessageType.LoginSuccessful);
 
 						player = response.getPlayer();
 
 						initialPage.hideUserForm();
 						initialPage.showRoomForm();
 						initialPage.disableLeaveRoom();
+
+						showInfoMessage(Language.MessageType.LoginSuccessful);
+						showStatusMessage(Language.MessageType.LoginSuccessful);
 
 					} else {
 						System.out.println("Login failed ... ");
@@ -115,6 +118,9 @@ public class StartPageController implements GameReadyEventProducer, ActiveCompon
 						initialPage.hideUserForm();
 						initialPage.showRoomForm();
 
+						showInfoMessage(MessageType.RegisterSuccessful);
+						showStatusMessage(MessageType.LoginSuccessful);
+
 					} else {
 						System.out.println("Failed to register: "
 								+ response.getStatus().toString());
@@ -136,7 +142,9 @@ public class StartPageController implements GameReadyEventProducer, ActiveCompon
 
 		System.out.println("room server is ready ... will try to create room ... ");
 
-		roomServer.CreateRoom(roomName, roomPassword, player.getUsername(),
+		roomServer.CreateRoom(roomName,
+				roomPassword,
+				player.getUsername(),
 				this::createRoomResponseHandler);
 
 		showInfoMessage(Language.MessageType.CreateRequestSent);
@@ -146,7 +154,6 @@ public class StartPageController implements GameReadyEventProducer, ActiveCompon
 		System.out.println("Handling room response ... ");
 		if (response.responseType == RoomResponseType.Success) {
 			System.out.println("Create room successful ... ");
-			showInfoMessage(Language.MessageType.RoomCreated);
 
 			initialPage.disableCreateRoom();
 			initialPage.disableJoinRoom();
@@ -163,6 +170,8 @@ public class StartPageController implements GameReadyEventProducer, ActiveCompon
 			initialPage.enableGameStart();
 
 			roomServer.SubscribeForRoomUpdates(roomName, player.getUsername(), this::roomUpdateHandler);
+
+			showStatusMessage(Language.MessageType.RoomCreated);
 
 		} else if (response.responseType == RoomResponseType.InvalidRoom) {
 			System.out.println("Requested room already exists ... ");
@@ -385,6 +394,10 @@ public class StartPageController implements GameReadyEventProducer, ActiveCompon
 
 	private void showInfoMessage(Language.MessageType infoName) {
 		((MessageDisplay) initialPage).showInfoMessage(infoName);
+	}
+
+	private void showStatusMessage(Language.MessageType message) {
+		((MessageDisplay) initialPage).showStatusMessage(message);
 	}
 
 	@Override

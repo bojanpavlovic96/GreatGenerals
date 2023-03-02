@@ -21,7 +21,7 @@ import root.communication.parser.GsonJsonParser;
 import root.controller.Controller;
 import root.model.Model;
 import root.model.PlayerData;
-import root.model.event.ConcExecutorTimer;
+import root.model.event.ConcurrentExecutorTimer;
 import root.view.View;
 import view.DrawingStage;
 import view.component.HexFieldManager;
@@ -98,7 +98,9 @@ public class Launcher extends Application {
 		System.out.println("Game proxy initialized ... ");
 		// TODO not sure if 3 is gonna be enough if separate thread is required for
 		// each schedule call ... 
-		var timer = new ConcExecutorTimer(3);
+		// Then again currently I have only 3 "scheduleable" actions: move, build
+		// and attack/defend
+		var timer = new ConcurrentExecutorTimer(3);
 		var fieldFactory = HexagonField.getFactory();
 		Model model = new GameModel(timer, fieldFactory);
 

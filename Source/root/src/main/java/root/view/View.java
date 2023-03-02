@@ -36,6 +36,7 @@ public interface View extends ViewEventProducer, CommandDrivenComponent {
 
 	GraphicsContext getTopLayerGraphicContext();
 
+	// TODO refactor to use root.view.color
 	Color getBackgroundColor();
 
 	void setMenuVisibility(boolean visibility);

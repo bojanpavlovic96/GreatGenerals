@@ -58,6 +58,9 @@ public abstract class FieldOption implements Runnable {
 	// every available option. Still issues with the current approach. 
 	public abstract FieldOption getCopy();
 
+	// TODO refactor to accept two fields (selected and focused)
+	// With the current implementation setSecondaryField has to be called 
+	// before isAdequate check 
 	public abstract boolean isAdequateFor(Field field);
 
 }

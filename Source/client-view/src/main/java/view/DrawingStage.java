@@ -142,14 +142,13 @@ public class DrawingStage extends Stage implements View {
 				config.fieldMenuWidth,
 				config.fieldMenuHeight);
 
-		// TODO hardcoded ... 
-		this.descriptionMenu = new DescriptionMenu(400, 300);
+		this.descriptionMenu = new DescriptionMenu(config.descriptionWidth,
+				config.descriptionHeight);
 
-		// this.mainOptionsMenu.setLayoutX(100);
-		// this.mainOptionsMenu.setLayoutY(100);
 		this.mainOptionsMenu.setVisible(true);
-
 		this.submenu.setVisible(true);
+
+		this.descriptionMenu.setVisible(true);
 
 		this.root.getChildren().add(this.mainOptionsMenu);
 		this.root.getChildren().add(this.submenu);

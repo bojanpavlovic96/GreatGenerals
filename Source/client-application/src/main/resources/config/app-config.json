@@ -7,6 +7,7 @@
 	"defaultLanguage": "en",
 	"headerImagePath": "/battle_draw.jpg",
 	"formConfig": {
+		"infoMessageDuration": 3,
 		"titleFontSize": 20,
 		"titleFont": "Tlwg Typewriter Bold",
 		"messageFontSize": 14,
@@ -22,6 +23,8 @@
 		},
 		"fieldMenuWidth": 200,
 		"fieldMenuHeight": 300,
+		"descriptionWidth": 330,
+		"descriptionHeight": 300,
 		"fieldHeight": 80,
 		"fieldWidth": 30,
 		"fieldBorderWidth": 2

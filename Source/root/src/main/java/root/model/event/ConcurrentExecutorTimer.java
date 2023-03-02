@@ -8,12 +8,12 @@ import java.util.concurrent.TimeUnit;
 
 import root.ActiveComponent;
 
-public class ConcExecutorTimer implements Timer, ActiveComponent {
+public class ConcurrentExecutorTimer implements Timer, ActiveComponent {
 
 	private ScheduledExecutorService executor;
 
-	public ConcExecutorTimer(int threadCount) {
-		
+	public ConcurrentExecutorTimer(int threadCount) {
+
 		this.executor = Executors.newScheduledThreadPool(threadCount);
 		// remove task from waiting queue after it is cancelled
 		((ScheduledThreadPoolExecutor) this.executor).setRemoveOnCancelPolicy(true);

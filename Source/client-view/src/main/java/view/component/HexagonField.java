@@ -390,17 +390,19 @@ public class HexagonField implements ViewField {
 
 	}
 
-	// TODO this should return the list of DescMenuItem 
-	// or just DescriptionItem(s)
-
 	@Override
 	public List<DescriptionItem> getDescription() {
 
 		var descriptions = new ArrayList<DescriptionItem>();
 
 		var terrainDesc = new DescMenuItem("Terrain",
-				Arrays.asList(terrain.terrainName, "Intensity: " + terrain.intensity),
-				null);
+				Arrays.asList(
+						"Name: " + terrain.terrainName,
+						"Intensity: " + terrain.intensity),
+				ResourceManager.getInstance().constructTerrainKey(
+						terrain.terrainName,
+						(int) terrain.intensity));
+
 		descriptions.add(terrainDesc);
 
 		if (this.unit != null) {

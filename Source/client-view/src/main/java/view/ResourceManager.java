@@ -50,7 +50,7 @@ public class ResourceManager {
 	// type included
 	private String concreteAssetsPath;
 
-	// unit/terrain-name-range <- key format
+	// [unit|terrain]-name-range <- key format
 	private Map<String, Image> assets;
 
 	private JSONArray unitsList;
@@ -111,7 +111,10 @@ public class ResourceManager {
 
 			terrain = this.terrainsList.getJSONObject(index);
 
-			for (int range = terrain.getInt("range-start"); range <= terrain.getInt("range-end"); range++) {
+			var start = terrain.getInt("range-start");
+			var end = terrain.getInt("range-end");
+
+			for (int range = start; range <= end; range++) {
 
 				this.assets.put(this.constructTerrainKey(terrain.getString("name"), range),
 						new Image("/" + TERRAINS_PATH
@@ -228,7 +231,7 @@ public class ResourceManager {
 
 	}
 
-	private String constructTerrainKey(String terrainName, int intensity) {
+	public String constructTerrainKey(String terrainName, int intensity) {
 
 		return ResourceManager.TERRAIN_KEY_PREFIX + terrainName + "-" + this.scaleIntensity(intensity);
 
@@ -241,10 +244,16 @@ public class ResourceManager {
 
 	}
 
-	private String constructUnitKey(String unitName) {
+	public String constructUnitKey(String unitName) {
 
 		return ResourceManager.UNIT_KEY_PREFIX + unitName;
 
 	}
+
+	public Image getByKey(String key) {
+		return assets.get(key);
+	}
+
+	// TODO add attack stuff as well ... 
 
 }

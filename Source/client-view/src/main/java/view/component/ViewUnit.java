@@ -93,7 +93,7 @@ public class ViewUnit {
 						"Health: " + health,
 						"MoveType: " + moveType,
 						"MoveSpeed: " + moveSpeed),
-				null);
+				ResourceManager.getInstance().constructUnitKey(unitName));
 	}
 
 	public List<DescMenuItem> describeAttacks() {

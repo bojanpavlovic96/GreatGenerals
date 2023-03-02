@@ -10,7 +10,6 @@ import root.communication.messages.components.MoveDesc;
 import root.communication.messages.components.UnitDesc;
 import root.controller.Controller;
 import root.model.Model;
-import root.model.PlayerData;
 import view.command.ClearViewCommand;
 import view.command.LoadBoardCommand;
 

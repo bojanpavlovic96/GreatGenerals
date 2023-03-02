@@ -74,7 +74,7 @@ namespace RabbitGameServer.Game
 			handlers.Add(ModelEventType.DefendModelEvent, handleDefendEvent);
 		}
 
-		public Message AddModelEvent(ModelEvent newEvent)
+		public Message? AddModelEvent(ModelEvent newEvent)
 		{
 			Console.WriteLine("Handling new model event ... ");
 			recEventsCnt++;
@@ -83,6 +83,7 @@ namespace RabbitGameServer.Game
 			if (handlers.TryGetValue(newEvent.type, out handler))
 			{
 				Console.WriteLine($"Handler for {newEvent.type.ToString()} found ...  ");
+
 				return handler.Invoke(newEvent);
 			}
 			else
@@ -102,7 +103,6 @@ namespace RabbitGameServer.Game
 			Console.WriteLine($"AvailableUnits: {config.Units.Count}");
 			Console.WriteLine($"AvailableMoves: {config.Moves.Count}");
 			Console.WriteLine($"AvailableAttacks: {config.Attacks.Count}");
-			Console.WriteLine($"attack: {config.Attacks[0].type.ToString()}");
 
 			return new InitializeMessage(RoomName,
 				e.playerName,
@@ -223,7 +223,7 @@ namespace RabbitGameServer.Game
 			{
 				Console.WriteLine("Defender or attacked do not exist on this fields ... ");
 
-				return new Abort
+				return null;
 			}
 
 			attackerField.unit.health -= defense.defenseDmg;
