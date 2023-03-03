@@ -2,7 +2,7 @@ package app.form;
 
 import app.resource_manager.Language;
 import app.resource_manager.AppConfig;
-import app.resource_manager.StringResourceManager;
+import app.resource_manager.StringRegistry;
 import javafx.animation.PauseTransition;
 import javafx.application.Platform;
 import javafx.geometry.Insets;
@@ -29,6 +29,8 @@ public class HeaderForm extends VBox implements MessageDisplay, HasLabels {
 
 	private FormConfig config;
 
+	private StringRegistry stringRegistry;
+
 	private Language language;
 
 	private Label statusMessage;
@@ -49,15 +51,19 @@ public class HeaderForm extends VBox implements MessageDisplay, HasLabels {
 
 	// methods
 
-	public HeaderForm(FormConfig config, double imgWidth, double imgHeight) {
+	public HeaderForm(FormConfig config,
+			StringRegistry stringRegistry,
+			double imgWidth,
+			double imgHeight) {
 		super();
 
 		this.config = config;
+		this.stringRegistry = stringRegistry;
 
 		imageWidth = imgWidth;
 		imageHeight = imgHeight;
 
-		this.language = StringResourceManager.getLanguage();
+		this.language = stringRegistry.getLanguage();
 
 		var duration = Duration.seconds(config.infoMessageDuration);
 		this.infoMessageTimer = new PauseTransition(duration);
@@ -90,9 +96,8 @@ public class HeaderForm extends VBox implements MessageDisplay, HasLabels {
 		this.infoMessage = new Label();
 		this.infoMessage.setFont(this.messageFont);
 
-		var imagePath = AppConfig.getInstance().headerImagePath;
 		this.image = new ImageView(
-				new Image(imagePath,
+				new Image(config.headerImagePath,
 						this.imageWidth,
 						this.imageHeight,
 						false,
@@ -112,7 +117,7 @@ public class HeaderForm extends VBox implements MessageDisplay, HasLabels {
 
 		VBox.setMargin(this.image, new Insets(5, 0, 0, 0));
 
-		StringResourceManager.subscribeForLanguageChange(this);
+		stringRegistry.subscribeForLanguageChange(this);
 	}
 
 	// MessageDisplay interface

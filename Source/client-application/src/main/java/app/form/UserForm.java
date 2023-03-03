@@ -3,7 +3,7 @@ package app.form;
 import app.event.FormMessageHandler;
 import app.event.UserFormActionHandler;
 import app.resource_manager.Language;
-import app.resource_manager.StringResourceManager;
+import app.resource_manager.StringRegistry;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
@@ -31,6 +31,8 @@ public class UserForm extends VBox
 	private final String FONT_NAME = "Tlwg Typewriter Bold";
 	private final int FONT_SIZE = 15;
 
+	private StringRegistry stringRegistry;
+
 	private Language language;
 
 	private Label usernameLb;
@@ -52,9 +54,11 @@ public class UserForm extends VBox
 
 	// methods
 
-	public UserForm() {
+	public UserForm(StringRegistry stringRegistry) {
 
-		this.language = StringResourceManager.getLanguage();
+		this.stringRegistry = stringRegistry;
+
+		this.language = stringRegistry.getLanguage();
 
 		this.setAlignment(Pos.TOP_CENTER);
 
@@ -102,7 +106,7 @@ public class UserForm extends VBox
 
 		VBox.setMargin(this.loginBtn, new Insets(10, 0, 5, 0));
 
-		StringResourceManager.subscribeForLanguageChange(this);
+		stringRegistry.subscribeForLanguageChange(this);
 	}
 
 	private void setHandlers() {

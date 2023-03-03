@@ -3,7 +3,7 @@ package app.form;
 import app.event.FormMessageHandler;
 import app.event.RoomFormActionHandler;
 import app.resource_manager.Language;
-import app.resource_manager.StringResourceManager;
+import app.resource_manager.StringRegistry;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -34,6 +34,8 @@ public class RoomForm extends VBox
 
 	private final String FONT_NAME = "Tlwg Typewriter Bold";
 	private final int FONT_SIZE = 15;
+
+	private StringRegistry stringRegistry;
 
 	private Language language;
 
@@ -70,9 +72,10 @@ public class RoomForm extends VBox
 
 	// private GameReadyHandler onStartGame;
 
-	public RoomForm() {
+	public RoomForm(StringRegistry stringRegistry) {
 
-		this.language = StringResourceManager.getLanguage();
+		this.stringRegistry = stringRegistry;
+		this.language = stringRegistry.getLanguage();
 
 		this.setAlignment(Pos.TOP_CENTER);
 
@@ -189,7 +192,7 @@ public class RoomForm extends VBox
 
 		// VBox.setMargin(this.startGameBtn, new Insets(10, 0, 0, 5));
 
-		StringResourceManager.subscribeForLanguageChange(this);
+		stringRegistry.subscribeForLanguageChange(this);
 	}
 
 	private void setHandlers() {

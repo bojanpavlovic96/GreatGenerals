@@ -57,7 +57,7 @@ public class ClearPathFieldOption extends FieldOption {
 	@Override
 	public boolean isAdequateFor(Field selectedField, Field targetField) {
 		return (selectedField.getUnit() != null &&
-				controller.isOwner(selectedField.getUnit().getOwner().getUsername())&&
+				controller.isOwner(selectedField.getUnit().getOwner().getUsername()) &&
 				selectedField.getUnit().getMove() != null &&
 				selectedField.getUnit().getMove().getPath() != null &&
 				selectedField.getUnit().getMove().getPath().size() > 0);

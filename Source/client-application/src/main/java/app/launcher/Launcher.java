@@ -2,6 +2,7 @@ package app.launcher;
 
 import app.form.StartForm;
 import app.resource_manager.AppConfig;
+import app.resource_manager.StringRegistry;
 import controller.GameBrain;
 import controller.command.SwitchCaseMsgInterpreter;
 import javafx.application.Application;
@@ -64,8 +65,13 @@ public class Launcher extends Application {
 				protocolTranslator);
 
 		var formConfig = AppConfig.getInstance().formConfig;
+		var langConfig = AppConfig.getInstance().langConfig;
 
-		startPageController = new StartPageController(new StartForm(formConfig),
+		var stringRegistry = new StringRegistry(langConfig);
+
+		var startForm = new StartForm(formConfig, langConfig, stringRegistry);
+
+		startPageController = new StartPageController(startForm,
 				loginProxy,
 				roomProxy,
 				this::startTheGame);

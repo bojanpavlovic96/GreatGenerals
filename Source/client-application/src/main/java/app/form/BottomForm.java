@@ -1,8 +1,8 @@
 package app.form;
 
 import app.resource_manager.Language;
-import app.resource_manager.AppConfig;
-import app.resource_manager.StringResourceManager;
+import app.resource_manager.LangConfig;
+import app.resource_manager.StringRegistry;
 import javafx.application.Platform;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
@@ -10,6 +10,7 @@ import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListCell;
 import javafx.scene.layout.HBox;
+import root.view.FormConfig;
 
 public class BottomForm extends HBox implements HasLabels {
 
@@ -19,10 +20,20 @@ public class BottomForm extends HBox implements HasLabels {
 
 	private final String color = "#993300";
 
+	private FormConfig formConfig;
+	private LangConfig langConfig;
+	private StringRegistry stringRegistry;
+
 	private Label versionLabel;
 	private ComboBox<String> langBox;
 
-	public BottomForm() {
+	public BottomForm(FormConfig formConfig, 
+		LangConfig langConfig, 
+		StringRegistry stringRegistry) {
+
+		this.formConfig = formConfig;
+		this.langConfig = langConfig;
+		this.stringRegistry = stringRegistry;
 
 		this.initForm();
 	}
@@ -63,20 +74,19 @@ public class BottomForm extends HBox implements HasLabels {
 			cell.setOnMousePressed(e -> {
 				if (!cell.isEmpty()) {
 					System.out.println("Language switched to: " + cell.getText());
-					StringResourceManager.setLanguage(cell.getText());
+					stringRegistry.setLanguage(cell.getText());
 				}
 			});
 
 			return cell;
 		});
 
-		this.langBox.getItems().addAll(AppConfig.getInstance().languages);
-		this.langBox.setValue(AppConfig.getInstance().defaultLanguage);
+		this.langBox.getItems().addAll(langConfig.languages);
+		this.langBox.setValue(langConfig.defaultLanguage);
 
-		this.loadLabels(StringResourceManager.getLanguage());
+		this.loadLabels(stringRegistry.getLanguage());
 
-		StringResourceManager.subscribeForLanguageChange(this);
-
+		stringRegistry.subscribeForLanguageChange(this);
 	}
 
 	@Override

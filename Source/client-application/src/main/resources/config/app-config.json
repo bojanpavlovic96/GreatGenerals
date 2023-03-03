@@ -1,12 +1,14 @@
 {
-	"languages": [
-		"en",
-		"fr",
-		"gr"
-	],
-	"defaultLanguage": "en",
-	"headerImagePath": "/battle_draw.jpg",
+	"langConfig": {
+		"languages": [
+			"en",
+			"fr",
+			"gr"
+		],
+		"defaultLanguage": "en"
+	},
 	"formConfig": {
+		"headerImagePath": "/battle_draw.jpg",
 		"infoMessageDuration": 3,
 		"titleFontSize": 20,
 		"titleFont": "Tlwg Typewriter Bold",

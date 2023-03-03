@@ -2,6 +2,8 @@ package root.view;
 
 public class FormConfig {
 
+	public String headerImagePath;
+
 	public int infoMessageDuration;
 
 	public int titleFontSize;

@@ -6,18 +6,13 @@ import java.nio.charset.StandardCharsets;
 
 import com.google.common.io.Resources;
 
-import root.communication.parser.DataParser;
 import root.communication.parser.GsonJsonParser;
 
-public class ConfigLoader {
-
-	private static DataParser configParser;
+public class JsonResLoader {
 
 	public static <T> T load(String configPath, Class<T> configType) {
 
-		if (configParser == null) {
-			configParser = new GsonJsonParser();
-		}
+		var configParser = new GsonJsonParser();
 
 		URL url = Resources.getResource(configPath);
 		String txtConfig = "";

@@ -6,8 +6,9 @@ import java.awt.Toolkit;
 import app.event.RoomFormActionHandler;
 import app.event.StartGameEventHandler;
 import app.event.UserFormActionHandler;
+import app.resource_manager.LangConfig;
 import app.resource_manager.Language;
-import app.resource_manager.StringResourceManager;
+import app.resource_manager.StringRegistry;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.geometry.Insets;
@@ -27,6 +28,9 @@ public class StartForm extends Stage implements InitialPage, HasLabels {
 	private double HEIGHT = 640;
 
 	private FormConfig config;
+	private LangConfig langConfig;
+
+	private StringRegistry stringRegistry;
 
 	private VBox mainContainer;
 	private Scene mainScene;
@@ -49,9 +53,14 @@ public class StartForm extends Stage implements InitialPage, HasLabels {
 
 	// methods
 
-	public StartForm(FormConfig config) {
+	public StartForm(FormConfig config,
+			LangConfig langConfig,
+			StringRegistry stringRegistry) {
 
 		this.config = config;
+		this.langConfig = langConfig;
+
+		this.stringRegistry = stringRegistry;
 
 		initStage();
 
@@ -103,14 +112,14 @@ public class StartForm extends Stage implements InitialPage, HasLabels {
 
 	private void initHeader() {
 
-		this.headerForm = new HeaderForm(config, this.WIDTH, 125);
+		this.headerForm = new HeaderForm(config, stringRegistry, this.WIDTH, 125);
 		this.mainContainer.getChildren().add(this.headerForm);
 		this.headerForm.managedProperty();
 
 	}
 
 	private void initUserForm() {
-		this.userForm = new UserForm();
+		this.userForm = new UserForm(stringRegistry);
 
 		// both handlers only call appropriate method from initial page
 		// (show info/status message)
@@ -126,14 +135,14 @@ public class StartForm extends Stage implements InitialPage, HasLabels {
 	}
 
 	private void initRoomForm() {
-		this.roomForm = new RoomForm();
+		this.roomForm = new RoomForm(stringRegistry);
 
 		this.mainContainer.getChildren().add(this.roomForm);
 	}
 
 	private void initStartButton() {
 
-		language = StringResourceManager.getLanguage();
+		language = stringRegistry.getLanguage();
 		startButton = new Button(language.startGame);
 		// font = new Font(this.FONT_NAME, this.FONT_SIZE);
 		// startButton.setFont(font);
@@ -148,7 +157,7 @@ public class StartForm extends Stage implements InitialPage, HasLabels {
 
 	private void initBottomForm() {
 
-		this.bottomForm = new BottomForm();
+		this.bottomForm = new BottomForm(config, langConfig, stringRegistry);
 
 		this.mainContainer.getChildren().add(this.bottomForm);
 
