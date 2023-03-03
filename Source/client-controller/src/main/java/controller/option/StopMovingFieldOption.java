@@ -37,10 +37,10 @@ public class StopMovingFieldOption extends FieldOption {
 	}
 
 	@Override
-	public boolean isAdequateFor(Field field) {
-		return (field.getUnit() != null &&
-				field.getUnit().getMove() != null &&
-				field.getUnit().getMove().isMoving());
+	public boolean isAdequateFor(Field selectedField, Field targetField) {
+		return (selectedField.getUnit() != null &&
+				selectedField.getUnit().getMove() != null &&
+				selectedField.getUnit().getMove().isMoving());
 	}
 
 }

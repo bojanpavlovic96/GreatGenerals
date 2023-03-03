@@ -27,7 +27,7 @@ public interface Field extends ModelEventProducer {
 
 	List<FieldOption> getEnabledOptions();
 
-	void adjustOptionsFor(Field secondField);
+	List<FieldOption> adjustOptionsFor(Field secondField);
 
 	List<Point2D> getNeighbours(int r);
 }

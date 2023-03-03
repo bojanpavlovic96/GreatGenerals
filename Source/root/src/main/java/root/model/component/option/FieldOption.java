@@ -61,6 +61,6 @@ public abstract class FieldOption implements Runnable {
 	// TODO refactor to accept two fields (selected and focused)
 	// With the current implementation setSecondaryField has to be called 
 	// before isAdequate check 
-	public abstract boolean isAdequateFor(Field field);
+	public abstract boolean isAdequateFor(Field selectedField, Field targetField);
 
 }

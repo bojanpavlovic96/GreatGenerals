@@ -47,8 +47,8 @@ public class ShowFieldMenuCommand extends Command {
 		Menu menu = view.getMainOptionsMenu();
 		menu.clearOptions();
 
-		selectedField.adjustOptionsFor(targetField);
-		menu.populateWith(selectedField.getEnabledOptions());
+		var enabledOptions = selectedField.adjustOptionsFor(targetField);
+		menu.populateWith(enabledOptions);
 
 		view.setMenuPosition(new Point2D(
 				viewTarget.getFieldCenter().getX(),

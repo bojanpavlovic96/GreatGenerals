@@ -149,25 +149,19 @@ public class HexagonField implements Field {
 	}
 
 	@Override
-	public void adjustOptionsFor(Field secondField) {
+	public List<FieldOption> adjustOptionsFor(Field secondField) {
 
-		// options.stream()
-		// 	.filter((option) -> {
-		// 		option.setSecondaryField(secondField);
-		// 		return option.isAdequateFor(this);
-		// 	})
-		// 	.
+		var adequate = options.stream()
+				.filter((option) -> option.isAdequateFor(this, secondField))
+				.collect(Collectors.toList());
 
-		for (FieldOption option : this.options) {
+		adequate.stream().forEach((option) -> {
 			option.setSecondaryField(secondField);
+			option.enableOption();
+		});
 
-			if (option.isAdequateFor(this)) {
-				option.enableOption();
-			} else {
-				option.disableOption();
-			}
+		return adequate;
 
-		}
 	}
 
 	@Override

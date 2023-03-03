@@ -116,8 +116,8 @@ public class AttackFieldOption extends FieldOption {
 	}
 
 	@Override
-	public boolean isAdequateFor(Field field) {
-		return (field.getUnit() != null && field.getUnit().hasAttack(name));
+	public boolean isAdequateFor(Field selectedField, Field targetField) {
+		return (selectedField.getUnit() != null && selectedField.getUnit().hasAttack(name));
 	}
 
 	private List<Field> findDestinations(int maxRange) {

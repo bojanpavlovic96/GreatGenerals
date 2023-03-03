@@ -22,7 +22,7 @@ public class AbortAttackFieldOption extends FieldOption {
 	}
 
 	@Override
-	public boolean isAdequateFor(Field field) {
+	public boolean isAdequateFor(Field selectedField, Field targetField) {
 		return false;
 	}
 

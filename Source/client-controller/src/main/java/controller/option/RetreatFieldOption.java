@@ -58,11 +58,11 @@ public class RetreatFieldOption extends FieldOption {
 	}
 
 	@Override
-	public boolean isAdequateFor(Field field) {
-		return (field.getUnit() != null &&
-				controller.isOwner(field.getUnit().getOwner().getUsername()) &&
-				field.getUnit().isAttacking() &&
-				field.getUnit().getMove() != null);
+	public boolean isAdequateFor(Field selectedField, Field targetField) {
+		return (selectedField.getUnit() != null &&
+				controller.isOwner(selectedField.getUnit().getOwner().getUsername()) &&
+				selectedField.getUnit().isAttacking() &&
+				selectedField.getUnit().getMove() != null);
 	}
 
 }

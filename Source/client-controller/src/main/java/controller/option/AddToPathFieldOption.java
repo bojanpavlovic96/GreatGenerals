@@ -72,12 +72,12 @@ public class AddToPathFieldOption extends FieldOption {
 	}
 
 	@Override
-	public boolean isAdequateFor(Field field) {
-		return (field.getUnit() != null &&
-				controller.isOwner(field.getUnit().getOwner().getUsername()) &&
-				field != getSecondaryField() &&
-				field.getUnit().getMove() != null &&
-				getSecondaryField().getUnit() == null);
+	public boolean isAdequateFor(Field selectedField, Field targetField) {
+		return (selectedField.getUnit() != null &&
+				controller.isOwner(selectedField.getUnit().getOwner().getUsername()) &&
+				selectedField != targetField &&
+				selectedField.getUnit().getMove() != null &&
+				targetField.getUnit() == null);
 	}
 
 }

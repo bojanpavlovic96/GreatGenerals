@@ -67,12 +67,14 @@ public class MoveFieldOption extends FieldOption {
 	}
 
 	@Override
-	public boolean isAdequateFor(Field field) {
-		return (field.getUnit() != null
-				&& field.getUnit().getMove() != null
-				&& field.getUnit().getMove().getPath() != null
-				&& field.getUnit().getMove().getPath().size() > 0
-				&& !field.getUnit().getMove().isMoving());
+	public boolean isAdequateFor(Field selectedField, Field targetField) {
+
+		return (selectedField.getUnit() != null &&
+				controller.isOwner(selectedField.getUnit().getOwner().getUsername()) &&
+				selectedField.getUnit().getMove() != null &&
+				selectedField.getUnit().getMove().getPath() != null &&
+				selectedField.getUnit().getMove().getPath().size() > 0 &&
+				!selectedField.getUnit().getMove().isMoving());
 	}
 
 }
