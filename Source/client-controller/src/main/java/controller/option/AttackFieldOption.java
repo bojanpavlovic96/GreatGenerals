@@ -16,10 +16,6 @@ public class AttackFieldOption extends FieldOption {
 	public Attack attack;
 
 	public AttackFieldOption(Controller gameController, Attack attack) {
-		// TODO instead of just passing type which will represent attack name
-		// maybe form some string with damage and range
-		// or create custom FieldOptions which would have more data then
-		// just a simple button with the label
 		super(attack.type, gameController);
 
 		this.attack = attack;

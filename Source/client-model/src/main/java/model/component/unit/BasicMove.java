@@ -3,7 +3,7 @@ package model.component.unit;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
 
-import model.event.MoveModelEventArg;
+import model.intention.MoveIntention;
 import root.model.action.move.Move;
 import root.model.action.move.PathFinder;
 import root.model.component.Field;
@@ -68,7 +68,7 @@ public class BasicMove extends Move implements Runnable {
 		System.out.println("Move event raised ... ");
 		movingFuture = null;
 
-		onEvent.handleModelEvent(new MoveModelEventArg(
+		onEvent.handleModelEvent(new MoveIntention(
 				path.get(0).getPlayer().getUsername(),
 				path.get(0).getStoragePosition(),
 				path.get(1).getStoragePosition()));

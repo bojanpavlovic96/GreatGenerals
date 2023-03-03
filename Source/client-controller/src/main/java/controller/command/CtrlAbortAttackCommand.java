@@ -14,7 +14,7 @@ public class CtrlAbortAttackCommand extends Command {
 
 	@Override
 	public void run() {
-
+		System.out.println("Executing abortAttackCommand ... ");
 		var controller = (Controller) targetComponent;
 		var sourceField = controller.getModel().getField(sourcePosition);
 
@@ -23,15 +23,18 @@ public class CtrlAbortAttackCommand extends Command {
 			return;
 		}
 
-		var iAmAttacking = controller.isOwner(sourceField.getPlayer().getUsername());
+		var iAmAttacking = controller.isOwner(sourceField.getUnit().getOwner().getUsername());
 
-		if (iAmAttacking) {
-			sourceField.getUnit().deactivateAttack();
-		} else {
-			var defendedField = sourceField.getUnit().getActiveAttack().getTarget();
-			defendedField.getUnit().deactivateDefense();
+		if (!iAmAttacking) {
+			System.out.println("Defense aborted ...");
+			if (sourceField.getUnit().isAttacking()) {
+				var defendedField = sourceField.getUnit().getActiveAttack().getTarget();
+				defendedField.getUnit().deactivateDefense();
+			}
 		}
 
+		System.out.println("Attack aborted ...");
+		sourceField.getUnit().deactivateAttack();
 	}
 
 	@Override

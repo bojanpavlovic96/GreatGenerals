@@ -189,7 +189,7 @@ public class HexagonField implements ViewField {
 		return position;
 	}
 
-	// TODO fix borders overwriting (or don't ... )
+	// Fix borders overwriting (or don't ... )
 	private void drawBorders(GraphicsContext gc) {
 
 		gc.save();

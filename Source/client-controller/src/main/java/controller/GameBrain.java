@@ -9,10 +9,9 @@ import controller.option.AddToPathFieldOption;
 import controller.option.AttacksSubmenuFieldOption;
 import controller.option.ClearPathFieldOption;
 import controller.option.MoveFieldOption;
-import controller.option.RetreatFieldOption;
 import controller.option.SelectPathFieldOption;
 import controller.option.StopMovingFieldOption;
-import model.event.ReadyForInitEvent;
+import model.intention.ReadyForInitIntention;
 import root.ActiveComponent;
 import root.command.BasicCommandProcessor;
 import root.command.Command;
@@ -27,7 +26,7 @@ import root.model.Model;
 import root.model.PlayerData;
 import root.model.component.Field;
 import root.model.component.option.FieldOption;
-import root.model.event.ModelEventArg;
+import root.model.event.ClientIntention;
 import root.model.event.ModelEventHandler;
 import root.view.View;
 import root.view.event.ViewEventArg;
@@ -90,7 +89,7 @@ public class GameBrain implements Controller {
 		// This may be a bit hacky way of doing it since getUsername/roomName methods
 		// are added to the interface just for this case. 
 		// Doesn't break anything I guess ... 
-		var readyEvent = new ReadyForInitEvent(
+		var readyEvent = new ReadyForInitIntention(
 				serverProxy.getUsername(),
 				serverProxy.getRoomName());
 
@@ -247,7 +246,6 @@ public class GameBrain implements Controller {
 
 		fieldOptions.add(new AttacksSubmenuFieldOption(this));
 		fieldOptions.add(new AbortAttackFieldOption(this));
-		fieldOptions.add(new RetreatFieldOption(this));
 	}
 
 	// getters and setters
@@ -295,7 +293,7 @@ public class GameBrain implements Controller {
 	}
 
 	@Override
-	public void handleModelEvent(ModelEventArg eventArg) {
+	public void handleModelEvent(ClientIntention eventArg) {
 		this.serverProxy.sendIntention(eventArg);
 	}
 

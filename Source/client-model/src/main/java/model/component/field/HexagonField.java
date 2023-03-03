@@ -161,7 +161,6 @@ public class HexagonField implements Field {
 		});
 
 		return adequate;
-
 	}
 
 	@Override

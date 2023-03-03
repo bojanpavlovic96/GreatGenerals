@@ -5,7 +5,7 @@ using RabbitGameServer.SharedModel.ModelEvents;
 
 namespace RabbitGameServer.Mediator
 {
-	public class MapMessageToEventRequest : IRequest<ModelEvent>
+	public class MapMessageToEventRequest : IRequest<ClientIntention>
 	{
 		public Message message;
 

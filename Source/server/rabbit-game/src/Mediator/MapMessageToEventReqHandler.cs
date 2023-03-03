@@ -5,44 +5,49 @@ using RabbitGameServer.SharedModel.ModelEvents;
 
 namespace RabbitGameServer.Mediator
 {
-	public class MapMessageToEventReqHandler
-		: IRequestHandler<MapMessageToEventRequest, ModelEvent>
+	public class MapMessageToIntentionReqHandler
+		: IRequestHandler<MapMessageToEventRequest, ClientIntention>
 	{
 
-		public Task<ModelEvent> Handle(MapMessageToEventRequest request,
+		public Task<ClientIntention> Handle(MapMessageToEventRequest request,
 			CancellationToken cancellationToken)
 		{
 
 			switch (request.message.type)
 			{
 				case MessageType.ReadyForInitMsg:
-					return Task.FromResult<ModelEvent>(new ReadyForInitModelEvent(
+					return Task.FromResult<ClientIntention>(new ReadyForInitIntention(
 						request.message.username,
 						request.message.roomName));
 
 				case MessageType.MoveMessage:
-					return Task.FromResult<ModelEvent>(new MoveModelEvent(
+					return Task.FromResult<ClientIntention>(new MoveIntention(
 						((MoveMessage)request.message).username,
 						((MoveMessage)request.message).startFieldPos,
 						((MoveMessage)request.message).endFieldPos));
 
 				case MessageType.AttackMessage:
-					return Task.FromResult<ModelEvent>(new AttackModelEvent(
+					return Task.FromResult<ClientIntention>(new AttackIntention(
 						request.message.username,
 						Enum.Parse<AttackType>(((AttackMessage)request.message).attackType),
 						((AttackMessage)request.message).startFieldPos,
 						((AttackMessage)request.message).endFieldPos));
 
 				case MessageType.DefendMessage:
-					return Task.FromResult<ModelEvent>(new DefendModelEvent(
+					return Task.FromResult<ClientIntention>(new DefendIntention(
 						request.message.username,
 						Enum.Parse<AttackType>(((DefendMessage)request.message).defendType),
 						((DefendMessage)request.message).startFieldPos,
 						((DefendMessage)request.message).endFieldPos));
 
+				case MessageType.AbortAttackMessage:
+					return Task.FromResult<ClientIntention>(new AbortAttackIntention(
+						request.message.username,
+						((AbortAttackMessage)request.message).unitPosition));
+
 				default:
 					Console.WriteLine($"Failed to map message-{request.message.type.ToString()} to modelEvent ... ");
-					return Task.FromResult<ModelEvent>(null); ;
+					return Task.FromResult<ClientIntention>(null); ;
 			};
 
 		}

@@ -2,6 +2,6 @@ package root.model.event;
 
 public interface ModelEventHandler {
 
-	void handleModelEvent(ModelEventArg eventArgument);
+	void handleModelEvent(ClientIntention eventArgument);
 
 }

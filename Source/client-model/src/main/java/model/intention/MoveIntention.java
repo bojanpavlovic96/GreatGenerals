@@ -1,17 +1,17 @@
-package model.event;
+package model.intention;
 
 import root.Point2D;
-import root.model.event.ModelEventArg;
+import root.model.event.ClientIntention;
 
-public class MoveModelEventArg extends ModelEventArg {
+public class MoveIntention extends ClientIntention {
 
 	private Point2D sourceField;
 	private Point2D destinationField;
 
-	public MoveModelEventArg(String playerName,
+	public MoveIntention(String playerName,
 			Point2D sourceField,
 			Point2D destinationField) {
-		super(ModelEventArg.ModelEventType.Move, playerName);
+		super(ClientIntentionType.Move, playerName);
 
 		setSourceField(sourceField);
 		setDestinationField(destinationField);

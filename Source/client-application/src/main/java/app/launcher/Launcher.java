@@ -102,7 +102,7 @@ public class Launcher extends Application {
 				roomName);
 
 		System.out.println("Game proxy initialized ... ");
-		// TODO not sure if 3 is gonna be enough if separate thread is required for
+		// Not sure if 3 is gonna be enough if separate thread is required for
 		// each schedule call ... 
 		// Then again currently I have only 3 "scheduleable" actions: move, build
 		// and attack/defend

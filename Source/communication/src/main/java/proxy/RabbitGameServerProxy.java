@@ -14,7 +14,7 @@ import root.command.CommandQueue;
 import root.communication.GameServerProxy;
 import root.communication.MessageInterpreter;
 import root.communication.ProtocolTranslator;
-import root.model.event.ModelEventArg;
+import root.model.event.ClientIntention;
 
 public class RabbitGameServerProxy implements GameServerProxy,
 		Consumer,
@@ -135,7 +135,7 @@ public class RabbitGameServerProxy implements GameServerProxy,
 	}
 
 	@Override
-	public boolean sendIntention(ModelEventArg modelEvent) {
+	public boolean sendIntention(ClientIntention modelEvent) {
 
 		if (channel == null) {
 			// Channel is gonna be created at each CONNECTION event 
@@ -163,14 +163,14 @@ public class RabbitGameServerProxy implements GameServerProxy,
 					route,
 					null,
 					bytePayload);
-			System.out.println("Publishing modelEvent on: ");
+			System.out.println("Publishing intention on: ");
 			System.out.println("\ttopic: " + topic);
 			System.out.println("\troute: " + route);
 
 		} catch (IOException e) {
 			e.printStackTrace();
 			// debug
-			System.out.println("Failed to publish client event: "
+			System.out.println("Failed to publish intention: "
 					+ modelEvent.getClass().getName());
 			System.out.println("Exc message: " + e.getMessage());
 			return false;

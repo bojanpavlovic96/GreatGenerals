@@ -3,18 +3,18 @@ using RabbitGameServer.Game;
 
 namespace RabbitGameServer.Mediator
 {
-	public class ModelEventReqHandler : IRequestHandler<ModelEventRequest, Unit>
+	public class ClientIntentionReqHandler : IRequestHandler<ClientIntentionRequest, Unit>
 	{
 		private IMediator mediator;
 		private IGamePool pool;
 
-		public ModelEventReqHandler(IMediator mediator, IGamePool gamePool)
+		public ClientIntentionReqHandler(IMediator mediator, IGamePool gamePool)
 		{
 			this.mediator = mediator;
 			this.pool = gamePool;
 		}
 
-		public Task<Unit> Handle(ModelEventRequest request,
+		public Task<Unit> Handle(ClientIntentionRequest request,
 			CancellationToken cancellationToken)
 		{
 
@@ -32,7 +32,7 @@ namespace RabbitGameServer.Mediator
 
 			Console.WriteLine("Message mapped to model event ... ");
 
-			var message = game.AddModelEvent(modelEvent);
+			var message = game.AddIntention(modelEvent);
 
 			if (message == null)
 			{

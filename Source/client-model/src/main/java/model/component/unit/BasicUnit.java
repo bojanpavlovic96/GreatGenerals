@@ -141,6 +141,7 @@ public class BasicUnit implements Unit, ModelEventProducer {
 	@Override
 	public void deactivateAttack() {
 		if (this.activeAttack != null) {
+			System.out.println(activeAttack.type + " -> deactivated ... ");
 			this.activeAttack.stopAttack();
 			this.activeAttack.setTarget(null);
 		}

@@ -66,6 +66,12 @@ public class CtrlAttackCommand extends Command {
 				attack.attack();
 			} else {
 
+				// This is done so that if attacker abort attack, in CtrlAbortAttackCommand 
+				// I (as the one defending) can see what was that unit's target. 
+				var attacker = startField.getUnit();
+				attacker.activateAttack(attack);
+				attacker.getActiveAttack().setTarget(endField);
+
 				var dist = controller.getModel().distance(startField, endField);
 				var inDefenseRange = dist <= endField.getUnit().getDefense().defenseRange;
 

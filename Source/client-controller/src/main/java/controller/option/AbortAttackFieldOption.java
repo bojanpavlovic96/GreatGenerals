@@ -1,5 +1,6 @@
 package controller.option;
 
+import model.intention.AbortAttackIntention;
 import root.controller.Controller;
 import root.model.component.Field;
 import root.model.component.option.FieldOption;
@@ -14,7 +15,15 @@ public class AbortAttackFieldOption extends FieldOption {
 
 	@Override
 	public void run() {
-	}	
+
+		System.out.println("Abort attack field option ... ");
+		
+		var position = getPrimaryField().getStoragePosition();
+		var user = getPrimaryField().getUnit().getOwner().getUsername();
+
+		var intention = new AbortAttackIntention(position, user);
+		controller.getServerProxy().sendIntention(intention);
+	}
 
 	@Override
 	public FieldOption getCopy() {
@@ -23,7 +32,9 @@ public class AbortAttackFieldOption extends FieldOption {
 
 	@Override
 	public boolean isAdequateFor(Field selectedField, Field targetField) {
-		return false;
+		return (selectedField.getUnit() != null &&
+				controller.isOwner(selectedField.getUnit().getOwner().getUsername()) &&
+				selectedField.getUnit().isAttacking());
 	}
 
 }

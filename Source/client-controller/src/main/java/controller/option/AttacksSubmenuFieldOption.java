@@ -39,14 +39,12 @@ public class AttacksSubmenuFieldOption extends FieldOption {
 
 	@Override
 	public boolean isAdequateFor(Field selectedField, Field targetField) {
-		var notTheSame = selectedField != targetField;
-		var hasAttack = selectedField.getUnit() != null && selectedField.getUnit().hasAttacks();
-		var hasOpponent = targetField.getUnit() != null;
 
-		return (notTheSame &&
-				hasAttack &&
-				hasOpponent &&
-				!controller.isOwner(secondaryField.getUnit().getOwner().getUsername()));
+		return (selectedField != targetField &&
+				selectedField.getUnit() != null &&
+				selectedField.getUnit().hasAttacks() &&
+				targetField.getUnit() != null &&
+				!controller.isOwner(targetField.getUnit().getOwner().getUsername()));
 	}
 
 }

@@ -3,12 +3,12 @@ using RabbitGameServer.SharedModel.Messages;
 
 namespace RabbitGameServer.Mediator
 {
-	public class ModelEventRequest : IRequest<Unit>
+	public class ClientIntentionRequest : IRequest<Unit>
 	{
 
 		public Message message;
 
-		public ModelEventRequest(Message message)
+		public ClientIntentionRequest(Message message)
 		{
 			this.message = message;
 		}

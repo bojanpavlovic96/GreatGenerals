@@ -134,7 +134,7 @@ namespace RabbitGameServer.Service
 		{
 			var message = protocolTranslator.ToMessage(ea.Body.ToArray());
 
-			var request = new ModelEventRequest(message);
+			var request = new ClientIntentionRequest(message);
 			mediator.Send(request, masterToken).Wait();
 			// I guess .Wait is so that all events are processed and executed in the
 			// order they were received but since there is single channel/receiver

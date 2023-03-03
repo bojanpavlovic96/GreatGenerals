@@ -1,7 +1,7 @@
 
 namespace RabbitGameServer.SharedModel.ModelEvents
 {
-	public class DefendModelEvent : ModelEvent
+	public class DefendIntention : ClientIntention
 	{
 
 		public AttackType defenseType;
@@ -9,11 +9,11 @@ namespace RabbitGameServer.SharedModel.ModelEvents
 		public Point2D sourceField;
 		public Point2D destinationField;
 
-		public DefendModelEvent(string name,
+		public DefendIntention(string name,
 			AttackType defenseType,
 			Point2D sourceField,
 			Point2D destinationField)
-			: base(ModelEventType.DefendModelEvent, name)
+			: base(ClientIntentionType.Defend, name)
 		{
 
 			this.defenseType = defenseType;

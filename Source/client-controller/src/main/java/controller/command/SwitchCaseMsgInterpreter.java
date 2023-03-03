@@ -1,8 +1,9 @@
 package controller.command;
 
-import model.event.AttackModelEventArg;
-import model.event.DefendModelEventArg;
-import model.event.MoveModelEventArg;
+import model.intention.AbortAttackIntention;
+import model.intention.AttackIntention;
+import model.intention.DefendIntention;
+import model.intention.MoveIntention;
 
 import root.command.Command;
 import root.communication.MessageInterpreter;
@@ -17,7 +18,7 @@ import root.communication.messages.MoveMsg;
 import root.communication.messages.ReadyForInitMsg;
 import root.communication.messages.RecalculatePathMsg;
 import root.communication.messages.ServerErrorMsg;
-import root.model.event.ModelEventArg;
+import root.model.event.ClientIntention;
 
 public class SwitchCaseMsgInterpreter implements MessageInterpreter {
 
@@ -93,24 +94,27 @@ public class SwitchCaseMsgInterpreter implements MessageInterpreter {
 	// endregion
 
 	@Override
-	public Message ToMessage(ModelEventArg eventArg) {
-		switch (eventArg.getEventType()) {
+	public Message ToMessage(ClientIntention intention) {
+		switch (intention.getEventType()) {
 			case Attack:
 				return new AttackMsg(
-						((AttackModelEventArg) eventArg).attackType,
-						((AttackModelEventArg) eventArg).getSourceField(),
-						((AttackModelEventArg) eventArg).getDestinationField());
+						((AttackIntention) intention).attackType,
+						((AttackIntention) intention).getSourceField(),
+						((AttackIntention) intention).getDestinationField());
 
 			case Defend:
 				return new DefendMsg(
-						((DefendModelEventArg) eventArg).defenseType,
-						((DefendModelEventArg) eventArg).sourceField,
-						((DefendModelEventArg) eventArg).destinationField);
+						((DefendIntention) intention).defenseType,
+						((DefendIntention) intention).sourceField,
+						((DefendIntention) intention).destinationField);
 
 			case Move:
 				return new MoveMsg(
-						((MoveModelEventArg) eventArg).getSourceField(),
-						((MoveModelEventArg) eventArg).getDestinationField());
+						((MoveIntention) intention).getSourceField(),
+						((MoveIntention) intention).getDestinationField());
+
+			case AbortAttack:
+				return new AbortAttackMsg(((AbortAttackIntention) intention).position);
 
 			case ReadyForInit:
 				// username and roomName are already present in the Message super-class

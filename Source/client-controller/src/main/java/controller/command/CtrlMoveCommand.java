@@ -173,7 +173,6 @@ public class CtrlMoveCommand extends Command {
 		}
 
 		return;
-
 	}
 
 	private Function<Command, Boolean> getCommandMatchLambda(Field targetField) {

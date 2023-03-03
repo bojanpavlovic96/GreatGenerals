@@ -1,17 +1,17 @@
-package model.event;
+package model.intention;
 
 import root.Point2D;
-import root.model.event.ModelEventArg;
+import root.model.event.ClientIntention;
 
-public class AttackModelEventArg extends ModelEventArg {
+public class AttackIntention extends ClientIntention {
 
 	public String attackType;
 
 	public Point2D sourceField;
 	public Point2D destinationField;
 
-	public AttackModelEventArg(String attackType, String playerName, Point2D srcField, Point2D destField) {
-		super(ModelEventArg.ModelEventType.Attack, playerName);
+	public AttackIntention(String attackType, String playerName, Point2D srcField, Point2D destField) {
+		super(ClientIntentionType.Attack, playerName);
 
 		this.attackType = attackType;
 		this.sourceField = srcField;

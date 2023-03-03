@@ -13,7 +13,6 @@ public class ClearPathFieldOption extends FieldOption {
 
 	public ClearPathFieldOption(Controller gameController) {
 		super(ClearPathFieldOption.Name, gameController);
-
 	}
 
 	@Override

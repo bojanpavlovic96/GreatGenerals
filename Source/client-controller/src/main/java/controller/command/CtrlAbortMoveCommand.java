@@ -20,7 +20,6 @@ public class CtrlAbortMoveCommand extends Command {
 		if (field.getUnit() != null && field.getUnit().getMove() != null) {
 			field.getUnit().getMove().stopMoving();
 		}
-		// TODO do I clear the path as well ... ? 
 	}
 
 	@Override

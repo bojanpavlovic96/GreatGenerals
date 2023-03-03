@@ -3,8 +3,8 @@ package model.component.unit;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
 
-import model.event.AttackModelEventArg;
-import model.event.DefendModelEventArg;
+import model.intention.AttackIntention;
+import model.intention.DefendIntention;
 import root.model.action.attack.Attack;
 import root.model.event.Timer;
 
@@ -51,7 +51,7 @@ public class BasicAttack extends Attack {
 		var attackerField = attacker.getField().getStoragePosition();
 		var targetField = target.getStoragePosition();
 
-		onEvent.handleModelEvent(new AttackModelEventArg(this.type, username, attackerField, targetField));
+		onEvent.handleModelEvent(new AttackIntention(this.type, username, attackerField, targetField));
 	}
 
 	@Override
@@ -78,7 +78,7 @@ public class BasicAttack extends Attack {
 		var targetField = target.getStoragePosition();
 
 		System.out.println("All data gathered ... ");
-		var event = new DefendModelEventArg(this.type, username, attackerField, targetField);
+		var event = new DefendIntention(this.type, username, attackerField, targetField);
 		System.out.println("Event created ... ");
 
 		if (onEvent == null) {

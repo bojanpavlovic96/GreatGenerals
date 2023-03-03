@@ -7,6 +7,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.PriorityQueue;
 import java.util.Set;
 
 import root.model.Model;
@@ -33,11 +34,17 @@ public class AStar implements PathFinder {
 		// final int size = graph.getVertices().size(); // used to size data structures
 		// appropriately
 
+		// Estimated total cost from start to goal through y.
+		final Map<Field, Double> fScore = new HashMap<Field, Double>();
+
+		final Comparator<Field> comparator = (o1, o2) -> {
+			return Double.compare(fScore.get(o1), fScore.get(o2));
+		};
 		// The set of nodes already evaluated.
 		final Set<Field> closedSet = new HashSet<Field>();
 		// The set of tentative nodes to be evaluated, initially containing
 		// the start node
-		final List<Field> openSet = new ArrayList<Field>();
+		final PriorityQueue<Field> openSet = new PriorityQueue<Field>(comparator);
 
 		Field starting_node = start;
 		openSet.add(starting_node);
@@ -49,9 +56,6 @@ public class AStar implements PathFinder {
 		final Map<Field, Integer> gScore = new HashMap<Field, Integer>();
 		gScore.put(starting_node, 0);
 
-		// Estimated total cost from start to goal through y.
-		final Map<Field, Double> fScore = new HashMap<Field, Double>();
-
 		for (Field v : dataModel.getFields())
 			fScore.put(v, (double) Integer.MAX_VALUE);
 
@@ -61,27 +65,13 @@ public class AStar implements PathFinder {
 
 		// Comparator<Field> comparator = (f1, f2) -> ((Double) fScore.get(f1)).compareTo(fScore.get(f2));
 
-		final Comparator<Field> comparator = new Comparator<Field>() {
-
-			public int compare(Field o1, Field o2) {
-
-				if (fScore.get(o1) < fScore.get(o2))
-					return -1;
-				if (fScore.get(o2) < fScore.get(o1))
-					return 1;
-
-				return 0;
-			}
-		};
-
 		while (!openSet.isEmpty()) {
 
-			final Field current = openSet.get(0);
+			final Field current = openSet.remove();
 
 			if (current.equals(goal))
 				return reconstructPath(cameFrom, goal_node);
 
-			openSet.remove(0);
 			closedSet.add(current);
 			for (Field neighbor : dataModel.getFreeNeighbours(current, 1)) { // current is Field should be field
 
@@ -107,16 +97,9 @@ public class AStar implements PathFinder {
 						+ heuristicCostEstimate(dataModel, neighbor, goal_node);
 				fScore.put(neighbor, estimatedFScore);
 
-				// TODO refactor this so that the openSet is priorityQueue.
-				// In the case when better path is found and gScore has to be updated
-				// (using the priority queue) field has to be removed from the queue 
-				// first, gScore updated and field then put back so that the queue 
-				// remain the right order. This action might cost more than removing
-				// from standard list but again this cases will be rare since paths 
-				// are mostly gonna be straight forward. 
-
 				// fScore has changed, re-sort the list
-				Collections.sort(openSet, comparator);
+				// Used at the time when openSet was impelmented as a simple list. 
+				// Collections.sort(openSet, comparator);
 			}
 		}
 

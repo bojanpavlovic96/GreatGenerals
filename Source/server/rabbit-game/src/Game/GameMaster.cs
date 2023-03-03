@@ -8,7 +8,7 @@ namespace RabbitGameServer.Game
 {
 	public delegate void GameDoneHandler(GameMaster gameMaster);
 
-	public delegate Message ModelEventHandler(ModelEvent e);
+	public delegate Message ModelEventHandler(ClientIntention e);
 
 	public class GameMaster
 	{
@@ -31,7 +31,7 @@ namespace RabbitGameServer.Game
 
 		private List<Color> availableColors;
 
-		private Dictionary<ModelEventType, ModelEventHandler> handlers;
+		private Dictionary<ClientIntentionType, ModelEventHandler> handlers;
 
 		public GameMaster(string roomName,
 					string password,
@@ -67,14 +67,15 @@ namespace RabbitGameServer.Game
 
 		private void initHandlers()
 		{
-			handlers = new Dictionary<ModelEventType, ModelEventHandler>();
-			handlers.Add(ModelEventType.ReadyForInitEvent, handleInitRequest);
-			handlers.Add(ModelEventType.MoveModelEvent, handleMoveEvent);
-			handlers.Add(ModelEventType.AttackModelEvent, handleAttackEvent);
-			handlers.Add(ModelEventType.DefendModelEvent, handleDefendEvent);
+			handlers = new Dictionary<ClientIntentionType, ModelEventHandler>();
+			handlers.Add(ClientIntentionType.ReadyForInit, handleInitRequest);
+			handlers.Add(ClientIntentionType.Move, handleMove);
+			handlers.Add(ClientIntentionType.Attack, handleAttack);
+			handlers.Add(ClientIntentionType.Defend, handleDefend);
+			handlers.Add(ClientIntentionType.AbortAttack, handleAbortAttack);
 		}
 
-		public Message? AddModelEvent(ModelEvent newEvent)
+		public Message? AddIntention(ClientIntention newEvent)
 		{
 			Console.WriteLine("Handling new model event ... ");
 			recEventsCnt++;
@@ -97,7 +98,7 @@ namespace RabbitGameServer.Game
 
 		// region separate event handlers
 
-		private Message handleInitRequest(ModelEvent e)
+		private Message handleInitRequest(ClientIntention e)
 		{
 			Console.WriteLine("Handling ready for init request ... ");
 			Console.WriteLine($"AvailableUnits: {config.Units.Count}");
@@ -113,10 +114,10 @@ namespace RabbitGameServer.Game
 				Fields.Values.ToList());
 		}
 
-		private Message handleMoveEvent(ModelEvent e)
+		private Message handleMove(ClientIntention e)
 		{
 			Console.WriteLine("Handling move event ... ");
-			var mev = (MoveModelEvent)e;
+			var mev = (MoveIntention)e;
 
 			var endField = getField(mev.destinationField);
 			if (endField != null)
@@ -171,12 +172,12 @@ namespace RabbitGameServer.Game
 			return (field.unit != null);
 		}
 
-		private Message handleAttackEvent(ModelEvent e)
+		private Message handleAttack(ClientIntention e)
 		{
-			var attackEvent = (AttackModelEvent)e;
+			var attackIntention = (AttackIntention)e;
 
-			var attackerField = getField(attackEvent.sourceField);
-			var targetField = getField(attackEvent.destinationField);
+			var attackerField = getField(attackIntention.sourceField);
+			var targetField = getField(attackIntention.destinationField);
 
 			if (attackerField.unit == null || targetField.unit == null)
 			{
@@ -184,10 +185,10 @@ namespace RabbitGameServer.Game
 
 				return new AbortAttackMessage(e.playerName,
 					RoomName,
-					((AttackModelEvent)e).sourceField);
+					((AttackIntention)e).sourceField);
 			}
 
-			var attack = getAttack(attackEvent.attackType);
+			var attack = getAttack(attackIntention.attackType);
 
 			// Ignore the range check since distance is calculated based on the 
 			// fieldManager implementation which is at this point still 
@@ -206,13 +207,13 @@ namespace RabbitGameServer.Game
 			return new AttackMessage(e.playerName,
 				RoomName,
 				attack.type.ToString(),
-				attackEvent.sourceField,
-				attackEvent.destinationField);
+				attackIntention.sourceField,
+				attackIntention.destinationField);
 		}
 
-		private Message handleDefendEvent(ModelEvent e)
+		private Message handleDefend(ClientIntention e)
 		{
-			var defendEvent = (DefendModelEvent)e;
+			var defendEvent = (DefendIntention)e;
 
 			var attackedField = getField(defendEvent.sourceField);
 			var attackerField = getField(defendEvent.destinationField);
@@ -243,6 +244,22 @@ namespace RabbitGameServer.Game
 				defendEvent.destinationField);
 		}
 
+		private Message handleAbortAttack(ClientIntention e)
+		{
+			var abortIntention = (AbortAttackIntention)e;
+
+			var attackerField = getField(abortIntention.position);
+
+			if (attackerField.unit == null)
+			{
+				Console.WriteLine("Failed to abort attack ... ");
+				return null;
+			}
+
+			return new AbortAttackMessage(abortIntention.playerName,
+				RoomName,
+				abortIntention.position);
+		}
 
 		private Attack getAttack(AttackType wantedType)
 		{

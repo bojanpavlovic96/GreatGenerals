@@ -1,13 +1,13 @@
 namespace RabbitGameServer.SharedModel.ModelEvents
 {
-	public class MoveModelEvent : ModelEvent
+	public class MoveIntention : ClientIntention
 	{
 
 		public Point2D sourceField;
 		public Point2D destinationField;
 
-		public MoveModelEvent(string playerName, Point2D sField, Point2D dField)
-			: base(ModelEventType.MoveModelEvent, playerName)
+		public MoveIntention(string playerName, Point2D sField, Point2D dField)
+			: base(ClientIntentionType.Move, playerName)
 		{
 
 			this.sourceField = sField;

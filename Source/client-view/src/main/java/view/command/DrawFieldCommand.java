@@ -8,12 +8,12 @@ import root.view.field.ViewField;
 
 public class DrawFieldCommand extends Command {
 
-	private Field model;
+	private Field fieldModel;
 	private ViewField viewField;
 
 	public DrawFieldCommand(Field model) {
 
-		this.model = model;
+		this.fieldModel = model;
 
 	}
 
@@ -21,19 +21,19 @@ public class DrawFieldCommand extends Command {
 	public void setTargetComponent(CommandDrivenComponent target) {
 		super.setTargetComponent(target);
 
-		this.viewField = ((View) super.targetComponent).convertToViewField(this.model);
+		this.viewField = ((View) super.targetComponent).convertToViewField(this.fieldModel);
 
 	}
 
 	public void run() {
-		// TODO this looks like a good spot to pass resource/asset manager
+		// This looks like a good spot to pass resource/asset manager
 		// to the viewField (resource manager will load images or "assets")
 		this.viewField.drawOn(((View) super.targetComponent).getMainGraphicContext());
 	}
 
 	@Override
 	public Command getAntiCommand() {
-		return new ClearFieldCommand(this.model);
+		return new ClearFieldCommand(this.fieldModel);
 	}
 
 }
