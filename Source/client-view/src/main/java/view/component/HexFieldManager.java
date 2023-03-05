@@ -34,8 +34,8 @@ public class HexFieldManager implements ViewFieldManager {
 	}
 
 	@Override
-	public Point2D calcRealPosition(Point2D storage_position) {
-		return HexagonField.calcRealPosition(storage_position, this.fieldHeight / 2);
+	public Point2D calcRealPosition(Point2D storagePosition) {
+		return HexagonField.calcRealPosition(storagePosition, this.fieldHeight / 2);
 	}
 
 	@Override

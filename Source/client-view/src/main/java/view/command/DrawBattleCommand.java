@@ -39,15 +39,14 @@ public class DrawBattleCommand extends Command {
 		System.out.println("\t angle: " + angle);
 		System.out.println("\t dist: " + dist);
 
-		gc.translate(viewSField.getFieldCenter().x, viewEField.getFieldCenter().y);
+		gc.translate(viewSField.getFieldCenter().x, viewSField.getFieldCenter().y);
 		gc.rotate(angle);
 
 		var hOffset = view.getFieldWidth() / 2;
 		var arrowLen = dist - 2 * hOffset;
 		var arrowHeight = 0.8 * view.getFieldHeight();
 
-		// gc.drawImage(arrow, hOffset, 0 - (arrowHeight / 2), arrowLen, arrowHeight);
-		gc.drawImage(arrow, 0, 0 - (arrow.getHeight() / 2), dist, view.getFieldHeight());
+		gc.drawImage(arrow, hOffset, 0 - (arrowHeight / 2), arrowLen, arrowHeight);
 
 		gc.restore();
 
@@ -65,7 +64,13 @@ public class DrawBattleCommand extends Command {
 		double x_diff = a.x - b.x;
 		double y_diff = a.y - b.y;
 
-		return Math.toDegrees(Math.atan(y_diff / x_diff));
+		var value = Math.toDegrees(Math.atan(y_diff / x_diff));
+
+		if (b.x <= a.x) {
+			value = 180 + value;
+		}
+
+		return value;
 	}
 
 	@Override

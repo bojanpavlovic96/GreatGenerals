@@ -94,7 +94,7 @@ public class AStar implements PathFinder {
 							+ heuristicCostEstimate(dataModel, neighbor, goalNode);
 					fScore.put(neighbor, estimatedFScore);
 
-					if(alreadyFound){
+					if (alreadyFound) {
 						openSet.remove(neighbor);
 					}
 
@@ -102,7 +102,7 @@ public class AStar implements PathFinder {
 					// Discover a new node
 					// else if (tenativeGScore >= gScore.get(neighbor))
 					// 	continue;
-				} 
+				}
 				// fScore has changed, re-sort the list
 				// Used at the time when openSet was impelmented as a simple list. 
 				// Collections.sort(openSet, comparator);

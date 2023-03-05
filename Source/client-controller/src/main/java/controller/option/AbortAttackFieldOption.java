@@ -17,7 +17,7 @@ public class AbortAttackFieldOption extends FieldOption {
 	public void run() {
 
 		System.out.println("Abort attack field option ... ");
-		
+
 		var position = getPrimaryField().getStoragePosition();
 		var user = getPrimaryField().getUnit().getOwner().getUsername();
 
