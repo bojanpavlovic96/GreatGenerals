@@ -4,6 +4,7 @@ import root.Point2D;
 import root.command.Command;
 import root.command.CommandDrivenComponent;
 import root.model.component.Field;
+import view.command.ClearBattleCommand;
 import view.command.ClearFieldCommand;
 import view.command.DrawFieldCommand;
 import view.command.ShowFieldDescription;
@@ -41,7 +42,6 @@ public class CtrlDefendCommand extends Command {
 	public void run() {
 		var controller = (Controller) targetComponent;
 
-		// handle when before receiving thi 
 		var defense = startField.getUnit().getDefense();
 		endField.getUnit().defendFromWith(defense);
 
@@ -60,6 +60,7 @@ public class CtrlDefendCommand extends Command {
 			var viewQueue = controller.getView().getCommandQueue();
 			viewQueue.enqueue(new ClearFieldCommand(endField));
 			viewQueue.enqueue(new DrawFieldCommand(endField));
+			viewQueue.enqueue(new ClearBattleCommand(controller.getModel().getFields()));
 		} else {
 
 			var dist = controller.getModel().distance(startField, endField);

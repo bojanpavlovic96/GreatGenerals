@@ -27,7 +27,6 @@ public class ViewUnit {
 	private List<AttackInfo> attacks;
 
 	private String activeAttack;
-
 	private String defense;
 
 	private String opponentName;
@@ -108,7 +107,7 @@ public class ViewUnit {
 	}
 
 	public DescMenuItem describeActiveAttack() {
-		if (activeAttack == null) {
+		if (!isAttacking()) {
 			return null;
 		}
 
@@ -127,24 +126,34 @@ public class ViewUnit {
 	public DescMenuItem describeDefense() {
 		if (defense == null) {
 			return null;
-		} else if (opponentName != null) {
-			// If defense is not null and opponents data is set it means that 
-			// we are under the attack.
-			return new DescMenuItem("Defense",
-					Arrays.asList(
-							"Defending from: " + opponentName,
-							"With: " + defense,
-							"OpponentHealth: " + opponentHealth,
-							"OpponentAttack: " + opponentAttack.name,
-							"\t dmg: " + opponentAttack.attackDmg,
-							"\t cooldown: " + opponentAttack.attackCooldown,
-							"\t range: " + opponentAttack.attackRange),
-					null);
 		} else {
-			// We have prepared defense but nobody is attacking us. 
-			return new DescMenuItem("Defense", Arrays.asList(defense), null);
+			if (isDefending()) {
+				// If activeAttack is not null but the opponents data is set it means 
+				// that  we are under the attack.
+				return new DescMenuItem("Defense",
+						Arrays.asList(
+								"Defending from: " + opponentName,
+								"With: " + defense,
+								"OpponentHealth: " + opponentHealth,
+								"OpponentAttack: " + opponentAttack.name,
+								"\t dmg: " + opponentAttack.attackDmg,
+								"\t cooldown: " + opponentAttack.attackCooldown,
+								"\t range: " + opponentAttack.attackRange),
+						null);
+			} else {
+				// We have prepared defense but nobody is attacking us. 
+				return new DescMenuItem("Defense", Arrays.asList(defense), null);
+			}
 		}
 
+	}
+
+	public boolean isAttacking() {
+		return this.activeAttack != null;
+	}
+
+	public boolean isDefending() {
+		return this.activeAttack == null && this.opponentName != null;
 	}
 
 	public Color getHighlightColor() {

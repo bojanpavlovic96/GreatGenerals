@@ -59,9 +59,9 @@ public class AStar implements PathFinder {
 		for (Field v : dataModel.getFields())
 			fScore.put(v, (double) Integer.MAX_VALUE);
 
-		Field goal_node = goal;
+		Field goalNode = goal;
 
-		fScore.put(starting_node, heuristicCostEstimate(dataModel, starting_node, goal_node));
+		fScore.put(starting_node, heuristicCostEstimate(dataModel, starting_node, goalNode));
 
 		// Comparator<Field> comparator = (f1, f2) -> ((Double) fScore.get(f1)).compareTo(fScore.get(f2));
 
@@ -70,7 +70,7 @@ public class AStar implements PathFinder {
 			final Field current = openSet.remove();
 
 			if (current.equals(goal))
-				return reconstructPath(cameFrom, goal_node);
+				return reconstructPath(cameFrom, goalNode);
 
 			closedSet.add(current);
 			for (Field neighbor : dataModel.getFreeNeighbours(current, 1)) { // current is Field should be field
@@ -85,18 +85,24 @@ public class AStar implements PathFinder {
 
 				final int tenativeGScore = gScore.get(current) + 1;
 
-				if (!openSet.contains(neighbor))
-					openSet.add(neighbor); // Discover a new node
-				else if (tenativeGScore >= gScore.get(neighbor))
-					continue;
+				var alreadyFound = openSet.contains(neighbor);
 
-				// This path is the best until now. Record it!
-				cameFrom.put(neighbor, current);
-				gScore.put(neighbor, tenativeGScore);
-				final double estimatedFScore = gScore.get(neighbor)
-						+ heuristicCostEstimate(dataModel, neighbor, goal_node);
-				fScore.put(neighbor, estimatedFScore);
+				if (!alreadyFound || tenativeGScore < gScore.get(neighbor)) {
+					cameFrom.put(neighbor, current);
+					gScore.put(neighbor, tenativeGScore);
+					double estimatedFScore = gScore.get(neighbor)
+							+ heuristicCostEstimate(dataModel, neighbor, goalNode);
+					fScore.put(neighbor, estimatedFScore);
 
+					if(alreadyFound){
+						openSet.remove(neighbor);
+					}
+
+					openSet.add(neighbor);
+					// Discover a new node
+					// else if (tenativeGScore >= gScore.get(neighbor))
+					// 	continue;
+				} 
 				// fScore has changed, re-sort the list
 				// Used at the time when openSet was impelmented as a simple list. 
 				// Collections.sort(openSet, comparator);

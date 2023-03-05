@@ -12,9 +12,7 @@ public class LoadBoardCommand extends Command {
 	private List<Field> models;
 
 	public LoadBoardCommand(List<Field> fields) {
-
 		this.models = fields;
-
 	}
 
 	public void run() {
@@ -39,17 +37,17 @@ public class LoadBoardCommand extends Command {
 
 		((View) targetComponent).adjustCanvasSize(new Point2D(most_x, most_y));
 
-		ClearViewCommand clear_command = new ClearViewCommand();
-		clear_command.setTargetComponent(targetComponent);
-		clear_command.run();
+		ClearViewCommand clearCommand = new ClearViewCommand();
+		clearCommand.setTargetComponent(targetComponent);
+		clearCommand.run();
 
-		DrawFieldCommand draw_hex_comm = null;
+		DrawFieldCommand drawFieldCommand = null;
 
 		for (Field field : models) {
 
-			draw_hex_comm = new DrawFieldCommand(field);
-			draw_hex_comm.setTargetComponent(targetComponent);
-			draw_hex_comm.run();
+			drawFieldCommand = new DrawFieldCommand(field);
+			drawFieldCommand.setTargetComponent(targetComponent);
+			drawFieldCommand.run();
 
 		}
 

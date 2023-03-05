@@ -32,6 +32,10 @@ public class ResourceManager {
 	static private final String UNIT_KEY_PREFIX = "unit-";
 	static private final String TERRAIN_KEY_PREFIX = "terrain-";
 
+	static private final String DEFAULT_ARROW = "arrow";
+	static private final String DEFAULT_ARROW_PATH = "assets/default/arrow.png";
+	static private final String DEFAULT_BATTLE_ICON_PATH = "assets/default/battle.png";
+
 	// #region singletonStuff
 	// instance
 	static private ResourceManager instance;
@@ -53,6 +57,10 @@ public class ResourceManager {
 	// [unit|terrain]-name-range <- key format
 	private Map<String, Image> assets;
 
+	private Map<String, Image> attackArrows;
+
+	private Image battleIcon;
+
 	private JSONArray unitsList;
 	private JSONArray terrainsList;
 
@@ -69,6 +77,23 @@ public class ResourceManager {
 		this.concreteAssetsPath = ResourceManager.ASSETS_PATH
 				+ "/"
 				+ ResourceManager.ASSETS_TYPE;
+
+		attackArrows = new HashMap<>();
+		var arrow = new Image(DEFAULT_ARROW_PATH);
+		if (arrow != null) {
+			System.out.println("Loaded arrow ... ");
+		} else {
+			System.out.println("Failed to load arrow ... ");
+		}
+		attackArrows.put(DEFAULT_ARROW, arrow);
+
+		battleIcon = new Image(DEFAULT_BATTLE_ICON_PATH);
+
+		if (battleIcon != null) {
+			System.out.println("Loaded attack icon ... ");
+		} else {
+			System.out.println("Failed to load  attack icon ... ");
+		}
 
 		this.loadTerrainsList();
 		this.loadUnitsList();
@@ -255,5 +280,14 @@ public class ResourceManager {
 	}
 
 	// TODO add attack stuff as well ... 
+
+	public Image getBattleArrow(String attackType) {
+		// attackType IS ignored 
+		return attackArrows.get(DEFAULT_ARROW);
+	}
+
+	public Image getBattleIcon() {
+		return battleIcon;
+	}
 
 }

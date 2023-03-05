@@ -6,7 +6,6 @@ import java.util.List;
 
 import javafx.geometry.Point3D;
 import javafx.scene.canvas.GraphicsContext;
-import javafx.scene.image.Image;
 import root.Point2D;
 import root.model.component.Field;
 import root.view.Color;
@@ -15,6 +14,7 @@ import root.view.menu.DescriptionItem;
 import view.ResourceManager;
 import view.component.menu.DescMenuItem;
 
+// TODO all the logic from this cllas shold be inside the fieldManager/hexagonFieldManager
 public class HexagonField implements ViewField {
 
 	// axial representation with two values q & r
@@ -34,7 +34,8 @@ public class HexagonField implements ViewField {
 	private ViewTerrain terrain;
 	private ViewUnit unit;
 
-	private List<ViewUnit> unitsInBattle;
+	private String activeAttack;
+	private Point2D attackedField;
 
 	private double sideSize;
 	private double borderWidth;
@@ -49,6 +50,11 @@ public class HexagonField implements ViewField {
 			double fieldHeight,
 			double fieldBorder) {
 
+		this.hexWidth = fieldWidth;
+		this.hexHeight = fieldHeight;
+
+		this.sideSize = this.calculateHexSideSize(fieldHeight);
+
 		this.storagePosition = model.getStoragePosition();
 
 		// is visible just returns visibility field from Field
@@ -57,17 +63,31 @@ public class HexagonField implements ViewField {
 		if (model.getTerrain() != null)
 			this.terrain = new ViewTerrain(model.getTerrain());
 
-		if (model.getUnit() != null)
+		// this.unitsInBattle = new ArrayList<ViewUnit>();
+
+		if (model.getUnit() != null) {
 			this.unit = new ViewUnit(model.getUnit());
 
-		this.unitsInBattle = new ArrayList<ViewUnit>();
+			if (model.getUnit().isAttacking()) {
+				activeAttack = model.getUnit().getActiveAttack().type;
+				var target = model.getUnit().getActiveAttack().getTarget().getStoragePosition();
+				System.out.println("\t actuall arrow target: " + target);
+				attackedField = HexagonField.calcRealPosition(target, this.sideSize);
+				System.out.println("\t rea2d: " + attackedField);
+			}
 
-		this.hexWidth = fieldWidth;
-		this.hexHeight = fieldHeight;
+			// if (model.getUnit().isAttacking()) {
+			// 	unitsInBattle.add(this.unit);
+			// 	var targetUnit = model.getUnit().getActiveAttack().getTarget().getUnit();
+			// 	unitsInBattle.add(new ViewUnit(targetUnit));
+			// } else if (model.getUnit().isDefending()) {
+			// 	var attacker = model.getUnit().getDefense().getTarget().getUnit();
+			// 	unitsInBattle.add(new ViewUnit(attacker));
+			// 	unitsInBattle.add(new ViewUnit(model.getUnit()));
+			// }
+		}
 
 		this.borderColor = model.getPlayer().getColor();
-
-		this.sideSize = this.calculateHexSideSize(fieldHeight);
 
 		this.borderWidth = fieldBorder;
 
@@ -250,14 +270,14 @@ public class HexagonField implements ViewField {
 	private void drawUnit(GraphicsContext gc) {
 
 		if (this.unit != null) {
-			if (this.unitsInBattle.isEmpty()) {
+			this.unit.drawUnit(gc, this.getFieldCenter(), this.getSideSize());
+			this.paintField(gc, this.unit.getHighlightColor());
 
-				this.unit.drawUnit(gc, this.getFieldCenter(), this.getSideSize());
-				this.paintField(gc, this.unit.getHighlightColor());
+			// TODO remove draw battle method 
+			// if (this.activeAttack != null) {
+			// 	this.drawBattleArrow(gc);
+			// }
 
-			} else {
-				this.drawBattle(gc);
-			}
 		}
 
 	}
@@ -327,23 +347,45 @@ public class HexagonField implements ViewField {
 		gc.restore();
 	}
 
-	public void drawBattle(GraphicsContext gc) {
+	public void drawBattleArrow(GraphicsContext gc) {
 
-		this.clearField(gc);
-
-		// attention wrong way
-		Image image = ResourceManager.getInstance().getUnit("battle");
+		var arrow = ResourceManager.getInstance().getBattleArrow("");
+		var angle = angle(hexCenter, attackedField);
 
 		gc.save();
 
-		gc.drawImage(image,
-				getFieldCenter().getX() - this.getSideSize() / 2,
-				getFieldCenter().getY() - this.getSideSize() / 2,
-				this.getSideSize(),
-				this.getSideSize());
+		var dist = distance(hexCenter, attackedField);
+
+		System.out.println("\t Battle arrow: ");
+		System.out.println("\t from: " + hexCenter + " to: " + attackedField);
+		System.out.println("\t angle: " + angle);
+		System.out.println("\t dist: " + dist);
+
+		gc.translate(hexCenter.x, hexCenter.y);
+		gc.rotate(angle);
+
+		var hOffset = hexWidth / 2;
+		var arrowLen = dist - 2 * hOffset;
+		var arrowHeight = 0.8 * hexHeight;
+
+		gc.drawImage(arrow, hOffset, 0 - (arrowHeight / 2), arrowLen, arrowHeight);
 
 		gc.restore();
 
+	}
+
+	private double distance(Point2D a, Point2D b) {
+		double x_diff = Math.abs(a.x - b.x);
+		double y_diff = Math.abs(a.y - b.y);
+		return Math.sqrt(Math.pow(x_diff, 2) + Math.pow(y_diff, 2));
+	}
+
+	private double angle(Point2D a, Point2D b) {
+
+		double x_diff = a.x - b.x;
+		double y_diff = a.y - b.y;
+
+		return Math.toDegrees(Math.atan(y_diff / x_diff));
 	}
 
 	// getters and setters

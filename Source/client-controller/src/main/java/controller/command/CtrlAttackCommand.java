@@ -5,7 +5,9 @@ import root.command.Command;
 import root.command.CommandDrivenComponent;
 import root.controller.Controller;
 import root.model.component.Field;
+import view.command.ClearBattleCommand;
 import view.command.ClearFieldCommand;
+import view.command.DrawBattleCommand;
 import view.command.DrawFieldCommand;
 import view.command.ShowFieldDescription;
 
@@ -43,6 +45,11 @@ public class CtrlAttackCommand extends Command {
 	public void run() {
 		var controller = (Controller) super.getTargetComponent();
 
+		// drawing over with every attack ... 
+		controller.getView()
+				.getCommandQueue()
+				.enqueue(new DrawBattleCommand(startField, endField));
+
 		var attack = startField.getUnit().getAttack(attackType);
 		endField.getUnit().attackWith(attack);
 
@@ -61,6 +68,7 @@ public class CtrlAttackCommand extends Command {
 			var viewQueue = controller.getView().getCommandQueue();
 			viewQueue.enqueue(new ClearFieldCommand(endField));
 			viewQueue.enqueue(new DrawFieldCommand(endField));
+			viewQueue.enqueue(new ClearBattleCommand(controller.getModel().getFields()));
 		} else {
 			if (iAmAttacking()) {
 				attack.attack();
@@ -80,7 +88,7 @@ public class CtrlAttackCommand extends Command {
 					endField.getUnit().getDefense().setTarget(startField);
 					endField.getUnit().getDefense().defend();
 				} else {
-					System.out.println("I am already defending or the not in range for defense ... ");
+					System.out.println("I am already defending or not in range for defense ... ");
 				}
 			}
 		}
