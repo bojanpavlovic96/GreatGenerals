@@ -88,6 +88,10 @@ namespace RabbitGameServer.SharedModel
 				{
 					return serializer.ToObj<AbortDefenseMessage>(wrappedMsg.payload);
 				}
+				else if (wrappedMsg.name == MessageType.BuildUnit.ToString())
+				{
+					return serializer.ToObj<BuildUnitMessage>(wrappedMsg.payload);
+				}
 				else
 				{
 					Console.WriteLine("Unwrapping unknown message type ... ");

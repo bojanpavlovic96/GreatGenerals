@@ -45,7 +45,9 @@ public class BasicUnit implements Unit, ModelEventProducer {
 			attack.setAttacker(this);
 		}
 		this.defense = defense;
-		this.defense.setAttacker(this);
+		if (defense != null) {
+			this.defense.setAttacker(this);
+		}
 		this.health = health;
 	}
 
@@ -209,7 +211,7 @@ public class BasicUnit implements Unit, ModelEventProducer {
 
 	@Override
 	public boolean isDefending() {
-		return defense.getTarget() != null;
+		return defense!=null && defense.getTarget() != null;
 	}
 
 	@Override

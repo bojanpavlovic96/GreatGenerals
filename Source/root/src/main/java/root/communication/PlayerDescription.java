@@ -46,11 +46,7 @@ public class PlayerDescription implements PlayerData {
 		return this.points;
 	}
 
-	// required for serialization ... 
-
-	public void setPoints(int points) {
-		this.points = points;
-	}
+	// required for serialization (some of them) ... 
 
 	public void setLevel(int level) {
 		this.level = level;
@@ -62,6 +58,19 @@ public class PlayerDescription implements PlayerData {
 
 	public void setUsername(String username) {
 		this.username = username;
+	}
+
+	@Override
+	public void setPoints(int amount) {
+		this.points = amount;
+	}
+
+	@Override
+	public void removePoints(int amount) {
+		points -= amount;
+		if (points < 0) {
+			points = 0;
+		}
 	}
 
 }

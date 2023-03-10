@@ -40,5 +40,12 @@ public interface Model extends ActiveComponent, ModelEventProducer {
 
 	List<Unit> getActiveUnits();
 
+	// the fact that UnitDesc is from communication package is bothering me 
+	List<UnitDesc> getUnits();
+
 	void removeUnit(Unit unit);
+
+	PlayerData getPlayer(String name);
+
+	PlayerData getOwner();
 }

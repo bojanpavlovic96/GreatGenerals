@@ -7,7 +7,8 @@ namespace RabbitGameServer.SharedModel.ModelEvents
 		Attack,
 		Defend,
 		ReadyForInit,
-		AbortAttack
+		AbortAttack,
+		BuildUnit
 	}
 
 	public class ClientIntention

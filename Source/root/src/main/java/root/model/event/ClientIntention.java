@@ -7,7 +7,8 @@ public abstract class ClientIntention {
 		Attack,
 		Defend,
 		ReadyForInit,
-		AbortAttack
+		AbortAttack,
+		BuildUnit
 	}
 
 	private ClientIntentionType type;

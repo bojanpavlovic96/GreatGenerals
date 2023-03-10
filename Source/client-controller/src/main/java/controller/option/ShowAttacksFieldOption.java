@@ -7,12 +7,12 @@ import root.model.component.Field;
 import root.model.component.option.FieldOption;
 import view.command.ShowSubmenuCommand;
 
-public class AttacksSubmenuFieldOption extends FieldOption {
+public class ShowAttacksFieldOption extends FieldOption {
 
 	public static final String Name = "attacks-submenu-field-option";
 
-	public AttacksSubmenuFieldOption(Controller gameController) {
-		super(AttacksSubmenuFieldOption.Name, gameController);
+	public ShowAttacksFieldOption(Controller gameController) {
+		super(ShowAttacksFieldOption.Name, gameController);
 	}
 
 	@Override
@@ -24,17 +24,15 @@ public class AttacksSubmenuFieldOption extends FieldOption {
 				.map((attack) -> (FieldOption) new AttackFieldOption(controller, attack))
 				.collect(Collectors.toList());
 
-		options.forEach((option) -> option.setSecondaryField(getSecondaryField()));
+		options.forEach(option -> option.setSecondaryField(getSecondaryField()));
 
 		var showSubmenu = new ShowSubmenuCommand(options);
-
-		super.controller.getConsumerQueue().enqueue(showSubmenu);
-
+		controller.getConsumerQueue().enqueue(showSubmenu);
 	}
 
 	@Override
 	public FieldOption getCopy() {
-		return new AttacksSubmenuFieldOption(this.controller);
+		return new ShowAttacksFieldOption(this.controller);
 	}
 
 	@Override

@@ -12,4 +12,7 @@ public interface PlayerData {
 
 	int getPoints();
 
+	void setPoints(int amount);
+
+	void removePoints(int amount);
 }

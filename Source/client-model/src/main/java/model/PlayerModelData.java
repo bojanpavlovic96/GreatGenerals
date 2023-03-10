@@ -39,4 +39,17 @@ public class PlayerModelData implements PlayerData {
 		return this.points;
 	}
 
+	@Override
+	public void setPoints(int amount) {
+		this.points = amount;
+	}
+
+	@Override
+	public void removePoints(int amount) {
+		this.points -= amount;
+		if (this.points < 0) {
+			points = 0;
+		}
+	}
+
 }

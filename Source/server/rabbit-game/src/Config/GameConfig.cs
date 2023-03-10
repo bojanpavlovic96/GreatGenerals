@@ -20,6 +20,10 @@ namespace RabbitGameServer.Config
 		public List<Unit> Units { get; set; }
 		public List<Attack> Attacks { get; set; }
 
+		public int tickTime { get; set; }
+		public int requiredIncomeTicks { get; set; }
+		public int incomeAmount { get; set; }
+
 		public GameConfig()
 		{
 

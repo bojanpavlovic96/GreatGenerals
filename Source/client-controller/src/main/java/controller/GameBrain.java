@@ -6,7 +6,8 @@ import java.util.List;
 import controller.command.UndoStack;
 import controller.option.AbortAttackFieldOption;
 import controller.option.AddToPathFieldOption;
-import controller.option.AttacksSubmenuFieldOption;
+import controller.option.ShowAttacksFieldOption;
+import controller.option.ShowUnitsFieldOption;
 import controller.option.ClearPathFieldOption;
 import controller.option.MoveFieldOption;
 import controller.option.SelectPathFieldOption;
@@ -244,8 +245,10 @@ public class GameBrain implements Controller {
 		fieldOptions.add(new StopMovingFieldOption(this));
 		fieldOptions.add(new ClearPathFieldOption(this));
 
-		fieldOptions.add(new AttacksSubmenuFieldOption(this));
 		fieldOptions.add(new AbortAttackFieldOption(this));
+		fieldOptions.add(new ShowAttacksFieldOption(this));
+
+		fieldOptions.add(new ShowUnitsFieldOption(this));
 	}
 
 	// getters and setters
@@ -353,13 +356,8 @@ public class GameBrain implements Controller {
 	}
 
 	@Override
-	public PlayerData getPlayer() {
-		return player;
-	}
-
-	@Override
 	public boolean isOwner(String name) {
-		return player.getUsername().equals(name);
+		return model.getOwner().getUsername().equals(name);
 	}
 
 }

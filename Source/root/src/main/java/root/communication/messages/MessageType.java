@@ -15,5 +15,7 @@ public enum MessageType {
 	AbortMoveMessage,
 	AbortAttackMessage,
 	AbortDefenseMessage,
-	ServerErrorMessage
+	ServerErrorMessage,
+	IncomeTick,
+	BuildUnit
 }

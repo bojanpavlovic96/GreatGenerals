@@ -13,6 +13,8 @@ namespace RabbitGameServer.SharedModel
 
 		public int health { get; set; }
 
+		public int cost { get; set; }
+
 		public Unit copy()
 		{
 			return new Unit()

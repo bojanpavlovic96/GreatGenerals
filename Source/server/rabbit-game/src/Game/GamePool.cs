@@ -3,6 +3,7 @@ using RabbitGameServer.Client;
 using RabbitGameServer.Config;
 using RabbitGameServer.Database;
 using RabbitGameServer.SharedModel;
+using RabbitGameServer.SharedModel.Messages;
 
 namespace RabbitGameServer.Game
 {
@@ -51,7 +52,8 @@ namespace RabbitGameServer.Game
 				config,
 				playerProxy,
 				database,
-				GameDoneHandler);
+				GameDoneHandler,
+				IncomeTickHandler);
 
 			games.Add(roomName, newGame);
 
@@ -60,10 +62,14 @@ namespace RabbitGameServer.Game
 
 		private void GameDoneHandler(GameMaster gameMaster)
 		{
-
 			Console.WriteLine($"Game in a room {gameMaster.RoomName} is finally done ... ");
 			games.Remove(gameMaster.RoomName);
+		}
 
+		private void IncomeTickHandler(int amount, string room, string player)
+		{
+			var message = new IncomeTickMessage(player, room, amount);
+			playerProxy.sendMessage(room, player, message);
 		}
 
 		public GameMaster GetGame(string roomName)

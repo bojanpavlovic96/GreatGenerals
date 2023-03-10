@@ -108,7 +108,7 @@ public class Launcher extends Application {
 		// and attack/defend
 		var timer = new ConcurrentExecutorTimer(3);
 		var fieldFactory = HexagonField.getFactory();
-		Model model = new GameModel(timer, fieldFactory);
+		Model model = new GameModel(player.getUsername(), timer, fieldFactory);
 
 		System.out.println("Model created ... ");
 

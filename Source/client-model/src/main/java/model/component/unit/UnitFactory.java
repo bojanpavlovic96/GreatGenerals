@@ -1,5 +1,6 @@
 package model.component.unit;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -70,6 +71,7 @@ public class UnitFactory {
 	}
 
 	private Attack genAttack(String type) {
+		System.out.println("Generating attack: " + type);
 		var desc = attacks.get(type);
 
 		if (desc == null) {
@@ -92,7 +94,13 @@ public class UnitFactory {
 
 		UnitDesc unitDesc = units.get(type.toString());
 
-		var move = genMove(unitDesc.moveType);
+		Move move = null;
+		if (!unitDesc.moveType.equals("None")) {
+			move = genMove(unitDesc.moveType);
+		}
+		// for (var att : unitDesc.attacks) {
+		// 	System.out.println("Generating unit with att: " + att);
+		// }
 		var attacks = unitDesc.attacks.stream()
 				.map((uDesc) -> genAttack(uDesc))
 				.collect(Collectors.toList());
@@ -105,6 +113,10 @@ public class UnitFactory {
 				attacks,
 				defense,
 				unitDesc.health);
+	}
+
+	public List<UnitDesc> getUnits() {
+		return new ArrayList<UnitDesc>(units.values());
 	}
 
 }

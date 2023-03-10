@@ -12,7 +12,6 @@ import root.view.Color;
 import root.view.field.ViewField;
 import root.view.menu.DescriptionItem;
 import view.ResourceManager;
-import view.component.menu.DescMenuItem;
 
 // TODO all the logic from this cllas shold be inside the fieldManager/hexagonFieldManager
 public class HexagonField implements ViewField {
@@ -71,9 +70,7 @@ public class HexagonField implements ViewField {
 			if (model.getUnit().isAttacking()) {
 				activeAttack = model.getUnit().getActiveAttack().type;
 				var target = model.getUnit().getActiveAttack().getTarget().getStoragePosition();
-				System.out.println("\t actuall arrow target: " + target);
 				attackedField = HexagonField.calcRealPosition(target, this.sideSize);
-				System.out.println("\t rea2d: " + attackedField);
 			}
 
 			// if (model.getUnit().isAttacking()) {
@@ -356,10 +353,10 @@ public class HexagonField implements ViewField {
 
 		var dist = distance(hexCenter, attackedField);
 
-		System.out.println("\t Battle arrow: ");
-		System.out.println("\t from: " + hexCenter + " to: " + attackedField);
-		System.out.println("\t angle: " + angle);
-		System.out.println("\t dist: " + dist);
+		// System.out.println("\t Battle arrow: ");
+		// System.out.println("\t from: " + hexCenter + " to: " + attackedField);
+		// System.out.println("\t angle: " + angle);
+		// System.out.println("\t dist: " + dist);
 
 		gc.translate(hexCenter.x, hexCenter.y);
 		gc.rotate(angle);
@@ -437,7 +434,7 @@ public class HexagonField implements ViewField {
 
 		var descriptions = new ArrayList<DescriptionItem>();
 
-		var terrainDesc = new DescMenuItem("Terrain",
+		var terrainDesc = new DescriptionItem("Terrain",
 				Arrays.asList(
 						"Name: " + terrain.terrainName,
 						"Intensity: " + terrain.intensity),

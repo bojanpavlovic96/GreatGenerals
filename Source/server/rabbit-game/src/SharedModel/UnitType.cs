@@ -2,6 +2,7 @@ namespace RabbitGameServer.SharedModel
 {
 	public enum UnitType
 	{
-		basicunit
+		basicunit,
+		basictower
 	}
 }

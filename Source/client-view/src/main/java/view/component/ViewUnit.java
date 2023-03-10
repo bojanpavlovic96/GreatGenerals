@@ -10,8 +10,8 @@ import root.Point2D;
 import root.model.action.attack.Attack;
 import root.model.component.Unit;
 import root.view.Color;
+import root.view.menu.DescriptionItem;
 import view.ResourceManager;
-import view.component.menu.DescMenuItem;
 
 public class ViewUnit {
 
@@ -37,8 +37,10 @@ public class ViewUnit {
 		unitName = model.getUnitType().toString();
 
 		health = model.getHealth();
-		moveType = model.getMove().getName();
-		moveSpeed = model.getMove().getDelay();
+		if (model.getMove() != null) {
+			moveType = model.getMove().getName();
+			moveSpeed = model.getMove().getDelay();
+		}
 
 		attacks = model.getAttacks().stream()
 				.map(AttackInfo::fromModel)
@@ -54,10 +56,8 @@ public class ViewUnit {
 			opponentAttack = AttackInfo.fromModel(target.getUnit().getDefense());
 		}
 
-		defense = model.getDefense().type;
-
-		if (model.isDefending()) {
-
+		if (model.getDefense() != null) {
+			defense = model.getDefense().type;
 		}
 
 		var pColor = model.getOwner().getColor();
@@ -86,16 +86,16 @@ public class ViewUnit {
 
 	}
 
-	public DescMenuItem describeUnit() {
-		return new DescMenuItem("Unit",
+	public DescriptionItem describeUnit() {
+		return new DescriptionItem("Unit",
 				Arrays.asList("Name: " + unitName,
 						"Health: " + health,
-						"MoveType: " + moveType,
-						"MoveSpeed: " + moveSpeed),
+						"MoveType: " + (moveType != null ? moveType : "None"),
+						"MoveSpeed: " + (moveType != null ? moveSpeed : 0)),
 				ResourceManager.getInstance().constructUnitKey(unitName));
 	}
 
-	public List<DescMenuItem> describeAttacks() {
+	public List<DescriptionItem> describeAttacks() {
 		if (attacks == null) {
 			return Arrays.asList();
 		}
@@ -106,12 +106,12 @@ public class ViewUnit {
 
 	}
 
-	public DescMenuItem describeActiveAttack() {
+	public DescriptionItem describeActiveAttack() {
 		if (!isAttacking()) {
 			return null;
 		}
 
-		return new DescMenuItem("Active",
+		return new DescriptionItem("Active",
 				Arrays.asList(
 						"Attacking: " + opponentName,
 						"With: " + activeAttack,
@@ -123,14 +123,14 @@ public class ViewUnit {
 				null);
 	}
 
-	public DescMenuItem describeDefense() {
+	public DescriptionItem describeDefense() {
 		if (defense == null) {
 			return null;
 		} else {
 			if (isDefending()) {
 				// If activeAttack is not null but the opponents data is set it means 
 				// that  we are under the attack.
-				return new DescMenuItem("Defense",
+				return new DescriptionItem("Defense",
 						Arrays.asList(
 								"Defending from: " + opponentName,
 								"With: " + defense,
@@ -142,7 +142,7 @@ public class ViewUnit {
 						null);
 			} else {
 				// We have prepared defense but nobody is attacking us. 
-				return new DescMenuItem("Defense", Arrays.asList(defense), null);
+				return new DescriptionItem("Defense", Arrays.asList(defense), null);
 			}
 		}
 
@@ -198,8 +198,8 @@ public class ViewUnit {
 					att.defenseRange);
 		}
 
-		public static DescMenuItem describe(AttackInfo att) {
-			return new DescMenuItem(att.name,
+		public static DescriptionItem describe(AttackInfo att) {
+			return new DescriptionItem(att.name,
 					Arrays.asList("Attack Damage: " + att.attackDmg,
 							"Attack Cooldown: " + att.attackCooldown,
 							"Attack Range: " + att.attackRange,

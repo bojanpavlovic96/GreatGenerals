@@ -1,3 +1,4 @@
+using System.Timers;
 using RabbitGameServer.Client;
 using RabbitGameServer.Config;
 using RabbitGameServer.SharedModel;
@@ -8,11 +9,33 @@ namespace RabbitGameServer.Game
 {
 	public delegate void GameDoneHandler(GameMaster gameMaster);
 
+	public delegate void IncomeTickHandler(int amount, string room, string player);
+
 	public delegate Message ModelEventHandler(ClientIntention e);
+
+	class IncomeStats
+	{
+		public string Name { get; set; }
+
+		public int TickCount { get; set; }
+		public int Required { get; set; }
+
+		public int CurrentAmount { get; set; }
+		public int Income { get; set; }
+
+		public IncomeStats(string name, int required, int income)
+		{
+			Name = name;
+			Required = required;
+			Income = income;
+
+			TickCount = 0;
+			CurrentAmount = 0;
+		}
+	}
 
 	public class GameMaster
 	{
-
 		public GameConfig config;
 
 		public PlayerData masterPlayer { get; set; }
@@ -20,6 +43,8 @@ namespace RabbitGameServer.Game
 		public string RoomName { get; set; }
 		public string Password { get; set; }
 		public List<PlayerData> Players { get; set; }
+		private List<IncomeStats> Incomes;
+
 		private Database.IDatabase Database;
 
 		private Dictionary<Point2D, Field> Fields;
@@ -29,7 +54,11 @@ namespace RabbitGameServer.Game
 
 		public event GameDoneHandler onGameDone;
 
+		public event IncomeTickHandler onIncomeTick;
+
 		private List<Color> availableColors;
+
+		private System.Timers.Timer tickTimer;
 
 		private Dictionary<ClientIntentionType, ModelEventHandler> handlers;
 
@@ -39,7 +68,8 @@ namespace RabbitGameServer.Game
 					GameConfig config,
 					IPlayerProxy playerProxy,
 					Database.IDatabase db,
-					GameDoneHandler onGameDone)
+					GameDoneHandler onGameDone,
+					IncomeTickHandler incomeTickHandler)
 		{
 			this.config = config;
 			parseColors();
@@ -59,6 +89,7 @@ namespace RabbitGameServer.Game
 			this.Database = db;
 
 			this.onGameDone += onGameDone;
+			this.onIncomeTick += incomeTickHandler;
 
 			this.Fields = new Dictionary<Point2D, Field>();
 
@@ -73,6 +104,8 @@ namespace RabbitGameServer.Game
 			handlers.Add(ClientIntentionType.Attack, handleAttack);
 			handlers.Add(ClientIntentionType.Defend, handleDefend);
 			handlers.Add(ClientIntentionType.AbortAttack, handleAbortAttack);
+			handlers.Add(ClientIntentionType.BuildUnit, handleBuildUnit);
+
 		}
 
 		public Message? AddIntention(ClientIntention newEvent)
@@ -181,6 +214,14 @@ namespace RabbitGameServer.Game
 
 			if (attackerField.unit == null || targetField.unit == null)
 			{
+				if (attackerField.unit == null)
+				{
+					Console.WriteLine("Missing attacker ... ");
+				}
+				if (targetField.unit == null)
+				{
+					Console.WriteLine("Defender attacker ... ");
+				}
 				Console.WriteLine("Attacker or defender do not exist on this fields ... ");
 
 				return new AbortAttackMessage(e.playerName,
@@ -198,6 +239,13 @@ namespace RabbitGameServer.Game
 
 			if (targetField.unit.health <= 0)
 			{
+				// if (isDead(targetField.unit.owner))
+				// {
+				// 	onGameDone(this);
+				// 	return null;
+				// }
+
+
 				targetField.unit = null;
 				targetField.inBattle = false;
 			}
@@ -209,6 +257,11 @@ namespace RabbitGameServer.Game
 				attack.type.ToString(),
 				attackIntention.sourceField,
 				attackIntention.destinationField);
+		}
+
+		private bool isDead(String player)
+		{
+			return Fields.Values.First(f => f.unit != null && f.unit.owner == player) == null;
 		}
 
 		private Message handleDefend(ClientIntention e)
@@ -274,6 +327,39 @@ namespace RabbitGameServer.Game
 			return null;
 		}
 
+		private Message handleBuildUnit(ClientIntention e)
+		{
+			var buildInt = (BuildUnitIntention)e;
+
+			var stats = Incomes.Find(p => p.Name == e.playerName);
+			var unitDesc = getUnit(Enum.Parse<UnitType>(buildInt.unitType));
+
+			var field = getField(buildInt.field);
+
+			if (field.unit == null && stats.CurrentAmount >= unitDesc.cost)
+			{
+				stats.CurrentAmount -= unitDesc.cost;
+
+				var newUnit = unitDesc.copy();
+				newUnit.owner = buildInt.playerName;
+
+				field.unit = newUnit;
+
+				return new BuildUnitMessage(e.playerName,
+						RoomName,
+						buildInt.field,
+						buildInt.unitType,
+						unitDesc.cost);
+			}
+
+			return null;
+		}
+
+		private Unit getUnit(UnitType type)
+		{
+			return config.Units.Find(u => u.unitName == type);
+		}
+
 		// endregion 
 
 		public bool initGame()
@@ -335,7 +421,42 @@ namespace RabbitGameServer.Game
 					left--;
 			}
 
+			this.Incomes = new List<IncomeStats>();
+			foreach (var player in Players)
+			{
+				Console.WriteLine($"Created income for: {player.username}");
+				Incomes.Add(new IncomeStats(player.username,
+											config.requiredIncomeTicks,
+											config.incomeAmount));
+			}
+
+			tickTimer = new System.Timers.Timer();
+			tickTimer.Elapsed += this.tickHandler;
+			tickTimer.Interval = config.tickTime;
+			tickTimer.AutoReset = false;
+			tickTimer.Start();
+
+
 			return true;
+		}
+
+		private void tickHandler(Object? source, ElapsedEventArgs args)
+		{
+			tickTimer.Stop();
+
+			foreach (var stat in Incomes)
+			{
+				stat.TickCount += 1;
+				if (stat.TickCount >= stat.Required)
+				{
+					stat.TickCount = 0;
+					stat.CurrentAmount += stat.Income;
+
+					onIncomeTick.Invoke(stat.CurrentAmount, RoomName, stat.Name);
+				}
+			}
+
+			tickTimer.Start();
 		}
 
 		public Unit? generateUnit(UnitType unitType)
@@ -407,8 +528,10 @@ namespace RabbitGameServer.Game
 
 		public void endGame()
 		{
-			Console.WriteLine("Not really implemented but let's pretend it is done ... ");
-			Console.WriteLine($"{RoomName} is dead ... ");
+			tickTimer.Stop();
+
+			Console.WriteLine($"{RoomName} is stopped ... ");
+
 		}
 
 		private void parseColors()

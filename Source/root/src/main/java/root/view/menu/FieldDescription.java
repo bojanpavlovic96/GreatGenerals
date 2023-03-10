@@ -1,7 +1,6 @@
 package root.view.menu;
 
 import java.util.List;
-
 import root.Point2D;
 
 public interface FieldDescription {

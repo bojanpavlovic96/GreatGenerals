@@ -45,6 +45,12 @@ namespace RabbitGameServer.Mediator
 						request.message.username,
 						((AbortAttackMessage)request.message).unitPosition));
 
+				case MessageType.BuildUnit:
+					return Task.FromResult<ClientIntention>(new BuildUnitIntention(
+						request.message.username,
+						((BuildUnitMessage)request.message).field,
+						((BuildUnitMessage)request.message).unitType));
+
 				default:
 					Console.WriteLine($"Failed to map message-{request.message.type.ToString()} to modelEvent ... ");
 					return Task.FromResult<ClientIntention>(null); ;

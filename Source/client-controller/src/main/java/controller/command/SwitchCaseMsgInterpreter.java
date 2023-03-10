@@ -2,6 +2,7 @@ package controller.command;
 
 import model.intention.AbortAttackIntention;
 import model.intention.AttackIntention;
+import model.intention.BuildIntention;
 import model.intention.DefendIntention;
 import model.intention.MoveIntention;
 
@@ -11,7 +12,9 @@ import root.communication.messages.AbortAttackMsg;
 import root.communication.messages.AbortDefenseMsg;
 import root.communication.messages.AbortMoveMsg;
 import root.communication.messages.AttackMsg;
+import root.communication.messages.BuildUnitMsg;
 import root.communication.messages.DefendMsg;
+import root.communication.messages.IncomeTickMsg;
 import root.communication.messages.InitializeMsg;
 import root.communication.messages.Message;
 import root.communication.messages.MoveMsg;
@@ -83,6 +86,17 @@ public class SwitchCaseMsgInterpreter implements MessageInterpreter {
 				return new CtrlServerErrorMessage(
 						((ServerErrorMsg) message).message);
 
+			case IncomeTick:
+				return new CtrlIncomeTick(message.username,
+						((IncomeTickMsg) message).amount);
+
+			case BuildUnit:
+				return new CtrlBuildUnitCommand(
+						((BuildUnitMsg) message).field,
+						((BuildUnitMsg) message).unitType,
+						((BuildUnitMsg) message).username,
+						((BuildUnitMsg) message).cost);
+
 			default:
 				break;
 
@@ -120,6 +134,12 @@ public class SwitchCaseMsgInterpreter implements MessageInterpreter {
 				// username and roomName are already present in the Message super-class
 				// and they are set with .setOrigin method inside the server proxy 
 				return new ReadyForInitMsg();
+
+			case BuildUnit:
+				return new BuildUnitMsg(
+						((BuildIntention) intention).getField(),
+						((BuildIntention) intention).getUnitType(),
+						((BuildIntention) intention).getCost());
 
 			default:
 				break;

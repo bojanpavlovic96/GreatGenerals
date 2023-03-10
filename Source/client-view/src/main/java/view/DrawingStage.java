@@ -7,17 +7,22 @@ import java.util.Map;
 
 import javafx.application.Platform;
 import javafx.event.EventHandler;
+import javafx.geometry.Insets;
+import javafx.geometry.Pos;
 import javafx.scene.Group;
 import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.ScrollPane.ScrollBarPolicy;
 import javafx.scene.input.KeyCombination;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
+import javafx.scene.text.Font;
 import javafx.stage.Screen;
 import javafx.stage.Stage;
 import root.Point2D;
@@ -51,11 +56,15 @@ public class DrawingStage extends Stage implements View {
 	private Scene mainScene;
 
 	private Canvas boardCanvas;
+	// TODO second canvas is not used it looks like... 
 	private Canvas secondLayerCanvas;
 
 	private ShortOptionsMenu mainOptionsMenu;
 	private ShortOptionsMenu submenu;
 	private DescriptionMenu descriptionMenu;
+
+	private VBox textUiRoot;
+	private Label pointsUi;
 
 	private double canvasWidth;
 	private double canvasHeight;
@@ -150,9 +159,25 @@ public class DrawingStage extends Stage implements View {
 
 		this.descriptionMenu.setVisible(true);
 
+		this.textUiRoot = new VBox();
+		this.textUiRoot.setMouseTransparent(true);
+		this.textUiRoot.setMaxWidth(this.canvasWidth);
+		this.textUiRoot.setMaxHeight(this.canvasHeight);
+		this.textUiRoot.setMinWidth(this.canvasWidth);
+		this.textUiRoot.setMinHeight(this.canvasHeight);
+		this.textUiRoot.setAlignment(Pos.TOP_RIGHT);
+
+		this.pointsUi = new Label();
+		this.pointsUi.setFont(new Font("Chilanka", 30));
+		this.pointsUi.setPadding(new Insets(20, 20, 20, 20));
+
+		this.pointsUi.setText(formPointsString(0));
+		this.textUiRoot.getChildren().add(pointsUi);
+
 		this.root.getChildren().add(this.mainOptionsMenu);
 		this.root.getChildren().add(this.submenu);
 		this.root.getChildren().add(this.descriptionMenu);
+		this.root.getChildren().add(this.textUiRoot);
 
 		Platform.setImplicitExit(true);
 
@@ -440,6 +465,15 @@ public class DrawingStage extends Stage implements View {
 	@Override
 	public void setDescriptionPosition(Point2D position) {
 		this.descriptionMenu.setPosition(position);
+	}
+
+	@Override
+	public void showPoints(int amount) {
+		this.pointsUi.setText(formPointsString(amount));
+	}
+
+	private String formPointsString(int amount) {
+		return "Points: " + amount;
 	}
 
 }

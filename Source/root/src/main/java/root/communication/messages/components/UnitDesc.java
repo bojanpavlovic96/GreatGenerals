@@ -6,7 +6,6 @@ import root.communication.parser.StaticParser;
 
 public class UnitDesc {
 
-	// TODO unit name shoud be enum
 	public String unitName;
 	public String moveType;
 	public List<String> attacks;
@@ -14,6 +13,8 @@ public class UnitDesc {
 	public String defense;
 
 	public int health;
+
+	public int cost;
 
 	public UnitDesc() {
 

@@ -1,7 +1,8 @@
 namespace RabbitGameServer.SharedModel
 {
-    public enum AttackType
-    {
-        BasicAttack
-    }
+	public enum AttackType
+	{
+		ShortAttack,
+		TowerAttack
+	}
 }

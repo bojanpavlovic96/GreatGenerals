@@ -16,6 +16,8 @@ namespace RabbitGameServer.SharedModel.Messages
 		AbortMoveMessage,
 		AbortAttackMessage,
 		AbortDefenseMessage,
-		ServerErrorMessage
+		ServerErrorMessage,
+		IncomeTick,
+		BuildUnit
 	}
 }

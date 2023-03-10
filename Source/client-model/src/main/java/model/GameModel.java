@@ -33,6 +33,7 @@ public class GameModel implements Model {
 
 	private Map<Point2D, Field> fields;
 	private Map<String, PlayerData> players;
+	private String owner;
 
 	private List<Unit> activeUnits;
 
@@ -44,7 +45,8 @@ public class GameModel implements Model {
 
 	private FieldFactory fieldFactory;
 
-	public GameModel(Timer timer, FieldFactory fieldFactory) {
+	public GameModel(String owner, Timer timer, FieldFactory fieldFactory) {
+		this.owner = owner;
 		this.timer = timer;
 		this.fieldFactory = fieldFactory;
 	}
@@ -224,6 +226,21 @@ public class GameModel implements Model {
 	@Override
 	public void removeUnit(Unit unit) {
 		this.activeUnits.remove(unit);
+	}
+
+	@Override
+	public PlayerData getPlayer(String name) {
+		return players.get(name);
+	}
+
+	@Override
+	public PlayerData getOwner() {
+		return players.get(owner);
+	}
+
+	@Override
+	public List<UnitDesc> getUnits() {
+		return this.unitFactory.getUnits();
 	}
 
 }
