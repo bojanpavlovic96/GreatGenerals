@@ -42,6 +42,8 @@ public class GameBrain implements Controller {
 
 	private PlayerData player;
 
+	private GameDoneHandler onGameDone;
+
 	private GameServerProxy serverProxy;
 
 	private CommandProcessor serverCommandProcessor;
@@ -62,9 +64,15 @@ public class GameBrain implements Controller {
 
 	private List<FieldOption> fieldOptions;
 
-	public GameBrain(PlayerData player, GameServerProxy serverProxy, View view, Model model) {
+	public GameBrain(PlayerData player,
+			GameServerProxy serverProxy,
+			View view,
+			Model model,
+			GameDoneHandler onGameDone) {
 
 		this.player = player;
+
+		this.onGameDone = onGameDone;
 
 		this.serverProxy = serverProxy;
 		this.view = view;
@@ -233,6 +241,14 @@ public class GameBrain implements Controller {
 
 		});
 
+		view.addEventHandler("key-event-char-q", (ViewEventArg arg) -> {
+			view.hideView();
+			onGameDone.handleGameDone();
+
+			// ??? should I ... ? 
+			shutdown();
+		});
+
 	}
 
 	private void initFieldOptions() {
@@ -276,6 +292,9 @@ public class GameBrain implements Controller {
 	@Override
 	public void shutdown() {
 
+		// Injected  dependencies should be destroyed/shutdown by the creator
+		// which in this case is Launcher ... ? 
+
 		if (this.serverCommandProcessor != null) {
 			((ActiveComponent) this.serverCommandProcessor).shutdown();
 		}
@@ -296,7 +315,7 @@ public class GameBrain implements Controller {
 	}
 
 	@Override
-	public void handleModelEvent(ClientIntention eventArg) {
+	public void handle(ClientIntention eventArg) {
 		this.serverProxy.sendIntention(eventArg);
 	}
 

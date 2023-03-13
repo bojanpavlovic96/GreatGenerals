@@ -56,18 +56,23 @@ namespace RabbitGameServer.Controllers
 		[Route("all")]
 		public ActionResult<List<ClearResult>> clearAllRooms()
 		{
+			Console.WriteLine("Request to clear all rooms ... ");
 			var games = pool.GetGameSummaries();
+			Console.WriteLine($"Found {games.Count} active games ... ");
 
 			var results = new List<ClearResult>();
 
 			foreach (var game in games)
 			{
+				Console.WriteLine($"Attemptint to destory: {game.RoomName} ... ");
 				if (pool.destroyGame(game.RoomName))
 				{
+					Console.WriteLine($"Cleared: {game.RoomName} ... ");
 					results.Add(new ClearResult(game.RoomName, ClearStatus.Success));
 				}
 				else
 				{
+					Console.WriteLine($"Failed to clear: {game.RoomName} ... ");
 					results.Add(new ClearResult(game.RoomName, ClearStatus.Failed));
 				}
 			}

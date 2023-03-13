@@ -1,7 +1,6 @@
 package app.form;
 
 import app.resource_manager.Language;
-import app.resource_manager.AppConfig;
 import app.resource_manager.StringRegistry;
 import javafx.animation.PauseTransition;
 import javafx.application.Platform;

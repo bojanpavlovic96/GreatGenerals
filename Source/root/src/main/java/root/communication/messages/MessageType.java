@@ -17,5 +17,6 @@ public enum MessageType {
 	AbortDefenseMessage,
 	ServerErrorMessage,
 	IncomeTick,
-	BuildUnit
+	BuildUnit,
+	GameDone
 }

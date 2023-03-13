@@ -9,6 +9,7 @@ import root.view.View;
 
 public class LoadBoardCommand extends Command {
 
+	
 	private List<Field> models;
 
 	public LoadBoardCommand(List<Field> fields) {

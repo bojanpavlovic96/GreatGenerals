@@ -62,7 +62,7 @@ namespace RabbitGameServer.Game
 
 		private void GameDoneHandler(GameMaster gameMaster)
 		{
-			Console.WriteLine($"Game in a room {gameMaster.RoomName} is finally done ... ");
+			Console.WriteLine($"Rome {gameMaster.RoomName} is done ...");
 			games.Remove(gameMaster.RoomName);
 		}
 

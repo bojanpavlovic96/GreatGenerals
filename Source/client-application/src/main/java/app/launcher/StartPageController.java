@@ -382,6 +382,10 @@ public class StartPageController implements GameReadyEventProducer, ActiveCompon
 		this.initialPage.showPage();
 	}
 
+	public InitialPage getInitialPage() {
+		return this.initialPage;
+	}
+
 	@Override
 	public void setOnGameReadyHandler(GameReadyHandler handler) {
 		this.onGameReady = handler;

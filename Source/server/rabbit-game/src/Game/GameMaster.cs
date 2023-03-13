@@ -23,14 +23,14 @@ namespace RabbitGameServer.Game
 		public int CurrentAmount { get; set; }
 		public int Income { get; set; }
 
-		public IncomeStats(string name, int required, int income)
+		public IncomeStats(string name, int startAmount, int required, int income)
 		{
 			Name = name;
 			Required = required;
 			Income = income;
 
 			TickCount = 0;
-			CurrentAmount = 0;
+			CurrentAmount = startAmount;
 		}
 	}
 
@@ -44,6 +44,7 @@ namespace RabbitGameServer.Game
 		public string Password { get; set; }
 		public List<PlayerData> Players { get; set; }
 		private List<IncomeStats> Incomes;
+		private List<Unit> ActiveUnits;
 
 		private Database.IDatabase Database;
 
@@ -83,6 +84,8 @@ namespace RabbitGameServer.Game
 			this.Players = new List<PlayerData>();
 			this.Players.Add(masterPlayer);
 
+			this.ActiveUnits = new List<Unit>();
+
 			this.recEventsCnt = 0;
 			this.sendEventsCnt = 0;
 
@@ -108,21 +111,19 @@ namespace RabbitGameServer.Game
 
 		}
 
-		public Message? AddIntention(ClientIntention newEvent)
+		public Message? AddIntention(ClientIntention intention)
 		{
-			Console.WriteLine("Handling new model event ... ");
+			Console.WriteLine($"Handling: {intention.GetType().ToString()} ... ");
 			recEventsCnt++;
 
 			ModelEventHandler? handler;
-			if (handlers.TryGetValue(newEvent.type, out handler))
+			if (handlers.TryGetValue(intention.type, out handler))
 			{
-				Console.WriteLine($"Handler for {newEvent.type.ToString()} found ...  ");
-
-				return handler.Invoke(newEvent);
+				return handler.Invoke(intention);
 			}
 			else
 			{
-				Console.WriteLine($"Handlers for {newEvent.type.ToString()} is missing ... ");
+				Console.WriteLine($"Handlers for {intention.type.ToString()} is missing ... ");
 
 				return null;
 			}
@@ -214,14 +215,6 @@ namespace RabbitGameServer.Game
 
 			if (attackerField.unit == null || targetField.unit == null)
 			{
-				if (attackerField.unit == null)
-				{
-					Console.WriteLine("Missing attacker ... ");
-				}
-				if (targetField.unit == null)
-				{
-					Console.WriteLine("Defender attacker ... ");
-				}
 				Console.WriteLine("Attacker or defender do not exist on this fields ... ");
 
 				return new AbortAttackMessage(e.playerName,
@@ -239,24 +232,43 @@ namespace RabbitGameServer.Game
 
 			if (targetField.unit.health <= 0)
 			{
-				// if (isDead(targetField.unit.owner))
-				// {
-				// 	onGameDone(this);
-				// 	return null;
-				// }
+				// var owner = targetField.unit.owner;
 
+				ActiveUnits.Remove(targetField.unit);
 
 				targetField.unit = null;
 				targetField.inBattle = false;
-			}
 
-			// return something else if unit dead or something ... 
+				if (checkEndGame())
+				{
+					Console.WriteLine("\n This game is done ... \n");
+					onGameDone(this);
+
+					return new GameDoneMessage(e.playerName, 
+						RoomName,
+						config.winAward);
+				}
+
+			}
 
 			return new AttackMessage(e.playerName,
 				RoomName,
 				attack.type.ToString(),
 				attackIntention.sourceField,
 				attackIntention.destinationField);
+		}
+
+		private bool checkEndGame()
+		{
+			int playersAlive = 0;
+			foreach (var player in Players)
+			{
+				var unitCnt = ActiveUnits.Where(u => u.owner == player.username).Count();
+				playersAlive += unitCnt > 0 ? 1 : 0;
+			}
+
+			Console.WriteLine($"Still has alive players: {playersAlive > 1}");
+			return playersAlive <= 1;
 		}
 
 		private bool isDead(String player)
@@ -345,6 +357,8 @@ namespace RabbitGameServer.Game
 
 				field.unit = newUnit;
 
+				ActiveUnits.Add(newUnit);
+
 				return new BuildUnitMessage(e.playerName,
 						RoomName,
 						buildInt.field,
@@ -409,8 +423,12 @@ namespace RabbitGameServer.Game
 
 					if (config.DefaultPositions.Contains(position))
 					{
-						newField.unit = generateUnit(UnitType.basicunit);
-						newField.unit.owner = playerName;
+						var newUnit = generateUnit(UnitType.basicunit);
+						newUnit.owner = playerName;
+
+						ActiveUnits.Add(newUnit);
+
+						newField.unit = newUnit;
 					}
 
 					Fields.Add(newField.position, newField);
@@ -426,6 +444,7 @@ namespace RabbitGameServer.Game
 			{
 				Console.WriteLine($"Created income for: {player.username}");
 				Incomes.Add(new IncomeStats(player.username,
+											player.points,
 											config.requiredIncomeTicks,
 											config.incomeAmount));
 			}
@@ -485,6 +504,7 @@ namespace RabbitGameServer.Game
 		public PlayerData addPlayer(PlayerData player)
 		{
 			player.color = getAvailableColor();
+			player.points = config.DefaultPoints;
 			Players.Add(player);
 
 			return player;
@@ -528,10 +548,12 @@ namespace RabbitGameServer.Game
 
 		public void endGame()
 		{
-			tickTimer.Stop();
+			if (tickTimer != null)
+			{
+				tickTimer.Stop();
+			}
 
 			Console.WriteLine($"{RoomName} is stopped ... ");
-
 		}
 
 		private void parseColors()

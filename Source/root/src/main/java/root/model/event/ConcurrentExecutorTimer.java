@@ -17,6 +17,7 @@ public class ConcurrentExecutorTimer implements Timer, ActiveComponent {
 		this.executor = Executors.newScheduledThreadPool(threadCount);
 		// remove task from waiting queue after it is cancelled
 		((ScheduledThreadPoolExecutor) this.executor).setRemoveOnCancelPolicy(true);
+		((ScheduledThreadPoolExecutor) this.executor).getActiveCount();
 	}
 
 	@Override
@@ -31,6 +32,11 @@ public class ConcurrentExecutorTimer implements Timer, ActiveComponent {
 		if (!executor.isShutdown()) {
 			executor.shutdown();
 		}
+	}
+
+	@Override
+	public int getCount() {
+		return ((ScheduledThreadPoolExecutor) this.executor).getQueue().size();
 	}
 
 }

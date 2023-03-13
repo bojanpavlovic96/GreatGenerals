@@ -14,6 +14,7 @@ import root.communication.messages.AbortMoveMsg;
 import root.communication.messages.AttackMsg;
 import root.communication.messages.BuildUnitMsg;
 import root.communication.messages.DefendMsg;
+import root.communication.messages.GameDoneMsg;
 import root.communication.messages.IncomeTickMsg;
 import root.communication.messages.InitializeMsg;
 import root.communication.messages.Message;
@@ -96,6 +97,11 @@ public class SwitchCaseMsgInterpreter implements MessageInterpreter {
 						((BuildUnitMsg) message).unitType,
 						((BuildUnitMsg) message).username,
 						((BuildUnitMsg) message).cost);
+
+			case GameDone:
+				return new CtrlGameDone(
+						((GameDoneMsg) message).username,
+						((GameDoneMsg) message).bonusAmount);
 
 			default:
 				break;

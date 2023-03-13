@@ -6,5 +6,6 @@ import java.util.concurrent.TimeUnit;
 public interface Timer {
 
 	ScheduledFuture<?> schedule(Runnable runnable, long msDelay, TimeUnit unit);
+	int getCount();
 
 }

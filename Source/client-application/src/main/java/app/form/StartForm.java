@@ -245,6 +245,13 @@ public class StartForm extends Stage implements InitialPage, HasLabels {
 	@Override
 	public void showRoomForm() {
 		Platform.runLater(() -> {
+			// this is "default" state 
+			// roomForm.clearPlayers();
+			// roomForm.hidePlayers();
+			// roomForm.disableLeaveRoom();
+			// roomForm.enableCreateRoom();
+			// roomForm.enableJoinRoom();
+
 			roomForm.setVisible(true);
 		});
 	}

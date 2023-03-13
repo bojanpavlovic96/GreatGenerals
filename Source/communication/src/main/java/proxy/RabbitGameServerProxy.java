@@ -148,7 +148,7 @@ public class RabbitGameServerProxy implements GameServerProxy,
 			return false;
 		}
 
-		System.out.println("Game proxy is sending intention: "
+		System.out.println("Sending intention: "
 				+ modelEvent.getEventType().toString());
 
 		var message = messageInterpreter.ToMessage(modelEvent);
@@ -191,7 +191,7 @@ public class RabbitGameServerProxy implements GameServerProxy,
 			BasicProperties properties,
 			byte[] body) throws IOException {
 
-		System.out.println("Game proxy received message ... ");
+		// System.out.println("Game proxy received message ... ");
 
 		var newMessage = protocolTranslator.toMessage(body);
 		if (newMessage == null) {
@@ -200,8 +200,8 @@ public class RabbitGameServerProxy implements GameServerProxy,
 			return;
 		}
 
-		System.out.println("GameProxy new message: ");
-		System.out.println("\t" + newMessage.type.toString());
+		System.out.print("ReceivedMsg: " + newMessage.type.toString());
+		// System.out.println("\t" + newMessage.type.toString());
 
 		var newCommand = messageInterpreter.ToCommand(newMessage);
 		if (newCommand == null) {
@@ -210,7 +210,7 @@ public class RabbitGameServerProxy implements GameServerProxy,
 			return;
 		}
 
-		System.out.println("\t" + newCommand.getClass().toString());
+		System.out.println(" -> cmd: " + newCommand.getClass().getSimpleName());
 
 		commandQueue.enqueue(newCommand);
 	}

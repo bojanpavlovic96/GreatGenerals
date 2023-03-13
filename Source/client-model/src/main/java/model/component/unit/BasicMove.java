@@ -68,7 +68,7 @@ public class BasicMove extends Move implements Runnable {
 		System.out.println("Move event raised ... ");
 		movingFuture = null;
 
-		onEvent.handleModelEvent(new MoveIntention(
+		onEvent.handle(new MoveIntention(
 				path.get(0).getPlayer().getUsername(),
 				path.get(0).getStoragePosition(),
 				path.get(1).getStoragePosition()));

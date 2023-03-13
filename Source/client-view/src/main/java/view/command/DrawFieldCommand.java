@@ -9,26 +9,17 @@ import root.view.field.ViewField;
 public class DrawFieldCommand extends Command {
 
 	private Field fieldModel;
-	private ViewField viewField;
 
 	public DrawFieldCommand(Field model) {
-
 		this.fieldModel = model;
-
-	}
-
-	@Override
-	public void setTargetComponent(CommandDrivenComponent target) {
-		super.setTargetComponent(target);
-
-		this.viewField = ((View) super.targetComponent).convertToViewField(this.fieldModel);
-
 	}
 
 	public void run() {
+		var viewField = ((View) targetComponent).convertToViewField(fieldModel);
+
 		// This looks like a good spot to pass resource/asset manager
 		// to the viewField (resource manager will load images or "assets")
-		this.viewField.drawOn(((View) super.targetComponent).getMainGraphicContext());
+		viewField.drawOn(((View) super.targetComponent).getMainGraphicContext());
 	}
 
 	@Override

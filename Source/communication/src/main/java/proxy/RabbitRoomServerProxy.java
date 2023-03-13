@@ -47,7 +47,7 @@ public class RabbitRoomServerProxy implements RoomServerProxy, ActiveComponent {
 	private boolean setupReceiver(String roomName, String playerName,
 			RoomServerResponseHandler handler) {
 
-		if (channel == null) {
+		if (channel == null||!channel.isOpen()) {
 			channel = channelProvider.getChannel();
 		}
 

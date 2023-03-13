@@ -56,6 +56,8 @@ public class CtrlAttackCommand extends Command {
 		System.out.println("attackedWith: " + attack.attackDmg + "result h: " + endField.getUnit().getHealth());
 
 		if (!endField.getUnit().isAlive()) {
+			System.out.println("Attacked unit is dead ... ");
+
 			controller.getModel().removeUnit(endField.getUnit());
 
 			endField.getUnit().deactivate();
@@ -69,6 +71,8 @@ public class CtrlAttackCommand extends Command {
 			viewQueue.enqueue(new ClearFieldCommand(endField));
 			viewQueue.enqueue(new DrawFieldCommand(endField));
 			viewQueue.enqueue(new ClearBattleCommand(controller.getModel().getFields()));
+			// TODO go trough each of active units and check if some of them is 
+			// in the battle and "drawBattle" if they exist. 
 		} else {
 			if (iAmAttacking()) {
 				attack.attack();

@@ -16,8 +16,6 @@ namespace RabbitGameServer.Mediator
 
 		public Task<Unit> Handle(SendUpdateRequest request, CancellationToken cToken)
 		{
-
-			Console.WriteLine("Handling sendUpdate request ... ");
 			proxy.sendRoomUpdate(request.RoomName, request.PlayerName, request.Message);
 
 			return Task.FromResult(Unit.Value);

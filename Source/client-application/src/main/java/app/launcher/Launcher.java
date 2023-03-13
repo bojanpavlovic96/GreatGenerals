@@ -124,7 +124,12 @@ public class Launcher extends Application {
 			View view = new DrawingStage(fieldManager, viewConfig);
 			System.out.println("Initialized View ... ");
 
-			gameController = new GameBrain(player, serverProxy, view, model);
+			gameController = new GameBrain(player,
+					serverProxy,
+					view,
+					model,
+					this::gameDoneHandler);
+
 			System.out.println("Initialized Controller ... ");
 
 			startPageController.hideInitialPage();
@@ -134,6 +139,16 @@ public class Launcher extends Application {
 			gameController.getView().showView();
 		});
 
+	}
+
+	private void gameDoneHandler() {
+		System.out.println("Game is done");
+		System.out.println("Controller passed controll to launcher");
+		var room = startPageController.getRoomName();
+		var pass = " "; // this should not be important
+		startPageController.leaveRoomActionHandler(room, pass);
+		// startPageController.getInitialPage().showRoomForm();
+		startPageController.showInitialPage();
 	}
 
 	@Override

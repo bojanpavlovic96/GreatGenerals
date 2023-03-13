@@ -12,6 +12,7 @@ import root.controller.Controller;
 import root.model.Model;
 import view.command.ClearViewCommand;
 import view.command.LoadBoardCommand;
+import view.command.UpdatePointsCommand;
 
 public class CtrlInitializeCommand extends Command {
 
@@ -60,6 +61,9 @@ public class CtrlInitializeCommand extends Command {
 		var loadBoardCommand = new LoadBoardCommand(model.getFields());
 		controller.getConsumerQueue().enqueue(loadBoardCommand);
 
+		var owner = controller.getModel().getOwner();
+		var updatePoints = new UpdatePointsCommand(owner.getPoints());
+		controller.getConsumerQueue().enqueue(updatePoints);
 	}
 
 	@Override

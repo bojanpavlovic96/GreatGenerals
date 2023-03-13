@@ -211,7 +211,7 @@ public class BasicUnit implements Unit, ModelEventProducer {
 
 	@Override
 	public boolean isDefending() {
-		return defense!=null && defense.getTarget() != null;
+		return defense != null && defense.getTarget() != null;
 	}
 
 	@Override

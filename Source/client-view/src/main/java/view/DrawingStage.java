@@ -6,7 +6,6 @@ import java.util.List;
 import java.util.Map;
 
 import javafx.application.Platform;
-import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Group;
@@ -20,6 +19,7 @@ import javafx.scene.input.KeyCombination;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
@@ -63,7 +63,8 @@ public class DrawingStage extends Stage implements View {
 	private ShortOptionsMenu submenu;
 	private DescriptionMenu descriptionMenu;
 
-	private VBox textUiRoot;
+	private HBox textUiRoot;
+	private Label winnerUi;
 	private Label pointsUi;
 
 	private double canvasWidth;
@@ -159,7 +160,7 @@ public class DrawingStage extends Stage implements View {
 
 		this.descriptionMenu.setVisible(true);
 
-		this.textUiRoot = new VBox();
+		this.textUiRoot = new HBox();
 		this.textUiRoot.setMouseTransparent(true);
 		this.textUiRoot.setMaxWidth(this.canvasWidth);
 		this.textUiRoot.setMaxHeight(this.canvasHeight);
@@ -167,9 +168,17 @@ public class DrawingStage extends Stage implements View {
 		this.textUiRoot.setMinHeight(this.canvasHeight);
 		this.textUiRoot.setAlignment(Pos.TOP_RIGHT);
 
+		this.winnerUi = new Label();
+		this.winnerUi.setFont(new Font("Chilanka", 40));
+		this.winnerUi.setStyle("-fx-background-color: #ff0000"); // TODO move to config
+		this.winnerUi.setPadding(new Insets(20, 50, 20, 20));
+		this.winnerUi.setVisible(false);
+
+		this.textUiRoot.getChildren().add(this.winnerUi);
+
 		this.pointsUi = new Label();
 		this.pointsUi.setFont(new Font("Chilanka", 30));
-		this.pointsUi.setPadding(new Insets(20, 20, 20, 20));
+		this.pointsUi.setPadding(new Insets(20, 20, 20, 40));
 
 		this.pointsUi.setText(formPointsString(0));
 		this.textUiRoot.getChildren().add(pointsUi);
@@ -188,33 +197,57 @@ public class DrawingStage extends Stage implements View {
 
 		this.handlersMap = new HashMap<String, List<ViewEventHandler>>();
 
-		var eventHandler = new EventHandler<MouseEvent>() {
+		// var eventHandler = new EventHandler<MouseEvent>() {
 
-			public void handle(MouseEvent arg) {
-				Point2D fieldPosition = fieldManager
-						.calcStoragePosition(new Point2D(arg.getX(), arg.getY()));
+		// 	public void handle(MouseEvent arg) {
+		// 		Point2D fieldPosition = fieldManager
+		// 				.calcStoragePosition(new Point2D(arg.getX(), arg.getY()));
 
-				String eventName = "";
+		// 		String eventName = "";
 
-				if (arg.getButton() == MouseButton.PRIMARY) {
-					eventName = "left-mouse-click-event";
-				} else if (arg.getButton() == MouseButton.SECONDARY) {
-					eventName = "right-mouse-click-event";
-				} else {
-					eventName = "mouse-click-event";
-				}
+		// 		if (arg.getButton() == MouseButton.PRIMARY) {
+		// 			eventName = "left-mouse-click-event";
+		// 		} else if (arg.getButton() == MouseButton.SECONDARY) {
+		// 			eventName = "right-mouse-click-event";
+		// 		} else {
+		// 			eventName = "mouse-click-event";
+		// 		}
 
-				List<ViewEventHandler> handlersList = handlersMap.get(eventName);
-				if (handlersList != null) {
+		// 		List<ViewEventHandler> handlersList = handlersMap.get(eventName);
+		// 		if (handlersList != null) {
 
-					for (ViewEventHandler handler : handlersList) {
-						handler.execute(new ViewEventArg(fieldPosition));
+		// 			for (ViewEventHandler handler : handlersList) {
+		// 				handler.execute(new ViewEventArg(fieldPosition));
+		// 			}
+
+		// 		}
+		// 	}
+		// };
+
+		secondLayerCanvas.addEventHandler(MouseEvent.MOUSE_CLICKED,
+				(MouseEvent arg) -> {
+					Point2D fieldPosition = fieldManager
+							.calcStoragePosition(new Point2D(arg.getX(), arg.getY()));
+
+					String eventName = "";
+
+					if (arg.getButton() == MouseButton.PRIMARY) {
+						eventName = "left-mouse-click-event";
+					} else if (arg.getButton() == MouseButton.SECONDARY) {
+						eventName = "right-mouse-click-event";
+					} else {
+						eventName = "mouse-click-event";
 					}
 
-				}
-			}
-		};
-		secondLayerCanvas.addEventHandler(MouseEvent.MOUSE_CLICKED, eventHandler);
+					List<ViewEventHandler> handlersList = handlersMap.get(eventName);
+					if (handlersList != null) {
+
+						for (ViewEventHandler handler : handlersList) {
+							handler.execute(new ViewEventArg(fieldPosition));
+						}
+
+					}
+				});
 
 		// key event handler name format
 		// key-event-char-k - 'k' pressed button
@@ -447,6 +480,9 @@ public class DrawingStage extends Stage implements View {
 
 	@Override
 	public void hideView() {
+
+		commandProcessor.shutdown();
+
 		Platform.runLater(() -> {
 			hide();
 		});
@@ -474,6 +510,17 @@ public class DrawingStage extends Stage implements View {
 
 	private String formPointsString(int amount) {
 		return "Points: " + amount;
+	}
+
+	@Override
+	public void showWinner(String winner, int amount) {
+		this.winnerUi.setText("Winner: " + winner + "\n" + "Bonus: " + amount);
+		this.winnerUi.setVisible(true);
+
+		// This "hack" will ensure that no clicks will be handled.
+		// TextUiRoot is above the secondLayerCanvas which is collecting/handling
+		// clicks.
+		this.textUiRoot.setMouseTransparent(false);
 	}
 
 }

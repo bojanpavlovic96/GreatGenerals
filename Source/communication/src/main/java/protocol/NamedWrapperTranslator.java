@@ -39,10 +39,10 @@ public class NamedWrapperTranslator implements ProtocolTranslator {
 			var messageType = typeResolver.resolve(MessageType.valueOf(wrappedData.name));
 
 			if (messageType != null) {
-				System.out.println("Resolved message class: " + messageType.toString());
+				// System.out.println("Resolved message class: " + messageType.toString());
 				message = (Message) parser.FromString(wrappedData.payload, messageType);
 			} else {
-				System.out.println("Unknown message type received: " + wrappedData.name);
+				System.out.println("Failed to resolve message type of: " + wrappedData.name);
 			}
 
 		} catch (Exception e) {

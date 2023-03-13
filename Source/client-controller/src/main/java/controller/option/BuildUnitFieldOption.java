@@ -7,10 +7,7 @@ import root.model.component.option.FieldOption;
 
 public class BuildUnitFieldOption extends FieldOption {
 
-	private static final int REQUIRED_POINTS = 20;
-
 	private String unitName;
-
 	private int cost;
 
 	public BuildUnitFieldOption(String unitName, int cost, Controller gameController) {
@@ -41,7 +38,12 @@ public class BuildUnitFieldOption extends FieldOption {
 	@Override
 	public boolean isAdequateFor(Field selectedField, Field targetField) {
 		return (controller.isOwner(targetField.getPlayer().getUsername())
-				&& targetField.getPlayer().getPoints() >= REQUIRED_POINTS);
+				&& targetField.getPlayer().getPoints() >= 0);
+		// TODO instead of 0 it should be compared with this.cost
+		// that way all units bill be displayed and then server will 
+		// decide if i am able to build one. 
+		// If compared with cost available units have to be updated with every 
+		// income tick. 
 	}
 
 }

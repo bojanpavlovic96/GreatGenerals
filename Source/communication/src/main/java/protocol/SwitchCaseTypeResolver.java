@@ -7,6 +7,7 @@ import root.communication.messages.AttackMsg;
 import root.communication.messages.BuildUnitMsg;
 import root.communication.messages.CreateRoomRequestMsg;
 import root.communication.messages.DefendMsg;
+import root.communication.messages.GameDoneMsg;
 import root.communication.messages.IncomeTickMsg;
 import root.communication.messages.InitializeMsg;
 import root.communication.messages.RoomResponseMsg;
@@ -74,6 +75,9 @@ public class SwitchCaseTypeResolver implements NameTypeResolver {
 
 			case BuildUnit:
 				return BuildUnitMsg.class;
+
+			case GameDone:
+				return GameDoneMsg.class;
 
 			default:
 				break;

@@ -23,7 +23,14 @@ public class BasicAttack extends Attack {
 			int defenseRange,
 			long duration,
 			Timer timer) {
-		super(type, attackDmg, attackCooldown, attackRange, defenseDmg, defenseCooldown, defenseRange, duration);
+		super(type, 
+		attackDmg, 
+		attackCooldown, 
+		attackRange, 
+		defenseDmg, 
+		defenseCooldown, 
+		defenseRange, 
+		duration);
 
 		this.timer = timer;
 	}
@@ -36,22 +43,17 @@ public class BasicAttack extends Attack {
 			return;
 		}
 
-		System.out.println("Intention to attack: "
-				+ attacker.getField()
-				+ " -> "
-				+ target);
-
 		attackFeature = timer.schedule(this::attackHandler, attackCooldown, TimeUnit.MILLISECONDS);
 	}
 
 	public void attackHandler() {
-		System.out.println("Attack event raised ... ");
+		System.out.println("Intention to attack ... ");
 
 		var username = attacker.getOwner().getUsername();
 		var attackerField = attacker.getField().getStoragePosition();
 		var targetField = target.getStoragePosition();
 
-		onEvent.handleModelEvent(new AttackIntention(this.type, username, attackerField, targetField));
+		onEvent.handle(new AttackIntention(this.type, username, attackerField, targetField));
 	}
 
 	@Override
@@ -62,32 +64,19 @@ public class BasicAttack extends Attack {
 			return;
 		}
 
-		System.out.println("Intention to defend: "
-				+ attacker.getField()
-				+ " -> "
-				+ target);
-
 		attackFeature = timer.schedule(this::defendHandler, defenseCooldown, TimeUnit.MILLISECONDS);
 	}
 
 	public void defendHandler() {
-		System.out.println("Defend event raised ... ");
+		System.out.println("Intention to defend ... ");
 
 		var username = attacker.getOwner().getUsername();
 		var attackerField = attacker.getField().getStoragePosition();
 		var targetField = target.getStoragePosition();
 
-		System.out.println("All data gathered ... ");
 		var event = new DefendIntention(this.type, username, attackerField, targetField);
-		System.out.println("Event created ... ");
 
-		if (onEvent == null) {
-			System.out.println("On event is null ... ");
-		} else {
-			System.out.println("On event is NOT null ... ");
-		}
-
-		onEvent.handleModelEvent(event);
+		onEvent.handle(event);
 	}
 
 	@Override

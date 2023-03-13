@@ -33,11 +33,11 @@ public class DrawBattleCommand extends Command {
 
 		var dist = distance(viewSField.getFieldCenter(), viewEField.getFieldCenter());
 
-		System.out.println("\t Battle arrow: ");
-		System.out.println("\t f: " + startField + " t: " + endField);
-		System.out.println("\t from: " + viewSField.getFieldCenter() + " to: " + viewEField.getFieldCenter());
-		System.out.println("\t angle: " + angle);
-		System.out.println("\t dist: " + dist);
+		// System.out.println("\t Battle arrow: ");
+		// System.out.println("\t f: " + startField + " t: " + endField);
+		// System.out.println("\t from: " + viewSField.getFieldCenter() + " to: " + viewEField.getFieldCenter());
+		// System.out.println("\t angle: " + angle);
+		// System.out.println("\t dist: " + dist);
 
 		gc.translate(viewSField.getFieldCenter().x, viewSField.getFieldCenter().y);
 		gc.rotate(angle);

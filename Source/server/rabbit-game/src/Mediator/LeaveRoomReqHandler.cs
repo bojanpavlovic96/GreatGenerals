@@ -64,7 +64,8 @@ namespace RabbitGameServer.Mediator
 
 				RoomResponseType updateType;
 
-				if (game.isMaster(request.username))
+				Console.WriteLine("Forming response ... ");
+				if (game.isMaster(request.username) || game.Players.Count == 0)
 				{
 					updateType = RoomResponseType.RoomDestroyed;
 				}
@@ -73,6 +74,7 @@ namespace RabbitGameServer.Mediator
 					updateType = RoomResponseType.PlayerLeft;
 				}
 
+				Console.WriteLine("Sending updates ... ");
 				foreach (var player in game.Players)
 				{
 					var updateMsg = new RoomResponseMsg(updateType,
@@ -87,14 +89,15 @@ namespace RabbitGameServer.Mediator
 					mediator.Send(updateReq);
 				}
 
-				if (game.isMaster(request.username))
+				if (game.isMaster(request.username) || game.Players.Count == 0)
 				{
 					gamePool.destroyGame(request.roomName);
+					Console.WriteLine("Room will be destroyed ... ");
 				}
 
 			}
 
-
+			Console.WriteLine("Sending response ... ");
 			var sendReq = new SendResponseRequest(request.roomName,
 					request.username,
 					responseMsg);
