@@ -15,8 +15,7 @@ import proxy.RabbitChannelProvider;
 import proxy.RabbitConnectionEventType;
 import root.ActiveComponent;
 
-public class RabbitConnectionTask
-		implements Runnable, ActiveComponent, RabbitChannelProvider {
+public class RabbitConnectionTask implements RabbitChannelProvider, Runnable, ActiveComponent {
 
 	private BrokerConfigFields brokerConfig;
 

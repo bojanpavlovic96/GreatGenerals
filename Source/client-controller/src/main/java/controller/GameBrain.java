@@ -38,7 +38,7 @@ import view.command.ShowFieldDescription;
 import view.command.ZoomInCommand;
 import view.command.ZoomOutCommand;
 
-public class GameBrain implements Controller {
+public class GameBrain implements Controller, ActiveComponent {
 
 	private PlayerData player;
 
@@ -46,7 +46,7 @@ public class GameBrain implements Controller {
 
 	private GameServerProxy serverProxy;
 
-	private CommandProcessor serverCommandProcessor;
+	private CommandProcessor serverCmdProcessor;
 	private CommandQueue serverCommandQueue;
 
 	private View view;
@@ -86,8 +86,8 @@ public class GameBrain implements Controller {
 
 		// connect serverProxy and controller
 		serverCommandQueue = ((CommandProducer) serverProxy).getConsumerQueue();
-		serverCommandProcessor = new BasicCommandProcessor((CommandDrivenComponent) this);
-		serverCommandQueue.setCommandProcessor(this.serverCommandProcessor);
+		serverCmdProcessor = new BasicCommandProcessor((CommandDrivenComponent) this);
+		serverCommandQueue.setCommandProcessor(this.serverCmdProcessor);
 
 		viewCommandQueue = new CommandQueue();
 		((CommandDrivenComponent) view).setCommandQueue(viewCommandQueue);
@@ -242,6 +242,7 @@ public class GameBrain implements Controller {
 		});
 
 		view.addEventHandler("key-event-char-q", (ViewEventArg arg) -> {
+
 			view.hideView();
 			onGameDone.handleGameDone();
 
@@ -295,21 +296,20 @@ public class GameBrain implements Controller {
 		// Injected  dependencies should be destroyed/shutdown by the creator
 		// which in this case is Launcher ... ? 
 
-		if (this.serverCommandProcessor != null) {
-			((ActiveComponent) this.serverCommandProcessor).shutdown();
+		if (serverCmdProcessor != null && serverCmdProcessor instanceof ActiveComponent) {
+			((ActiveComponent) serverCmdProcessor).shutdown();
 		}
 
-		if (this.view != null) {
-			((ActiveComponent) this.view).shutdown();
+		if (view != null && view instanceof ActiveComponent) {
+			((ActiveComponent) view).shutdown();
 		}
 
-		if (this.model != null) {
-			this.model.shutdown();
+		if (model != null && model instanceof ActiveComponent) {
+			((ActiveComponent) model).shutdown();
 		}
 
-		if (this.serverProxy != null
-				&& (this.serverProxy instanceof ActiveComponent)) {
-			((ActiveComponent) this.serverProxy).shutdown();
+		if (serverProxy != null && serverProxy instanceof ActiveComponent) {
+			((ActiveComponent) serverProxy).shutdown();
 		}
 
 	}
@@ -341,7 +341,7 @@ public class GameBrain implements Controller {
 
 	@Override
 	public CommandProcessor getCommandProcessor() {
-		return this.serverCommandProcessor;
+		return this.serverCmdProcessor;
 	}
 
 	@Override

@@ -1,12 +1,10 @@
 package root.command;
 
-import root.ActiveComponent;
-
-public interface CommandDrivenComponent extends ActiveComponent {
+public interface CommandDrivenComponent {
 
 	CommandQueue getCommandQueue();
 
-	void setCommandQueue(CommandQueue new_queue);
+	void setCommandQueue(CommandQueue newQueue);
 
 	CommandProcessor getCommandProcessor();
 

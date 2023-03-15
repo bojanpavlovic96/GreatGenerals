@@ -25,6 +25,7 @@ import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.stage.Screen;
 import javafx.stage.Stage;
+import root.ActiveComponent;
 import root.Point2D;
 import root.command.CommandDrivenComponent;
 import root.command.CommandProcessor;
@@ -350,12 +351,13 @@ public class DrawingStage extends Stage implements View {
 		return this.handlersMap.remove(event_name);
 	}
 
-	@Override
-	public void shutdown() {
-		// got there from CommandDrivenComponent
-		// in Controller command processing is done using threadPool
-		// in this case command processing is done using Platform.runLater
-	}
+	// Deprecated since activeComponent is removed from CommandDriveComponent
+	// @Override
+	// public void shutdown() {
+	// 	// got there from CommandDrivenComponent
+	// 	// in Controller command processing is done using threadPool
+	// 	// in this case command processing is done using Platform.runLater
+	// }
 
 	// view interface
 	@Override
@@ -481,7 +483,9 @@ public class DrawingStage extends Stage implements View {
 	@Override
 	public void hideView() {
 
-		commandProcessor.shutdown();
+		if (commandProcessor != null && commandProcessor instanceof ActiveComponent) {
+			((ActiveComponent) commandProcessor).shutdown();
+		}
 
 		Platform.runLater(() -> {
 			hide();

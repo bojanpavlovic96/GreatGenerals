@@ -1,8 +1,6 @@
 package root.command;
 
-import root.ActiveComponent;
-
-public interface CommandProcessor extends ActiveComponent {
+public interface CommandProcessor {
 
 	void execute(CommandQueue commandQueue);
 

@@ -47,7 +47,7 @@ public class RabbitRoomServerProxy implements RoomServerProxy, ActiveComponent {
 	private boolean setupReceiver(String roomName, String playerName,
 			RoomServerResponseHandler handler) {
 
-		if (channel == null||!channel.isOpen()) {
+		if (channel == null || !channel.isOpen()) {
 			channel = channelProvider.getChannel();
 		}
 
@@ -106,8 +106,8 @@ public class RabbitRoomServerProxy implements RoomServerProxy, ActiveComponent {
 		try {
 			// subscribe for a joinResponse before sending create/join request 
 
-			var setupSuccess = setupReceiver(roomName, playerName, handler);
-			if (!setupSuccess) {
+			var setupResult = setupReceiver(roomName, playerName, handler);
+			if (!setupResult) {
 				System.out.println("Failed to setup receiver ... ");
 				return;
 			}
@@ -151,8 +151,8 @@ public class RabbitRoomServerProxy implements RoomServerProxy, ActiveComponent {
 
 			// subscribe for a joinResponse before sending create/join request 
 
-			var setupSuccess = setupReceiver(roomName, playerName, handler);
-			if (!setupSuccess) {
+			var setupResult = setupReceiver(roomName, playerName, handler);
+			if (!setupResult) {
 				System.out.println("Failed to setup receiver ... ");
 				return;
 			}
@@ -194,8 +194,8 @@ public class RabbitRoomServerProxy implements RoomServerProxy, ActiveComponent {
 		try {
 			// subscribe for a leave before sending create/join request 
 
-			var setupRes = setupReceiver(roomName, playerName, handler);
-			if (!setupRes) {
+			var setupResult = setupReceiver(roomName, playerName, handler);
+			if (!setupResult) {
 				System.out.println("Failed to setup receiver ... ");
 				return;
 			}
@@ -234,8 +234,8 @@ public class RabbitRoomServerProxy implements RoomServerProxy, ActiveComponent {
 			return;
 		}
 
-		var setupRes = setupReceiver(roomName, username, handler);
-		if (!setupRes) {
+		var setupResult = setupReceiver(roomName, username, handler);
+		if (!setupResult) {
 			System.out.println("Failed to setup startGame response receiver ... ");
 			return;
 		}

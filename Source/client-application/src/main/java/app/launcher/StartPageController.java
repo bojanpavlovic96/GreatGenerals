@@ -406,10 +406,10 @@ public class StartPageController implements GameReadyEventProducer, ActiveCompon
 
 	@Override
 	public void shutdown() {
-		// because of the bug with the httpClient where client will hold thread 
+		// Because of the bug with the httpClient where client will hold thread 
 		// pool alive even after the last window is closed 
-		// shuttingDown custom threadPool doesn't work (but should be) anyways 
-		// but ... if I (anyone) somehow find solution how to shutdown client this
+		// shuttingDown custom threadPool doesn't work (but should be).
+		// But ... if I (anyone) somehow find a solution how to shutdown client this
 		// interface implementation and this call propagation will be used 
 		if (loginServer != null && loginServer instanceof ActiveComponent) {
 			((ActiveComponent) loginServer).shutdown();

@@ -6,6 +6,6 @@ public interface ServerSlave {
 
 	GameServerProxy getServerProxy();
 
-	void setServerProxy(GameServerProxy new_proxy);
+	void setServerProxy(GameServerProxy newProxy);
 
 }

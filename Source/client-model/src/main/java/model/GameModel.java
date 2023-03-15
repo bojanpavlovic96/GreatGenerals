@@ -29,7 +29,7 @@ import root.model.event.ModelEventHandler;
 import root.model.event.ModelEventProducer;
 import root.model.event.Timer;
 
-public class GameModel implements Model {
+public class GameModel implements Model, ActiveComponent {
 
 	private Map<Point2D, Field> fields;
 	private Map<String, PlayerData> players;

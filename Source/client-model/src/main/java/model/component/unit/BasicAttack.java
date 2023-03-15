@@ -23,14 +23,14 @@ public class BasicAttack extends Attack {
 			int defenseRange,
 			long duration,
 			Timer timer) {
-		super(type, 
-		attackDmg, 
-		attackCooldown, 
-		attackRange, 
-		defenseDmg, 
-		defenseCooldown, 
-		defenseRange, 
-		duration);
+		super(type,
+				attackDmg,
+				attackCooldown,
+				attackRange,
+				defenseDmg,
+				defenseCooldown,
+				defenseRange,
+				duration);
 
 		this.timer = timer;
 	}

@@ -17,7 +17,7 @@ import root.communication.ProtocolTranslator;
 import root.model.event.ClientIntention;
 
 public class RabbitGameServerProxy implements GameServerProxy,
-		Consumer,
+		Consumer, // rabbit
 		ActiveComponent,
 		ConnectionEventHandler {
 
@@ -135,7 +135,7 @@ public class RabbitGameServerProxy implements GameServerProxy,
 	}
 
 	@Override
-	public boolean sendIntention(ClientIntention modelEvent) {
+	public boolean sendIntention(ClientIntention intention) {
 
 		if (channel == null) {
 			// Channel is gonna be created at each CONNECTION event 
@@ -148,10 +148,7 @@ public class RabbitGameServerProxy implements GameServerProxy,
 			return false;
 		}
 
-		System.out.println("Sending intention: "
-				+ modelEvent.getEventType().toString());
-
-		var message = messageInterpreter.ToMessage(modelEvent);
+		var message = messageInterpreter.ToMessage(intention);
 		message.setOrigin(this.username, this.roomName);
 
 		byte[] bytePayload = protocolTranslator.toByteData(message);
@@ -163,15 +160,13 @@ public class RabbitGameServerProxy implements GameServerProxy,
 					route,
 					null,
 					bytePayload);
-			System.out.println("Publishing intention on: ");
-			System.out.println("\ttopic: " + topic);
-			System.out.println("\troute: " + route);
+			var type = intention.getEventType().toString();
+			System.out.println("Publishing: " + type + " -> t: " + topic + " r: " + route);
 
 		} catch (IOException e) {
 			e.printStackTrace();
 			// debug
-			System.out.println("Failed to publish intention: "
-					+ modelEvent.getClass().getName());
+			System.out.println("Failed to publish intention: " + intention.getEventType().toString());
 			System.out.println("Exc message: " + e.getMessage());
 			return false;
 		}
@@ -182,8 +177,6 @@ public class RabbitGameServerProxy implements GameServerProxy,
 	private String genEventRoutingKey() {
 		return config.modelEventsRoutePrefix + roomName + "." + username;
 	}
-
-	// region Consumer implementation
 
 	@Override
 	public void handleDelivery(String consumerTag,
@@ -214,6 +207,8 @@ public class RabbitGameServerProxy implements GameServerProxy,
 
 		commandQueue.enqueue(newCommand);
 	}
+
+	// region not implemented part of the Consumer interface
 
 	@Override
 	public void handleConsumeOk(String consumerTag) {
@@ -253,7 +248,6 @@ public class RabbitGameServerProxy implements GameServerProxy,
 				return;
 			}
 		}
-
 	}
 
 	@Override

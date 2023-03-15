@@ -2,7 +2,6 @@ package root.model;
 
 import java.util.List;
 
-import root.ActiveComponent;
 import root.Point2D;
 import root.communication.PlayerDescription;
 import root.communication.messages.components.AttackDesc;
@@ -15,7 +14,7 @@ import root.model.component.UnitType;
 import root.model.component.option.FieldOption;
 import root.model.event.ModelEventProducer;
 
-public interface Model extends ActiveComponent, ModelEventProducer {
+public interface Model extends ModelEventProducer{
 
 	List<Field> getFields();
 

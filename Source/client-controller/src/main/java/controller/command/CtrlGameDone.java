@@ -27,6 +27,7 @@ public class CtrlGameDone extends Command {
 		}
 
 		view.getCommandQueue().enqueue(showNotif);
+		
 	}
 
 	@Override

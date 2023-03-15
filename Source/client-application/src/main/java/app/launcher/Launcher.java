@@ -36,11 +36,11 @@ public class Launcher extends Application {
 
 	private Controller gameController;
 
-	@Override
-	public void init() throws Exception {
-		// init() is not on main (UI) thread
-		// constructor -> init() -> start()
-	}
+	// @Override
+	// public void init() throws Exception {
+	// 	// init() is not on main (UI) thread
+	// 	// constructor -> init() -> start()
+	// }
 
 	@Override
 	public void start(Stage primaryStage) throws Exception {
@@ -118,11 +118,9 @@ public class Launcher extends Application {
 				viewConfig.fieldWidth,
 				viewConfig.fieldBorderWidth);
 
-		System.out.println("Creating drawing stage ... ");
-
 		Platform.runLater(() -> {
-			View view = new DrawingStage(fieldManager, viewConfig);
-			System.out.println("Initialized View ... ");
+			var view = new DrawingStage(fieldManager, viewConfig);
+			System.out.println("View created ... ");
 
 			gameController = new GameBrain(player,
 					serverProxy,
@@ -143,7 +141,7 @@ public class Launcher extends Application {
 
 	private void gameDoneHandler() {
 		System.out.println("Game is done");
-		System.out.println("Controller passed controll to launcher");
+		System.out.println("Controller passed controll to Launcher");
 		var room = startPageController.getRoomName();
 		var pass = " "; // this should not be important
 		startPageController.leaveRoomActionHandler(room, pass);

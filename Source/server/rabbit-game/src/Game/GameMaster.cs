@@ -244,7 +244,7 @@ namespace RabbitGameServer.Game
 					Console.WriteLine("\n This game is done ... \n");
 					onGameDone(this);
 
-					return new GameDoneMessage(e.playerName, 
+					return new GameDoneMessage(e.playerName,
 						RoomName,
 						config.winAward);
 				}

@@ -3,7 +3,9 @@ package root.command;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-public class BasicCommandProcessor implements CommandProcessor {
+import root.ActiveComponent;
+
+public class BasicCommandProcessor implements CommandProcessor, ActiveComponent {
 
 	private ExecutorService executor = null;
 	private CommandDrivenComponent commandTarget;
