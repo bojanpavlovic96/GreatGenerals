@@ -2,9 +2,11 @@ namespace RabbitGameServer.Database
 {
 	public interface IDatabase
 	{
-		void saveCommand(string gameId, Message command);
+		void saveMessages(string gameId, List<Message> messages);
 
-		string saveGame(string roomName, List<string> players);
+		string saveGame(string roomName, string masterPlayer, List<string> players);
+
+		List<DbGame> getGames(string user);
 
 	}
 }

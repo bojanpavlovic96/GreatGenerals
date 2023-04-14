@@ -1,5 +1,4 @@
-
-namespace RabbitGameServer.SharedModel.ModelEvents
+namespace RabbitGameServer.SharedModel.ClientIntentions
 {
 
 	public class ReadyForInitIntention : ClientIntention

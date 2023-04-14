@@ -1,4 +1,4 @@
-namespace RabbitGameServer.SharedModel.ModelEvents
+namespace RabbitGameServer.SharedModel.ClientIntentions
 {
 
 	public enum ClientIntentionType

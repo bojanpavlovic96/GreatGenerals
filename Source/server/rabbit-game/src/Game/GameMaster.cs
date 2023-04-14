@@ -3,7 +3,7 @@ using RabbitGameServer.Client;
 using RabbitGameServer.Config;
 using RabbitGameServer.SharedModel;
 using RabbitGameServer.SharedModel.Messages;
-using RabbitGameServer.SharedModel.ModelEvents;
+using RabbitGameServer.SharedModel.ClientIntentions;
 
 namespace RabbitGameServer.Game
 {
@@ -40,6 +40,8 @@ namespace RabbitGameServer.Game
 
 		public PlayerData masterPlayer { get; set; }
 
+		private string roomId { get; set; }
+
 		public string RoomName { get; set; }
 		public string Password { get; set; }
 		public List<PlayerData> Players { get; set; }
@@ -47,6 +49,7 @@ namespace RabbitGameServer.Game
 		private List<Unit> ActiveUnits;
 
 		private Database.IDatabase Database;
+		private List<Message> Messages;
 
 		private Dictionary<Point2D, Field> Fields;
 
@@ -90,6 +93,7 @@ namespace RabbitGameServer.Game
 			this.sendEventsCnt = 0;
 
 			this.Database = db;
+			this.Messages = new List<Message>();
 
 			this.onGameDone += onGameDone;
 			this.onIncomeTick += incomeTickHandler;
@@ -119,7 +123,12 @@ namespace RabbitGameServer.Game
 			ModelEventHandler? handler;
 			if (handlers.TryGetValue(intention.type, out handler))
 			{
-				return handler.Invoke(intention);
+				var resultMsg = handler.Invoke(intention);
+				Messages.Add(resultMsg);
+
+				saveMessages();
+
+				return resultMsg;
 			}
 			else
 			{
@@ -128,6 +137,24 @@ namespace RabbitGameServer.Game
 				return null;
 			}
 
+		}
+
+		private void saveMessages()
+		{
+			if (Messages.Count >= config.msgQueueSize)
+			{
+				var dbMsgs = Messages.Select(m => DbMessageMapper.map(m, roomId)).ToList();
+				try
+				{
+					Database.saveMessages(roomId, dbMsgs);
+				}
+				catch (Exception e)
+				{
+					Console.WriteLine("Exception in saving: ");
+					Console.WriteLine($"{e.Message}");
+				}
+				Messages.Clear();
+			}
 		}
 
 		// region separate event handlers
@@ -455,6 +482,9 @@ namespace RabbitGameServer.Game
 			tickTimer.AutoReset = false;
 			tickTimer.Start();
 
+			var playerNames = Players.Select(pd => pd.username).ToList<string>();
+			roomId = Database.saveGame(RoomName, masterPlayer.username, playerNames);
+			Console.WriteLine("Saved game to db ... ");
 
 			return true;
 		}
@@ -548,10 +578,13 @@ namespace RabbitGameServer.Game
 
 		public void endGame()
 		{
+
 			if (tickTimer != null)
 			{
 				tickTimer.Stop();
 			}
+
+			saveMessages();
 
 			Console.WriteLine($"{RoomName} is stopped ... ");
 		}

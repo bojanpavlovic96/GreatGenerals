@@ -43,7 +43,7 @@ namespace RabbitGameServer.Game
 
 		public GameMaster CreateGame(string roomName,
 							string password,
-							PlayerData master)
+							SharedModel.PlayerData master)
 		{
 			var newGame = new GameMaster(
 				roomName,

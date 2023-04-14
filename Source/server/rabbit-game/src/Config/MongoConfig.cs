@@ -12,6 +12,8 @@ namespace RabbitGameServer.Config
 
 		public string? DatabaseName { get; set; }
 		public string? GamesCollection { get; set; }
+
+		public string? MessagesCollections { get; set; }
 	}
 
 }

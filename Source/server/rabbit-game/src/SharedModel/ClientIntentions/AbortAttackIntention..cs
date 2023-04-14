@@ -1,7 +1,5 @@
-using RabbitGameServer.SharedModel;
-using RabbitGameServer.SharedModel.ModelEvents;
 
-namespace RabbitGameServer.SharedModel.ModelEvents
+namespace RabbitGameServer.SharedModel.ClientIntentions
 {
 	public class AbortAttackIntention : ClientIntention
 	{

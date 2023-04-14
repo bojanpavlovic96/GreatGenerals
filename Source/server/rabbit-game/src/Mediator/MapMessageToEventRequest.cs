@@ -1,7 +1,7 @@
 
 using MediatR;
 using RabbitGameServer.SharedModel.Messages;
-using RabbitGameServer.SharedModel.ModelEvents;
+using RabbitGameServer.SharedModel.ClientIntentions;
 
 namespace RabbitGameServer.Mediator
 {
