@@ -55,16 +55,25 @@ namespace RabbitGameServer.Service
 					return;
 				}
 
+				setupListReplaysConsumer();
+
 				setupNewRoomEventConsumer();
 				setupJoinRoomConsumer();
 				setupLeaveRoomConsumer();
 				setupStartGameConsumer();
+
+
 
 				setupModelEventConsumer();
 
 				Console.WriteLine("RabbitReceiver started");
 			});
 
+		}
+
+		private void setupListReplaysConsumer()
+		{
+			roomChannel.ExchangeDeclare(queuesConfig.)
 		}
 
 		private void setupNewRoomEventConsumer()

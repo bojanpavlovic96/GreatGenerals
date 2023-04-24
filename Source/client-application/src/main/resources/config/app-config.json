@@ -85,5 +85,18 @@
 			"loginPath": "login",
 			"registerPath": "register"
 		}
+	},
+	"restReplayServerConfig": {
+		"stage": "dev",
+		"development": {
+			"address": "localhost",
+			"port": 9001,
+			"listGamesPath": "replay/games/"
+		},
+		"production": {
+			"address": "some.address.com",
+			"port": 9091,
+			"listGamesPath": "replay/games/"
+		}
 	}
 }

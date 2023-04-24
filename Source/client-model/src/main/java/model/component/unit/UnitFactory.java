@@ -39,18 +39,18 @@ public class UnitFactory {
 		}
 
 		this.attacks = new HashMap<>();
-		System.out.println("Attack Descriptions ... ");
-		for (var attack : attacksDesc) {
-			attacks.put(attack.type, attack);
-			System.out.println(attack);
-		}
+		// System.out.println("Attack Descriptions ... ");
+		// for (var attack : attacksDesc) {
+		// 	attacks.put(attack.type, attack);
+		// 	System.out.println(attack);
+		// }
 
 		this.units = new HashMap<String, UnitDesc>();
-		System.out.println("Units desc ... ");
-		for (var unit : unitsDesc) {
-			units.put(unit.unitName, unit);
-			System.out.println(unit);
-		}
+		// System.out.println("Units desc ... ");
+		// for (var unit : unitsDesc) {
+		// 	units.put(unit.unitName, unit);
+		// 	System.out.println(unit);
+		// }
 
 		this.pathFinder = pathFinder;
 		this.timer = timer;
@@ -71,7 +71,6 @@ public class UnitFactory {
 	}
 
 	private Attack genAttack(String type) {
-		System.out.println("Generating attack: " + type);
 		var desc = attacks.get(type);
 
 		if (desc == null) {

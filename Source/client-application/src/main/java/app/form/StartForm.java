@@ -2,6 +2,7 @@ package app.form;
 
 import java.awt.Dimension;
 import java.awt.Toolkit;
+import java.util.List;
 
 import app.event.RoomFormActionHandler;
 import app.event.StartGameEventHandler;
@@ -19,6 +20,7 @@ import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import root.communication.PlayerDescription;
+import root.communication.messages.GameDetails;
 import root.view.FormConfig;
 
 public class StartForm extends Stage implements InitialPage, HasLabels {
@@ -43,6 +45,8 @@ public class StartForm extends Stage implements InitialPage, HasLabels {
 
 	// logout, roomName, roomPassword, createRoom, joinRoom, listOfPlayers
 	private RoomForm roomForm;
+
+	private ReplayForm replayForm;
 
 	private Language language;
 	private Button startButton;
@@ -71,6 +75,8 @@ public class StartForm extends Stage implements InitialPage, HasLabels {
 
 		initRoomForm();
 		roomForm.setVisible(false);
+
+		initReplayForm();
 
 		initStartButton();
 
@@ -140,6 +146,11 @@ public class StartForm extends Stage implements InitialPage, HasLabels {
 		this.mainContainer.getChildren().add(this.roomForm);
 	}
 
+	private void initReplayForm() {
+		this.replayForm = new ReplayForm(config, stringRegistry);
+		this.replayForm.hide();
+	}
+
 	private void initStartButton() {
 
 		language = stringRegistry.getLanguage();
@@ -201,6 +212,21 @@ public class StartForm extends Stage implements InitialPage, HasLabels {
 	@Override
 	public void setOnRegisterHandler(UserFormActionHandler handler) {
 		this.userForm.setOnRegisterHandler(handler);
+	}
+
+	@Override
+	public void setOnReplayHandler(RoomFormActionHandler handler) {
+		this.roomForm.setOnReplayHandler(handler);
+	}
+
+	@Override
+	public void setOnReplaySelectHandler(ReplaySelectHandler handler) {
+		this.replayForm.setOnSelectHandler(handler);
+	}
+
+	@Override
+	public void setOnReplayClosedHandler(ReplayClosedHandler handler) {
+		this.replayForm.setOnCloseHandler(handler);
 	}
 
 	@Override
@@ -367,6 +393,27 @@ public class StartForm extends Stage implements InitialPage, HasLabels {
 	@Override
 	public void disableLeaveRoom() {
 		roomForm.disableLeaveRoom();
+	}
+
+	@Override
+	public void showReplayForm() {
+		if (replayForm != null) {
+			replayForm.show();
+		}
+	}
+
+	@Override
+	public void hideReplayForm() {
+		if (replayForm != null) {
+			replayForm.hide();
+		}
+	}
+
+	@Override
+	public void populateReplays(List<GameDetails> games) {
+		if (replayForm != null) {
+			replayForm.populate(games);
+		}
 	}
 
 }

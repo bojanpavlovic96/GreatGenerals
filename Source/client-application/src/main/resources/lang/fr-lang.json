@@ -8,6 +8,7 @@
 	"logout": "FR Logout",
 	"roomName": "FR Room name",
 	"roomPassword": "FR Room password",
+	"replay": "FR Replay",
 	"createRoom": "FR Create room",
 	"joinRoom": "FR Join room",
 	"leaveRoom": "FR Leave room",

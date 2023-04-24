@@ -45,6 +45,9 @@ public class Language {
 	public String logout;
 	public String roomName;
 	public String roomPassword;
+	public String replay;
+	public String loadingReplays;
+	public String replays;
 	public String createRoom;
 	public String joinRoom;
 	public String leaveRoom;

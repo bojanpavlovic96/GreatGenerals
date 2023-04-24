@@ -20,9 +20,6 @@ namespace RabbitGameServer.Database
 		{
 			this.config = options.Value;
 
-			// For some reason when creating gg_user with --eval with startup script
-			// user is gonna be somehow bound to test (nonexistant) database but will 
-			// have all the roles given in roles[] arg ... so yeah ... hardcode test ... 
 			var creds = MongoCredential.CreateCredential(
 				config.DatabaseName,
 				config.MongoUser,
@@ -33,8 +30,7 @@ namespace RabbitGameServer.Database
 				Credential = creds,
 				Server = new MongoServerAddress(config.MongoUrl)
 			};
-			// I don't think this field is actually necessary
-			// client = new MongoClient(MongoUri);
+
 			client = new MongoClient(settings);
 			database = client.GetDatabase(config.DatabaseName);
 		}
@@ -68,6 +64,14 @@ namespace RabbitGameServer.Database
 				.InsertOne(container);
 
 			return game._id.ToString();
+		}
+
+		public List<DbGame> getGames(string user)
+		{
+			return database
+					.GetCollection<DbGame>(config.GamesCollection)
+					.Find<DbGame>((dbGame) => dbGame.players.Contains(user))
+					.ToList<DbGame>();
 		}
 	}
 }

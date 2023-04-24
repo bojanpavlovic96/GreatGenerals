@@ -7,6 +7,7 @@ namespace RabbitGameServer.Config
 		public static string ConfigSection = "QueuesConfig";
 
 		public string MatchAllWildcard { get; set; }
+		public string ReplaysTopic { get; set; }
 		public string RoomsRequestTopic { get; set; }
 		public string RoomsResponseTopic { get; set; }
 		public string NewRoomRoute { get; set; }

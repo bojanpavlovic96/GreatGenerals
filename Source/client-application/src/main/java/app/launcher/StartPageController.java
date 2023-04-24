@@ -19,6 +19,7 @@ import root.communication.messages.LoginRequest;
 import root.communication.messages.LoginServerResponse;
 import root.communication.messages.LoginServerResponseStatus;
 import root.communication.messages.RegisterRequest;
+import root.communication.messages.ReplayServerResponse;
 
 // Used for handling user actions from login/register/createRoom/joinRoom form
 public class StartPageController implements GameReadyEventProducer, ActiveComponent {
@@ -53,11 +54,13 @@ public class StartPageController implements GameReadyEventProducer, ActiveCompon
 		initialPage.setOnLoginHandler(this::loginActionHandler);
 		initialPage.setOnRegisterHandler(this::registerActionHandler);
 
+		initialPage.setOnReplayHandler(this::replayHandler);
+		initialPage.setOnReplaySelectHandler(this::replaySelectHandler);
+		initialPage.setOnReplayClosedHandler(this::replayCloseHandler);
+
 		initialPage.setOnCreateRoomHandler(this::createRoomActionHandler);
 		initialPage.setOnJoinRoomHandler(this::joinRoomActionHandler);
-
 		initialPage.setOnStartGameHandler(this::startGameActionHandler);
-
 		initialPage.setOnLeaveRoomHandler(this::leaveRoomActionHandler);
 
 	}
@@ -131,6 +134,22 @@ public class StartPageController implements GameReadyEventProducer, ActiveCompon
 		showInfoMessage(Language.MessageType.RegisterRequestSent);
 
 		return;
+	}
+
+	private void replayHandler(String roomName, String password) {
+		
+	}
+
+	private void listReplaysHandler(ReplayServerResponse response) {
+
+	}
+
+	private void replaySelectHandler(String gameId) {
+		System.out.println("Selected replay: " + gameId);
+	}
+
+	private void replayCloseHandler() {
+		System.out.println("Closed replay stage ... ");
 	}
 
 	private void createRoomActionHandler(String roomName, String roomPassword) {

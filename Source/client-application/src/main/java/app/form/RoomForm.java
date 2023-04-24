@@ -19,8 +19,7 @@ import javafx.scene.layout.VBox;
 import javafx.scene.text.Font;
 import root.communication.PlayerDescription;
 
-public class RoomForm extends VBox
-		implements FormMessageProducer, HasLabels {
+public class RoomForm extends VBox implements FormMessageProducer, HasLabels {
 
 	// Noto Sans CJK TC Black
 	// Un Dotum Bold
@@ -47,6 +46,8 @@ public class RoomForm extends VBox
 	private Label roomPasswordLb;
 	private PasswordField roomPasswordPf;
 
+	private Button replayBtn;
+
 	private Button createRoomBtn;
 	private Button joinRoomBtn;
 	private Button leaveRoomBtn;
@@ -65,6 +66,8 @@ public class RoomForm extends VBox
 	private FormMessageHandler onInfoMessage;
 
 	private Font font;
+
+	private RoomFormActionHandler onReplay;
 
 	private RoomFormActionHandler onCreateRoom;
 	private RoomFormActionHandler onJoinRoom;
@@ -100,6 +103,10 @@ public class RoomForm extends VBox
 		this.logoutBtn.setFont(this.font);
 		// this will allow other components to rearrange when logoutBtn is hidden 
 		this.logoutBtn.managedProperty().bind(logoutBtn.visibleProperty());
+
+		this.replayBtn = new Button(this.language.replay);
+		this.replayBtn.setFont(this.font);
+		this.replayBtn.managedProperty().bind(replayBtn.visibleProperty());
 
 		this.roomNameLb = new Label(this.language.roomName);
 		this.roomNameLb.setFont(this.font);
@@ -155,6 +162,7 @@ public class RoomForm extends VBox
 		// add components to container in the right order
 
 		this.getChildren().add(this.logoutBtn);
+		this.getChildren().add(this.replayBtn);
 
 		this.getChildren().add(this.roomNameLb);
 		this.getChildren().add(this.roomNameTf);
@@ -178,16 +186,14 @@ public class RoomForm extends VBox
 		// this.disableStartingGame();
 
 		// elements margins (up, right, down, left)
-		VBox.setMargin(this.roomNameTf, new Insets(2, 0, 5, 0));
+		VBox.setMargin(this.replayBtn, new Insets(10, 0, 10, 0));
 
+		VBox.setMargin(this.roomNameTf, new Insets(2, 0, 5, 0));
 		VBox.setMargin(this.roomPasswordPf, new Insets(2, 0, 5, 0));
 
 		VBox.setMargin(this.createRoomBtn, new Insets(5, 0, 5, 0));
-
 		VBox.setMargin(this.leaveRoomBtn, new Insets(10, 0, 0, 0));
-
 		VBox.setMargin(this.playersLb, new Insets(10, 0, 0, 0));
-
 		VBox.setMargin(this.playersLW, new Insets(10, 0, 0, 0));
 
 		// VBox.setMargin(this.startGameBtn, new Insets(10, 0, 0, 5));
@@ -196,6 +202,13 @@ public class RoomForm extends VBox
 	}
 
 	private void setHandlers() {
+
+		this.replayBtn.setOnAction((ActionEvent event) -> {
+			if (onReplay != null) {
+				onReplay.handleFormAction(getRoomName(), getRoomPassword());
+			}
+		});
+
 		this.createRoomBtn.setOnAction((ActionEvent event) -> {
 			if (onCreateRoom != null) {
 				onCreateRoom.handleFormAction(getRoomName(), getRoomPassword());
@@ -238,9 +251,6 @@ public class RoomForm extends VBox
 
 	public void addPlayer(PlayerDescription playerDesc) {
 		Platform.runLater(() -> {
-			// Label newLabel = new Label(playerDesc.getUsername());
-			// newLabel.setFont(this.font);
-
 			players.add(playerDesc.getUsername());
 			playersLW.setItems(players);
 
@@ -294,6 +304,10 @@ public class RoomForm extends VBox
 
 	}
 
+	public void setOnReplayHandler(RoomFormActionHandler handler) {
+		this.onReplay = handler;
+	}
+
 	public void setOnCreateRoomHandler(RoomFormActionHandler handler) {
 		this.onCreateRoom = handler;
 	}
@@ -317,6 +331,7 @@ public class RoomForm extends VBox
 		this.language = newLanguage;
 
 		this.logoutBtn.setText(this.language.logout);
+		this.replayBtn.setText(this.language.replay);
 		this.roomNameLb.setText(this.language.roomName);
 		this.roomPasswordLb.setText(this.language.roomPassword);
 		this.createRoomBtn.setText(this.language.createRoom);
@@ -342,6 +357,14 @@ public class RoomForm extends VBox
 
 	public FormMessageHandler getInfoMessageHandler() {
 		return this.onInfoMessage;
+	}
+
+	public void disableReplay() {
+		this.replayBtn.setVisible(false);
+	}
+
+	public void enableReplay() {
+		this.replayBtn.setVisible(true);
 	}
 
 	public void disableCreateRoom() {

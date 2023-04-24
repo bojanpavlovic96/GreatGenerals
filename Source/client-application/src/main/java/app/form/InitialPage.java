@@ -1,9 +1,12 @@
 package app.form;
 
+import java.util.List;
+
 import app.event.RoomFormActionHandler;
 import app.event.StartGameEventHandler;
 import app.event.UserFormActionHandler;
 import root.communication.PlayerDescription;
+import root.communication.messages.GameDetails;
 
 public interface InitialPage extends MessageDisplay {
 
@@ -12,6 +15,12 @@ public interface InitialPage extends MessageDisplay {
 	void setOnRegisterHandler(UserFormActionHandler handler);
 
 	void setOnLogoutHandler(UserFormActionHandler handler);
+
+	void setOnReplayHandler(RoomFormActionHandler handler);
+
+	void setOnReplaySelectHandler(ReplaySelectHandler handler);
+
+	void setOnReplayClosedHandler(ReplayClosedHandler handler);
 
 	void setOnCreateRoomHandler(RoomFormActionHandler handler);
 
@@ -24,6 +33,12 @@ public interface InitialPage extends MessageDisplay {
 	public void showUserForm();
 
 	public void hideUserForm();
+
+	public void showReplayForm();
+
+	public void hideReplayForm();
+
+	public void populateReplays(List<GameDetails> games);
 
 	public void showRoomForm();
 

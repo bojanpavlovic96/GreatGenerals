@@ -23,7 +23,6 @@ import root.controller.Controller;
 import root.model.Model;
 import root.model.PlayerData;
 import root.model.event.ConcurrentExecutorTimer;
-import root.view.View;
 import view.DrawingStage;
 import view.component.HexFieldManager;
 

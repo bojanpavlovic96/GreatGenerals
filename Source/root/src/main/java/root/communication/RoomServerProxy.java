@@ -8,7 +8,8 @@ public interface RoomServerProxy {
 	void JoinRoom(String roomName, String password, String playerName,
 			RoomServerResponseHandler handler);
 
-	void LeaveRoom(String roomName, String username, RoomServerResponseHandler handler);
+	void LeaveRoom(String roomName, String username,
+			RoomServerResponseHandler handler);
 
 	void SubscribeForRoomUpdates(String roomName, String username,
 			RoomServerResponseHandler handler);

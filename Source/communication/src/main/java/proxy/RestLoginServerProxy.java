@@ -73,7 +73,6 @@ public class RestLoginServerProxy implements LoginServerProxy, ActiveComponent {
 				.thenApply(HttpResponse::body)
 				.thenApply(this::responseParser)
 				.thenAccept(handler::handle)
-				// .exceptionally(this::exceptionHandler)
 				.exceptionally((Throwable t) -> {
 					System.out.println("Got and exception while sending/handling login request ... ");
 					System.out.println("Exc: " + t.getMessage());
@@ -133,7 +132,7 @@ public class RestLoginServerProxy implements LoginServerProxy, ActiveComponent {
 	@Override
 	public void shutdown() {
 		if (httpClient != null && httpClient.executor().isPresent()) {
-			System.out.println("Tried to shutdown thread pool inside the httpClient but ... yeah ... ");
+			System.out.println("Tried to shutdown thread pool inside the httpClient but ... yeah ... (loginProxy)");
 			((ExecutorService) httpClient.executor().get()).shutdownNow();
 		}
 	}

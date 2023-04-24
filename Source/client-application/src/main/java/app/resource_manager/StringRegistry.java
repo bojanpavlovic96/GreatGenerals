@@ -33,6 +33,7 @@ public class StringRegistry {
 
 			var langPath = getLanguagePath(currentLangName);
 			currentLanguage = JsonResLoader.load(langPath, Language.class);
+			
 		}
 
 		return currentLanguage;
