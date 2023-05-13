@@ -21,7 +21,7 @@ namespace RabbitGameServer.Controllers
 		}
 
 		[Route("games/{user}")]
-		public ActionResult<List<GameDetails>> getGames(string user)
+		public ActionResult<ReplayServerResponse> getGames(string user)
 		{
 
 			Console.WriteLine($"Requesting: {user}");
@@ -34,15 +34,18 @@ namespace RabbitGameServer.Controllers
 
 			Console.WriteLine($"Query result len: {games.Count}");
 
-
-			return games
-				.Select(dbGame => new GameDetails(dbGame._id.ToString(),
+			var gameDetails = games.Select(dbGame => new GameDetails(dbGame._id.ToString(),
 					dbGame.roomName,
 					dbGame.masterPlayer,
 					dbGame.isDone ? dbGame.winner : UNKNOWN_NAME,
 					dbGame.isDone ? (dbGame.endTime - dbGame.startTime).TotalMilliseconds : 0,
+					dbGame.startTime,
 					dbGame.pointsGain))
 				.ToList<GameDetails>();
+
+			Console.WriteLine("Returning games ... ");
+			var response = new ReplayServerResponse(ReplayResponseStatus.SUCCESS, gameDetails);
+			return Ok(serializer.ToString(response));
 		}
 
 	}

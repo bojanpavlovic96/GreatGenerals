@@ -73,5 +73,14 @@ namespace RabbitGameServer.Database
 					.Find<DbGame>((dbGame) => dbGame.players.Contains(user))
 					.ToList<DbGame>();
 		}
+
+		public List<Message> getMessages(string roomId)
+		{
+			return database
+				.GetCollection<MsgContainer>(config.MessagesCollections)
+				.Find((msgC)=>msgC.roomId == roomId)
+				.First()
+				.messages;
+		}
 	}
 }

@@ -7,11 +7,13 @@ import app.event.GameReadyHandler;
 import app.form.GameReadyEventProducer;
 import app.form.InitialPage;
 import app.form.MessageDisplay;
+import app.form.RoomForm;
 import app.resource_manager.Language;
 import app.resource_manager.Language.MessageType;
 import root.ActiveComponent;
 import root.communication.LoginServerProxy;
 import root.communication.PlayerDescription;
+import root.communication.ReplayServerProxy;
 import root.communication.RoomServerProxy;
 import root.communication.messages.RoomResponseMsg;
 import root.communication.messages.RoomResponseType;
@@ -19,6 +21,7 @@ import root.communication.messages.LoginRequest;
 import root.communication.messages.LoginServerResponse;
 import root.communication.messages.LoginServerResponseStatus;
 import root.communication.messages.RegisterRequest;
+import root.communication.messages.ReplayResponseStatus;
 import root.communication.messages.ReplayServerResponse;
 
 // Used for handling user actions from login/register/createRoom/joinRoom form
@@ -34,17 +37,20 @@ public class StartPageController implements GameReadyEventProducer, ActiveCompon
 
 	private LoginServerProxy loginServer;
 	private RoomServerProxy roomServer;
+	private ReplayServerProxy replayProxy;
 
 	private GameReadyHandler onGameReady;
 
 	public StartPageController(InitialPage initialPage,
 			LoginServerProxy loginServer,
 			RoomServerProxy roomServer,
+			ReplayServerProxy replayProxy,
 			GameReadyHandler onGameReady) {
 
 		this.initialPage = initialPage;
 		this.loginServer = loginServer;
 		this.roomServer = roomServer;
+		this.replayProxy = replayProxy;
 		this.onGameReady = onGameReady;
 
 		this.players = new ArrayList<PlayerDescription>();
@@ -137,18 +143,28 @@ public class StartPageController implements GameReadyEventProducer, ActiveCompon
 	}
 
 	private void replayHandler(String roomName, String password) {
-		
-	}
+		// TODO disable all actions from roomForm
+		initialPage.showReplayForm();
+		replayProxy.listReplays(player.getUsername(),
+				(ReplayServerResponse r) -> {
+					System.out.println("replay response ... ");
 
-	private void listReplaysHandler(ReplayServerResponse response) {
-
+					if (r.status == ReplayResponseStatus.SUCCESS) {
+						System.out.println("SUCCESS ");
+						initialPage.populateReplays(r.games);
+					} else {
+						System.out.println("Failed to list replays: " + r.status.toString());
+					}
+				});
 	}
 
 	private void replaySelectHandler(String gameId) {
 		System.out.println("Selected replay: " + gameId);
+
 	}
 
 	private void replayCloseHandler() {
+		// TODO enable all actions from roomForm
 		System.out.println("Closed replay stage ... ");
 	}
 
@@ -259,7 +275,7 @@ public class StartPageController implements GameReadyEventProducer, ActiveCompon
 
 			roomServer.UnsubFromRoomUpdates();
 
-			onGameReady.execute(player, response.roomName);
+			onGameReady.execute(player, response.roomName, false);
 
 		} else {
 			System.out.println("Inappropriate message received as an roomUpdate ... ");
@@ -378,7 +394,7 @@ public class StartPageController implements GameReadyEventProducer, ActiveCompon
 
 						roomServer.UnsubFromRoomUpdates();
 
-						onGameReady.execute(player, response.roomName);
+						onGameReady.execute(player, response.roomName, false);
 					} else {
 						// Game doesn't exists and not enough players are possible
 						// errors but due to client side validations they can't really

@@ -1,6 +1,7 @@
 package app.form;
 
 import app.resource_manager.Language;
+import javafx.geometry.Insets;
 import javafx.scene.control.Label;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.HBox;
@@ -20,16 +21,22 @@ public class ReplayItem extends HBox implements HasLabels {
 		this.details = details;
 		this.handler = handler;
 
-		var roomNameL = new Label(details.roomName);
-		var masterL = new Label(details.master);
-		var leftBox = new VBox(roomNameL, masterL);
+		var roomNameL = new Label("Room: " + details.roomName);
+		var masterL = new Label("Master: " + details.master);
+		var durationL = new Label("Duration: " + formatDuration(details.msDuration));
+		var winnerL = new Label("Winner: " + details.winner);
+		var startDateL = new Label("Started: " + details.startDate.toString());
+		var leftBox = new VBox(roomNameL, masterL, winnerL, startDateL, durationL);
 
-		var durationL = new Label(formatDuration(details.msDuration));
-		var winnerL = new Label(details.winner);
-		var rightBox = new VBox(durationL, winnerL);
+		setMargin(leftBox, new Insets(5, 0, 5, 10));
+
+		// var durationL = new Label("Duration: " + formatDuration(details.msDuration));
+		// var winnerL = new Label("Winner: " + details.winner);
+		// var rightBox = new VBox(durationL, winnerL);
+		// setMargin(rightBox, new Insets(5, 0, 0, 10));
 
 		getChildren().add(leftBox);
-		getChildren().add(rightBox);
+		// getChildren().add(rightBox);
 
 		setOnMouseClicked((MouseEvent e) -> {
 			if (handler == null) {
@@ -45,7 +52,7 @@ public class ReplayItem extends HBox implements HasLabels {
 	private String formatDuration(double msDur) {
 		var mins = msDur / MS_IN_MIN;
 		var secs = (msDur / MS_IN_MIN) / MS_IN_SEC;
-		return mins + ":" + secs;
+		return (int) mins + ":" + (int) secs;
 	}
 
 	@Override

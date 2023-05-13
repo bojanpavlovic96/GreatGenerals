@@ -1,5 +1,7 @@
 package controller.command;
 
+import java.util.Date;
+
 import model.intention.AbortAttackIntention;
 import model.intention.AttackIntention;
 import model.intention.BuildIntention;
@@ -20,6 +22,7 @@ import root.communication.messages.InitializeMsg;
 import root.communication.messages.Message;
 import root.communication.messages.MoveMsg;
 import root.communication.messages.ReadyForInitMsg;
+import root.communication.messages.ReadyForReplayMsg;
 import root.communication.messages.RecalculatePathMsg;
 import root.communication.messages.ServerErrorMsg;
 import root.model.event.ClientIntention;
@@ -40,7 +43,7 @@ public class SwitchCaseMsgInterpreter implements MessageInterpreter {
 
 				break;
 			// Above types are used in roomServer and can not be translated to commands. 
-			//TODO Consider spliting message types to login, room and game  related messages. 
+			// TODO Consider spliting message types to login, room and game  related messages. 
 
 			case InitializeMessage:
 				return new CtrlInitializeCommand(
@@ -134,12 +137,18 @@ public class SwitchCaseMsgInterpreter implements MessageInterpreter {
 						((MoveIntention) intention).getDestinationField());
 
 			case AbortAttack:
-				return new AbortAttackMsg(((AbortAttackIntention) intention).position);
+				return new AbortAttackMsg(
+						((AbortAttackIntention) intention).position);
 
 			case ReadyForInit:
 				// username and roomName are already present in the Message super-class
-				// and they are set with .setOrigin method inside the server proxy 
+				// and they are gonna be set with .setOrigin method inside the server proxy 
 				return new ReadyForInitMsg();
+
+			case ReadyForReplay:
+				// username and roomName are already present in the Message super-class
+				// and they are gonna be set with .setOrigin method inside the server proxy 
+				return new ReadyForReplayMsg();
 
 			case BuildUnit:
 				return new BuildUnitMsg(

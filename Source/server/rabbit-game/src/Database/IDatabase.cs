@@ -8,5 +8,7 @@ namespace RabbitGameServer.Database
 
 		List<DbGame> getGames(string user);
 
+		List<Message> getMessages(string roomId);
+
 	}
 }

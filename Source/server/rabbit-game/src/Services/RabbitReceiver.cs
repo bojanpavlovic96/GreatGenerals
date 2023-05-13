@@ -73,7 +73,18 @@ namespace RabbitGameServer.Service
 
 		private void setupListReplaysConsumer()
 		{
-			roomChannel.ExchangeDeclare(queuesConfig.)
+			// Console.WriteLine("Rabbit listReplay receiver NOT IMPLEMENTED ... ");
+			// roomChannel.ExchangeDeclare(queuesConfig.ReplaysTopic,
+			// 					"topic",
+			// 					false,
+			// 					true,
+			// 					null);
+
+			// var queue = roomChannel.QueueDeclare().QueueName;
+			// roomChannel.QueueBind(queue,
+			// 			queuesConfig.ReplaysTopic,
+			// 			queuesConfig.replay)
+
 		}
 
 		private void setupNewRoomEventConsumer()

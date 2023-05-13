@@ -20,6 +20,11 @@ namespace RabbitGameServer.Mediator
 						request.message.username,
 						request.message.roomName));
 
+				case MessageType.ReadyForReplayMsg:
+					return Task.FromResult<ClientIntention>(new ReadyForReplayIntention(
+						request.message.username,
+						request.message.roomName));
+
 				case MessageType.MoveMessage:
 					return Task.FromResult<ClientIntention>(new MoveIntention(
 						((MoveMessage)request.message).username,

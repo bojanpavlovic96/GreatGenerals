@@ -3,7 +3,9 @@ namespace RabbitGameServer.SharedModel.Messages
 	public enum MessageType
 	{
 		ReadyForInitMsg,
+		ReadyForReplayMsg,
 		InitializeMessage,
+		ReplayMessage,
 		MoveMessage,
 		CreateRoomRequest,
 		JoinRoomRequest,

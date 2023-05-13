@@ -2,7 +2,6 @@ using Microsoft.Extensions.Options;
 using RabbitGameServer.Client;
 using RabbitGameServer.Config;
 using RabbitGameServer.Database;
-using RabbitGameServer.SharedModel;
 using RabbitGameServer.SharedModel.Messages;
 
 namespace RabbitGameServer.Game

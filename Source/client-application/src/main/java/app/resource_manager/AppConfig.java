@@ -3,6 +3,7 @@ package app.resource_manager;
 import proxy.RabbitGameServerProxyConfig;
 import proxy.RabbitRoomServerProxyConfig;
 import proxy.RestLoginServerConfig;
+import proxy.RestReplayProxyConfig;
 import root.JsonResLoader;
 import root.view.FormConfig;
 import root.view.ViewConfig;
@@ -49,5 +50,7 @@ public class AppConfig {
 	public RabbitRoomServerProxyConfig rabbitRoomServerProxyConfig;
 
 	public RestLoginServerConfig restLoginServerConfig;
+
+	public RestReplayProxyConfig restReplayServerConfig;
 
 }

@@ -1,6 +1,6 @@
 package root.communication.messages;
 
-import root.view.FormConfig;
+import java.util.Date;
 
 public class GameDetails {
 
@@ -11,6 +11,7 @@ public class GameDetails {
 	public String winner;
 	public double msDuration;
 	public int pointsGain;
+	public Date startDate;
 
 	public GameDetails() {
 	}
@@ -20,7 +21,8 @@ public class GameDetails {
 			String master,
 			String winner,
 			double msDuration,
-			int pointsGain) {
+			int pointsGain,
+			Date startDate) {
 
 		this.gameId = gameId;
 		this.roomName = roomName;
@@ -28,6 +30,7 @@ public class GameDetails {
 		this.winner = winner;
 		this.msDuration = msDuration;
 		this.pointsGain = pointsGain;
+		this.startDate = startDate;
 	}
 
 }

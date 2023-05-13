@@ -4,6 +4,6 @@ import root.model.PlayerData;
 
 public interface GameReadyHandler {
 
-	void execute(PlayerData player, String roomName);
+	void execute(PlayerData player, String roomName, boolean asReplay);
 
 }

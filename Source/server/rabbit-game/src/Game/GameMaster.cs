@@ -11,7 +11,7 @@ namespace RabbitGameServer.Game
 
 	public delegate void IncomeTickHandler(int amount, string room, string player);
 
-	public delegate Message ModelEventHandler(ClientIntention e);
+	public delegate Message IntentionHandler(ClientIntention e);
 
 	class IncomeStats
 	{
@@ -64,7 +64,7 @@ namespace RabbitGameServer.Game
 
 		private System.Timers.Timer tickTimer;
 
-		private Dictionary<ClientIntentionType, ModelEventHandler> handlers;
+		private Dictionary<ClientIntentionType, IntentionHandler> handlers;
 
 		public GameMaster(string roomName,
 					string password,
@@ -105,8 +105,9 @@ namespace RabbitGameServer.Game
 
 		private void initHandlers()
 		{
-			handlers = new Dictionary<ClientIntentionType, ModelEventHandler>();
+			handlers = new Dictionary<ClientIntentionType, IntentionHandler>();
 			handlers.Add(ClientIntentionType.ReadyForInit, handleInitRequest);
+			handlers.Add(ClientIntentionType.ReadyForReplay, handleReplayRequest);
 			handlers.Add(ClientIntentionType.Move, handleMove);
 			handlers.Add(ClientIntentionType.Attack, handleAttack);
 			handlers.Add(ClientIntentionType.Defend, handleDefend);
@@ -120,7 +121,7 @@ namespace RabbitGameServer.Game
 			Console.WriteLine($"Handling: {intention.GetType().ToString()} ... ");
 			recEventsCnt++;
 
-			ModelEventHandler? handler;
+			IntentionHandler? handler;
 			if (handlers.TryGetValue(intention.type, out handler))
 			{
 				var resultMsg = handler.Invoke(intention);
@@ -139,9 +140,9 @@ namespace RabbitGameServer.Game
 
 		}
 
-		private void saveMessages()
+		private void saveMessages(bool forced = false)
 		{
-			if (Messages.Count >= config.msgQueueSize)
+			if (forced || Messages.Count >= config.msgQueueSize)
 			{
 				var dbMsgs = Messages.Select(m => DbMessageMapper.map(m, roomId)).ToList();
 				try
@@ -173,6 +174,11 @@ namespace RabbitGameServer.Game
 				config.Units,
 				config.Attacks,
 				Fields.Values.ToList());
+		}
+
+		private Message handleReplayRequest(ClientIntention e)
+		{
+			return null;
 		}
 
 		private Message handleMove(ClientIntention e)
@@ -584,7 +590,7 @@ namespace RabbitGameServer.Game
 				tickTimer.Stop();
 			}
 
-			saveMessages();
+			saveMessages(true);
 
 			Console.WriteLine($"{RoomName} is stopped ... ");
 		}

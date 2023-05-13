@@ -6,6 +6,8 @@ import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.net.http.HttpResponse.BodyHandlers;
 
+import java.util.concurrent.ExecutorService;
+
 import root.ActiveComponent;
 import root.communication.ReplayRequestHandler;
 import root.communication.ReplayServerProxy;
@@ -35,6 +37,8 @@ public class RestReplayServerProxy implements ReplayServerProxy, ActiveComponent
 				config.listGamesPath,
 				username);
 
+		System.out.println("Requesting replays on : " + strUri);
+
 		var uri = URI.create(strUri);
 
 		var request = HttpRequest.newBuilder(uri)
@@ -57,6 +61,7 @@ public class RestReplayServerProxy implements ReplayServerProxy, ActiveComponent
 	}
 
 	private ReplayServerResponse responseParser(String strObj) {
+		System.out.println(strObj);
 		return parser.FromString(strObj, ReplayServerResponse.class);
 	}
 

@@ -4,7 +4,7 @@ namespace RabbitGameServer.Game
 {
 	public class DbMessageMapper
 	{
-		public static Database.Message map(Message msg, string roomId)
+		public static Database.Message map(SharedModel.Messages.Message msg, string roomId)
 		{
 			switch (msg.type)
 			{

@@ -16,7 +16,7 @@ import protocol.SwitchCaseTypeResolver;
 import proxy.RabbitGameServerProxy;
 import proxy.RabbitRoomServerProxy;
 import proxy.RestLoginServerProxy;
-
+import proxy.RestReplayServerProxy;
 import root.ActiveComponent;
 import root.communication.parser.GsonJsonParser;
 import root.controller.Controller;
@@ -63,6 +63,10 @@ public class Launcher extends Application {
 				connectionTask,
 				protocolTranslator);
 
+		var replayProxy = new RestReplayServerProxy(
+				AppConfig.getInstance().restReplayServerConfig.getActive(),
+				new GsonJsonParser());
+
 		var formConfig = AppConfig.getInstance().formConfig;
 		var langConfig = AppConfig.getInstance().langConfig;
 
@@ -73,6 +77,7 @@ public class Launcher extends Application {
 		startPageController = new StartPageController(startForm,
 				loginProxy,
 				roomProxy,
+				replayProxy,
 				this::startTheGame);
 
 		connectionThread = new Thread(this.connectionTask);
@@ -82,7 +87,7 @@ public class Launcher extends Application {
 		startPageController.showInitialPage();
 	}
 
-	private void startTheGame(PlayerData player, String roomName) {
+	private void startTheGame(PlayerData player, String roomName, boolean asReaplay) {
 
 		System.out.println("Game ready handler called ... ");
 
@@ -99,16 +104,15 @@ public class Launcher extends Application {
 				msgInterpreter,
 				player.getUsername(),
 				roomName);
-
 		System.out.println("Game proxy initialized ... ");
+
 		// Not sure if 3 is gonna be enough if separate thread is required for
 		// each schedule call ... 
 		// Then again currently I have only 3 "scheduleable" actions: move, build
 		// and attack/defend
-		var timer = new ConcurrentExecutorTimer(3);
-		var fieldFactory = HexagonField.getFactory();
-		Model model = new GameModel(player.getUsername(), timer, fieldFactory);
-
+		Model model = new GameModel(player.getUsername(),
+				new ConcurrentExecutorTimer(3),
+				HexagonField.getFactory());
 		System.out.println("Model created ... ");
 
 		var viewConfig = AppConfig.getInstance().viewConfig;
@@ -125,7 +129,8 @@ public class Launcher extends Application {
 					serverProxy,
 					view,
 					model,
-					this::gameDoneHandler);
+					this::gameDoneHandler,
+					asReaplay);
 
 			System.out.println("Initialized Controller ... ");
 

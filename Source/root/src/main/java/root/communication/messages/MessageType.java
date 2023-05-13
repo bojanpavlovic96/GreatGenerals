@@ -8,6 +8,8 @@ public enum MessageType {
 	StartGameRequest,
 	InitializeMessage,
 	ReadyForInitMsg,
+	ReadyForReplayMsg,
+	ReplayMessage,
 	MoveMessage,
 	AttackMessage,
 	DefendMessage,

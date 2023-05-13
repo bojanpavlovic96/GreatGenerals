@@ -399,6 +399,8 @@ public class StartForm extends Stage implements InitialPage, HasLabels {
 	public void showReplayForm() {
 		if (replayForm != null) {
 			replayForm.show();
+		}else{
+			System.out.println("Replay form is null ... ");
 		}
 	}
 

@@ -13,6 +13,7 @@ import controller.option.MoveFieldOption;
 import controller.option.SelectPathFieldOption;
 import controller.option.StopMovingFieldOption;
 import model.intention.ReadyForInitIntention;
+import model.intention.ReadyForReplayIntention;
 import root.ActiveComponent;
 import root.command.BasicCommandProcessor;
 import root.command.Command;
@@ -68,7 +69,8 @@ public class GameBrain implements Controller, ActiveComponent {
 			GameServerProxy serverProxy,
 			View view,
 			Model model,
-			GameDoneHandler onGameDone) {
+			GameDoneHandler onGameDone,
+			boolean asReplay) {
 
 		this.player = player;
 
@@ -82,7 +84,10 @@ public class GameBrain implements Controller, ActiveComponent {
 
 		model.setModelEventHandler((ModelEventHandler) this);
 
-		initFieldOptions();
+		fieldOptions = new ArrayList<FieldOption>();
+		if (!asReplay) {
+			populateFieldOptions();
+		}
 
 		// connect serverProxy and controller
 		serverCommandQueue = ((CommandProducer) serverProxy).getConsumerQueue();
@@ -98,9 +103,16 @@ public class GameBrain implements Controller, ActiveComponent {
 		// This may be a bit hacky way of doing it since getUsername/roomName methods
 		// are added to the interface just for this case. 
 		// Doesn't break anything I guess ... 
-		var readyEvent = new ReadyForInitIntention(
-				serverProxy.getUsername(),
-				serverProxy.getRoomName());
+		ClientIntention readyEvent = null;
+		if (asReplay) {
+			readyEvent = new ReadyForReplayIntention(
+					serverProxy.getUsername(),
+					serverProxy.getRoomName());
+		} else {
+			readyEvent = new ReadyForInitIntention(
+					serverProxy.getUsername(),
+					serverProxy.getRoomName());
+		}
 
 		System.out.println("Sent ready for init event: ");
 		System.out.println("\t" + serverProxy.getUsername());
@@ -252,9 +264,7 @@ public class GameBrain implements Controller, ActiveComponent {
 
 	}
 
-	private void initFieldOptions() {
-
-		fieldOptions = new ArrayList<FieldOption>();
+	private void populateFieldOptions() {
 
 		fieldOptions.add(new SelectPathFieldOption(this));
 		fieldOptions.add(new MoveFieldOption(this));
