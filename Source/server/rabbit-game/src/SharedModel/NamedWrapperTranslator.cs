@@ -16,16 +16,15 @@ namespace RabbitGameServer.SharedModel
 		public byte[] ToByteData(Message message)
 		{
 			var wrappedMsg = new NamedWrapper(message.type.ToString(),
-				serializer.ToString(message));
+					serializer.ToString(message));
 
 			return serializer.ToBytes(wrappedMsg);
 		}
 
 		public string ToStrData(Message message)
 		{
-			var wrappedMsg = new NamedWrapper(
-				message.type.ToString(),
-				serializer.ToString(message));
+			var wrappedMsg = new NamedWrapper(message.type.ToString(),
+					serializer.ToString(message));
 
 			return serializer.ToString(wrappedMsg);
 		}
@@ -43,6 +42,10 @@ namespace RabbitGameServer.SharedModel
 				if (wrappedMsg.name == MessageType.ReadyForInitMsg.ToString())
 				{
 					return serializer.ToObj<ReadyForInitMessage>(wrappedMsg.payload);
+				}
+				else if (wrappedMsg.name == MessageType.ReadyForReplayMsg.ToString())
+				{
+					return serializer.ToObj<ReadyForReplayMessage>(wrappedMsg.payload);
 				}
 				else if (wrappedMsg.name == MessageType.InitializeMessage.ToString())
 				{

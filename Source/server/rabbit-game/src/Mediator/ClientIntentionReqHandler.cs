@@ -18,7 +18,7 @@ namespace RabbitGameServer.Mediator
 			CancellationToken cancellationToken)
 		{
 
-			Console.WriteLine($"Handling model event: {request.message.type.ToString()} ... ");
+			Console.WriteLine($"Handling client intention: {request.message.type.ToString()} ... ");
 			Console.WriteLine($"\tUser: {request.message.username}");
 			Console.WriteLine($"\tRoom: {request.message.roomName}");
 
@@ -30,19 +30,25 @@ namespace RabbitGameServer.Mediator
 			// let it be .Result for testing I guess ... 
 			var modelEvent = mediator.Send(translateReq).Result;
 
-			Console.WriteLine("Message mapped to model event ... ");
+			Console.WriteLine("Message mapped to client intention ... ");
 
-			var message = game.AddIntention(modelEvent);
-
-			if (message == null)
+			if (game == null)
 			{
-				Console.WriteLine("Failed to handle model event ... ");
-				return Task.FromResult(Unit.Value);
+				Console.WriteLine("Requested game does not exists ... ");
 			}
 
-			Console.WriteLine($"Request to send {message.type.ToString()} ... ");
-			var sendRequest = new SendMessageRequest(message);
-			mediator.Send(sendRequest);
+			game.AddIntention(modelEvent);
+
+
+			// if (message == null)
+			// {
+			// 	Console.WriteLine("Failed to handle model event ... ");
+			// 	return Task.FromResult(Unit.Value);
+			// }
+
+			// Console.WriteLine($"Request to send {message.type.ToString()} ... ");
+			// var sendRequest = new SendMessageRequest(message);
+			// mediator.Send(sendRequest);
 
 			return Task.FromResult(Unit.Value);
 		}

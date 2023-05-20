@@ -1,12 +1,19 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
-namespace rabbit_game.src.SharedModel.Messages
+namespace RabbitGameServer.SharedModel.Messages
 {
-    public class ReplayMessage
-    {
-        
-    }
+	public class ReplayMessage : Message
+	{
+
+		public List<Message> messages { get; set; }
+
+		public ReplayMessage(DateTime timestamp,
+			string username,
+			string roomName,
+			DateTime startTimestamp,
+			List<Message> messages)
+			: base(MessageType.ReplayMessage, timestamp, username, roomName)
+		{
+			this.messages = messages;
+		}
+	}
 }

@@ -1,5 +1,6 @@
 package root.communication.messages;
 
+import java.util.Date;
 import java.util.List;
 
 import root.communication.PlayerDescription;
@@ -16,8 +17,8 @@ public class InitializeMsg extends Message {
 	public List<AttackDesc> attacks;
 	public List<FieldDesc> fields;
 
-	public InitializeMsg() {
-		super(MessageType.InitializeMessage);
+	public InitializeMsg(Date timestamp) {
+		super(MessageType.InitializeMessage, timestamp);
 	}
 
 }

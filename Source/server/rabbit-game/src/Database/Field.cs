@@ -9,13 +9,13 @@ namespace RabbitGameServer.Database
 
 		public string unitName;
 
-		public string terrain;
+		public Terrain terrain;
 
 		public bool inBattle;
 
 		public string owner;
 
-		public Field(Point2D position, bool isVisible, string unitName, string terrain, bool inBattle, string owner)
+		public Field(Point2D position, bool isVisible, string unitName, Terrain terrain, bool inBattle, string owner)
 		{
 			this.position = position;
 			this.isVisible = isVisible;

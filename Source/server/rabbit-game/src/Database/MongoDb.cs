@@ -1,4 +1,5 @@
 using Microsoft.Extensions.Options;
+using MongoDB.Bson;
 using MongoDB.Driver;
 using RabbitGameServer.Config;
 
@@ -51,9 +52,12 @@ namespace RabbitGameServer.Database
 
 		}
 
-		public string saveGame(string roomName, string masterPlayer, List<string> players)
+		public string saveGame(string roomName,
+			string masterPlayer,
+			List<string> players,
+			DateTime startedAt)
 		{
-			DbGame game = new DbGame(roomName, masterPlayer, players);
+			DbGame game = new DbGame(roomName, masterPlayer, players, startedAt);
 			database
 				.GetCollection<DbGame>(config.GamesCollection)
 				.InsertOne(game);
@@ -78,9 +82,24 @@ namespace RabbitGameServer.Database
 		{
 			return database
 				.GetCollection<MsgContainer>(config.MessagesCollections)
-				.Find((msgC)=>msgC.roomId == roomId)
+				.Find((msgC) => msgC.roomId == roomId)
 				.First()
-				.messages;
+				.messages
+				.OrderBy(m => m.timestamp)
+				.Select((m) => { Console.WriteLine(m); return m; }) // TODO remove
+				.ToList();
+		}
+
+		public DbGame getGame(string roomId)
+		{
+			var filter = Builders<DbGame>
+				.Filter
+				.Where((dbg) => dbg._id == new ObjectId(roomId));
+			return database
+				.GetCollection<DbGame>(config.GamesCollection)
+				.Find<DbGame>((dbg) => dbg._id == new ObjectId(roomId))
+				// .Find<DbGame>((game) => game._id.ToString() == roomId)
+				.First();
 		}
 	}
 }

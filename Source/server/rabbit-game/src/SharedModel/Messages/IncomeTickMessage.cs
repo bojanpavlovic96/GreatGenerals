@@ -4,8 +4,8 @@ namespace RabbitGameServer.SharedModel.Messages
 	{
 		public int amount { get; set; }
 
-		public IncomeTickMessage(string username, string roomName, int amount)
-			: base(MessageType.IncomeTick, username, roomName)
+		public IncomeTickMessage(DateTime timestamp, string username, string roomName, int amount)
+			: base(MessageType.IncomeTick, timestamp, username, roomName)
 		{
 			this.amount = amount;
 		}

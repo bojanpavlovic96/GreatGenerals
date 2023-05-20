@@ -1,5 +1,7 @@
 package root.communication.messages;
 
+import java.util.Date;
+
 import root.Point2D;
 
 public class BuildUnitMsg extends Message {
@@ -8,8 +10,8 @@ public class BuildUnitMsg extends Message {
 	public String unitType;
 	public int cost;
 
-	public BuildUnitMsg(Point2D field, String unitType, int cost) {
-		super(MessageType.BuildUnit);
+	public BuildUnitMsg(Date timestamp, Point2D field, String unitType, int cost) {
+		super(MessageType.BuildUnit, timestamp);
 
 		this.field = field;
 		this.unitType = unitType;

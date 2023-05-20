@@ -5,8 +5,8 @@ namespace RabbitGameServer.SharedModel.Messages
 	{
 		public Point2D unitPosition;
 
-		public RecalculatePathMessage(string username, string roomName, Point2D unitPos)
-			: base(MessageType.RecalculatePathMessage, username, roomName)
+		public RecalculatePathMessage(DateTime timestamp, string username, string roomName, Point2D unitPos)
+			: base(MessageType.RecalculatePathMessage, timestamp, username, roomName)
 		{
 			this.unitPosition = unitPos;
 		}

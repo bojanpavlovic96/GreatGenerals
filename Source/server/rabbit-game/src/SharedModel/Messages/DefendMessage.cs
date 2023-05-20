@@ -8,12 +8,13 @@ namespace RabbitGameServer.SharedModel.Messages
 		public Point2D startFieldPos { get; set; }
 		public Point2D endFieldPos { get; set; }
 
-		public DefendMessage(string username,
+		public DefendMessage(DateTime timestamp,
+			string username,
 			string roomName,
 			string defendType,
 			Point2D startFieldPos,
 			Point2D endFieldPos)
-			: base(MessageType.DefendMessage, username, roomName)
+			: base(MessageType.DefendMessage, timestamp, username, roomName)
 		{
 			this.defendType = defendType;
 			this.startFieldPos = startFieldPos;

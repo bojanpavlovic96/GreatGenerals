@@ -11,12 +11,13 @@ namespace RabbitGameServer.SharedModel.Messages
 		public Point2D startFieldPos { get; set; }
 		public Point2D endFieldPos { get; set; }
 
-		public AttackMessage(string username,
+		public AttackMessage(DateTime timestamp,
+			string username,
 			string roomName,
 			string attackType,
 			Point2D startFieldPos,
 			Point2D endFieldPos)
-			: base(MessageType.AttackMessage, username, roomName)
+			: base(MessageType.AttackMessage, timestamp, username, roomName)
 		{
 			this.attackType = attackType;
 			this.startFieldPos = startFieldPos;

@@ -1,5 +1,7 @@
 package root.communication.messages;
 
+import java.util.Date;
+
 public class Message {
 
 	public MessageType type;
@@ -7,8 +9,11 @@ public class Message {
 	public String username;
 	public String roomName;
 
-	public Message(MessageType type) {
+	public Date timestamp;
+
+	public Message(MessageType type, Date timestamp) {
 		this.type = type;
+		this.timestamp = timestamp;
 	}
 
 	public void setOrigin(String username, String roomName) {

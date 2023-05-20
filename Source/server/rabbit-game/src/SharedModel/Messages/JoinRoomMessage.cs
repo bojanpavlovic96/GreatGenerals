@@ -5,8 +5,8 @@ namespace RabbitGameServer.SharedModel.Messages
 	{
 		public string password { get; set; }
 
-		public JoinRoomMessage(string player, string roomName, string password)
-			: base(MessageType.JoinRoomRequest, player, roomName)
+		public JoinRoomMessage(DateTime timestamp, string player, string roomName, string password)
+			: base(MessageType.JoinRoomRequest, timestamp, player, roomName)
 		{
 			this.password = password;
 		}

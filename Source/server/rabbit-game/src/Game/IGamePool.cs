@@ -15,6 +15,8 @@ namespace RabbitGameServer.Game
 		List<GameSummary> GetGameSummaries();
 
 		GameSummary GetGameSummary(string room);
+
+		GameMaster LoadReplay(string roomId);
 	}
 
 }

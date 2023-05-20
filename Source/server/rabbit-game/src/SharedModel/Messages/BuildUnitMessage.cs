@@ -8,12 +8,13 @@ namespace RabbitGameServer.SharedModel.Messages
 		public string unitType { get; set; }
 		public int cost { get; set; }
 
-		public BuildUnitMessage(string username,
+		public BuildUnitMessage(DateTime timestamp, 
+			string username,
 			string roomName,
 			Point2D field,
 			String unitType,
 			int cost)
-			: base(MessageType.BuildUnit, username, roomName)
+			: base(MessageType.BuildUnit,timestamp, username, roomName)
 		{
 			this.field = field;
 			this.unitType = unitType;

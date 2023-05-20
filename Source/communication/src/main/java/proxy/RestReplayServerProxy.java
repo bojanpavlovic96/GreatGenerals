@@ -61,6 +61,7 @@ public class RestReplayServerProxy implements ReplayServerProxy, ActiveComponent
 	}
 
 	private ReplayServerResponse responseParser(String strObj) {
+		System.out.println("Replay server response: ");
 		System.out.println(strObj);
 		return parser.FromString(strObj, ReplayServerResponse.class);
 	}
@@ -71,6 +72,37 @@ public class RestReplayServerProxy implements ReplayServerProxy, ActiveComponent
 			System.out.println("Tried to shutdown thread pool inside the httpClient but ... yeah ... (replayProxy) ");
 			((ExecutorService) httpClient.executor().get()).shutdownNow();
 		}
+	}
+
+	@Override
+	public void loadReplay(String roomId, ReplayRequestHandler handler) {
+		var strUri = String.format("http://%s:%d/%s/%s",
+				config.address,
+				config.port,
+				config.loadGamePath,
+				roomId);
+
+		System.out.println("Requesting game load on : " + strUri);
+
+		var uri = URI.create(strUri);
+
+		var request = HttpRequest.newBuilder(uri)
+				.GET()
+				.build();
+
+		httpClient
+				.sendAsync(request, BodyHandlers.ofString())
+				.thenApply(HttpResponse::body)
+				.thenApply(this::responseParser)
+				.thenAccept(handler::handle)
+				.exceptionally((Throwable t) -> {
+					System.out.println("Exception while handling replay proxy response ... ");
+					System.out.println(t.getMessage());
+
+					handler.handle(new ReplayServerResponse(ReplayResponseStatus.SERVER_ERROR));
+					return null;
+				})
+				.join();
 	}
 
 }

@@ -6,10 +6,11 @@ namespace RabbitGameServer.SharedModel.Messages
 	{
 		public int bonusAmount { get; set; }
 
-		public GameDoneMessage(string username,
+		public GameDoneMessage(DateTime timestamp, 
+			string username,
 			string roomName,
 			int bonusAmount)
-			: base(MessageType.GameDone, username, roomName)
+			: base(MessageType.GameDone,timestamp, username, roomName)
 		{
 			this.bonusAmount = bonusAmount;
 		}

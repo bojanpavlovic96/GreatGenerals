@@ -36,14 +36,14 @@ namespace RabbitGameServer.Mediator
 				return MediatR.Unit.Value;
 			}
 
-			if (room.hasPlayer(request.playerName))
+			if (room.HasPlayer(request.playerName))
 			{
 				Console.WriteLine($"Tried to join room AGAIN {roomName} ... ");
 				sendResponse(playerName, roomName, RoomResponseType.AlreadyIn, new List<PlayerData>());
 				return MediatR.Unit.Value;
 			}
 
-			string requiredPassword = pool.GetGame(roomName).Password;
+			string requiredPassword = pool.GetGame(roomName).GetPassword();
 			if (requiredPassword != request.providedPassword)
 			{
 				Console.WriteLine($"Failed to join room {roomName}, "
@@ -62,17 +62,17 @@ namespace RabbitGameServer.Mediator
 			{
 				Console.WriteLine("User data successfully obtained ... ");
 				// maybe check level, points ... some requirements for the room ... 
-				room.addPlayer(playerData);
+				room.AddPlayer(playerData);
 
 				Console.WriteLine($"{request.playerName} successfully joined {roomName} ... ");
 
-				sendResponse(playerName, roomName, RoomResponseType.Success, room.Players);
+				sendResponse(playerName, roomName, RoomResponseType.Success, room.GetPlayers());
 
-				foreach (var player in room.Players)
+				foreach (var player in room.GetPlayers())
 				{
 					if (player.username != request.playerName)
 					{
-						sendUpdate(playerName, roomName, room.Players, player.username);
+						sendUpdate(playerName, roomName, room.GetPlayers(), player.username);
 					}
 					else
 					{
@@ -95,7 +95,7 @@ namespace RabbitGameServer.Mediator
 		private void sendResponse(string player, string room, RoomResponseType status,
 				List<PlayerData> players)
 		{
-			var message = new RoomResponseMsg(status, player, room, players);
+			var message = new RoomResponseMsg(DateTime.Now, status, player, room, players);
 			var sendResponseReq = new SendResponseRequest(room, player, message);
 
 			mediator.Send(sendResponseReq);
@@ -108,7 +108,7 @@ namespace RabbitGameServer.Mediator
 			List<PlayerData> players,
 			string whomToSend)
 		{
-			var message = new RoomResponseMsg(RoomResponseType.PlayerJoined, whoJoined, room, players);
+			var message = new RoomResponseMsg(DateTime.Now, RoomResponseType.PlayerJoined, whoJoined, room, players);
 			var sendReq = new SendUpdateRequest(room, whomToSend, message);
 
 			mediator.Send(sendReq);

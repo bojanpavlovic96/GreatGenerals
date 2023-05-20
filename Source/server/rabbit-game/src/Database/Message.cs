@@ -1,4 +1,6 @@
 
+using RabbitGameServer.SharedModel.Messages;
+
 namespace RabbitGameServer.Database
 {
 	public class Message
@@ -33,18 +35,31 @@ namespace RabbitGameServer.Database
 		public int cost { get; set; }
 		public string password { get; set; }
 
-		public Message(string type, string roomId, string roomName, string player)
-			: this(type, roomId, roomName, player, DateTime.Now)
-		{
-		}
-
-		public Message(string type, string roomId, string roomName, string player, DateTime timestamp)
+		public Message(string type,
+			string roomId,
+			string roomName,
+			string player,
+			DateTime timestamp)
 		{
 			this.timestamp = timestamp;
 			this.type = type;
 			this.roomId = roomId;
 			this.roomName = roomName;
 			this.playerName = player;
+		}
+
+		override public string ToString()
+		{
+			if (type == MessageType.InitializeMessage.ToString())
+			{
+				return $"initMsg ... ";
+			}
+			else if (type == MessageType.MoveMessage.ToString())
+			{
+				return $"moveMsg: {fromField} -> {toField} ... ";
+			}
+
+			return $"Unknown message ... ({type.ToString()})";
 		}
 
 	}

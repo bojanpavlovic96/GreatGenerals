@@ -1,6 +1,7 @@
 package proxy;
 
 import java.io.IOException;
+import java.util.Date;
 import java.util.concurrent.TimeoutException;
 
 import com.rabbitmq.client.Channel;
@@ -114,7 +115,7 @@ public class RabbitRoomServerProxy implements RoomServerProxy, ActiveComponent {
 
 			// actually send createRoomRequest
 
-			sendRequest(new CreateRoomRequestMsg(roomName, password, playerName),
+			sendRequest(new CreateRoomRequestMsg(new Date(), roomName, password, playerName),
 					config.newRoomRequestExchange,
 					formCreateRequestRoute(roomName, playerName));
 
@@ -159,7 +160,7 @@ public class RabbitRoomServerProxy implements RoomServerProxy, ActiveComponent {
 
 			// actually send joinRoomRequest
 
-			sendRequest(new JoinRoomRequestMsg(roomName, password, playerName),
+			sendRequest(new JoinRoomRequestMsg(new Date(), roomName, password, playerName),
 					config.joinRoomRequestExchange,
 					formJoinRequestRoute(roomName, playerName));
 
@@ -202,7 +203,7 @@ public class RabbitRoomServerProxy implements RoomServerProxy, ActiveComponent {
 
 			// actually send leaveRoomRequest
 
-			sendRequest(new LeaveRoomRequestMsg(roomName, playerName),
+			sendRequest(new LeaveRoomRequestMsg(new Date(), roomName, playerName),
 					config.leaveRoomRequestExchange,
 					formLeaveRequestRoute(roomName, playerName));
 
@@ -242,7 +243,7 @@ public class RabbitRoomServerProxy implements RoomServerProxy, ActiveComponent {
 
 		try {
 
-			sendRequest(new StartGameRequestMsg(roomName, username),
+			sendRequest(new StartGameRequestMsg(new Date(), roomName, username),
 					config.startGameRequestExchange,
 					formStartGameRoute(roomName, username));
 

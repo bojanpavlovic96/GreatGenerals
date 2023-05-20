@@ -57,7 +57,7 @@ namespace RabbitGameServer.Mediator
 						((BuildUnitMessage)request.message).unitType));
 
 				default:
-					Console.WriteLine($"Failed to map message-{request.message.type.ToString()} to modelEvent ... ");
+					Console.WriteLine($"Failed to map message-{request.message.type.ToString()} to clientIntention ... ");
 					return Task.FromResult<ClientIntention>(null); ;
 			};
 

@@ -53,8 +53,8 @@
 		"serverMessageExchange": "gg_server_message",
 		"serverMessageRoutePrefix": "message.",
 		"rabbitMatchAllWildcard": "#",
-		"modelEventsExchange": "gg_model_event",
-		"modelEventsRoutePrefix": "model_event."
+		"clientIntentionExchange": "gg_client_intention",
+		"clientIntentionRoutePrefix": "intention."
 	},
 	"rabbitRoomServerProxyConfig": {
 		"rabbitMatchAllWildcard": "#",
@@ -91,12 +91,14 @@
 		"development": {
 			"address": "localhost",
 			"port": 9001,
-			"listGamesPath": "replay/games"
+			"listGamesPath": "replay/games",
+			"loadGamePath": "replay/load"
 		},
 		"production": {
 			"address": "some.address.com",
 			"port": 9091,
-			"listGamesPath": "replay/games"
+			"listGamesPath": "replay/games",
+			"loadGamePath": "replay/load"
 		}
 	}
 }

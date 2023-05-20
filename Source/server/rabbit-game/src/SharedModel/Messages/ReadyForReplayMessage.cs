@@ -3,8 +3,8 @@ namespace RabbitGameServer.SharedModel.Messages
 {
 	public class ReadyForReplayMessage : Message
 	{
-		public ReadyForReplayMessage(string username, string roomName) 
-			: base(MessageType.ReadyForReplayMsg, username, roomName)
+		public ReadyForReplayMessage(DateTime timestamp, string username, string roomName) 
+			: base(MessageType.ReadyForReplayMsg, timestamp, username, roomName)
 		{
 		}
 	}

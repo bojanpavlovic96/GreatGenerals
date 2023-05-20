@@ -1,6 +1,7 @@
 package controller.command;
 
 import java.util.Date;
+import java.util.stream.Collectors;
 
 import model.intention.AbortAttackIntention;
 import model.intention.AttackIntention;
@@ -24,6 +25,7 @@ import root.communication.messages.MoveMsg;
 import root.communication.messages.ReadyForInitMsg;
 import root.communication.messages.ReadyForReplayMsg;
 import root.communication.messages.RecalculatePathMsg;
+import root.communication.messages.ReplayMsg;
 import root.communication.messages.ServerErrorMsg;
 import root.model.event.ClientIntention;
 
@@ -31,6 +33,7 @@ public class SwitchCaseMsgInterpreter implements MessageInterpreter {
 
 	@Override
 	public Command ToCommand(Message message) {
+		System.out.println("Interpretting message: " + message.type.toString());
 		switch (message.type) {
 			case CreateRoomRequest:
 			case RoomResponse:
@@ -46,6 +49,12 @@ public class SwitchCaseMsgInterpreter implements MessageInterpreter {
 			// TODO Consider spliting message types to login, room and game  related messages. 
 
 			case InitializeMessage:
+				System.out.println("Initialize command case ... ");
+				if (message instanceof InitializeMsg) {
+					System.out.println("Message IS initMsg ... ");
+				} else {
+					System.out.println("Message is NOT init msg ... ");
+				}
 				return new CtrlInitializeCommand(
 						((InitializeMsg) message).players,
 						((InitializeMsg) message).moves,
@@ -106,12 +115,29 @@ public class SwitchCaseMsgInterpreter implements MessageInterpreter {
 						((GameDoneMsg) message).username,
 						((GameDoneMsg) message).bonusAmount);
 
+			case ReplayMessage:
+				System.out.println();
+				System.out.println("Interpreting replay message ... ");
+				var repMsg = (ReplayMsg) message;
+				var timedCommands = repMsg.messages.stream()
+						.map(this::toTimedCommand)
+						.collect(Collectors.toList());
+
+				return new PlayReplay(timedCommands, repMsg.startTimestamp);
+
 			default:
 				break;
 
 		}
 
 		return null;
+	}
+
+	private TimedCommand toTimedCommand(Message msg) {
+		System.out.println("Creating timed message ... ");
+		var comm = ToCommand(msg);
+		System.out.println("message interpreted ... ");
+		return new TimedCommand(comm, msg.timestamp);
 	}
 
 	// endregion
@@ -121,37 +147,42 @@ public class SwitchCaseMsgInterpreter implements MessageInterpreter {
 		switch (intention.getEventType()) {
 			case Attack:
 				return new AttackMsg(
+						new Date(),
 						((AttackIntention) intention).attackType,
 						((AttackIntention) intention).getSourceField(),
 						((AttackIntention) intention).getDestinationField());
 
 			case Defend:
 				return new DefendMsg(
+						new Date(),
 						((DefendIntention) intention).defenseType,
 						((DefendIntention) intention).sourceField,
 						((DefendIntention) intention).destinationField);
 
 			case Move:
 				return new MoveMsg(
+						new Date(),
 						((MoveIntention) intention).getSourceField(),
 						((MoveIntention) intention).getDestinationField());
 
 			case AbortAttack:
 				return new AbortAttackMsg(
+						new Date(),
 						((AbortAttackIntention) intention).position);
 
 			case ReadyForInit:
 				// username and roomName are already present in the Message super-class
 				// and they are gonna be set with .setOrigin method inside the server proxy 
-				return new ReadyForInitMsg();
+				return new ReadyForInitMsg(new Date());
 
 			case ReadyForReplay:
 				// username and roomName are already present in the Message super-class
 				// and they are gonna be set with .setOrigin method inside the server proxy 
-				return new ReadyForReplayMsg();
+				return new ReadyForReplayMsg(new Date());
 
 			case BuildUnit:
 				return new BuildUnitMsg(
+						new Date(),
 						((BuildIntention) intention).getField(),
 						((BuildIntention) intention).getUnitType(),
 						((BuildIntention) intention).getCost());

@@ -21,13 +21,16 @@ namespace RabbitGameServer.Database
 
 		public int pointsGain { get; set; }
 
-		public DbGame(string roomName, string masterPlayer, List<string> players)
+		public DbGame(string roomName, 
+			string masterPlayer, 
+			List<string> players, 
+			DateTime startedAt)
 		{
 			this.roomName = roomName;
 			this.masterPlayer = masterPlayer;
 			this.players = players;
 
-			this.startTime = DateTime.Now;
+			this.startTime = startedAt;
 
 			this.isDone = false;
 		}

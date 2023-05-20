@@ -17,6 +17,8 @@ import root.communication.messages.Message;
 import root.communication.messages.MessageType;
 import root.communication.messages.MoveMsg;
 import root.communication.messages.ReadyForInitMsg;
+import root.communication.messages.ReadyForReplayMsg;
+import root.communication.messages.ReplayMsg;
 
 public class SwitchCaseTypeResolver implements NameTypeResolver {
 
@@ -55,6 +57,9 @@ public class SwitchCaseTypeResolver implements NameTypeResolver {
 			case ReadyForInitMsg:
 				return ReadyForInitMsg.class;
 
+			case ReadyForReplayMsg:
+				return ReadyForReplayMsg.class;
+
 			case AbortMoveMessage:
 				return AbortMoveMsg.class;
 
@@ -78,6 +83,9 @@ public class SwitchCaseTypeResolver implements NameTypeResolver {
 
 			case GameDone:
 				return GameDoneMsg.class;
+
+			case ReplayMessage:
+				return ReplayMsg.class;
 
 			default:
 				break;

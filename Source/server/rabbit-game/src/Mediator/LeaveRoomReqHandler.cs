@@ -27,16 +27,18 @@ namespace RabbitGameServer.Mediator
 			if (game == null)
 			{
 				Console.WriteLine($"Requested to leave nonexistent room: {request.roomName}");
-				responseMsg = new RoomResponseMsg(RoomResponseType.InvalidRoom,
+				responseMsg = new RoomResponseMsg(DateTime.Now,
+					RoomResponseType.InvalidRoom,
 						request.username,
 						request.roomName,
 						null);
 
 			}
-			else if (!game.hasPlayer(request.username))
+			else if (!game.HasPlayer(request.username))
 			{
 				Console.WriteLine($"There is not such player: " + request.username);
-				responseMsg = new RoomResponseMsg(RoomResponseType.InvalidPlayer,
+				responseMsg = new RoomResponseMsg(DateTime.Now,
+					RoomResponseType.InvalidPlayer,
 						request.username,
 						request.roomName,
 						null);
@@ -54,18 +56,18 @@ namespace RabbitGameServer.Mediator
 
 				responseMsg = RoomResponseMsg.success(request.username,
 						request.roomName,
-						game.Players);
+						game.GetPlayers());
 				// Since this player left the room he does't really need to know who
 				// else is till in the room but I will leave game.Players instead of null
 				// or empty list as the last argument just for debug purposes. 
 
-				game.removePlayer(request.username);
+				game.RemovePlayer(request.username);
 
 
 				RoomResponseType updateType;
 
 				Console.WriteLine("Forming response ... ");
-				if (game.isMaster(request.username) || game.Players.Count == 0)
+				if (game.IsMaster(request.username) || game.GetPlayers().Count == 0)
 				{
 					updateType = RoomResponseType.RoomDestroyed;
 				}
@@ -75,12 +77,13 @@ namespace RabbitGameServer.Mediator
 				}
 
 				Console.WriteLine("Sending updates ... ");
-				foreach (var player in game.Players)
+				foreach (var player in game.GetPlayers())
 				{
-					var updateMsg = new RoomResponseMsg(updateType,
+					var updateMsg = new RoomResponseMsg(DateTime.Now,
+						updateType,
 							request.username,
 							request.roomName,
-							game.Players);
+							game.GetPlayers());
 
 					var updateReq = new SendUpdateRequest(request.roomName,
 							player.username,
@@ -89,7 +92,7 @@ namespace RabbitGameServer.Mediator
 					mediator.Send(updateReq);
 				}
 
-				if (game.isMaster(request.username) || game.Players.Count == 0)
+				if (game.IsMaster(request.username) || game.GetPlayers().Count == 0)
 				{
 					gamePool.destroyGame(request.roomName);
 					Console.WriteLine("Room will be destroyed ... ");

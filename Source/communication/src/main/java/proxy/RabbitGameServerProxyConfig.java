@@ -8,8 +8,8 @@ public class RabbitGameServerProxyConfig {
 	public String serverMessageRoutePrefix;
 	public String rabbitMatchAllWildcard;
 
-	public String modelEventsExchange;
-	public String modelEventsRoutePrefix;
+	public String clientIntentionExchange;
+	public String clientIntentionRoutePrefix;
 
 	public RabbitGameServerProxyConfig() {
 

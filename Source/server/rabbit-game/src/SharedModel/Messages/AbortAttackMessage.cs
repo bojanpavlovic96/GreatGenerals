@@ -4,8 +4,8 @@ namespace RabbitGameServer.SharedModel.Messages
 	{
 		public Point2D unitPosition;
 
-		public AbortAttackMessage(string username, string roomName, Point2D unitPosition)
-			: base(MessageType.AbortAttackMessage, username, roomName)
+		public AbortAttackMessage(DateTime timestamp, string username, string roomName, Point2D unitPosition)
+			: base(MessageType.AbortAttackMessage, timestamp, username, roomName)
 		{
 			this.unitPosition = unitPosition;
 		}

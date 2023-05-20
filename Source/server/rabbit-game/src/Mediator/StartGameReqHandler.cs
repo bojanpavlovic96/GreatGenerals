@@ -35,38 +35,40 @@ namespace RabbitGameServer.Mediator
 			if (game == null)
 			{
 				Console.WriteLine("Starting game for unknown game ... ");
-				response = new RoomResponseMsg(RoomResponseType.InvalidRoom,
+				response = new RoomResponseMsg(DateTime.Now, RoomResponseType.InvalidRoom,
 					request.username,
 					request.roomName,
 					null);
 			}
-			else if (!game.isReady())
+			else if (!game.IsReady())
 			{
 				Console.WriteLine("Room exists but is not ready ... ");
-				response = new RoomResponseMsg(RoomResponseType.GameNotReady,
+				response = new RoomResponseMsg(DateTime.Now,
+					RoomResponseType.GameNotReady,
 					request.username,
 					request.roomName,
-					game.Players);
+					game.GetPlayers());
 			}
 			else
 			{
 
-				game.initGame();
+				game.InitGame();
 
 				Console.WriteLine("Game initialized ... ");
 
 				response = RoomResponseMsg.success(request.username,
 					request.roomName,
-					game.Players);
+					game.GetPlayers());
 
-				foreach (var player in game.Players)
+				foreach (var player in game.GetPlayers())
 				{
 					if (player.username != request.username)
 					{
-						var update = new RoomResponseMsg(RoomResponseType.GameStarted,
+						var update = new RoomResponseMsg(DateTime.Now,
+							RoomResponseType.GameStarted,
 							request.username,
 							request.roomName,
-							game.Players);
+							game.GetPlayers());
 
 
 						var sendUpdateReq = new SendUpdateRequest(request.roomName,

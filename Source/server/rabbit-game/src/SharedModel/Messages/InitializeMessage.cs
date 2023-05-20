@@ -9,14 +9,15 @@ namespace RabbitGameServer.SharedModel.Messages
 		public List<Attack> attacks { get; set; }
 		public List<Field> fields { get; set; }
 
-		public InitializeMessage(string roomName,
+		public InitializeMessage(DateTime timestamp, 
+			string roomName,
 			string username,
 			List<PlayerData> players,
 			List<Move> moves,
 			List<Unit> units,
 			List<Attack> attacks,
 			List<Field> fields)
-			: base(MessageType.InitializeMessage, username, roomName)
+			: base(MessageType.InitializeMessage,timestamp, username, roomName)
 		{
 
 			this.players = players;

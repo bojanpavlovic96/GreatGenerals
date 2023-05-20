@@ -6,8 +6,8 @@ namespace RabbitGameServer.SharedModel.Messages
 
 		public string message;
 
-		public ServerErrorMessage(string username, string roomName, string message)
-			: base(MessageType.ServerErrorMessage, username, roomName)
+		public ServerErrorMessage(DateTime timestamp, string username, string roomName, string message)
+			: base(MessageType.ServerErrorMessage, timestamp, username, roomName)
 		{
 			this.message = message;
 		}

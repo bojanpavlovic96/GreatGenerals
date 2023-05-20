@@ -20,7 +20,7 @@ namespace RabbitGameServer.Service
 		private IProtocolTranslator protocolTranslator;
 
 		private IRabbitConnection rabbitConnection;
-		private IModel? modelEventChannel;
+		private IModel? clientIntentionChannel;
 		private IModel? roomChannel;
 
 		private CancellationToken masterToken;
@@ -47,24 +47,22 @@ namespace RabbitGameServer.Service
 			await Task.Run(() =>
 			{
 				roomChannel = rabbitConnection.GetChannel();
-				modelEventChannel = rabbitConnection.GetChannel();
+				clientIntentionChannel = rabbitConnection.GetChannel();
 
-				if (roomChannel == null || modelEventChannel == null)
+				if (roomChannel == null || clientIntentionChannel == null)
 				{
 					Console.WriteLine("Failed to create channels for rabbit receiver ... ");
 					return;
 				}
 
-				setupListReplaysConsumer();
+				// setupListReplaysConsumer();
 
 				setupNewRoomEventConsumer();
 				setupJoinRoomConsumer();
 				setupLeaveRoomConsumer();
 				setupStartGameConsumer();
 
-
-
-				setupModelEventConsumer();
+				setupClientIntentionConsumer();
 
 				Console.WriteLine("RabbitReceiver started");
 			});
@@ -125,26 +123,26 @@ namespace RabbitGameServer.Service
 			mediator.Send(request);
 		}
 
-		private void setupModelEventConsumer()
+		private void setupClientIntentionConsumer()
 		{
 
-			modelEventChannel.ExchangeDeclare(queuesConfig.ModelEventTopic,
+			clientIntentionChannel.ExchangeDeclare(queuesConfig.ClientIntentionTopic,
 								"topic",
 								false,
 								true,
 								null);
 
-			var modelEventQueue = modelEventChannel.QueueDeclare().QueueName;
+			var modelEventQueue = clientIntentionChannel.QueueDeclare().QueueName;
 
-			modelEventChannel.QueueBind(modelEventQueue,
-						queuesConfig.ModelEventTopic,
-						queuesConfig.ModelEventRoute + queuesConfig.MatchAllWildcard,
+			clientIntentionChannel.QueueBind(modelEventQueue,
+						queuesConfig.ClientIntentionTopic,
+						queuesConfig.ClientIntentionRoute + queuesConfig.MatchAllWildcard,
 						null);
 
-			var consumer = new EventingBasicConsumer(modelEventChannel);
+			var consumer = new EventingBasicConsumer(clientIntentionChannel);
 			consumer.Received += ModelEventHandler;
 
-			modelEventChannel.BasicConsume(modelEventQueue, false, consumer);
+			clientIntentionChannel.BasicConsume(modelEventQueue, false, consumer);
 
 			Console.WriteLine("ModelEventConsumer started");
 

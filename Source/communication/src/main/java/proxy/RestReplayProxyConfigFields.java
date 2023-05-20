@@ -5,6 +5,7 @@ public class RestReplayProxyConfigFields {
 	public String address;
 	public int port;
 	public String listGamesPath;
+	public String loadGamePath;
 
 	public RestReplayProxyConfigFields() {
 

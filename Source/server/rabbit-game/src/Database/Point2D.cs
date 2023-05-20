@@ -15,5 +15,14 @@ namespace RabbitGameServer.Database
 			};
 		}
 
+		public SharedModel.Point2D toPoint()
+		{
+			return new SharedModel.Point2D(x, y);
+		}
+
+		override public string ToString()
+		{
+			return "{x: " + x + " y: " + y + "}";
+		}
 	}
 }

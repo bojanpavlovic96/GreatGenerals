@@ -94,8 +94,9 @@ public class CtrlMoveCommand extends Command {
 		if (controller.isOwner(unit.getOwner().getUsername())) {
 
 			var unitPath = unit.getMove().getPath();
-
-			unitPath.remove(0);
+			if (unitPath != null) {
+				unitPath.remove(0);
+			}
 
 			if (unit.isAttacking()) {
 				var destination = unit.getActiveAttack().getTarget();
@@ -122,7 +123,7 @@ public class CtrlMoveCommand extends Command {
 				}
 
 			} else {
-				if (!unitPath.isEmpty() && unitPath.size() > 1) {
+				if (unitPath!=null &&!unitPath.isEmpty() && unitPath.size() > 1) {
 					// continue moving
 
 					// trigger timer

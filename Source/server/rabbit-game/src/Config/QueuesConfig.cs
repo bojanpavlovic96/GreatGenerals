@@ -16,8 +16,8 @@ namespace RabbitGameServer.Config
 		public string StartGameRoute { get; set; }
 		public string RoomResponseRoute { get; set; }
 		public string RoomUpdateRoute { get; set; }
-		public string ModelEventTopic { get; set; }
-		public string ModelEventRoute { get; set; }
+		public string ClientIntentionTopic { get; set; }
+		public string ClientIntentionRoute { get; set; }
 
 		public string ServerMessageTopic { get; set; }
 		public string ServerMessageRoutePrefix { get; set; }
@@ -37,8 +37,8 @@ namespace RabbitGameServer.Config
 			StartGameRoute = startGameRoute;
 			RoomResponseRoute = roomResponseRoute;
 			RoomUpdateRoute = roomUpdateRoute;
-			ModelEventTopic = modelEventTopic;
-			ModelEventRoute = modelEventRoute;
+			ClientIntentionTopic = modelEventTopic;
+			ClientIntentionRoute = modelEventRoute;
 			ServerMessageTopic = serverMessageTopic;
 			ServerMessageRoutePrefix = serverMessageRoutePrefix;
 		}

@@ -44,15 +44,16 @@ namespace RabbitGameServer.Game
 							string password,
 							SharedModel.PlayerData master)
 		{
-			var newGame = new GameMaster(
+			var newGame = new LiveMaster(
 				roomName,
 				password,
 				master,
 				config,
 				playerProxy,
 				database,
-				GameDoneHandler,
-				IncomeTickHandler);
+				GameDoneHandler
+				// IncomeTickHandler
+				);
 
 			games.Add(roomName, newGame);
 
@@ -61,13 +62,13 @@ namespace RabbitGameServer.Game
 
 		private void GameDoneHandler(GameMaster gameMaster)
 		{
-			Console.WriteLine($"Rome {gameMaster.RoomName} is done ...");
-			games.Remove(gameMaster.RoomName);
+			Console.WriteLine($"Rome {gameMaster.GetRoomName()} is done ...");
+			games.Remove(gameMaster.GetRoomName());
 		}
 
 		private void IncomeTickHandler(int amount, string room, string player)
 		{
-			var message = new IncomeTickMessage(player, room, amount);
+			var message = new IncomeTickMessage(DateTime.Now, player, room, amount);
 			playerProxy.sendMessage(room, player, message);
 		}
 
@@ -83,7 +84,7 @@ namespace RabbitGameServer.Game
 			var playersCount = 0;
 			foreach (var game in this.games.Values)
 			{
-				playersCount += game.Players.Count;
+				playersCount += game.GetPlayers().Count;
 			}
 
 			return new PoolSummary(this.id,
@@ -97,7 +98,7 @@ namespace RabbitGameServer.Game
 			var summaries = new List<GameSummary>();
 			foreach (var game in games.Values)
 			{
-				summaries.Add(game.getSummary());
+				summaries.Add(game.GetSummary());
 			}
 
 			return summaries;
@@ -110,7 +111,7 @@ namespace RabbitGameServer.Game
 			games.TryGetValue(room, out game);
 			if (game != null)
 			{
-				return game.getSummary();
+				return game.GetSummary();
 			}
 			else
 			{
@@ -125,7 +126,7 @@ namespace RabbitGameServer.Game
 			GameMaster game;
 			if (games.TryGetValue(roomName, out game))
 			{
-				game.endGame();
+				game.EndGame();
 				games.Remove(roomName);
 
 				return true;
@@ -135,6 +136,13 @@ namespace RabbitGameServer.Game
 				return false;
 			}
 
+		}
+
+		public GameMaster LoadReplay(string roomId)
+		{
+			GameMaster master = new ReplayMaster(roomId, database,playerProxy);
+			games.Add(roomId, master);
+			return master;
 		}
 	}
 }

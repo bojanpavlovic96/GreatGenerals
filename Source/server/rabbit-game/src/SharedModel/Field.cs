@@ -25,6 +25,11 @@ namespace RabbitGameServer.SharedModel
 
 		public string owner;
 
+		public Field()
+		{
+
+		}
+
 		public Field(Point2D position,
 			bool isVisible,
 			Unit? unit,

@@ -14,6 +14,9 @@ import root.command.CommandQueue;
 import root.communication.GameServerProxy;
 import root.communication.MessageInterpreter;
 import root.communication.ProtocolTranslator;
+import root.communication.messages.InitializeMsg;
+import root.communication.messages.ReplayMessage;
+import root.communication.parser.StaticParser;
 import root.model.event.ClientIntention;
 
 public class RabbitGameServerProxy implements GameServerProxy,
@@ -94,7 +97,7 @@ public class RabbitGameServerProxy implements GameServerProxy,
 						null);
 
 				channel.exchangeDeclare(
-						config.modelEventsExchange,
+						config.clientIntentionExchange,
 						config.rabbitTopicExchangeKeyword,
 						false,
 						true,
@@ -154,7 +157,7 @@ public class RabbitGameServerProxy implements GameServerProxy,
 		byte[] bytePayload = protocolTranslator.toByteData(message);
 
 		try {
-			var topic = config.modelEventsExchange;
+			var topic = config.clientIntentionExchange;
 			var route = genEventRoutingKey();
 			channel.basicPublish(topic,
 					route,
@@ -175,7 +178,7 @@ public class RabbitGameServerProxy implements GameServerProxy,
 	}
 
 	private String genEventRoutingKey() {
-		return config.modelEventsRoutePrefix + roomName + "." + username;
+		return config.clientIntentionRoutePrefix + roomName + "." + username;
 	}
 
 	@Override
@@ -186,6 +189,9 @@ public class RabbitGameServerProxy implements GameServerProxy,
 
 		// System.out.println("Game proxy received message ... ");
 
+		// System.out.println("\n\n\tRAW");
+		// System.out.println(new String(body));
+
 		var newMessage = protocolTranslator.toMessage(body);
 		if (newMessage == null) {
 			// debug
@@ -193,9 +199,12 @@ public class RabbitGameServerProxy implements GameServerProxy,
 			return;
 		}
 
-		System.out.print("ReceivedMsg: " + newMessage.type.toString());
+		System.out.print("ReceivedMsgType: " + newMessage.type.toString());
 		// System.out.println("\t" + newMessage.type.toString());
-
+		// System.out.println("\n\n\tAS_MESSAGE");
+		// System.out.println(StaticParser.ToString(newMessage));
+		// var fMess = ((ReplayMessage) newMessage).messages.get(0);
+		// System.out.println(StaticParser.ToString((InitializeMsg) fMess));
 		var newCommand = messageInterpreter.ToCommand(newMessage);
 		if (newCommand == null) {
 			// debug

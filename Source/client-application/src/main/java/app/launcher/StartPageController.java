@@ -7,7 +7,6 @@ import app.event.GameReadyHandler;
 import app.form.GameReadyEventProducer;
 import app.form.InitialPage;
 import app.form.MessageDisplay;
-import app.form.RoomForm;
 import app.resource_manager.Language;
 import app.resource_manager.Language.MessageType;
 import root.ActiveComponent;
@@ -160,12 +159,23 @@ public class StartPageController implements GameReadyEventProducer, ActiveCompon
 
 	private void replaySelectHandler(String gameId) {
 		System.out.println("Selected replay: " + gameId);
+		replayProxy.loadReplay(gameId, (response) -> {
+			System.out.println("STATUS: " + response.status.toString());
+			if (response.status != ReplayResponseStatus.SUCCESS) {
+				System.out.println("Error while loading replay ... ");
+				return;
+			}
+
+			onGameReady.execute(player, gameId, true);
+		});
 
 	}
 
 	private void replayCloseHandler() {
 		// TODO enable all actions from roomForm
 		System.out.println("Closed replay stage ... ");
+		initialPage.hideReplayForm();
+		initialPage.showRoomForm();
 	}
 
 	private void createRoomActionHandler(String roomName, String roomPassword) {
