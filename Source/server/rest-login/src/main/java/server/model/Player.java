@@ -23,10 +23,10 @@ public class Player {
 	}
 
 	public Player(String name, String password, int level, int points) {
-		this.setLevel(level);
-		this.setPoints(points);
 		this.setName(name);
 		this.setPassword(password);
+		this.setLevel(level);
+		this.setPoints(points);
 	}
 
 	public String getPassword() {

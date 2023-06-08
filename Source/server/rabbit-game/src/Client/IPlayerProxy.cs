@@ -8,6 +8,6 @@ namespace RabbitGameServer.Client
 
 		void sendRoomUpdate(string roomName, string player, Message update);
 
-		void sendMessage(string roomName, string player, Message command);
+		void sendMessage(string roomName, string player, Message message);
 	}
 }

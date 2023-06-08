@@ -25,12 +25,11 @@
 			"projectName": "server"
 		},
 		{
-
 			"type": "java",
 			"name": "attach to mvnDebug",
 			"request": "attach",
-			"hostName": "localhost",
+			"hostName": "127.0.0.1",
 			"port": 8000
-		  }
+		}
 	]
 }

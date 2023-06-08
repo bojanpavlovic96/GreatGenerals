@@ -14,7 +14,7 @@ import root.model.component.UnitType;
 import root.model.component.option.FieldOption;
 import root.model.event.ModelEventProducer;
 
-public interface Model extends ModelEventProducer{
+public interface Model extends ModelEventProducer {
 
 	List<Field> getFields();
 

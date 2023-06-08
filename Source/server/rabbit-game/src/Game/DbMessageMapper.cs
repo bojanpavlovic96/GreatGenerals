@@ -39,6 +39,78 @@ namespace RabbitGameServer.Game
 						fromField = Database.Point2D.fromPoint(mMsg.startFieldPos),
 						toField = Database.Point2D.fromPoint(mMsg.endFieldPos)
 					};
+				case SharedModel.Messages.MessageType.AttackMessage:
+					var aMsg = (AttackMessage)msg;
+					return new RabbitGameServer.Database.Message(msg.type.ToString(),
+						roomId,
+						aMsg.roomName,
+						aMsg.username,
+						aMsg.timestamp)
+					{
+						attackType = aMsg.attackType.ToString(),
+						fromField = Database.Point2D.fromPoint(aMsg.startFieldPos),
+						toField = Database.Point2D.fromPoint(aMsg.endFieldPos)
+					};
+
+				case SharedModel.Messages.MessageType.AbortAttackMessage:
+					var abMsg = (AbortAttackMessage)msg;
+					return new RabbitGameServer.Database.Message(msg.type.ToString(),
+						roomId,
+						abMsg.roomName,
+						abMsg.username,
+						abMsg.timestamp)
+					{
+						fromField = RabbitGameServer.Database.Point2D.fromPoint(abMsg.unitPosition)
+					};
+
+				case SharedModel.Messages.MessageType.DefendMessage:
+					var dMsg = (DefendMessage)msg;
+					return new RabbitGameServer.Database.Message(msg.type.ToString(),
+						roomId,
+						dMsg.roomName,
+						dMsg.username,
+						dMsg.timestamp)
+					{
+						defendType = dMsg.defendType,
+						fromField = RabbitGameServer.Database.Point2D.fromPoint(dMsg.startFieldPos),
+						toField = RabbitGameServer.Database.Point2D.fromPoint(dMsg.endFieldPos)
+					};
+
+				case SharedModel.Messages.MessageType.BuildUnit:
+					var bMsg = (BuildUnitMessage)msg;
+					return new RabbitGameServer.Database.Message(msg.type.ToString(),
+						roomId,
+						bMsg.roomName,
+						bMsg.username,
+						bMsg.timestamp)
+					{
+						fromField = Database.Point2D.fromPoint(bMsg.field),
+						unitType = bMsg.unitType,
+						cost = bMsg.cost
+					};
+
+				case SharedModel.Messages.MessageType.IncomeTick:
+					Console.WriteLine("Mapping income tick to db model ... ");
+					var iMsg = (IncomeTickMessage)msg;
+					return new RabbitGameServer.Database.Message(iMsg.type.ToString(),
+						roomId,
+						iMsg.roomName,
+						iMsg.username,
+						iMsg.timestamp)
+					{
+						amount = iMsg.amount
+					};
+
+				case SharedModel.Messages.MessageType.GameDone:
+					var gMsg = (GameDoneMessage)msg;
+					return new RabbitGameServer.Database.Message(gMsg.type.ToString(),
+						roomId,
+						gMsg.roomName,
+						gMsg.username,
+						gMsg.timestamp)
+					{
+						amount = gMsg.bonusAmount
+					};
 
 			}
 
@@ -68,6 +140,49 @@ namespace RabbitGameServer.Game
 						msg.roomName,
 						msg.fromField.toPoint(),
 						msg.toField.toPoint());
+
+				case MessageType.AttackMessage:
+					return new AttackMessage(msg.timestamp,
+						msg.playerName,
+						msg.roomName,
+						msg.attackType,
+						msg.fromField.toPoint(),
+						msg.toField.toPoint());
+
+				case MessageType.AbortAttackMessage:
+					return new AbortAttackMessage(msg.timestamp,
+						msg.playerName,
+						msg.roomName,
+						msg.fromField.toPoint());
+
+				case MessageType.DefendMessage:
+					return new DefendMessage(msg.timestamp,
+						msg.playerName,
+						msg.roomName,
+						msg.defendType,
+						msg.fromField.toPoint(),
+						msg.toField.toPoint());
+
+				case MessageType.IncomeTick:
+					return new IncomeTickMessage(msg.timestamp,
+						msg.playerName,
+						msg.roomName,
+						msg.amount);
+
+				case MessageType.BuildUnit:
+					return new BuildUnitMessage(msg.timestamp,
+						msg.playerName,
+						msg.roomName,
+						msg.fromField.toPoint(),
+						msg.unitType,
+						msg.cost);
+
+				case MessageType.GameDone:
+					return new GameDoneMessage(msg.timestamp,
+						msg.playerName,
+						msg.roomName,
+						msg.amount);
+
 			}
 			return null;
 		}

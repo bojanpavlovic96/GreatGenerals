@@ -11,7 +11,12 @@ public class PlayerDescription implements PlayerData {
 
 	private int level;
 
+	private int coins;
+
 	private int points;
+
+	public PlayerDescription() {
+	}
 
 	public PlayerDescription(String username, int level, int points) {
 		this.username = username;
@@ -20,10 +25,11 @@ public class PlayerDescription implements PlayerData {
 	}
 
 	public PlayerDescription(String username, Color color, int level, int points) {
-		this.username = username;
+		this(username, level, points);
 		this.color = color;
-		this.level = level;
-		this.points = points;
+		// this.username = username;
+		// this.level = level;
+		// this.points = points;
 	}
 
 	@Override
@@ -42,8 +48,8 @@ public class PlayerDescription implements PlayerData {
 	}
 
 	@Override
-	public int getPoints() {
-		return this.points;
+	public int getCoins() {
+		return this.coins;
 	}
 
 	// required for serialization (some of them) ... 
@@ -61,16 +67,26 @@ public class PlayerDescription implements PlayerData {
 	}
 
 	@Override
-	public void setPoints(int amount) {
-		this.points = amount;
+	public void setCoins(int amount) {
+		this.coins = amount;
 	}
 
 	@Override
-	public void removePoints(int amount) {
-		points -= amount;
-		if (points < 0) {
-			points = 0;
+	public void removeCoins(int amount) {
+		coins -= amount;
+		if (coins < 0) {
+			coins = 0;
 		}
+	}
+
+	@Override
+	public void setPoints(int totalAmount) {
+		this.points = totalAmount;
+	}
+
+	@Override
+	public int getPoints() {
+		return this.points;
 	}
 
 }

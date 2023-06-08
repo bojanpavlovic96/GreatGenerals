@@ -10,5 +10,7 @@ namespace RabbitGameServer.Config
 		public string GetPlayerPath { get; set; }
 		public string NameArgument { get; set; }
 
+		public string UpdatePlayerPath{get;set;}
+
 	}
 }

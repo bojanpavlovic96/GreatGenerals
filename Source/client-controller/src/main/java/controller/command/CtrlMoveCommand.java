@@ -123,7 +123,7 @@ public class CtrlMoveCommand extends Command {
 				}
 
 			} else {
-				if (unitPath!=null &&!unitPath.isEmpty() && unitPath.size() > 1) {
+				if (unitPath != null && !unitPath.isEmpty() && unitPath.size() > 1) {
 					// continue moving
 
 					// trigger timer

@@ -8,4 +8,5 @@
     "todo-tree.tree.disableCompactFolders": false,
 	"C_Cpp.errorSquiggles": "Disabled",
 	"java.compile.nullAnalysis.mode": "automatic"
+	
 }

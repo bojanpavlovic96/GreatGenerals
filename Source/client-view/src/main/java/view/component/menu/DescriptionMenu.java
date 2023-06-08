@@ -61,7 +61,7 @@ public class DescriptionMenu extends ListView<HBox> implements FieldDescription 
 		// texts.setStyle("-fx-background-color: #ffff10"); // yellowish
 
 		var title = new Label(desc.title);
-		title.setStyle("-fx-background-color: #7F00FF"); // purple
+		title.setStyle("-fx-background-color: #428daf4f"); // purple
 		title.setMaxWidth(TEXT_WIDTH);
 		title.setMinWidth(TEXT_WIDTH);
 		texts.getChildren().add(title);
@@ -79,10 +79,14 @@ public class DescriptionMenu extends ListView<HBox> implements FieldDescription 
 			// iconBox.setPadding(new Insets(0, 0, 0, 10));
 			iconBox.setMinWidth(90);
 			iconBox.setMaxWidth(90);
+			iconBox.setMinHeight(90);
+			iconBox.setMaxHeight(90);
 			iconBox.setAlignment(Pos.CENTER);
 
 			var icon = ResourceManager.getInstance().getByKey(desc.iconSource);
 			var imageView = new ImageView(icon);
+			imageView.setFitWidth(90);
+			imageView.setFitHeight(90);
 
 			iconBox.getChildren().add(imageView);
 

@@ -29,14 +29,12 @@ public class StartPageController implements GameReadyEventProducer, ActiveCompon
 	private InitialPage initialPage;
 
 	private PlayerDescription player;
-
 	private String roomName;
-
 	private List<PlayerDescription> players;
 
 	private LoginServerProxy loginServer;
 	private RoomServerProxy roomServer;
-	private ReplayServerProxy replayProxy;
+	private ReplayServerProxy replayServer;
 
 	private GameReadyHandler onGameReady;
 
@@ -49,7 +47,7 @@ public class StartPageController implements GameReadyEventProducer, ActiveCompon
 		this.initialPage = initialPage;
 		this.loginServer = loginServer;
 		this.roomServer = roomServer;
-		this.replayProxy = replayProxy;
+		this.replayServer = replayProxy;
 		this.onGameReady = onGameReady;
 
 		this.players = new ArrayList<PlayerDescription>();
@@ -95,7 +93,7 @@ public class StartPageController implements GameReadyEventProducer, ActiveCompon
 
 					} else {
 						System.out.println("Login failed ... ");
-						showInfoMessage(Language.MessageType.LoginFailed);
+						showStatusMessage(Language.MessageType.LoginFailed);
 					}
 				});
 
@@ -144,7 +142,7 @@ public class StartPageController implements GameReadyEventProducer, ActiveCompon
 	private void replayHandler(String roomName, String password) {
 		// TODO disable all actions from roomForm
 		initialPage.showReplayForm();
-		replayProxy.listReplays(player.getUsername(),
+		replayServer.listReplays(player.getUsername(),
 				(ReplayServerResponse r) -> {
 					System.out.println("replay response ... ");
 
@@ -159,7 +157,7 @@ public class StartPageController implements GameReadyEventProducer, ActiveCompon
 
 	private void replaySelectHandler(String gameId) {
 		System.out.println("Selected replay: " + gameId);
-		replayProxy.loadReplay(gameId, (response) -> {
+		replayServer.loadReplay(gameId, (response) -> {
 			System.out.println("STATUS: " + response.status.toString());
 			if (response.status != ReplayResponseStatus.SUCCESS) {
 				System.out.println("Error while loading replay ... ");
@@ -319,7 +317,7 @@ public class StartPageController implements GameReadyEventProducer, ActiveCompon
 					if (response.responseType == RoomResponseType.Success) {
 						System.out.println("Join room successful ... ");
 
-						showInfoMessage(Language.MessageType.SuccessfulJoin);
+						showStatusMessage(Language.MessageType.SuccessfulJoin);
 
 						initialPage.disableCreateRoom();
 						initialPage.disableJoinRoom();
@@ -464,6 +462,9 @@ public class StartPageController implements GameReadyEventProducer, ActiveCompon
 			((ActiveComponent) roomServer).shutdown();
 		}
 
+		if (replayServer != null && replayServer instanceof ActiveComponent) {
+			((ActiveComponent) replayServer).shutdown();
+		}
 	}
 
 	public String getRoomName() {

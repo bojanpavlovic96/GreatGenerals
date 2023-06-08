@@ -38,7 +38,7 @@ public class BuildUnitFieldOption extends FieldOption {
 	@Override
 	public boolean isAdequateFor(Field selectedField, Field targetField) {
 		return (controller.isOwner(targetField.getPlayer().getUsername())
-				&& targetField.getPlayer().getPoints() >= 0);
+				&& targetField.getPlayer().getCoins() >= 0);
 		// TODO instead of 0 it should be compared with this.cost
 		// that way all units bill be displayed and then server will 
 		// decide if i am able to build one. 

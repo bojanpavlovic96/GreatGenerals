@@ -3,6 +3,7 @@ namespace RabbitGameServer.SharedModel.Messages
 	public enum RoomResponseType
 	{
 		Success,
+		// ServerBusy,
 		InvalidRoom,
 		InvalidPlayer,
 		WrongPassword,

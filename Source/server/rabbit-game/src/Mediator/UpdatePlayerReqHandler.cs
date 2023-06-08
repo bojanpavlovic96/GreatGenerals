@@ -1,0 +1,74 @@
+
+using System.Text.Json;
+using System.Text.Json.Serialization;
+using MediatR;
+using RabbitGameServer.Config;
+using RabbitGameServer.SharedModel;
+using RabbitGameServer.Util;
+
+namespace RabbitGameServer.Mediator
+{
+	public class UpdatePlayerReqHandler : IRequestHandler<UpdatePlayerRequest, PlayerData>
+	{
+		private LoginServerConfig loginConfig;
+
+		private ISerializer serializer;
+
+		public UpdatePlayerReqHandler(LoginServerConfig loginConfig, ISerializer serializer)
+		{
+			this.loginConfig = loginConfig;
+			this.serializer = serializer;
+		}
+
+		public async Task<PlayerData> Handle(UpdatePlayerRequest request, CancellationToken cancellationToken)
+		{
+
+			HttpResponseMessage response;
+
+			try
+			{
+				var httpClient = new HttpClient();
+				var uriString = $"http://{loginConfig.Address}:{loginConfig.Port}/"
+					+ $"{loginConfig.UpdatePlayerPath}";
+				var uri = new Uri(uriString);
+
+				Console.WriteLine($"Will post user update on: {uriString}");
+
+				var options = new JsonSerializerOptions();
+				options.Converters.Add(new JsonStringEnumConverter());
+				var content = JsonContent.Create(request.playerData, null, options);
+
+				response = await httpClient.PostAsync(uri, content);
+
+				if (response == null || !response.IsSuccessStatusCode)
+				{
+					Console.WriteLine("Bad response ... ");
+					return null;
+				}
+
+				Console.WriteLine("Success in response ... ");
+				var strContent = await response.Content.ReadAsStringAsync();
+				var dataResponse = serializer.ToObj<PlayerServerResponse>(strContent);
+
+				if (dataResponse.status != PlayerServerResponseStatus.SUCCESS)
+				{
+					Console.WriteLine("Server returned not success ... ");
+					return null;
+				}
+
+				return dataResponse.player;
+
+
+			}
+			catch (Exception e)
+			{
+				Console.WriteLine("Exception while sending UpdatePlayerRequest ... ");
+				Console.WriteLine(e.Message);
+				Console.WriteLine(e.StackTrace);
+
+				return null;
+			}
+
+		}
+	}
+}

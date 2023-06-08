@@ -27,6 +27,7 @@ import root.communication.messages.ReadyForReplayMsg;
 import root.communication.messages.RecalculatePathMsg;
 import root.communication.messages.ReplayMsg;
 import root.communication.messages.ServerErrorMsg;
+import root.communication.messages.PointsUpdateMsg;
 import root.model.event.ClientIntention;
 
 public class SwitchCaseMsgInterpreter implements MessageInterpreter {
@@ -102,6 +103,11 @@ public class SwitchCaseMsgInterpreter implements MessageInterpreter {
 			case IncomeTick:
 				return new CtrlIncomeTick(message.username,
 						((IncomeTickMsg) message).amount);
+
+			case PointsUpdate:
+				return new CtrlPointsUpdateCommand(message.username,
+						((PointsUpdateMsg) message).income,
+						((PointsUpdateMsg) message).totalAmount);
 
 			case BuildUnit:
 				return new CtrlBuildUnitCommand(

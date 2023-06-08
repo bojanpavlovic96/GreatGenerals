@@ -35,6 +35,9 @@ namespace RabbitGameServer.Database
 		public int cost { get; set; }
 		public string password { get; set; }
 
+		// income tick
+		public int amount { get; set; }
+
 		public Message(string type,
 			string roomId,
 			string roomName,

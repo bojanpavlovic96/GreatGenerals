@@ -53,7 +53,9 @@ public class ViewUnit {
 
 			opponentName = target.getPlayer().getUsername();
 			opponentHealth = target.getUnit().getHealth();
-			opponentAttack = AttackInfo.fromModel(target.getUnit().getDefense());
+			if (target.getUnit().getDefense() != null) {
+				opponentAttack = AttackInfo.fromModel(target.getUnit().getDefense());
+			}
 		}
 
 		if (model.getDefense() != null) {
@@ -116,10 +118,10 @@ public class ViewUnit {
 						"Attacking: " + opponentName,
 						"With: " + activeAttack,
 						"OpponentHealth: " + opponentHealth,
-						"OpponentDefense: " + opponentAttack.name,
-						"\t dmg: " + opponentAttack.defenseDmg,
-						"\t cooldown: " + opponentAttack.defenseCooldown,
-						"\t range: " + opponentAttack.defenseRange),
+						"OpponentDefense: " + (opponentAttack != null ? opponentAttack.name : "None"),
+						"\t dmg: " + (opponentAttack != null ? opponentAttack.defenseDmg : "0"),
+						"\t cooldown: " + (opponentAttack != null ? opponentAttack.defenseCooldown : "0"),
+						"\t range: " + (opponentAttack != null ? opponentAttack.defenseRange : "0")),
 				null);
 	}
 
@@ -135,10 +137,10 @@ public class ViewUnit {
 								"Defending from: " + opponentName,
 								"With: " + defense,
 								"OpponentHealth: " + opponentHealth,
-								"OpponentAttack: " + opponentAttack.name,
-								"\t dmg: " + opponentAttack.attackDmg,
-								"\t cooldown: " + opponentAttack.attackCooldown,
-								"\t range: " + opponentAttack.attackRange),
+								"OpponentAttack: " + (opponentAttack != null ? opponentAttack.name : "None"),
+								"\t dmg: " + (opponentAttack != null ? opponentAttack.attackDmg : "0"),
+								"\t cooldown: " + (opponentAttack != null ? opponentAttack.attackCooldown : "0"),
+								"\t range: " + (opponentAttack != null ? opponentAttack.attackRange : "0")),
 						null);
 			} else {
 				// We have prepared defense but nobody is attacking us. 

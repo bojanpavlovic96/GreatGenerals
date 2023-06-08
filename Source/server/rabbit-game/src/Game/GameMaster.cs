@@ -33,6 +33,8 @@ namespace RabbitGameServer.Game
 
 		List<PlayerData> GetPlayers();
 
+		string GetWinner();
+
 		string GetRoomId();
 
 	}

@@ -41,8 +41,6 @@ import view.command.ZoomOutCommand;
 
 public class GameBrain implements Controller, ActiveComponent {
 
-	private PlayerData player;
-
 	private GameDoneHandler onGameDone;
 
 	private GameServerProxy serverProxy;
@@ -65,14 +63,11 @@ public class GameBrain implements Controller, ActiveComponent {
 
 	private List<FieldOption> fieldOptions;
 
-	public GameBrain(PlayerData player,
-			GameServerProxy serverProxy,
+	public GameBrain(GameServerProxy serverProxy,
 			View view,
 			Model model,
 			GameDoneHandler onGameDone,
 			boolean asReplay) {
-
-		this.player = player;
 
 		this.onGameDone = onGameDone;
 

@@ -10,6 +10,8 @@ public class PlayerModelData implements PlayerData {
 	private Color fieldColor;
 
 	private int level;
+	private int coins;
+
 	private int points;
 
 	public PlayerModelData(String username, Color fieldColor, int level, int points) {
@@ -35,21 +37,31 @@ public class PlayerModelData implements PlayerData {
 	}
 
 	@Override
+	public int getCoins() {
+		return this.coins;
+	}
+
+	@Override
+	public void setCoins(int amount) {
+		this.coins = amount;
+	}
+
+	@Override
+	public void removeCoins(int amount) {
+		this.coins -= amount;
+		if (this.coins < 0) {
+			coins = 0;
+		}
+	}
+
+	@Override
+	public void setPoints(int totalAmount) {
+		this.points = totalAmount;
+	}
+
+	@Override
 	public int getPoints() {
 		return this.points;
-	}
-
-	@Override
-	public void setPoints(int amount) {
-		this.points = amount;
-	}
-
-	@Override
-	public void removePoints(int amount) {
-		this.points -= amount;
-		if (this.points < 0) {
-			points = 0;
-		}
 	}
 
 }

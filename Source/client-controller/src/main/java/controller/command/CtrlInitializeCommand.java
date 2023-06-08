@@ -12,6 +12,7 @@ import root.controller.Controller;
 import root.model.Model;
 import view.command.ClearViewCommand;
 import view.command.LoadBoardCommand;
+import view.command.UpdateCoinsCommand;
 import view.command.UpdatePointsCommand;
 
 public class CtrlInitializeCommand extends Command {
@@ -62,8 +63,15 @@ public class CtrlInitializeCommand extends Command {
 		controller.getConsumerQueue().enqueue(loadBoardCommand);
 
 		var owner = controller.getModel().getOwner();
-		var updatePoints = new UpdatePointsCommand(owner.getPoints());
+		System.out.println("InCtrlInit command owner balance: ");
+		System.out.println("\tc: " + owner.getCoins());
+		System.out.println("\tp: " + owner.getPoints());
+
+		var updatePoints = new UpdatePointsCommand(owner.getPoints(), owner.getPoints());
 		controller.getConsumerQueue().enqueue(updatePoints);
+
+		var updateCoins = new UpdateCoinsCommand(owner.getCoins());
+		controller.getConsumerQueue().enqueue(updateCoins);
 	}
 
 	@Override

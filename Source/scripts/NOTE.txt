@@ -59,8 +59,12 @@ https://stackoverflow.com/questions/65333866/java-httpclient-not-releasing-threa
 https://stackoverflow.com/questions/51871635/couldnt-destroy-threadgroup-org-codehaus-mojo-exec-execjavamojoisolatedthreadg
 
 > TO DEBUG (in visualStudioCode):
+	For: client-application
 	$ cd to .../GreatGenerals/Sourece/client-application
 	$ mvnDebug exec:java -Djavafx.run.jvmArguments=-agentlib:jdwp=transport=dt_socket,server=y,suspend=y,address=8000
+	
+	For: login-server 
+	$ mvnDebug spring-boot:run -Dspring-boot.run.jvmArguments="-agentlib:jdwp=transport=dt_socket,server=y,suspend=y,address=8000"
 
 make sure that port 8000 is not in use if it is in use just pick some other
 but don't forget to update launch.json as well 

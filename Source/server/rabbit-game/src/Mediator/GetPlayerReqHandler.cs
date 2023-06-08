@@ -9,14 +9,14 @@ namespace RabbitGameServer.Mediator
 	public class GetPlayerReqHandler : IRequestHandler<GetPlayerRequest, PlayerData>
 	{
 
-		private LoginServerConfig loginServer;
+		private LoginServerConfig loginConfig;
 
 		private ISerializer serializer;
 
 		public GetPlayerReqHandler(IOptions<LoginServerConfig> loginServerOptions,
 			ISerializer serializer)
 		{
-			this.loginServer = loginServerOptions.Value;
+			this.loginConfig = loginServerOptions.Value;
 			this.serializer = serializer;
 		}
 
@@ -29,9 +29,9 @@ namespace RabbitGameServer.Mediator
 			try
 			{
 				var httpClient = new HttpClient();
-				var uriString = $"http://{loginServer.Address}:{loginServer.Port}/"
-					+ $"{loginServer.GetPlayerPath}?"
-					+ $"{loginServer.NameArgument}={request.name}";
+				var uriString = $"http://{loginConfig.Address}:{loginConfig.Port}/"
+					+ $"{loginConfig.GetPlayerPath}?"
+					+ $"{loginConfig.NameArgument}={request.name}";
 				Console.WriteLine($"RequestUri: {uriString}");
 
 				// var uri = new Uri("http://gg-login-server:9090/getplayer?name=some");
@@ -57,6 +57,7 @@ namespace RabbitGameServer.Mediator
 				try
 				{
 					data = serializer.ToObj<PlayerServerResponse>(strContent);
+					Console.WriteLine($"databalance: p: {data.player.points}");
 				}
 				catch (Exception e)
 				{

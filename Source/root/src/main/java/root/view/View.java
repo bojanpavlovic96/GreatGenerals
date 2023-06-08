@@ -58,7 +58,9 @@ public interface View extends ViewEventProducer, CommandDrivenComponent {
 
 	ViewConfig getActiveConfig();
 
-	void showPoints(int amount);
+	void showCoins(int amount);
+
+	void updatePoints(int income, int amount);
 
 	void showWinner(String winner, int amount);
 }

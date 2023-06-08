@@ -42,7 +42,6 @@ public class RabbitRoomServerProxy implements RoomServerProxy, ActiveComponent {
 
 		this.responseHandler = null;
 		this.responseQueue = null;
-
 	}
 
 	private boolean setupReceiver(String roomName, String playerName,
@@ -95,6 +94,7 @@ public class RabbitRoomServerProxy implements RoomServerProxy, ActiveComponent {
 
 		if (isWaitingForResponse()) {
 			System.out.println("Rabbit room server proxy is already handling request ...  ");
+			// handler.handle(new RoomResponseMsg(new Date(), RoomResponseType.ServerBusy, null));
 			return;
 		}
 
@@ -139,6 +139,7 @@ public class RabbitRoomServerProxy implements RoomServerProxy, ActiveComponent {
 
 		if (isWaitingForResponse()) {
 			System.out.println("Rabbit room server proxy is already handling request ...  ");
+			// handler.handle(new RoomResponseMsg(new Date(), RoomResponseType.ServerBusy, null));
 			return;
 		}
 
@@ -183,6 +184,7 @@ public class RabbitRoomServerProxy implements RoomServerProxy, ActiveComponent {
 
 		if (isWaitingForResponse()) {
 			System.out.println("Rabbit room server proxy is already handling request ...  ");
+			// handler.handle(new RoomResponseMsg(new Date(), RoomResponseType.ServerBusy, null));
 			return;
 		}
 
@@ -226,6 +228,7 @@ public class RabbitRoomServerProxy implements RoomServerProxy, ActiveComponent {
 
 		if (isWaitingForResponse()) {
 			System.out.println("Rabbit room server proxy is already handling request ...  ");
+			// handler.handle(new RoomResponseMsg(new Date(), RoomResponseType.ServerBusy, null));
 			return;
 		}
 

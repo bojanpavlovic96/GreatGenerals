@@ -125,8 +125,7 @@ public class Launcher extends Application {
 			var view = new DrawingStage(fieldManager, viewConfig);
 			System.out.println("View created ... ");
 
-			gameController = new GameBrain(player,
-					serverProxy,
+			gameController = new GameBrain(serverProxy,
 					view,
 					model,
 					this::gameDoneHandler,
@@ -148,6 +147,7 @@ public class Launcher extends Application {
 		System.out.println("Controller passed controll to Launcher");
 		var room = startPageController.getRoomName();
 		var pass = " "; // this should not be important
+
 		startPageController.leaveRoomActionHandler(room, pass);
 		// startPageController.getInitialPage().showRoomForm();
 		startPageController.showInitialPage();

@@ -45,6 +45,7 @@ namespace RabbitGameServer.Mediator
 				{
 
 					Console.WriteLine("User data successfully obtained ... ");
+					Console.WriteLine($"UserBalance: \n\tp:{playerData.points}");
 
 					var newGame = pool.CreateGame(request.roomName,
 						request.password,

@@ -1,6 +1,8 @@
 package server.controller;
 
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -35,10 +37,20 @@ public class PlayerController {
 			return PlayerServerResponse.invalidUsername();
 		} else {
 
-			// SUCCESS
-			var player = new PlayerDescription(data.getName(), data.getPoints(), data.getLevel());
+			var player = new PlayerDescription(data.getName(), data.getLevel(), data.getPoints());
+
 			return PlayerServerResponse.success(player);
 		}
+	}
+
+	@PostMapping("/update")
+	public PlayerServerResponse updatePlayer(@RequestBody PlayerDescription player) {
+		System.out.println("Update request received ... ");
+		System.out.println(player.getUsername());
+		System.out.println(player.getCoins());
+		// var existing = repository.getByName(player.getUsername());
+
+		return null;
 	}
 
 }

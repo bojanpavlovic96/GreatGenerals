@@ -8,7 +8,6 @@ public class LoginServerResponse {
 
 	private PlayerDescription player;
 
-
 	public LoginServerResponse(PlayerDescription playerData,
 			LoginServerResponseStatus status) {
 
@@ -37,7 +36,7 @@ public class LoginServerResponse {
 		return "{" +
 				" username='" + player.getUsername() + "'" +
 				", level='" + player.getLevel() + "'" +
-				", points='" + player.getPoints() + "'" +
+				", points='" + player.getCoins() + "'" +
 				", status='" + getStatus() + "'" +
 				"}";
 	}

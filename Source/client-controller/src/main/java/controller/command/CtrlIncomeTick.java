@@ -2,7 +2,7 @@ package controller.command;
 
 import root.command.Command;
 import root.controller.Controller;
-import view.command.UpdatePointsCommand;
+import view.command.UpdateCoinsCommand;
 
 public class CtrlIncomeTick extends Command {
 
@@ -28,9 +28,9 @@ public class CtrlIncomeTick extends Command {
 		controller
 				.getModel()
 				.getOwner()
-				.setPoints(amount);
+				.setCoins(amount);
 
-		var updateCommand = new UpdatePointsCommand(amount);
+		var updateCommand = new UpdateCoinsCommand(amount);
 		controller
 				.getView()
 				.getCommandQueue()

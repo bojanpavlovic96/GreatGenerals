@@ -16,6 +16,7 @@ import root.communication.messages.JoinRoomRequestMsg;
 import root.communication.messages.Message;
 import root.communication.messages.MessageType;
 import root.communication.messages.MoveMsg;
+import root.communication.messages.PointsUpdateMsg;
 import root.communication.messages.ReadyForInitMsg;
 import root.communication.messages.ReadyForReplayMsg;
 import root.communication.messages.ReplayMsg;
@@ -77,6 +78,9 @@ public class SwitchCaseTypeResolver implements NameTypeResolver {
 
 			case IncomeTick:
 				return IncomeTickMsg.class;
+
+			case PointsUpdate:
+				return PointsUpdateMsg.class;
 
 			case BuildUnit:
 				return BuildUnitMsg.class;

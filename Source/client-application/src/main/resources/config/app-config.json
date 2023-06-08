@@ -9,7 +9,7 @@
 	},
 	"formConfig": {
 		"headerImagePath": "/battle_draw.jpg",
-		"infoMessageDuration": 3,
+		"infoMessageDuration": 2,
 		"titleFontSize": 20,
 		"titleFont": "Tlwg Typewriter Bold",
 		"messageFontSize": 14,

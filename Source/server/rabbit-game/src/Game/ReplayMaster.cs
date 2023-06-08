@@ -1,4 +1,3 @@
-
 using RabbitGameServer.Client;
 using RabbitGameServer.SharedModel;
 using RabbitGameServer.SharedModel.ClientIntentions;
@@ -148,6 +147,11 @@ namespace RabbitGameServer.Game
 		public PlayerData RemovePlayer(string name)
 		{
 			throw new NotImplementedException();
+		}
+
+		public string GetWinner()
+		{
+			return details.winner;
 		}
 	}
 }

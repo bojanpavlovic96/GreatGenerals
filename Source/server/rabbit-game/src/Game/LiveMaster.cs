@@ -45,6 +45,8 @@ namespace RabbitGameServer.Game
 		private string RoomName { get; set; }
 		private string Password { get; set; }
 		private List<PlayerData> Players { get; set; }
+		// private PlayerData winner { get; set; }
+		private string winner { get; set; }
 		private List<IncomeStats> Incomes;
 		private List<Unit> ActiveUnits;
 
@@ -86,9 +88,10 @@ namespace RabbitGameServer.Game
 
 			this.masterPlayer = masterPlayer;
 			this.masterPlayer.color = getAvailableColor();
-			this.masterPlayer.points = config.DefaultPoints;
+			// this.masterPlayer.points = config.DefaultPoints;
 			this.Players = new List<PlayerData>();
 			this.Players.Add(masterPlayer);
+			this.winner = null;
 
 			this.playerProxy = playerProxy;
 
@@ -130,11 +133,6 @@ namespace RabbitGameServer.Game
 
 		}
 
-		// private void populateMessages(string roomId)
-		// {
-		// 	Messages.AddRange(Database.getMessages(roomId));
-		// }
-
 		public void AddIntention(ClientIntention intention)
 		{
 			Console.WriteLine($"Handling: {intention.GetType().ToString()} ... ");
@@ -145,11 +143,11 @@ namespace RabbitGameServer.Game
 			{
 				var resultMsg = handler.Invoke(intention);
 
-				Messages.Add(resultMsg);
+				sendMessage(resultMsg, intention.playerName);
 
-				saveMessages();
-
-				playerProxy.sendMessage(RoomName, intention.playerName, resultMsg);
+				// Messages.Add(resultMsg);
+				// saveMessages();
+				// playerProxy.sendMessage(RoomName, intention.playerName, resultMsg);
 			}
 			else
 			{
@@ -158,10 +156,18 @@ namespace RabbitGameServer.Game
 
 		}
 
+		private void sendMessage(Message message, string user)
+		{
+			Messages.Add(message);
+			saveMessages();
+			playerProxy.sendMessage(RoomName, user, message);
+		}
+
 		private void saveMessages(bool forced = false)
 		{
 			if (forced || Messages.Count >= config.msgQueueSize)
 			{
+				Console.WriteLine("Saving messages ... ");
 				var dbMsgs = Messages.Select(m => DbMessageMapper.map(m, roomId)).ToList();
 				try
 				{
@@ -206,24 +212,24 @@ namespace RabbitGameServer.Game
 		private Message handleMove(ClientIntention e)
 		{
 			Console.WriteLine("Handling move event ... ");
-			var mev = (MoveIntention)e;
+			var mIntention = (MoveIntention)e;
 
-			var endField = getField(mev.destinationField);
+			var endField = getField(mIntention.destinationField);
 			if (endField != null)
 			{
 				if (!isOccupied(endField))
 				{
 					Console.WriteLine("Unit is free to move ... ");
 
-					var srcField = getField(mev.sourceField);
+					var srcField = getField(mIntention.sourceField);
 					endField.unit = srcField.unit;
 					srcField.unit = null;
 
 					return new MoveMessage(DateTime.Now,
-						mev.playerName,
+						mIntention.playerName,
 						RoomName,
-						mev.sourceField,
-						mev.destinationField);
+						mIntention.sourceField,
+						mIntention.destinationField);
 				}
 				else
 				{
@@ -233,18 +239,18 @@ namespace RabbitGameServer.Game
 					// Or should i send RecalculatePath message ... ? 
 					Console.WriteLine("Unit should recalculate path ... ");
 					return new RecalculatePathMessage(DateTime.Now,
-						mev.playerName,
+						mIntention.playerName,
 						RoomName,
-						mev.sourceField);
+						mIntention.sourceField);
 				}
 			}
 			else
 			{
 				Console.WriteLine("Move should be aborted ... ");
 				return new AbortMoveMessage(DateTime.Now,
-					mev.playerName,
+					mIntention.playerName,
 					RoomName,
-					mev.sourceField);
+					mIntention.sourceField);
 			}
 
 
@@ -291,7 +297,16 @@ namespace RabbitGameServer.Game
 
 			if (targetField.unit.health <= 0)
 			{
-				// var owner = targetField.unit.owner;
+				var defeatedName = targetField.unit.owner;
+
+				getPlayer(defeatedName).points -= config.defeatCost;
+				var removePointsMsg = new PointsUpdateMessage(DateTime.Now,
+					defeatedName,
+					RoomName,
+					-1 * config.defeatCost,
+					getPlayer(defeatedName).points);
+				// playerProxy.sendMessage(RoomName, defeatedName, removePointsMsg);
+				sendMessage(removePointsMsg, defeatedName);
 
 				ActiveUnits.Remove(targetField.unit);
 
@@ -301,12 +316,27 @@ namespace RabbitGameServer.Game
 				if (checkEndGame())
 				{
 					Console.WriteLine("\n This game is done ... \n");
+
+					winner = attackIntention.playerName;
+
+					tickTimer.Stop();
+
 					onGameDone(this);
 
+					getPlayer(attackIntention.playerName).points += config.winAward + config.attackAward;
 					return new GameDoneMessage(DateTime.Now,
 						e.playerName,
 						RoomName,
-						config.winAward);
+						config.winAward + config.attackAward);
+				}
+				else
+				{
+					getPlayer(attackIntention.playerName).points += config.attackAward;
+					var attackAwardMsg = new PointsUpdateMessage(DateTime.Now,
+						attackIntention.playerName,
+						RoomName,
+						config.attackAward,
+						getPlayer(attackIntention.playerName).points);
 				}
 
 			}
@@ -317,6 +347,11 @@ namespace RabbitGameServer.Game
 				attack.type.ToString(),
 				attackIntention.sourceField,
 				attackIntention.destinationField);
+		}
+
+		private PlayerData getPlayer(string name)
+		{
+			return Players.Find(p => p.username == name);
 		}
 
 		private bool checkEndGame()
@@ -359,6 +394,40 @@ namespace RabbitGameServer.Game
 			{
 				attackerField.unit = null;
 				attackerField.inBattle = false;
+
+				getPlayer(attackerField.owner).points -= config.defeatCost;
+				var defeatCostMsg = new PointsUpdateMessage(DateTime.Now,
+					attackerField.owner,
+					RoomName,
+					-1 * config.defeatCost,
+					getPlayer(attackerField.owner).points);
+				sendMessage(defeatCostMsg, attackerField.owner);
+
+				if (checkEndGame())
+				{
+					Console.WriteLine($"\t Game {RoomName} is dead ... ");
+					winner = defendEvent.playerName;
+					tickTimer.Stop();
+					onGameDone(this);
+					getPlayer(defendEvent.playerName).points += config.defendAward + config.winAward;
+
+					return new GameDoneMessage(DateTime.Now,
+						defendEvent.playerName,
+						RoomName,
+						config.defendAward + config.winAward);
+
+				}
+				else
+				{
+					getPlayer(defendEvent.playerName).points += config.defendAward;
+					var defendAward = new PointsUpdateMessage(DateTime.Now,
+						attackerField.owner,
+						RoomName,
+						-config.defendAward,
+						getPlayer(attackerField.owner).points);
+					sendMessage(defeatCostMsg, defendEvent.playerName);
+				}
+
 			}
 
 			// return something else if unit dead or something ... 
@@ -529,18 +598,22 @@ namespace RabbitGameServer.Game
 		private void tickHandler(Object? source, ElapsedEventArgs args)
 		{
 			tickTimer.Stop();
-
 			foreach (var stat in Incomes)
 			{
 				stat.TickCount += 1;
 				if (stat.TickCount >= stat.Required)
 				{
+					Console.WriteLine("INCOME >>> ");
 					stat.TickCount = 0;
 					stat.CurrentAmount += stat.Income;
 
 					// onIncomeTick.Invoke(stat.CurrentAmount, RoomName, stat.Name);
 					var tickMsg = new IncomeTickMessage(DateTime.Now, stat.Name, RoomName, stat.CurrentAmount);
-					playerProxy.sendMessage(RoomName, stat.Name, tickMsg);
+					// Messages.Add(tickMsg);
+					// saveMessages();
+
+					// playerProxy.sendMessage(RoomName, stat.Name, tickMsg);
+					sendMessage(tickMsg, stat.Name);
 				}
 			}
 
@@ -573,7 +646,7 @@ namespace RabbitGameServer.Game
 		public PlayerData AddPlayer(PlayerData player)
 		{
 			player.color = getAvailableColor();
-			player.points = config.DefaultPoints;
+			// player.points = config.DefaultPoints;
 			Players.Add(player);
 
 			return player;
@@ -676,6 +749,11 @@ namespace RabbitGameServer.Game
 		public string GetPassword()
 		{
 			return this.Password;
+		}
+
+		public string GetWinner()
+		{
+			return this.winner;
 		}
 	}
 }

@@ -10,9 +10,13 @@ public interface PlayerData {
 
 	int getLevel();
 
+	int getCoins();
+
+	void setCoins(int amount);
+
+	void removeCoins(int amount);
+
+	void setPoints(int totalAmount);
+
 	int getPoints();
-
-	void setPoints(int amount);
-
-	void removePoints(int amount);
 }

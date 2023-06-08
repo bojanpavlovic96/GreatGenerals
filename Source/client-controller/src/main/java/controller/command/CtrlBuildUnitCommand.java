@@ -6,7 +6,7 @@ import root.controller.Controller;
 import root.model.component.UnitType;
 import view.command.ClearFieldCommand;
 import view.command.DrawFieldCommand;
-import view.command.UpdatePointsCommand;
+import view.command.UpdateCoinsCommand;
 
 public class CtrlBuildUnitCommand extends Command {
 
@@ -34,7 +34,7 @@ public class CtrlBuildUnitCommand extends Command {
 		var field = controller.getModel().getField(position);
 		field.setUnit(unit);
 
-		owner.removePoints(cost);
+		owner.removeCoins(cost);
 
 		var clearCommand = new ClearFieldCommand(field);
 		var redrawCommand = new DrawFieldCommand(field);
@@ -43,7 +43,7 @@ public class CtrlBuildUnitCommand extends Command {
 		controller.getConsumerQueue().enqueue(redrawCommand);
 
 		if (controller.isOwner(owner.getUsername())) {
-			var updatePoints = new UpdatePointsCommand(owner.getPoints());
+			var updatePoints = new UpdateCoinsCommand(owner.getCoins());
 			controller.getConsumerQueue().enqueue(updatePoints);
 		}
 	}

@@ -1,7 +1,9 @@
+using MediatR;
 using Microsoft.Extensions.Options;
 using RabbitGameServer.Client;
 using RabbitGameServer.Config;
 using RabbitGameServer.Database;
+using RabbitGameServer.Mediator;
 using RabbitGameServer.SharedModel.Messages;
 
 namespace RabbitGameServer.Game
@@ -23,9 +25,12 @@ namespace RabbitGameServer.Game
 
 		private GameConfig config;
 
+		private IMediator mediator;
+
 		public GamePool(IDatabase database,
-				IPlayerProxy playerProxy,
-				IOptions<GameConfig> config)
+			IPlayerProxy playerProxy,
+			IOptions<GameConfig> config,
+			IMediator mediator)
 		{
 			Console.WriteLine("Creating gamePool ... ");
 
@@ -35,9 +40,9 @@ namespace RabbitGameServer.Game
 			this.database = database;
 			this.playerProxy = playerProxy;
 			this.config = config.Value;
+			this.mediator = mediator;
 
 			games = new Dictionary<string, GameMaster>();
-
 		}
 
 		public GameMaster CreateGame(string roomName,
@@ -64,13 +69,20 @@ namespace RabbitGameServer.Game
 		{
 			Console.WriteLine($"Rome {gameMaster.GetRoomName()} is done ...");
 			games.Remove(gameMaster.GetRoomName());
+
+			foreach (var player in gameMaster.GetPlayers())
+			{
+				var updateReq = new UpdatePlayerRequest(player);
+
+			}
+
 		}
 
-		private void IncomeTickHandler(int amount, string room, string player)
-		{
-			var message = new IncomeTickMessage(DateTime.Now, player, room, amount);
-			playerProxy.sendMessage(room, player, message);
-		}
+		// private void IncomeTickHandler(int amount, string room, string player)
+		// {
+		// 	var message = new IncomeTickMessage(DateTime.Now, player, room, amount);
+		// 	playerProxy.sendMessage(room, player, message);
+		// }
 
 		public GameMaster GetGame(string roomName)
 		{
@@ -140,7 +152,7 @@ namespace RabbitGameServer.Game
 
 		public GameMaster LoadReplay(string roomId)
 		{
-			GameMaster master = new ReplayMaster(roomId, database,playerProxy);
+			GameMaster master = new ReplayMaster(roomId, database, playerProxy);
 			games.Add(roomId, master);
 			return master;
 		}

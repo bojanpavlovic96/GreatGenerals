@@ -84,6 +84,10 @@ public class CtrlAttackCommand extends Command {
 				attacker.activateAttack(attack);
 				attacker.getActiveAttack().setTarget(endField);
 
+				if (endField.getUnit().getDefense() == null) {
+					return;
+				}
+
 				var dist = controller.getModel().distance(startField, endField);
 				var inDefenseRange = dist <= endField.getUnit().getDefense().defenseRange;
 

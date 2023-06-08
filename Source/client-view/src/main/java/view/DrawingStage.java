@@ -65,7 +65,9 @@ public class DrawingStage extends Stage implements View {
 	private DescriptionMenu descriptionMenu;
 
 	private HBox textUiRoot;
+	private VBox pointsCoinsRoot;
 	private Label winnerUi;
+	private Label coinsUi;
 	private Label pointsUi;
 
 	private double canvasWidth;
@@ -177,12 +179,23 @@ public class DrawingStage extends Stage implements View {
 
 		this.textUiRoot.getChildren().add(this.winnerUi);
 
+		this.pointsCoinsRoot = new VBox();
+
+		this.textUiRoot.getChildren().add(pointsCoinsRoot);
+
+		this.coinsUi = new Label();
+		this.coinsUi.setFont(new Font("Chilanka", 30));
+		this.coinsUi.setPadding(new Insets(20, 20, 20, 40));
+
+		this.coinsUi.setText(formCoinsString(0));
+		this.pointsCoinsRoot.getChildren().add(coinsUi);
+
 		this.pointsUi = new Label();
 		this.pointsUi.setFont(new Font("Chilanka", 30));
 		this.pointsUi.setPadding(new Insets(20, 20, 20, 40));
 
 		this.pointsUi.setText(formPointsString(0));
-		this.textUiRoot.getChildren().add(pointsUi);
+		this.pointsCoinsRoot.getChildren().add(this.pointsUi);
 
 		this.root.getChildren().add(this.mainOptionsMenu);
 		this.root.getChildren().add(this.submenu);
@@ -508,8 +521,17 @@ public class DrawingStage extends Stage implements View {
 	}
 
 	@Override
-	public void showPoints(int amount) {
+	public void showCoins(int amount) {
+		this.coinsUi.setText(formCoinsString(amount));
+	}
+
+	@Override
+	public void updatePoints(int income, int amount) {
 		this.pointsUi.setText(formPointsString(amount));
+	}
+
+	private String formCoinsString(int amount) {
+		return "Coins: " + amount;
 	}
 
 	private String formPointsString(int amount) {
