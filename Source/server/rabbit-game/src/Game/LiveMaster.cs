@@ -76,9 +76,7 @@ namespace RabbitGameServer.Game
 					GameConfig config,
 					IPlayerProxy playerProxy,
 					Database.IDatabase db,
-					GameDoneHandler onGameDone
-					// IncomeTickHandler incomeTickHandler
-					)
+					GameDoneHandler onGameDone)
 		{
 			this.config = config;
 			parseColors();
@@ -104,7 +102,6 @@ namespace RabbitGameServer.Game
 			this.Messages = new List<Message>();
 
 			this.onGameDone += onGameDone;
-			// this.onIncomeTick += incomeTickHandler;
 
 			this.Fields = new Dictionary<Point2D, Field>();
 			this.initHandlers();
@@ -321,9 +318,10 @@ namespace RabbitGameServer.Game
 
 					tickTimer.Stop();
 
+					getPlayer(attackIntention.playerName).points += config.winAward + config.attackAward;
+
 					onGameDone(this);
 
-					getPlayer(attackIntention.playerName).points += config.winAward + config.attackAward;
 					return new GameDoneMessage(DateTime.Now,
 						e.playerName,
 						RoomName,
@@ -577,9 +575,9 @@ namespace RabbitGameServer.Game
 			{
 				Console.WriteLine($"Created income for: {player.username}");
 				Incomes.Add(new IncomeStats(player.username,
-											player.points,
-											config.requiredIncomeTicks,
-											config.incomeAmount));
+						player.points,
+						config.requiredIncomeTicks,
+						config.incomeAmount));
 			}
 
 			tickTimer = new System.Timers.Timer();
@@ -605,7 +603,9 @@ namespace RabbitGameServer.Game
 				{
 					Console.WriteLine("INCOME >>> ");
 					stat.TickCount = 0;
+					Console.WriteLine("Before tick : " + stat.CurrentAmount);
 					stat.CurrentAmount += stat.Income;
+					Console.WriteLine("After tick : " + stat.CurrentAmount);
 
 					// onIncomeTick.Invoke(stat.CurrentAmount, RoomName, stat.Name);
 					var tickMsg = new IncomeTickMessage(DateTime.Now, stat.Name, RoomName, stat.CurrentAmount);

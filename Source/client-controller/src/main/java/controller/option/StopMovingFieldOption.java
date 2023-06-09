@@ -7,7 +7,7 @@ import view.command.ClearTopLayerCommand;
 
 public class StopMovingFieldOption extends FieldOption {
 
-	public static final String Name = "stop-moving-field-option";
+	public static final String Name = "STOP";
 
 	public StopMovingFieldOption(Controller gameController) {
 		super(StopMovingFieldOption.Name, gameController);

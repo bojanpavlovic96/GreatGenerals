@@ -7,7 +7,7 @@ import root.model.component.option.FieldOption;
 
 public class AbortAttackFieldOption extends FieldOption {
 
-	public static final String name = "abort-attack-field-option";
+	public static final String name = "Abort attack";
 
 	public AbortAttackFieldOption(Controller gameController) {
 		super(AbortAttackFieldOption.name, gameController);

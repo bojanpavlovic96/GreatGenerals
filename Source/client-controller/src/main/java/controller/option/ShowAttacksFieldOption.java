@@ -9,7 +9,7 @@ import view.command.ShowSubmenuCommand;
 
 public class ShowAttacksFieldOption extends FieldOption {
 
-	public static final String Name = "attacks-submenu-field-option";
+	public static final String Name = "Use attack";
 
 	public ShowAttacksFieldOption(Controller gameController) {
 		super(ShowAttacksFieldOption.Name, gameController);

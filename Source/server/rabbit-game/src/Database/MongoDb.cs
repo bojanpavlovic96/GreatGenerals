@@ -101,5 +101,6 @@ namespace RabbitGameServer.Database
 				// .Find<DbGame>((game) => game._id.ToString() == roomId)
 				.First();
 		}
+
 	}
 }

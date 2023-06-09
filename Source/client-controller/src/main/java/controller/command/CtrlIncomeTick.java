@@ -24,7 +24,7 @@ public class CtrlIncomeTick extends Command {
 			return;
 		}
 
-		// System.out.println("Income tick ... ");
+		System.out.println("Income tick ... : " + amount);
 		controller
 				.getModel()
 				.getOwner()

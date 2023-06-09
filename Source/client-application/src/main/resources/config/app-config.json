@@ -29,7 +29,7 @@
 		"descriptionHeight": 300,
 		"fieldHeight": 80,
 		"fieldWidth": 30,
-		"fieldBorderWidth": 2
+		"fieldBorderWidth": 4
 	},
 	"brokerConfig": {
 		"stage": "dev",

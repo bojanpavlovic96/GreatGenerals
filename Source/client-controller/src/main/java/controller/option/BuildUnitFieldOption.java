@@ -11,7 +11,7 @@ public class BuildUnitFieldOption extends FieldOption {
 	private int cost;
 
 	public BuildUnitFieldOption(String unitName, int cost, Controller gameController) {
-		super(unitName, gameController);
+		super(unitName + " = " + cost + " C", gameController);
 
 		this.unitName = unitName;
 		this.cost = cost;

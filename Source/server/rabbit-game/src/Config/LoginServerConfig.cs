@@ -10,7 +10,13 @@ namespace RabbitGameServer.Config
 		public string GetPlayerPath { get; set; }
 		public string NameArgument { get; set; }
 
-		public string UpdatePlayerPath{get;set;}
+		public string UpdatePlayerPath { get; set; }
+
+		public LoginServerConfig()
+		{
+			Console.WriteLine("\t\tLogin config created ");
+		}
+
 
 	}
 }

@@ -47,10 +47,16 @@ public class PlayerController {
 	public PlayerServerResponse updatePlayer(@RequestBody PlayerDescription player) {
 		System.out.println("Update request received ... ");
 		System.out.println(player.getUsername());
-		System.out.println(player.getCoins());
+		System.out.println(player.getPoints());
 		// var existing = repository.getByName(player.getUsername());
+		repository.updatePoints(player.getUsername(), player.getPoints());
+		// repository.updatePoints(new Player(player.getUsername(), "", player.getLevel(), player.getPoints()));
+		System.out.println("Updated i guess ... ");
+		var newPlayer = repository.getByName(player.getUsername());
+		System.out.println("CheckPoinst: " + newPlayer.getPoints());
 
-		return null;
+		var plDesc = new PlayerDescription(newPlayer.getName(), newPlayer.getLevel(), newPlayer.getPoints());
+		return PlayerServerResponse.success(plDesc);
 	}
 
 }

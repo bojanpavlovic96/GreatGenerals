@@ -10,7 +10,7 @@ import view.command.ShowSubmenuCommand;
 
 public class ShowUnitsFieldOption extends FieldOption {
 
-	public static final String NAME = "show-units";
+	public static final String NAME = "Build unit";
 
 	public ShowUnitsFieldOption(Controller gameController) {
 		super(NAME, gameController);

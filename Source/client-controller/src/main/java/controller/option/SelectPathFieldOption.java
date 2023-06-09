@@ -9,7 +9,7 @@ import view.command.UnselectFieldCommand;
 
 public class SelectPathFieldOption extends FieldOption {
 
-	public static final String Name = "select-path-field-option";
+	public static final String Name = "Select path";
 
 	public SelectPathFieldOption(Controller gameController) {
 		super(SelectPathFieldOption.Name, gameController);

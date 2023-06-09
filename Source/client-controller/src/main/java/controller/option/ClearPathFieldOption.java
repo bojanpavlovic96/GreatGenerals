@@ -9,7 +9,7 @@ import view.command.UnselectFieldCommand;
 
 public class ClearPathFieldOption extends FieldOption {
 
-	public static final String Name = "clear-path-field-option";
+	public static final String Name = "Clear path";
 
 	public ClearPathFieldOption(Controller gameController) {
 		super(ClearPathFieldOption.Name, gameController);

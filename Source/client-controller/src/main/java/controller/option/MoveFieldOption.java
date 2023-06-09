@@ -9,7 +9,7 @@ import view.command.ClearTopLayerCommand;
 
 public class MoveFieldOption extends FieldOption {
 
-	public static final String optionName = "move-field-option";
+	public static final String optionName = "Move";
 
 	public MoveFieldOption(Controller gameController) {
 		super(MoveFieldOption.optionName, gameController);

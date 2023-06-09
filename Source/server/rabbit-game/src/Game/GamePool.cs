@@ -46,8 +46,8 @@ namespace RabbitGameServer.Game
 		}
 
 		public GameMaster CreateGame(string roomName,
-							string password,
-							SharedModel.PlayerData master)
+					string password,
+					SharedModel.PlayerData master)
 		{
 			var newGame = new LiveMaster(
 				roomName,
@@ -56,9 +56,7 @@ namespace RabbitGameServer.Game
 				config,
 				playerProxy,
 				database,
-				GameDoneHandler
-				// IncomeTickHandler
-				);
+				GameDoneHandler);
 
 			games.Add(roomName, newGame);
 
@@ -72,17 +70,12 @@ namespace RabbitGameServer.Game
 
 			foreach (var player in gameMaster.GetPlayers())
 			{
-				var updateReq = new UpdatePlayerRequest(player);
-
+				Console.WriteLine("Updating points for : " + player.username);
+				var updateRequest = new UpdatePlayerRequest(player);
+				var res = mediator.Send(updateRequest).Result;
 			}
 
 		}
-
-		// private void IncomeTickHandler(int amount, string room, string player)
-		// {
-		// 	var message = new IncomeTickMessage(DateTime.Now, player, room, amount);
-		// 	playerProxy.sendMessage(room, player, message);
-		// }
 
 		public GameMaster GetGame(string roomName)
 		{

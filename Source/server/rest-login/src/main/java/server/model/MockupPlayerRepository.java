@@ -16,4 +16,17 @@ public class MockupPlayerRepository implements PlayerRepository {
 		return player;
 	}
 
+	@Override
+	// public Player udpatePoints(Player player) {
+	public void updatePoints(String username, int points) {
+		// TODO Auto-generated method stub
+		throw new UnsupportedOperationException("Unimplemented method 'udpate'");
+	}
+
+	// @Override
+	// public Player updatePoinst(String username, int points) {
+	// 	// TODO Auto-generated method stub
+	// 	throw new UnsupportedOperationException("Unimplemented method 'updatePoinst'");
+	// }
+
 }

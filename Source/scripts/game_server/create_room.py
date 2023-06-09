@@ -12,8 +12,8 @@ BROKER_PWD = "gg_password"
 
 MESSAGE_NAME = "CreateRoomRequest"
 
-ROOM_NAME = "some_room"
-ROOM_PASSWORD = "room_pwd_1"
+ROOM_NAME = "some"
+ROOM_PASSWORD = "room"
 ROOM_USER = "some"
 
 TARGET_TOPIC = "gg_rooms_req"

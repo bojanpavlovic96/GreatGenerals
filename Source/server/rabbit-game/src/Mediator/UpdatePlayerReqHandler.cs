@@ -2,6 +2,7 @@
 using System.Text.Json;
 using System.Text.Json.Serialization;
 using MediatR;
+using Microsoft.Extensions.Options;
 using RabbitGameServer.Config;
 using RabbitGameServer.SharedModel;
 using RabbitGameServer.Util;
@@ -14,15 +15,19 @@ namespace RabbitGameServer.Mediator
 
 		private ISerializer serializer;
 
-		public UpdatePlayerReqHandler(LoginServerConfig loginConfig, ISerializer serializer)
+		public UpdatePlayerReqHandler(
+			 IOptions<LoginServerConfig> loginConfig,
+			 ISerializer serializer)
 		{
-			this.loginConfig = loginConfig;
+			Console.WriteLine("Created update player request handler ... ");
+			this.loginConfig = loginConfig.Value;
 			this.serializer = serializer;
 		}
 
 		public async Task<PlayerData> Handle(UpdatePlayerRequest request, CancellationToken cancellationToken)
 		{
 
+			Console.WriteLine("Handling update player request ...");
 			HttpResponseMessage response;
 
 			try
@@ -48,6 +53,7 @@ namespace RabbitGameServer.Mediator
 
 				Console.WriteLine("Success in response ... ");
 				var strContent = await response.Content.ReadAsStringAsync();
+				Console.WriteLine($"Content: {strContent}");
 				var dataResponse = serializer.ToObj<PlayerServerResponse>(strContent);
 
 				if (dataResponse.status != PlayerServerResponseStatus.SUCCESS)
@@ -62,7 +68,7 @@ namespace RabbitGameServer.Mediator
 			}
 			catch (Exception e)
 			{
-				Console.WriteLine("Exception while sending UpdatePlayerRequest ... ");
+				Console.WriteLine("Exception while sending/receiving UpdatePlayerRequest ... ");
 				Console.WriteLine(e.Message);
 				Console.WriteLine(e.StackTrace);
 

@@ -11,7 +11,7 @@ import view.command.SelectFieldCommand;
 
 public class AddToPathFieldOption extends FieldOption {
 
-	public static final String Name = "add-to-path-field-option";
+	public static final String Name = "Add to path";
 
 	public AddToPathFieldOption(Controller gameController) {
 		super(AddToPathFieldOption.Name, gameController);

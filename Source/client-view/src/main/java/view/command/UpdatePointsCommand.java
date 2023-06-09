@@ -17,7 +17,6 @@ public class UpdatePointsCommand extends Command {
 	public void run() {
 		var view = (View) targetComponent;
 		view.updatePoints(income, total);
-
 	}
 
 	@Override
