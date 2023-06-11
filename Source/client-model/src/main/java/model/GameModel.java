@@ -201,10 +201,10 @@ public class GameModel implements Model, ActiveComponent {
 		return unit;
 	}
 
-	@Override
-	public boolean destroyUnit(Unit unit) {
-		return activeUnits.remove(unit);
-	}
+	// @Override
+	// public boolean destroyUnit(Unit unit) {
+	// 	return activeUnits.remove(unit);
+	// }
 
 	@Override
 	public int distance(Field aField, Field bField) {
@@ -239,8 +239,13 @@ public class GameModel implements Model, ActiveComponent {
 	}
 
 	@Override
-	public List<UnitDesc> getUnits() {
+	public List<UnitDesc> getUnitDescriptions() {
 		return this.unitFactory.getUnits();
+	}
+
+	@Override
+	public void removePlayer(String name) {
+		players.remove(name);
 	}
 
 }

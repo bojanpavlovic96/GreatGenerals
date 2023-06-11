@@ -1,7 +1,6 @@
 
 using MediatR;
 using RabbitGameServer.Game;
-using RabbitGameServer.SharedModel;
 using RabbitGameServer.SharedModel.Messages;
 
 namespace RabbitGameServer.Mediator
@@ -59,10 +58,9 @@ namespace RabbitGameServer.Mediator
 						game.GetPlayers());
 				// Since this player left the room he does't really need to know who
 				// else is till in the room but I will leave game.Players instead of null
-				// or empty list as the last argument just for debug purposes. 
+				// or empty list as the last argument just for the debug purposes. 
 
 				game.RemovePlayer(request.username);
-
 
 				RoomResponseType updateType;
 

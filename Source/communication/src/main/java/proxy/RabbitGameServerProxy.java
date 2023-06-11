@@ -14,9 +14,6 @@ import root.command.CommandQueue;
 import root.communication.GameServerProxy;
 import root.communication.MessageInterpreter;
 import root.communication.ProtocolTranslator;
-import root.communication.messages.InitializeMsg;
-import root.communication.messages.ReplayMessage;
-import root.communication.parser.StaticParser;
 import root.model.event.ClientIntention;
 
 public class RabbitGameServerProxy implements GameServerProxy,

@@ -6,10 +6,10 @@ using RabbitGameServer.SharedModel.ClientIntentions;
 namespace RabbitGameServer.Mediator
 {
 	public class MapMessageToIntentionReqHandler
-		: IRequestHandler<MapMessageToEventRequest, ClientIntention>
+		: IRequestHandler<MapMessageToIntentionRequest, ClientIntention>
 	{
 
-		public Task<ClientIntention> Handle(MapMessageToEventRequest request,
+		public Task<ClientIntention> Handle(MapMessageToIntentionRequest request,
 			CancellationToken cancellationToken)
 		{
 
@@ -55,6 +55,9 @@ namespace RabbitGameServer.Mediator
 						request.message.username,
 						((BuildUnitMessage)request.message).field,
 						((BuildUnitMessage)request.message).unitType));
+
+				case MessageType.LeaveGame:
+					return Task.FromResult<ClientIntention>(new LeaveGameIntention(request.message.username));
 
 				default:
 					Console.WriteLine($"Failed to map message-{request.message.type.ToString()} to clientIntention ... ");

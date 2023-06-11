@@ -365,7 +365,7 @@ public class StartPageController implements GameReadyEventProducer, ActiveCompon
 					System.out.println("Handling leave room response ... ");
 
 					if (response.responseType == RoomResponseType.Success) {
-						System.out.println("Successful left the room ... ");
+						System.out.println("Successfully left the room ... ");
 						showInfoMessage(Language.MessageType.SuccessfulLeft);
 
 						roomServer.UnsubFromRoomUpdates();

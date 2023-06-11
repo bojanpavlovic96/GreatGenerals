@@ -1,10 +1,8 @@
 package view.command;
 
 import root.command.Command;
-import root.command.CommandDrivenComponent;
 import root.model.component.Field;
 import root.view.View;
-import root.view.field.ViewField;
 
 public class DrawFieldCommand extends Command {
 

@@ -57,7 +57,6 @@ namespace RabbitGameServer.Mediator
 				try
 				{
 					data = serializer.ToObj<PlayerServerResponse>(strContent);
-					Console.WriteLine($"databalance: p: {data.player.points}");
 				}
 				catch (Exception e)
 				{

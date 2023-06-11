@@ -11,9 +11,7 @@ public class FxCommandProcessor implements CommandProcessor {
 	private CommandDrivenComponent commandTarget;
 
 	public FxCommandProcessor(CommandDrivenComponent commandTarget) {
-
 		this.commandTarget = commandTarget;
-
 	}
 
 	@Override

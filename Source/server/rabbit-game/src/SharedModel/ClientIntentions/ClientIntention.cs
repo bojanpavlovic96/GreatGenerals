@@ -9,7 +9,8 @@ namespace RabbitGameServer.SharedModel.ClientIntentions
 		ReadyForInit,
 		AbortAttack,
 		BuildUnit,
-		ReadyForReplay
+		ReadyForReplay,
+		LeaveGame
 	}
 
 	public class ClientIntention

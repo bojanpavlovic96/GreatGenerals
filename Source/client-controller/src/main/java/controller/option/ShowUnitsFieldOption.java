@@ -18,7 +18,7 @@ public class ShowUnitsFieldOption extends FieldOption {
 
 	@Override
 	public void run() {
-		var units = controller.getModel().getUnits();
+		var units = controller.getModel().getUnitDescriptions();
 		var options = units.stream()
 				.map(this::optionFromUnit)
 				.collect(Collectors.toList());

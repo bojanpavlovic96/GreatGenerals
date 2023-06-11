@@ -15,6 +15,7 @@ import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.ScrollPane.ScrollBarPolicy;
+import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyCombination;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseButton;
@@ -48,8 +49,6 @@ public class DrawingStage extends Stage implements View {
 	private double STAGE_WIDTH;
 	private double STAGE_HEIGHT;
 
-	private double CANVAS_PADDING = 20;
-
 	private ViewConfig config;
 
 	private Group root;
@@ -57,7 +56,6 @@ public class DrawingStage extends Stage implements View {
 	private Scene mainScene;
 
 	private Canvas boardCanvas;
-	// TODO second canvas is not used it looks like... 
 	private Canvas secondLayerCanvas;
 
 	private ShortOptionsMenu mainOptionsMenu;
@@ -67,7 +65,7 @@ public class DrawingStage extends Stage implements View {
 	private HBox textUiRoot;
 	private VBox pointsCoinsRoot;
 	private Label winnerUi;
-	private Label coinsUi;
+	private Label coinsText;
 	private Label pointsUi;
 
 	private double canvasWidth;
@@ -183,12 +181,19 @@ public class DrawingStage extends Stage implements View {
 
 		this.textUiRoot.getChildren().add(pointsCoinsRoot);
 
-		this.coinsUi = new Label();
-		this.coinsUi.setFont(new Font("Chilanka", 30));
-		this.coinsUi.setPadding(new Insets(20, 20, 20, 40));
+		var coinsImage = new ImageView(ResourceManager.getInstance().getCoins());
+		coinsImage.setFitWidth(180);
+		coinsImage.setFitHeight(180);
 
-		this.coinsUi.setText(formCoinsString(0));
-		this.pointsCoinsRoot.getChildren().add(coinsUi);
+		this.coinsText = new Label();
+		this.coinsText.setFont(new Font("Chilanka", 30));
+		this.coinsText.setPadding(new Insets(20, 20, 20, 40));
+		this.coinsText.setText(formCoinsString(0));
+
+		var coinsBox = new HBox(coinsImage, coinsText);
+		coinsBox.setAlignment(Pos.CENTER_LEFT);
+
+		this.pointsCoinsRoot.getChildren().add(coinsBox);
 
 		this.pointsUi = new Label();
 		this.pointsUi.setFont(new Font("Chilanka", 30));
@@ -270,6 +275,8 @@ public class DrawingStage extends Stage implements View {
 
 					String key = event.getCharacter();
 
+					System.out.println("Key typed: " + key);
+
 					List<ViewEventHandler> handlers = handlersMap.get("key-event-char-" + key);
 					if (handlers != null) {
 
@@ -308,9 +315,7 @@ public class DrawingStage extends Stage implements View {
 		List<ViewEventHandler> handlers = this.handlersMap.get(eventName);
 
 		if (handlers != null) {
-
 			handlers.add(event_handler);
-
 		} else {
 
 			handlers = new ArrayList<ViewEventHandler>();
@@ -522,7 +527,7 @@ public class DrawingStage extends Stage implements View {
 
 	@Override
 	public void showCoins(int amount) {
-		this.coinsUi.setText(formCoinsString(amount));
+		this.coinsText.setText(formCoinsString(amount));
 	}
 
 	@Override
@@ -531,7 +536,7 @@ public class DrawingStage extends Stage implements View {
 	}
 
 	private String formCoinsString(int amount) {
-		return "Coins: " + amount;
+		return "" + amount;
 	}
 
 	private String formPointsString(int amount) {

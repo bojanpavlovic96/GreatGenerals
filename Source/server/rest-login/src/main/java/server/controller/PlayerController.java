@@ -46,17 +46,17 @@ public class PlayerController {
 	@PostMapping("/update")
 	public PlayerServerResponse updatePlayer(@RequestBody PlayerDescription player) {
 		System.out.println("Update request received ... ");
-		System.out.println(player.getUsername());
-		System.out.println(player.getPoints());
-		// var existing = repository.getByName(player.getUsername());
-		repository.updatePoints(player.getUsername(), player.getPoints());
-		// repository.updatePoints(new Player(player.getUsername(), "", player.getLevel(), player.getPoints()));
-		System.out.println("Updated i guess ... ");
-		var newPlayer = repository.getByName(player.getUsername());
-		System.out.println("CheckPoinst: " + newPlayer.getPoints());
+		System.out.println("name: " + player.getUsername() + " points: " + player.getPoints());
 
-		var plDesc = new PlayerDescription(newPlayer.getName(), newPlayer.getLevel(), newPlayer.getPoints());
-		return PlayerServerResponse.success(plDesc);
+		var updatedCnt = repository.updatePoints(player.getUsername(), player.getPoints());
+		if (updatedCnt != 1) {
+			System.out.println("Failed to update player (or updated more than one) ... ");
+			return PlayerServerResponse.failure();
+		}
+
+		System.out.println("Updated successfully  ... ");
+		var playerDesc = new PlayerDescription(player.getUsername(), player.getLevel(), player.getPoints());
+		return PlayerServerResponse.success(playerDesc);
 	}
 
 }

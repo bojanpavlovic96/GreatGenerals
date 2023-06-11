@@ -22,6 +22,8 @@ namespace RabbitGameServer.SharedModel.Messages
 		IncomeTick,
 		PointsUpdate,
 		BuildUnit,
-		GameDone
+		GameDone,
+		LeaveGame,
+		RemovePlayer
 	}
 }

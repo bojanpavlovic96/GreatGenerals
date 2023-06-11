@@ -85,6 +85,7 @@ public class BasicAttack extends Attack {
 			attackFeature.cancel(false);
 		}
 		attackFeature = null;
+		target = null;
 	}
 
 }

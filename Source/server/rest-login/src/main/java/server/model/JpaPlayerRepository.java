@@ -20,10 +20,9 @@ public interface JpaPlayerRepository
 	// Call will be just passed to super.save
 	// Player save(Player player);
 
-	
 	@Modifying
 	@Transactional
 	@Query("UPDATE player p SET p.points = :points WHERE p.name = :username")
-	void updatePoints(@Param("username") String username, @Param("points") int points);
+	int updatePoints(@Param("username") String username, @Param("points") int points);
 
 }

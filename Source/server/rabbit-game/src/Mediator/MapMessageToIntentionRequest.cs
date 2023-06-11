@@ -5,11 +5,11 @@ using RabbitGameServer.SharedModel.ClientIntentions;
 
 namespace RabbitGameServer.Mediator
 {
-	public class MapMessageToEventRequest : IRequest<ClientIntention>
+	public class MapMessageToIntentionRequest : IRequest<ClientIntention>
 	{
 		public Message message;
 
-		public MapMessageToEventRequest(Message message)
+		public MapMessageToIntentionRequest(Message message)
 		{
 			this.message = message;
 		}

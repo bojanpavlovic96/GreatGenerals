@@ -152,10 +152,12 @@ public class CtrlMoveCommand extends Command {
 					.getActiveUnits().stream()
 					.filter((actUnit) -> actUnit.isAttacking() && actUnit.getActiveAttack().getTarget() == startField)
 					.forEach((actUnit) -> {
-						actUnit.getMove().stopMoving();
+						// actUnit.getMove().stopMoving();
 
-						actUnit.activateAttack(null);
-						actUnit.getActiveAttack().setTarget(null);
+						// actUnit.activateAttack(null);
+						// actUnit.getActiveAttack().setTarget(null);
+
+						actUnit.deactivate();
 					});
 
 			// .collect(Collectors.toList());

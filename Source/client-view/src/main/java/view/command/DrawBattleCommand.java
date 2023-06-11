@@ -44,7 +44,7 @@ public class DrawBattleCommand extends Command {
 
 		var hOffset = view.getFieldWidth() / 2;
 		var arrowLen = dist - 2 * hOffset;
-		var arrowHeight = 0.8 * view.getFieldHeight();
+		var arrowHeight = 0.55 * view.getFieldHeight();
 
 		gc.drawImage(arrow, hOffset, 0 - (arrowHeight / 2), arrowLen, arrowHeight);
 

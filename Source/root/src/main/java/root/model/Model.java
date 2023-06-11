@@ -33,18 +33,20 @@ public interface Model extends ModelEventProducer {
 
 	Unit generateUnit(UnitType type, PlayerData owner);
 
-	boolean destroyUnit(Unit unit);
+	// boolean destroyUnit(Unit unit);
 
 	int distance(Field aField, Field bField);
 
 	List<Unit> getActiveUnits();
 
 	// the fact that UnitDesc is from communication package is bothering me 
-	List<UnitDesc> getUnits();
+	List<UnitDesc> getUnitDescriptions();
 
 	void removeUnit(Unit unit);
 
 	PlayerData getPlayer(String name);
 
 	PlayerData getOwner();
+
+	void removePlayer(String name);
 }

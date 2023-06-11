@@ -3,7 +3,7 @@ package app.launcher;
 import app.form.StartForm;
 import app.resource_manager.AppConfig;
 import app.resource_manager.StringRegistry;
-import controller.GameBrain;
+import controller.GameController;
 import controller.command.SwitchCaseMsgInterpreter;
 import javafx.application.Application;
 import javafx.application.Platform;
@@ -125,7 +125,7 @@ public class Launcher extends Application {
 			var view = new DrawingStage(fieldManager, viewConfig);
 			System.out.println("View created ... ");
 
-			gameController = new GameBrain(serverProxy,
+			gameController = new GameController(serverProxy,
 					view,
 					model,
 					this::gameDoneHandler,
@@ -143,12 +143,11 @@ public class Launcher extends Application {
 	}
 
 	private void gameDoneHandler() {
-		System.out.println("Game is done");
-		System.out.println("Controller passed controll to Launcher");
+		System.out.println("Controll passed to Launcher");
 		var room = startPageController.getRoomName();
 		var pass = " "; // this should not be important
 
-		startPageController.leaveRoomActionHandler(room, pass);
+		// startPageController.leaveRoomActionHandler(room, pass);
 		// startPageController.getInitialPage().showRoomForm();
 		startPageController.showInitialPage();
 	}

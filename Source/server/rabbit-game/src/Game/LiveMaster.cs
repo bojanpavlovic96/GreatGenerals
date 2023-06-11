@@ -34,6 +34,36 @@ namespace RabbitGameServer.Game
 		}
 	}
 
+	class DecoratedPlayer
+	{
+		private PlayerData data;
+
+		public string username { get { return data.username; } set { data.username = value; } }
+		public Color color { get { return data.color; } set { data.color = value; } }
+		public int level { get { return data.level; } set { data.level = value; } }
+		public int points { get { return data.points; } set { data.points = value; } }
+
+
+		public bool isAlive { get; set; }
+
+		public DecoratedPlayer(PlayerData data)
+		{
+			this.data = data;
+			this.isAlive = true;
+		}
+
+		public DecoratedPlayer(PlayerData data, bool isAlive)
+		{
+			this.data = data;
+			this.isAlive = isAlive;
+		}
+
+		public static PlayerData justPlayer(DecoratedPlayer dp)
+		{
+			return dp.data;
+		}
+	}
+
 	public class LiveMaster : GameMaster
 	{
 		private GameConfig config;
@@ -44,7 +74,7 @@ namespace RabbitGameServer.Game
 
 		private string RoomName { get; set; }
 		private string Password { get; set; }
-		private List<PlayerData> Players { get; set; }
+		private List<DecoratedPlayer> Players { get; set; }
 		// private PlayerData winner { get; set; }
 		private string winner { get; set; }
 		private List<IncomeStats> Incomes;
@@ -87,8 +117,8 @@ namespace RabbitGameServer.Game
 			this.masterPlayer = masterPlayer;
 			this.masterPlayer.color = getAvailableColor();
 			// this.masterPlayer.points = config.DefaultPoints;
-			this.Players = new List<PlayerData>();
-			this.Players.Add(masterPlayer);
+			this.Players = new List<DecoratedPlayer>();
+			this.Players.Add(new DecoratedPlayer(masterPlayer));
 			this.winner = null;
 
 			this.playerProxy = playerProxy;
@@ -107,15 +137,6 @@ namespace RabbitGameServer.Game
 			this.initHandlers();
 		}
 
-		public LiveMaster(string roomId,
-			GameConfig config,
-			IPlayerProxy proxy,
-			Database.IDatabase db,
-			GameDoneHandler onGameDone)
-		{
-
-		}
-
 		private void initHandlers()
 		{
 			handlers = new Dictionary<ClientIntentionType, IntentionHandler>();
@@ -127,7 +148,7 @@ namespace RabbitGameServer.Game
 			handlers.Add(ClientIntentionType.Defend, handleDefend);
 			handlers.Add(ClientIntentionType.AbortAttack, handleAbortAttack);
 			handlers.Add(ClientIntentionType.BuildUnit, handleBuildUnit);
-
+			handlers.Add(ClientIntentionType.LeaveGame, handleLeaveGame);
 		}
 
 		public void AddIntention(ClientIntention intention)
@@ -191,7 +212,7 @@ namespace RabbitGameServer.Game
 			return new InitializeMessage(DateTime.Now,
 				RoomName,
 				e.playerName,
-				Players,
+				Players.Select(DecoratedPlayer.justPlayer).ToList(),
 				config.Moves,
 				config.Units,
 				config.Attacks,
@@ -347,9 +368,19 @@ namespace RabbitGameServer.Game
 				attackIntention.destinationField);
 		}
 
-		private PlayerData getPlayer(string name)
+		private DecoratedPlayer getPlayer(string name)
 		{
 			return Players.Find(p => p.username == name);
+		}
+
+		private IncomeStats getIncomes(string name)
+		{
+			return Incomes.Find(inc => inc.Name == name);
+		}
+
+		private void removeIncome(string name)
+		{
+			Incomes.RemoveAll(inc => inc.Name == name);
 		}
 
 		private bool checkEndGame()
@@ -505,6 +536,48 @@ namespace RabbitGameServer.Game
 			return config.Units.Find(u => u.unitName == type);
 		}
 
+		private Message handleLeaveGame(ClientIntention e)
+		{
+			var leftPlayer = getPlayer(e.playerName);
+			leftPlayer.isAlive = false;
+			leftPlayer.points -= config.defeatCost;
+
+			removeIncome(e.playerName);
+
+			foreach (var player in Players.FindAll(p => p.isAlive))
+			{
+				player.points += config.defeatAward;
+				var update = new PointsUpdateMessage(DateTime.Now,
+					player.username,
+					RoomName,
+					config.defeatAward,
+					player.points);
+
+				playerProxy.sendMessage(RoomName, player.username, update);
+			}
+
+			if (checkEndGame())
+			{
+				winner = Players.Find(p => p.isAlive).username; // has to be only one 
+
+				tickTimer.Stop();
+				onGameDone(this);
+
+				var endMessage = new GameDoneMessage(DateTime.Now,
+					winner,
+					RoomName,
+					config.winAward);
+
+				return endMessage;
+			}
+			else
+			{
+				// The same message that is received is now broadcasted to all the other players
+				return new LeaveGameMessage(DateTime.Now, e.playerName, RoomName);
+			}
+
+		}
+
 		// endregion 
 
 		public bool InitGame()
@@ -635,7 +708,7 @@ namespace RabbitGameServer.Game
 
 		public bool HasPlayer(string name)
 		{
-			return this.Players.Any<PlayerData>((player) => player.username == name);
+			return this.Players.Any<DecoratedPlayer>((player) => player.username == name);
 		}
 
 		public bool IsReady()
@@ -646,28 +719,21 @@ namespace RabbitGameServer.Game
 		public PlayerData AddPlayer(PlayerData player)
 		{
 			player.color = getAvailableColor();
-			// player.points = config.DefaultPoints;
-			Players.Add(player);
+			player.points = config.DefaultPoints;
+			Players.Add(new DecoratedPlayer(player));
 
 			return player;
 		}
 
 		public PlayerData RemovePlayer(string name)
 		{
-			for (int i = 0; i < Players.Count; i++)
-			{
-				if (Players[i].username == name)
-				{
-					var player = Players[i];
-					Players.RemoveAt(i);
+			var player = Players.Find(p => p.username == name);
 
-					availableColors.Add(player.color);
+			availableColors.Add(player.color);
 
-					return player;
-				}
-			}
+			Players.Remove(player);
 
-			return null;
+			return DecoratedPlayer.justPlayer(player);
 		}
 
 		public GameSummary GetSummary()
@@ -677,7 +743,7 @@ namespace RabbitGameServer.Game
 				masterPlayer.username,
 				Players.Count,
 				Players
-					.Select<PlayerData, string>((player) => player.username)
+					.Select<DecoratedPlayer, string>((player) => player.username)
 					.ToList(),
 				recEventsCnt,
 				sendEventsCnt);
@@ -738,7 +804,7 @@ namespace RabbitGameServer.Game
 
 		public List<PlayerData> GetPlayers()
 		{
-			return this.Players;
+			return Players.Select(p => DecoratedPlayer.justPlayer(p)).ToList();
 		}
 
 		public string GetRoomId()

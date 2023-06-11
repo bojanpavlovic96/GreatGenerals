@@ -58,6 +58,7 @@ namespace RabbitGameServer.Game
 				database,
 				GameDoneHandler);
 
+			Console.WriteLine("Master created ... ");
 			games.Add(roomName, newGame);
 
 			return newGame;

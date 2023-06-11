@@ -6,6 +6,6 @@ public interface PlayerRepository {
 
 	Player save(Player player);
 
-	void updatePoints(String username, int points);
+	int updatePoints(String username, int points);
 
 }

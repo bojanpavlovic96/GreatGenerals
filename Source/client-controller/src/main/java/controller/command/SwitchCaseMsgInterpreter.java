@@ -20,6 +20,7 @@ import root.communication.messages.DefendMsg;
 import root.communication.messages.GameDoneMsg;
 import root.communication.messages.IncomeTickMsg;
 import root.communication.messages.InitializeMsg;
+import root.communication.messages.LeaveGameMsg;
 import root.communication.messages.Message;
 import root.communication.messages.MoveMsg;
 import root.communication.messages.ReadyForInitMsg;
@@ -34,7 +35,7 @@ public class SwitchCaseMsgInterpreter implements MessageInterpreter {
 
 	@Override
 	public Command ToCommand(Message message) {
-		System.out.println("Interpretting message: " + message.type.toString());
+		// System.out.println("Interpretting message: " + message.type.toString());
 		switch (message.type) {
 			case CreateRoomRequest:
 			case RoomResponse:
@@ -122,14 +123,15 @@ public class SwitchCaseMsgInterpreter implements MessageInterpreter {
 						((GameDoneMsg) message).bonusAmount);
 
 			case ReplayMessage:
-				System.out.println();
-				System.out.println("Interpreting replay message ... ");
 				var repMsg = (ReplayMsg) message;
 				var timedCommands = repMsg.messages.stream()
 						.map(this::toTimedCommand)
 						.collect(Collectors.toList());
 
 				return new PlayReplay(timedCommands, repMsg.startTimestamp);
+
+			case LeaveGame:
+				return new CtrlLeaveGame(message.username);
 
 			default:
 				break;
@@ -192,6 +194,9 @@ public class SwitchCaseMsgInterpreter implements MessageInterpreter {
 						((BuildIntention) intention).getField(),
 						((BuildIntention) intention).getUnitType(),
 						((BuildIntention) intention).getCost());
+
+			case LeaveGame:
+				return new LeaveGameMsg(new Date());
 
 			default:
 				break;

@@ -21,5 +21,6 @@ public enum MessageType {
 	IncomeTick,
 	PointsUpdate,
 	BuildUnit,
-	GameDone
+	GameDone,
+	LeaveGame
 }

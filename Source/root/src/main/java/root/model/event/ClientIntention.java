@@ -9,7 +9,8 @@ public abstract class ClientIntention {
 		ReadyForInit,
 		AbortAttack,
 		BuildUnit,
-		ReadyForReplay
+		ReadyForReplay,
+		LeaveGame
 	}
 
 	private ClientIntentionType type;

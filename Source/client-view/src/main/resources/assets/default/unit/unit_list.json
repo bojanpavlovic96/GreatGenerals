@@ -2,19 +2,19 @@
 	{
 		"name": "cannon",
 		"extension": ".png",
-		"range-start": "1",
-		"range-end": "1"
+		"range_start": "1",
+		"range_end": "1"
 	},
 	{
 		"name": "basicunit",
 		"extension": ".png",
-		"range-start": "1",
-		"range-end": "1"
+		"range_start": "1",
+		"range_end": "1"
 	},
 	{
 		"name": "basictower",
 		"extension": ".png",
-		"range-start": "1",
-		"range-end": "1"
+		"range_start": "1",
+		"range_end": "1"
 	}
 ]

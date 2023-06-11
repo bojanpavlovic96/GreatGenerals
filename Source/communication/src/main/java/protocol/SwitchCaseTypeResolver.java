@@ -13,6 +13,7 @@ import root.communication.messages.InitializeMsg;
 import root.communication.messages.RoomResponseMsg;
 import root.communication.messages.StartGameRequestMsg;
 import root.communication.messages.JoinRoomRequestMsg;
+import root.communication.messages.LeaveGameMsg;
 import root.communication.messages.Message;
 import root.communication.messages.MessageType;
 import root.communication.messages.MoveMsg;
@@ -90,6 +91,9 @@ public class SwitchCaseTypeResolver implements NameTypeResolver {
 
 			case ReplayMessage:
 				return ReplayMsg.class;
+
+			case LeaveGame:
+				return LeaveGameMsg.class;
 
 			default:
 				break;

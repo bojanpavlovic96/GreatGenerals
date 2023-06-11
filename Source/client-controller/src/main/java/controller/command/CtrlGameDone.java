@@ -16,6 +16,9 @@ public class CtrlGameDone extends Command {
 
 	@Override
 	public void run() {
+
+		System.out.println("CTRL GAME DONE ... ");
+
 		var controller = (Controller) targetComponent;
 		var view = controller.getView();
 

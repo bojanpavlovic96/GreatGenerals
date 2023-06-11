@@ -24,7 +24,7 @@ namespace RabbitGameServer.Mediator
 
 			var game = pool.GetGame(request.message.roomName);
 
-			var translateReq = new MapMessageToEventRequest(request.message);
+			var translateReq = new MapMessageToIntentionRequest(request.message);
 
 			// TODO Should this method be async or just force sync with Result 
 			// let it be .Result for testing I guess ... 

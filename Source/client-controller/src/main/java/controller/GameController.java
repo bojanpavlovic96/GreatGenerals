@@ -12,6 +12,7 @@ import controller.option.ClearPathFieldOption;
 import controller.option.MoveFieldOption;
 import controller.option.SelectPathFieldOption;
 import controller.option.StopMovingFieldOption;
+import model.intention.LeaveGameIntention;
 import model.intention.ReadyForInitIntention;
 import model.intention.ReadyForReplayIntention;
 import root.ActiveComponent;
@@ -25,7 +26,6 @@ import root.communication.GameServerProxy;
 import root.controller.CommandStack;
 import root.controller.Controller;
 import root.model.Model;
-import root.model.PlayerData;
 import root.model.component.Field;
 import root.model.component.option.FieldOption;
 import root.model.event.ClientIntention;
@@ -39,7 +39,7 @@ import view.command.ShowFieldDescription;
 import view.command.ZoomInCommand;
 import view.command.ZoomOutCommand;
 
-public class GameBrain implements Controller, ActiveComponent {
+public class GameController implements Controller, ActiveComponent {
 
 	private GameDoneHandler onGameDone;
 
@@ -63,7 +63,7 @@ public class GameBrain implements Controller, ActiveComponent {
 
 	private List<FieldOption> fieldOptions;
 
-	public GameBrain(GameServerProxy serverProxy,
+	public GameController(GameServerProxy serverProxy,
 			View view,
 			Model model,
 			GameDoneHandler onGameDone,
@@ -250,11 +250,16 @@ public class GameBrain implements Controller, ActiveComponent {
 
 		view.addEventHandler("key-event-char-q", (ViewEventArg arg) -> {
 
-			view.hideView();
-			onGameDone.handleGameDone();
+			System.out.println("Handling Q event ... ");
 
-			// ??? should I ... ? 
-			shutdown();
+			var leaveIntention = new LeaveGameIntention(model.getOwner().getUsername());
+			serverProxy.sendIntention(leaveIntention);
+
+			// view.hideView();
+			// onGameDone.handleGameDone();
+
+			// // ??? should I ... ? 
+			// shutdown();
 		});
 
 	}
@@ -301,22 +306,28 @@ public class GameBrain implements Controller, ActiveComponent {
 		// Injected  dependencies should be destroyed/shutdown by the creator
 		// which in this case is Launcher ... ? 
 
+		System.out.println("Shutting down command processor ... ");
 		if (serverCmdProcessor != null && serverCmdProcessor instanceof ActiveComponent) {
 			((ActiveComponent) serverCmdProcessor).shutdown();
 		}
 
+		System.out.println("Shutting down view ... ");
 		if (view != null && view instanceof ActiveComponent) {
 			((ActiveComponent) view).shutdown();
+			view.hideView();
 		}
 
+		System.out.println("Shutting down model ... ");
 		if (model != null && model instanceof ActiveComponent) {
 			((ActiveComponent) model).shutdown();
 		}
 
+		System.out.println("Shutting down server proxy ... ");
 		if (serverProxy != null && serverProxy instanceof ActiveComponent) {
 			((ActiveComponent) serverProxy).shutdown();
 		}
 
+		onGameDone.handleGameDone();
 	}
 
 	@Override
