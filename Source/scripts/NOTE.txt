@@ -120,7 +120,10 @@ select 'attach to mvnDebug'
 		$ docker-compose up --build --no-start 
 	
 	2) If no errors ocurred start broker service first: 
-		$ docker start gg-broker 
+		$ docker start gg-broker
+
+    2.1) Add management user for rabbit mq
+        $ Source/scripts/rabbit$ sudo ./add_admin_user.sh
 
 	3) Wait few seconds (10-20 depending on your hardware) so that broker is 
 		properly initialized, started and ready to receive connections. If you don't
