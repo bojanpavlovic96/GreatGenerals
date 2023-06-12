@@ -22,5 +22,6 @@ public enum MessageType {
 	PointsUpdate,
 	BuildUnit,
 	GameDone,
-	LeaveGame
+	LeaveGame,
+	RemovePlayer
 }

@@ -20,6 +20,7 @@ import root.communication.messages.MoveMsg;
 import root.communication.messages.PointsUpdateMsg;
 import root.communication.messages.ReadyForInitMsg;
 import root.communication.messages.ReadyForReplayMsg;
+import root.communication.messages.RemovePlayerMsg;
 import root.communication.messages.ReplayMsg;
 
 public class SwitchCaseTypeResolver implements NameTypeResolver {
@@ -94,6 +95,9 @@ public class SwitchCaseTypeResolver implements NameTypeResolver {
 
 			case LeaveGame:
 				return LeaveGameMsg.class;
+
+			case RemovePlayer:
+				return RemovePlayerMsg.class;
 
 			default:
 				break;

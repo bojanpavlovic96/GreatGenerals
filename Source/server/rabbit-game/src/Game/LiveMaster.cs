@@ -159,6 +159,7 @@ namespace RabbitGameServer.Game
 			IntentionHandler? handler;
 			if (handlers.TryGetValue(intention.type, out handler))
 			{
+				// TODO add if not null because of the playerLEftHandler
 				var resultMsg = handler.Invoke(intention);
 
 				sendMessage(resultMsg, intention.playerName);
@@ -315,18 +316,23 @@ namespace RabbitGameServer.Game
 
 			if (targetField.unit.health <= 0)
 			{
-				var defeatedName = targetField.unit.owner;
+				var defeated = getPlayer(targetField.unit.owner);
 
-				getPlayer(defeatedName).points -= config.defeatCost;
+				defeated.points -= config.defeatCost;
 				var removePointsMsg = new PointsUpdateMessage(DateTime.Now,
-					defeatedName,
+					defeated.username,
 					RoomName,
 					-1 * config.defeatCost,
-					getPlayer(defeatedName).points);
-				// playerProxy.sendMessage(RoomName, defeatedName, removePointsMsg);
-				sendMessage(removePointsMsg, defeatedName);
+					getPlayer(defeated.username).points);
+
+				sendMessage(removePointsMsg, defeated.username);
 
 				ActiveUnits.Remove(targetField.unit);
+
+				if (getUnits(defeated.username).Count == 0)
+				{
+					getPlayer(defeated.username).isAlive = false;
+				}
 
 				targetField.unit = null;
 				targetField.inBattle = false;
@@ -368,6 +374,11 @@ namespace RabbitGameServer.Game
 				attackIntention.destinationField);
 		}
 
+		private List<Unit> getUnits(string user)
+		{
+			return ActiveUnits.FindAll(u => u.owner == user).ToList();
+		}
+
 		private DecoratedPlayer getPlayer(string name)
 		{
 			return Players.Find(p => p.username == name);
@@ -385,8 +396,11 @@ namespace RabbitGameServer.Game
 
 		private bool checkEndGame()
 		{
+
+			return Players.FindAll(p => p.isAlive).Count <= 1;
+
 			int playersAlive = 0;
-			foreach (var player in Players)
+			foreach (var player in Players.FindAll(p => p.isAlive))
 			{
 				var unitCnt = ActiveUnits.Where(u => u.owner == player.username).Count();
 				playersAlive += unitCnt > 0 ? 1 : 0;
@@ -547,18 +561,29 @@ namespace RabbitGameServer.Game
 			foreach (var player in Players.FindAll(p => p.isAlive))
 			{
 				player.points += config.defeatAward;
-				var update = new PointsUpdateMessage(DateTime.Now,
+				var pointsUpdate = new PointsUpdateMessage(DateTime.Now,
 					player.username,
 					RoomName,
 					config.defeatAward,
 					player.points);
 
-				playerProxy.sendMessage(RoomName, player.username, update);
+				sendMessage(pointsUpdate, player.username);
+				// playerProxy.sendMessage(RoomName, player.username, update);
 			}
+
+			Fields.Values.ToList()
+				.FindAll(f => f.unit != null && f.unit.owner == leftPlayer.username)
+				.ForEach(f =>
+				{
+					ActiveUnits.Remove(f.unit);
+					f.unit = null;
+				});
+
 
 			if (checkEndGame())
 			{
 				winner = Players.Find(p => p.isAlive).username; // has to be only one 
+				Console.WriteLine($"Winner is: {winner}");
 
 				tickTimer.Stop();
 				onGameDone(this);
@@ -572,8 +597,12 @@ namespace RabbitGameServer.Game
 			}
 			else
 			{
-				// The same message that is received is now broadcasted to all the other players
-				return new LeaveGameMessage(DateTime.Now, e.playerName, RoomName);
+				foreach (var alive in Players.FindAll(p => p.isAlive))
+				{
+					var msg = new RemovePlayerMessage(DateTime.Now, alive.username, RoomName, leftPlayer.username);
+					sendMessage(msg, alive.username);
+				}
+				return null;
 			}
 
 		}
@@ -674,11 +703,8 @@ namespace RabbitGameServer.Game
 				stat.TickCount += 1;
 				if (stat.TickCount >= stat.Required)
 				{
-					Console.WriteLine("INCOME >>> ");
 					stat.TickCount = 0;
-					Console.WriteLine("Before tick : " + stat.CurrentAmount);
 					stat.CurrentAmount += stat.Income;
-					Console.WriteLine("After tick : " + stat.CurrentAmount);
 
 					// onIncomeTick.Invoke(stat.CurrentAmount, RoomName, stat.Name);
 					var tickMsg = new IncomeTickMessage(DateTime.Now, stat.Name, RoomName, stat.CurrentAmount);
@@ -719,7 +745,7 @@ namespace RabbitGameServer.Game
 		public PlayerData AddPlayer(PlayerData player)
 		{
 			player.color = getAvailableColor();
-			player.points = config.DefaultPoints;
+			// player.points = config.DefaultPoints;
 			Players.Add(new DecoratedPlayer(player));
 
 			return player;

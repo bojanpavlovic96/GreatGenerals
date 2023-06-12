@@ -112,6 +112,19 @@ namespace RabbitGameServer.Game
 						amount = gMsg.bonusAmount
 					};
 
+				case SharedModel.Messages.MessageType.RemovePlayer:
+					var rMsg = (RemovePlayerMessage)msg;
+					return new RabbitGameServer.Database.Message(rMsg.type.ToString(),
+						roomId,
+						rMsg.roomName,
+						rMsg.username,
+						rMsg.timestamp)
+					{
+						whoLeft = rMsg.whoLeft
+					};
+					return null;
+
+
 			}
 
 			return null;
@@ -182,6 +195,12 @@ namespace RabbitGameServer.Game
 						msg.playerName,
 						msg.roomName,
 						msg.amount);
+
+				case MessageType.RemovePlayer:
+					return new RemovePlayerMessage(msg.timestamp,
+						msg.playerName,
+						msg.roomName,
+						msg.whoLeft);
 
 			}
 			return null;

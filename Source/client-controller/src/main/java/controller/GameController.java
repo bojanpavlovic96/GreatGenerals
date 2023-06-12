@@ -312,8 +312,10 @@ public class GameController implements Controller, ActiveComponent {
 		}
 
 		System.out.println("Shutting down view ... ");
-		if (view != null && view instanceof ActiveComponent) {
-			((ActiveComponent) view).shutdown();
+		if (view != null ) {
+			if(view instanceof ActiveComponent){
+				((ActiveComponent) view).shutdown();
+			}
 			view.hideView();
 		}
 

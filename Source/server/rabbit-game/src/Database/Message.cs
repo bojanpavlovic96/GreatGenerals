@@ -38,6 +38,8 @@ namespace RabbitGameServer.Database
 		// income tick
 		public int amount { get; set; }
 
+		public string whoLeft { get; set; }
+
 		public Message(string type,
 			string roomId,
 			string roomName,

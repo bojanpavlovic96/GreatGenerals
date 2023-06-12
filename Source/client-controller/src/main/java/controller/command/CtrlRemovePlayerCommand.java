@@ -8,19 +8,19 @@ import root.controller.Controller;
 import root.model.component.Field;
 import view.command.DrawFieldCommand;
 
-public class CtrlLeaveGame extends Command {
+public class CtrlRemovePlayerCommand extends Command {
 
-	private String player;
+	private String whoLeft;
 
-	public CtrlLeaveGame(String user) {
-		this.player = user;
+	public CtrlRemovePlayerCommand(String whoLeft) {
+		this.whoLeft = whoLeft;
 	}
 
 	@Override
 	public void run() {
 		var controller = (Controller) targetComponent;
 
-		if (controller.isOwner(player)) {
+		if (controller.isOwner(whoLeft)) {
 			// my guy left 
 
 			((root.ActiveComponent) controller).shutdown();
@@ -30,7 +30,7 @@ public class CtrlLeaveGame extends Command {
 
 			List<Field> leftUnitFields = controller.getModel()
 					.getActiveUnits().stream()
-					.filter((u) -> u.getOwner().getUsername().equals(player))
+					.filter((u) -> u.getOwner().getUsername().equals(whoLeft))
 					.map((u) -> u.getField())
 					.collect(Collectors.toList());
 
@@ -54,7 +54,7 @@ public class CtrlLeaveGame extends Command {
 				controller.getView().getCommandQueue().enqueue(redrawCmd);
 			}
 
-			controller.getModel().removePlayer(player);
+			controller.getModel().removePlayer(whoLeft);
 		}
 	}
 

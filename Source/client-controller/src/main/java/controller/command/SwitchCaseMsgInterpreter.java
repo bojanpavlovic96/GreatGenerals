@@ -29,6 +29,7 @@ import root.communication.messages.RecalculatePathMsg;
 import root.communication.messages.ReplayMsg;
 import root.communication.messages.ServerErrorMsg;
 import root.communication.messages.PointsUpdateMsg;
+import root.communication.messages.RemovePlayerMsg;
 import root.model.event.ClientIntention;
 
 public class SwitchCaseMsgInterpreter implements MessageInterpreter {
@@ -130,8 +131,9 @@ public class SwitchCaseMsgInterpreter implements MessageInterpreter {
 
 				return new PlayReplay(timedCommands, repMsg.startTimestamp);
 
-			case LeaveGame:
-				return new CtrlLeaveGame(message.username);
+			case RemovePlayer:
+				return new CtrlRemovePlayerCommand(
+						((RemovePlayerMsg) message).whoLeft);
 
 			default:
 				break;

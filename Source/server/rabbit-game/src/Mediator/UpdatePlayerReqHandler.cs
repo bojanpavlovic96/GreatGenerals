@@ -27,7 +27,7 @@ namespace RabbitGameServer.Mediator
 		public async Task<PlayerData> Handle(UpdatePlayerRequest request, CancellationToken cancellationToken)
 		{
 
-			Console.WriteLine("Handling update player request ...");
+			Console.WriteLine($"Handling update player: {request.playerData.username} => {request.playerData.points}");
 			HttpResponseMessage response;
 
 			try

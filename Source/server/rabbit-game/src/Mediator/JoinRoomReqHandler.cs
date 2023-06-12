@@ -21,25 +21,25 @@ namespace RabbitGameServer.Mediator
 		{
 
 			string roomName = request.roomName;
-			string playerName = request.playerName;
+			string whoJoined = request.playerName;
 
 			Console.WriteLine($"Handling join game request for: ");
 			Console.WriteLine($"\tRoom: {roomName}");
-			Console.WriteLine($"\tUser: {playerName} ... ");
+			Console.WriteLine($"\tUser: {whoJoined} ... ");
 
 
 			var room = pool.GetGame(roomName);
 			if (room == null)
 			{
 				Console.WriteLine($"Tried to join nonexisting room {roomName} ... ");
-				sendResponse(playerName, roomName, RoomResponseType.InvalidRoom, new List<PlayerData>());
+				sendResponse(whoJoined, roomName, RoomResponseType.InvalidRoom, new List<PlayerData>());
 				return MediatR.Unit.Value;
 			}
 
 			if (room.HasPlayer(request.playerName))
 			{
 				Console.WriteLine($"Tried to join room AGAIN {roomName} ... ");
-				sendResponse(playerName, roomName, RoomResponseType.AlreadyIn, new List<PlayerData>());
+				sendResponse(whoJoined, roomName, RoomResponseType.AlreadyIn, new List<PlayerData>());
 				return MediatR.Unit.Value;
 			}
 
@@ -49,13 +49,13 @@ namespace RabbitGameServer.Mediator
 				Console.WriteLine($"Failed to join room {roomName}, "
 					+ "wrongPassword ({request.providedPassword}) ... ");
 
-				sendResponse(playerName, roomName, RoomResponseType.WrongPassword, new List<PlayerData>());
+				sendResponse(whoJoined, roomName, RoomResponseType.WrongPassword, new List<PlayerData>());
 				return MediatR.Unit.Value;
 			}
 
 			// all good retrieve data and join this dude 
 
-			var dataRequest = new GetPlayerRequest(playerName);
+			var dataRequest = new GetPlayerRequest(whoJoined);
 			var playerData = await mediator.Send(dataRequest);
 
 			if (playerData != null)
@@ -64,28 +64,29 @@ namespace RabbitGameServer.Mediator
 				// maybe check level, points ... some requirements for the room ... 
 				room.AddPlayer(playerData);
 
-				Console.WriteLine($"{request.playerName} successfully joined {roomName} ... ");
+				Console.WriteLine($"{whoJoined} successfully joined to the {roomName} room ... ");
 
-				sendResponse(playerName, roomName, RoomResponseType.Success, room.GetPlayers());
+				sendResponse(whoJoined, roomName, RoomResponseType.Success, room.GetPlayers());
 
-				foreach (var player in room.GetPlayers())
-				{
-					if (player.username != request.playerName)
-					{
-						sendUpdate(playerName, roomName, room.GetPlayers(), player.username);
-					}
-					else
-					{
-						Console.WriteLine($"\tAvoiding {player.username} ... ");
-					}
-				}
+				room.GetPlayers()
+					.FindAll(p => p.username != whoJoined)
+					.ForEach(p => sendUpdate(whoJoined, roomName, room.GetPlayers(), p.username));
+
+				// foreach (var player in room.GetPlayers())
+				// {
+				// 	if (player.username != request.playerName)
+				// 	{
+				// 		sendUpdate(whoJoined, roomName, room.GetPlayers(), player.username);
+				// 	}
+
+				// }
 
 			}
 			else
 			{
 				Console.WriteLine("Failed to obtain players data ... ");
 
-				sendResponse(playerName, roomName, RoomResponseType.UnknownFail, null);
+				sendResponse(whoJoined, roomName, RoomResponseType.UnknownFail, null);
 			}
 
 
