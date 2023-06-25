@@ -46,7 +46,7 @@ public class BasicAttack extends Attack {
 		attackFeature = timer.schedule(this::attackHandler, attackCooldown, TimeUnit.MILLISECONDS);
 	}
 
-	public void attackHandler() {
+	private void attackHandler() {
 		System.out.println("Intention to attack ... ");
 
 		var username = attacker.getOwner().getUsername();

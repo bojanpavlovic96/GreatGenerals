@@ -16,12 +16,9 @@ import model.intention.LeaveGameIntention;
 import model.intention.ReadyForInitIntention;
 import model.intention.ReadyForReplayIntention;
 import root.ActiveComponent;
-import root.command.BasicCommandProcessor;
-import root.command.Command;
-import root.command.CommandDrivenComponent;
-import root.command.CommandProcessor;
-import root.command.CommandProducer;
 import root.command.CommandQueue;
+import root.command.Command;
+import root.command.SingleThreadedQueue;
 import root.communication.GameServerProxy;
 import root.controller.CommandStack;
 import root.controller.Controller;
@@ -45,11 +42,12 @@ public class GameController implements Controller, ActiveComponent {
 
 	private GameServerProxy serverProxy;
 
-	private CommandProcessor serverCmdProcessor;
-	private CommandQueue serverCommandQueue;
+	// private CommandProcessor serverCmdProcessor;
+	// private CommandQueue serverCommandQueue;
+	private CommandQueue commandQueue;
 
 	private View view;
-	private CommandQueue viewCommandQueue;
+	private CommandQueue consumerQueue;
 
 	private Model model;
 
@@ -75,6 +73,8 @@ public class GameController implements Controller, ActiveComponent {
 		this.view = view;
 		this.model = model;
 
+		this.commandQueue = new SingleThreadedQueue(this);
+
 		undoStack = new UndoStack();
 
 		model.setModelEventHandler((ModelEventHandler) this);
@@ -85,12 +85,15 @@ public class GameController implements Controller, ActiveComponent {
 		}
 
 		// connect serverProxy and controller
-		serverCommandQueue = ((CommandProducer) serverProxy).getConsumerQueue();
-		serverCmdProcessor = new BasicCommandProcessor((CommandDrivenComponent) this);
-		serverCommandQueue.setCommandProcessor(this.serverCmdProcessor);
+		// serverCommandQueue = ((CommandProducer) serverProxy).getConsumerQueue();
+		// serverCmdProcessor = new BasicCommandProcessor((CommandDrivenComponent) this);
+		// serverCommandQueue.setCommandProcessor(this.serverCmdProcessor);
+		serverProxy.setConsumer(this.getCommandQueue());
 
-		viewCommandQueue = new CommandQueue();
-		((CommandDrivenComponent) view).setCommandQueue(viewCommandQueue);
+		// viewCommandQueue = new CommandQueue();
+		// ((CommandDrivenComponent) view).setCommandQueue(viewCommandQueue);
+
+		this.setConsumer(view.getCommandQueue());
 
 		// view events, click, key press ...
 		initViewEventHandlers();
@@ -132,7 +135,7 @@ public class GameController implements Controller, ActiveComponent {
 			Command doneCommand = null;
 			while ((doneCommand = undoStack.pop()) != null) {
 				var antiCommand = doneCommand.getAntiCommand();
-				viewCommandQueue.enqueue(antiCommand);
+				consumerQueue.enqueue(antiCommand);
 			}
 
 			var selectCmd = new SelectFieldCommand(clickedField);
@@ -143,7 +146,7 @@ public class GameController implements Controller, ActiveComponent {
 			// 	viewCommandQueue.enqueue(comm);
 			// }
 
-			viewCommandQueue.enqueue(selectCmd);
+			consumerQueue.enqueue(selectCmd);
 			undoStack.push(selectCmd);
 
 			if (clickedField.getUnit() != null
@@ -157,7 +160,7 @@ public class GameController implements Controller, ActiveComponent {
 
 					var selectPathField = new SelectFieldCommand(pathField);
 
-					viewCommandQueue.enqueue(selectPathField);
+					consumerQueue.enqueue(selectPathField);
 					undoStack.push(selectPathField);
 				}
 
@@ -206,9 +209,9 @@ public class GameController implements Controller, ActiveComponent {
 
 			var showDescriptionCommand = new ShowFieldDescription(focusedField);
 
-			viewCommandQueue.enqueue(clearCommand);
-			viewCommandQueue.enqueue(showMenuCommand);
-			viewCommandQueue.enqueue(showDescriptionCommand);
+			consumerQueue.enqueue(clearCommand);
+			consumerQueue.enqueue(showMenuCommand);
+			consumerQueue.enqueue(showDescriptionCommand);
 
 			undoStack.push(showMenuCommand);
 			undoStack.push(showDescriptionCommand);
@@ -224,7 +227,7 @@ public class GameController implements Controller, ActiveComponent {
 		view.addEventHandler("key-event-char-1", (ViewEventArg arg) -> {
 
 			ZoomInCommand command = new ZoomInCommand(model.getFields());
-			viewCommandQueue.enqueue(command);
+			consumerQueue.enqueue(command);
 
 			// this wont be valid in situation when attack and build commands get
 			// implemented
@@ -238,7 +241,7 @@ public class GameController implements Controller, ActiveComponent {
 		view.addEventHandler("key-event-char-2", (ViewEventArg arg) -> {
 
 			ZoomOutCommand command = new ZoomOutCommand(model.getFields());
-			viewCommandQueue.enqueue(command);
+			consumerQueue.enqueue(command);
 
 			// this wont be valid in situation when attack and build command get implemented
 			// // reset old state
@@ -306,14 +309,17 @@ public class GameController implements Controller, ActiveComponent {
 		// Injected  dependencies should be destroyed/shutdown by the creator
 		// which in this case is Launcher ... ? 
 
-		System.out.println("Shutting down command processor ... ");
-		if (serverCmdProcessor != null && serverCmdProcessor instanceof ActiveComponent) {
-			((ActiveComponent) serverCmdProcessor).shutdown();
+		System.out.println("Shutting down command queue ... ");
+		// if (serverCmdProcessor != null && serverCmdProcessor instanceof ActiveComponent) {
+		// 	((ActiveComponent) serverCmdProcessor).shutdown();
+		// }
+		if (commandQueue != null && commandQueue instanceof ActiveComponent) {
+			((ActiveComponent) commandQueue).shutdown();
 		}
 
 		System.out.println("Shutting down view ... ");
-		if (view != null ) {
-			if(view instanceof ActiveComponent){
+		if (view != null) {
+			if (view instanceof ActiveComponent) {
 				((ActiveComponent) view).shutdown();
 			}
 			view.hideView();
@@ -349,22 +355,22 @@ public class GameController implements Controller, ActiveComponent {
 
 	@Override
 	public CommandQueue getCommandQueue() {
-		return this.serverCommandQueue;
+		return commandQueue;
 	}
 
-	@Override
-	public void setCommandQueue(CommandQueue new_queue) {
-		this.serverCommandQueue = new_queue;
-	}
+	// @Override
+	// public void setCommandQueue(CmdQueue newQueue) {
+	// 	this.serverCommandQueue = newQueue;
+	// }
 
-	@Override
-	public CommandProcessor getCommandProcessor() {
-		return this.serverCmdProcessor;
-	}
+	// @Override
+	// public CommandProcessor getCommandProcessor() {
+	// 	return this.serverCmdProcessor;
+	// }
 
 	@Override
 	public CommandQueue getConsumerQueue() {
-		return this.viewCommandQueue;
+		return this.consumerQueue;
 	}
 
 	@Override
@@ -395,6 +401,11 @@ public class GameController implements Controller, ActiveComponent {
 	@Override
 	public boolean isOwner(String name) {
 		return model.getOwner().getUsername().equals(name);
+	}
+
+	@Override
+	public void setConsumer(CommandQueue queue) {
+		this.consumerQueue = queue;
 	}
 
 }

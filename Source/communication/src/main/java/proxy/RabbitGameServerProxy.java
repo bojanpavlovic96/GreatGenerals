@@ -31,7 +31,7 @@ public class RabbitGameServerProxy implements GameServerProxy,
 	private String username;
 	private String roomName;
 
-	private CommandQueue commandQueue;
+	private CommandQueue consumerQueue;
 
 	private String rcvQueueName;
 	private Channel channel;
@@ -50,8 +50,6 @@ public class RabbitGameServerProxy implements GameServerProxy,
 		this.messageInterpreter = msgInterpreter;
 		this.username = username;
 		this.roomName = roomName;
-
-		this.commandQueue = new CommandQueue();
 
 		this.channelProvider.subscribeForEvents(this);
 	}
@@ -127,11 +125,6 @@ public class RabbitGameServerProxy implements GameServerProxy,
 
 	private String genCommandRoutingKey() {
 		return config.serverMessageRoutePrefix + roomName + "." + config.rabbitMatchAllWildcard;
-	}
-
-	@Override
-	public CommandQueue getConsumerQueue() {
-		return this.commandQueue;
 	}
 
 	@Override
@@ -211,7 +204,11 @@ public class RabbitGameServerProxy implements GameServerProxy,
 
 		System.out.println(" -> cmd: " + newCommand.getClass().getSimpleName());
 
-		commandQueue.enqueue(newCommand);
+		if (consumerQueue != null) {
+			consumerQueue.enqueue(newCommand);
+		} else {
+			System.out.println("Message missed serverProxy doesn't have consumer ... ");
+		}
 	}
 
 	// region not implemented part of the Consumer interface
@@ -264,6 +261,16 @@ public class RabbitGameServerProxy implements GameServerProxy,
 	@Override
 	public String getRoomName() {
 		return roomName;
+	}
+
+	@Override
+	public void setConsumer(CommandQueue queue) {
+		this.consumerQueue = queue;
+	}
+
+	@Override
+	public CommandQueue getConsumerQueue() {
+		return this.consumerQueue;
 	}
 
 }

@@ -28,9 +28,8 @@ import javafx.stage.Screen;
 import javafx.stage.Stage;
 import root.ActiveComponent;
 import root.Point2D;
-import root.command.CommandDrivenComponent;
-import root.command.CommandProcessor;
 import root.command.CommandQueue;
+import root.command.FxQueue;
 import root.model.component.Field;
 import root.view.View;
 import root.view.ViewConfig;
@@ -39,7 +38,6 @@ import root.view.event.ViewEventHandler;
 import root.view.field.ViewField;
 import root.view.menu.FieldDescription;
 import root.view.menu.Menu;
-import view.command.FxCommandProcessor;
 import view.component.ViewFieldManager;
 import view.component.menu.DescriptionMenu;
 import view.component.menu.ShortOptionsMenu;
@@ -75,7 +73,7 @@ public class DrawingStage extends Stage implements View {
 
 	// connection with controller
 	private CommandQueue commandQueue;
-	private CommandProcessor commandProcessor;
+	// private CommandProcessor commandProcessor;
 
 	private Map<String, List<ViewEventHandler>> handlersMap;
 
@@ -90,6 +88,8 @@ public class DrawingStage extends Stage implements View {
 		this.config = config;
 
 		this.fieldManager = fieldManager;
+
+		this.commandQueue = new FxQueue(this);
 
 		this.initStage();
 
@@ -299,14 +299,14 @@ public class DrawingStage extends Stage implements View {
 		return this.commandQueue;
 	}
 
-	@Override
-	public void setCommandQueue(CommandQueue commandQueue) {
-		this.commandQueue = commandQueue;
+	// @Override
+	// public void setCommandQueue(CmdQueue commandQueue) {
+	// 	this.commandQueue = commandQueue;
 
-		this.commandProcessor = new FxCommandProcessor((CommandDrivenComponent) this);
-		this.commandQueue.setCommandProcessor(this.commandProcessor);
+	// 	this.commandProcessor = new FxCommandProcessor((CommandDrivenComponent) this);
+	// 	this.commandQueue.setCommandProcessor(this.commandProcessor);
 
-	}
+	// }
 
 	// TODO replace name with an enum
 	@Override
@@ -449,10 +449,10 @@ public class DrawingStage extends Stage implements View {
 		return this.backgroundColor;
 	}
 
-	@Override
-	public CommandProcessor getCommandProcessor() {
-		return this.commandProcessor;
-	}
+	// @Override
+	// public CommandProcessor getCommandProcessor() {
+	// 	return this.commandProcessor;
+	// }
 
 	@Override
 	public Menu getMainOptionsMenu() {
@@ -501,8 +501,11 @@ public class DrawingStage extends Stage implements View {
 	@Override
 	public void hideView() {
 
-		if (commandProcessor != null && commandProcessor instanceof ActiveComponent) {
-			((ActiveComponent) commandProcessor).shutdown();
+		// if (commandProcessor != null && commandProcessor instanceof ActiveComponent) {
+		// 	((ActiveComponent) commandProcessor).shutdown();
+		// }
+		if (commandQueue != null && commandQueue instanceof ActiveComponent) {
+			((ActiveComponent) commandQueue).shutdown();
 		}
 
 		Platform.runLater(() -> {

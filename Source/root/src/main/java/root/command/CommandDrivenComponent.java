@@ -4,8 +4,6 @@ public interface CommandDrivenComponent {
 
 	CommandQueue getCommandQueue();
 
-	void setCommandQueue(CommandQueue newQueue);
-
-	CommandProcessor getCommandProcessor();
+	// void setCommandQueue(CmdQueue newQueue);
 
 }

@@ -1,6 +1,5 @@
 package controller.option;
 
-import root.command.CommandQueue;
 import root.controller.Controller;
 import root.model.component.Field;
 import root.model.component.option.FieldOption;
@@ -29,7 +28,7 @@ public class ClearPathFieldOption extends FieldOption {
 
 			primaryField.getUnit().getMove().stopMoving();
 
-			CommandQueue queue = this.controller.getConsumerQueue();
+			var queue = this.controller.getConsumerQueue();
 
 			var path = primaryField.getUnit().getMove().getPath();
 			path = path.subList(1, path.size());
