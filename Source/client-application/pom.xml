@@ -1,4 +1,6 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>great-generals</groupId>
 	<artifactId>client-application</artifactId>
@@ -12,10 +14,36 @@
 	<dependencies>
 
 		<!-- https://mvnrepository.com/artifact/org.openjfx/javafx-base -->
+		<!-- <dependency>
+			<groupId>org.openjfx</groupId>
+			<artifactId>javafx-controls</artifactId>
+			<version>17</version>
+		</dependency> -->
+
 		<dependency>
 			<groupId>org.openjfx</groupId>
 			<artifactId>javafx-controls</artifactId>
 			<version>17</version>
+			<classifier>win</classifier>
+		</dependency>
+		<dependency>
+			<groupId>org.openjfx</groupId>
+			<artifactId>javafx-controls</artifactId>
+			<version>17</version>
+			<classifier>linux</classifier>
+		</dependency>
+
+		<dependency>
+			<groupId>org.openjfx</groupId>
+			<artifactId>javafx-graphics</artifactId>
+			<version>17</version>
+			<classifier>win</classifier>
+		</dependency>
+		<dependency>
+			<groupId>org.openjfx</groupId>
+			<artifactId>javafx-graphics</artifactId>
+			<version>17</version>
+			<classifier>linux</classifier>
 		</dependency>
 
 		<!-- root contains all components declaration (interface) -->
@@ -105,16 +133,19 @@
 				<artifactId>exec-maven-plugin</artifactId>
 				<version>1.4.0</version>
 				<configuration>
-					<mainClass> app.launcher.Launcher </mainClass>
+					<mainClass> app.Launcher </mainClass>
 				</configuration>
 			</plugin>
 
 			<!-- ok, if this plugin is used you can run app with $ mvn javafx:run
 			BUT if you do that different javafx version will be used so that 
 			Point2D (unfortunately heavily used in model) won't be serializable ... 
-			this is not the latest version of this plugin (0.0.12 is/was the latest)
+			This is not the latest version of this plugin (0.0.12 is/was the latest)
 			BUT if you change it to the latest $ mvn javafx:run; is not recognized anymore ...
 			Left just as a notice if some poor soul try to use it this way -->
+
+			<!-- (a few years latter) It seems that model's dependency on the fx's Point2D no longer
+			exists. -->
 
 			<!-- <plugin>
 				<groupId>org.openjfx</groupId>
@@ -130,7 +161,7 @@
 				<configuration>
 					<archive>
 						<manifest>
-							<mainClass>app.launcher.Launcher</mainClass>
+							<mainClass>app.Launcher</mainClass>
 						</manifest>
 					</archive>
 					<descriptorRefs>

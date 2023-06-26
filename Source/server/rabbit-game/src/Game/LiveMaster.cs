@@ -159,11 +159,11 @@ namespace RabbitGameServer.Game
 			IntentionHandler? handler;
 			if (handlers.TryGetValue(intention.type, out handler))
 			{
-				// TODO add if not null because of the playerLEftHandler
 				var resultMsg = handler.Invoke(intention);
 
-				if(resultMsg!=null){
-				sendMessage(resultMsg, intention.playerName);
+				if (resultMsg != null)
+				{
+					sendMessage(resultMsg, intention.playerName);
 				}
 
 				// Messages.Add(resultMsg);
