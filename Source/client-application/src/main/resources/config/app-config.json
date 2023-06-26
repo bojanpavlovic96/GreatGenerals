@@ -32,7 +32,7 @@
 		"fieldBorderWidth": 3
 	},
 	"brokerConfig": {
-		"stage": "dev",
+		"stage": "prod",
 		"development": {
 			"address": "localhost",
 			"port": "5672",
@@ -43,8 +43,8 @@
 		"production": {
 			"address": "some.address.com",
 			"port": "5672",
-			"username": "rabbit_user",
-			"password": "rabbit_password",
+			"username": "gg_user",
+			"password": "gg_password",
 			"vhost": "gg_host"
 		}
 	},
@@ -72,7 +72,7 @@
 		"roomUpdateRoutePrefix": "room_update."
 	},
 	"restLoginServerConfig": {
-		"stage": "dev",
+		"stage": "prod",
 		"development": {
 			"address": "localhost",
 			"port": 9000,
@@ -87,7 +87,7 @@
 		}
 	},
 	"restReplayServerConfig": {
-		"stage": "dev",
+		"stage": "prod",
 		"development": {
 			"address": "localhost",
 			"port": 9001,
@@ -96,7 +96,7 @@
 		},
 		"production": {
 			"address": "some.address.com",
-			"port": 9091,
+			"port": 9001,
 			"listGamesPath": "replay/games",
 			"loadGamePath": "replay/load"
 		}

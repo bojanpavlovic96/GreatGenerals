@@ -6,3 +6,4 @@ echo "sleeping ... "
 sleep 3
 
 docker start gg-login-server
+docker start gg-game-server
