@@ -15,5 +15,7 @@ namespace RabbitGameServer.Database
 
 		List<Message> getMessages(string roomId);
 
+		void updateGame(string gameId, string winner, DateTime endTime, int pointsGain);
+
 	}
 }

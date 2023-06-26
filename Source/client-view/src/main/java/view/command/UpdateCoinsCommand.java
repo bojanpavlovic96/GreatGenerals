@@ -13,6 +13,7 @@ public class UpdateCoinsCommand extends Command {
 
 	@Override
 	public void run() {
+		System.out.println("Updating coins: " + amount);
 		var view = (View) targetComponent;
 		view.showCoins(amount);
 	}

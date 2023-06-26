@@ -102,5 +102,20 @@ namespace RabbitGameServer.Database
 				.First();
 		}
 
+		public void updateGame(string gameId, string winner, DateTime endTime, int pointsGain)
+		{
+			var filter = Builders<DbGame>.Filter
+				.Eq(game => game._id, new ObjectId(gameId));
+
+			var update = Builders<DbGame>.Update
+				.Set(game => game.winner, winner)
+				.Set(game => game.endTime, endTime)
+				.Set(game => game.pointsGain, pointsGain)
+				.Set(game => game.isDone, true);
+
+			database
+				.GetCollection<DbGame>(config.GamesCollection)
+				.UpdateOne(filter, update);
+		}
 	}
 }

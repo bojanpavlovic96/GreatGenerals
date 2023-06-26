@@ -3,6 +3,7 @@ package controller;
 import java.util.ArrayList;
 import java.util.List;
 
+import controller.command.SingleThreadedQueue;
 import controller.command.UndoStack;
 import controller.option.AbortAttackFieldOption;
 import controller.option.AddToPathFieldOption;
@@ -18,7 +19,6 @@ import model.intention.ReadyForReplayIntention;
 import root.ActiveComponent;
 import root.command.CommandQueue;
 import root.command.Command;
-import root.command.SingleThreadedQueue;
 import root.communication.GameServerProxy;
 import root.controller.CommandStack;
 import root.controller.Controller;
@@ -139,6 +139,9 @@ public class GameController implements Controller, ActiveComponent {
 			}
 
 			var selectCmd = new SelectFieldCommand(clickedField);
+
+			System.out.println("Clicked on -> x:" + clickedField.getStoragePosition().getX()
+					+ " y:" + clickedField.getStoragePosition().getY());
 
 			// var neighs = clickedField.getNeighbours(1);
 			// for (var n : neighs) {

@@ -48,10 +48,13 @@ public class PlayerModelData implements PlayerData {
 
 	@Override
 	public void removeCoins(int amount) {
+		System.out.println("Removing coins: -" + amount);
 		this.coins -= amount;
 		if (this.coins < 0) {
+			System.out.println("Went under the 0");
 			coins = 0;
 		}
+		System.out.println("Left with: " + this.coins);
 	}
 
 	@Override

@@ -115,8 +115,8 @@ namespace RabbitGameServer.Game
 			this.Password = password;
 
 			this.masterPlayer = masterPlayer;
+			this.masterPlayer.coins = config.defaultCoins;
 			this.masterPlayer.color = getAvailableColor();
-			// this.masterPlayer.points = config.DefaultPoints;
 			this.Players = new List<DecoratedPlayer>();
 			this.Players.Add(new DecoratedPlayer(masterPlayer));
 			this.winner = null;
@@ -162,7 +162,9 @@ namespace RabbitGameServer.Game
 				// TODO add if not null because of the playerLEftHandler
 				var resultMsg = handler.Invoke(intention);
 
+				if(resultMsg!=null){
 				sendMessage(resultMsg, intention.playerName);
+				}
 
 				// Messages.Add(resultMsg);
 				// saveMessages();
@@ -209,6 +211,9 @@ namespace RabbitGameServer.Game
 			Console.WriteLine($"AvailableUnits: {config.Units.Count}");
 			Console.WriteLine($"AvailableMoves: {config.Moves.Count}");
 			Console.WriteLine($"AvailableAttacks: {config.Attacks.Count}");
+
+			// income ticks
+			tickTimer.Start();
 
 			return new InitializeMessage(DateTime.Now,
 				RoomName,
@@ -345,7 +350,11 @@ namespace RabbitGameServer.Game
 
 					tickTimer.Stop();
 
-					getPlayer(attackIntention.playerName).points += config.winAward + config.attackAward;
+					var pointsGain = config.winAward + config.attackAward;
+
+					getPlayer(attackIntention.playerName).points += pointsGain;
+
+					Database.updateGame(roomId, winner, DateTime.Now, pointsGain);
 
 					onGameDone(this);
 
@@ -451,13 +460,18 @@ namespace RabbitGameServer.Game
 					Console.WriteLine($"\t Game {RoomName} is dead ... ");
 					winner = defendEvent.playerName;
 					tickTimer.Stop();
+
+					var pointsGain = config.defendAward + config.winAward;
+					getPlayer(defendEvent.playerName).points += pointsGain;
+
+					Database.updateGame(roomId, winner, DateTime.Now, pointsGain);
+
 					onGameDone(this);
-					getPlayer(defendEvent.playerName).points += config.defendAward + config.winAward;
 
 					return new GameDoneMessage(DateTime.Now,
 						defendEvent.playerName,
 						RoomName,
-						config.defendAward + config.winAward);
+						pointsGain);
 
 				}
 				else
@@ -523,8 +537,11 @@ namespace RabbitGameServer.Game
 
 			var field = getField(buildInt.field);
 
+			Console.WriteLine($"req: {unitDesc.cost} have: {stats.CurrentAmount}");
+
 			if (field.unit == null && stats.CurrentAmount >= unitDesc.cost)
 			{
+				Console.WriteLine("Will build unit ... ");
 				stats.CurrentAmount -= unitDesc.cost;
 
 				var newUnit = unitDesc.copy();
@@ -540,6 +557,10 @@ namespace RabbitGameServer.Game
 						buildInt.field,
 						buildInt.unitType,
 						unitDesc.cost);
+			}
+			else
+			{
+				Console.WriteLine("Won't build unit ... ");
 			}
 
 			return null;
@@ -588,10 +609,13 @@ namespace RabbitGameServer.Game
 				tickTimer.Stop();
 				onGameDone(this);
 
+				var pointsGain = config.winAward;
+				Database.updateGame(roomId, winner, DateTime.Now, pointsGain);
+
 				var endMessage = new GameDoneMessage(DateTime.Now,
 					winner,
 					RoomName,
-					config.winAward);
+					pointsGain);
 
 				return endMessage;
 			}
@@ -614,18 +638,23 @@ namespace RabbitGameServer.Game
 
 			int left = 3;
 			int right = 17;
+			int rows = 16;
 
-			int segLen = (right - left) / Players.Count;
+			var random = new Random();
 
-			for (int i = 1; i < 16; i++)
+			for (int i = 1; i < rows; i++)
 			{
 
+				int segLen = (right - left) / Players.Count;
 				for (int j = left; j < right; j++)
 				{
 
-					var position = new Point2D(j, i);
+					var point = new Point2D(j, i);
+
+					var rand = random.NextInt64();
 					Terrain? terrain = null;
-					if (i % 2 == 0 && j % 5 == 0)
+					// if (i % 2 == 0 && j % 5 == 0)
+					if (rand % 3 == 0)
 					{
 						terrain = new Terrain(TerrainType.water, 1);
 					}
@@ -634,7 +663,7 @@ namespace RabbitGameServer.Game
 						terrain = new Terrain(TerrainType.mountains, 1);
 					}
 
-					var playerInd = j / segLen;
+					var playerInd = (j - left) / segLen;
 
 					if (playerInd >= Players.Count)
 					{
@@ -647,14 +676,14 @@ namespace RabbitGameServer.Game
 
 					var playerName = Players[playerInd].username;
 
-					var newField = new Field(position,
+					var newField = new Field(point,
 						true,
 						null,
 						terrain,
 						playerName,
 						false);
 
-					if (config.DefaultPositions.Contains(position))
+					if (config.DefaultPositions.Contains(point))
 					{
 						var newUnit = generateUnit(UnitType.basicunit);
 						newUnit.owner = playerName;
@@ -677,7 +706,7 @@ namespace RabbitGameServer.Game
 			{
 				Console.WriteLine($"Created income for: {player.username}");
 				Incomes.Add(new IncomeStats(player.username,
-						player.points,
+						config.defaultCoins,
 						config.requiredIncomeTicks,
 						config.incomeAmount));
 			}
@@ -686,7 +715,6 @@ namespace RabbitGameServer.Game
 			tickTimer.Elapsed += this.tickHandler;
 			tickTimer.Interval = config.tickTime;
 			tickTimer.AutoReset = false;
-			tickTimer.Start();
 
 			var playerNames = Players.Select(pd => pd.username).ToList<string>();
 			roomId = Database.saveGame(RoomName, masterPlayer.username, playerNames, DateTime.Now);
@@ -745,7 +773,7 @@ namespace RabbitGameServer.Game
 		public PlayerData AddPlayer(PlayerData player)
 		{
 			player.color = getAvailableColor();
-			// player.points = config.DefaultPoints;
+			player.coins = config.defaultCoins;
 			Players.Add(new DecoratedPlayer(player));
 
 			return player;

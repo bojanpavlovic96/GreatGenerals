@@ -1,6 +1,9 @@
-package root.command;
+package view.command;
 
 import javafx.application.Platform;
+import root.command.Command;
+import root.command.CommandDrivenComponent;
+import root.command.CommandQueue;
 
 public class FxQueue implements CommandQueue {
 

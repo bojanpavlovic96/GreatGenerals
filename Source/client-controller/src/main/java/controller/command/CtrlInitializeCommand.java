@@ -1,6 +1,7 @@
 package controller.command;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 import root.command.Command;
 import root.communication.PlayerDescription;
@@ -62,15 +63,22 @@ public class CtrlInitializeCommand extends Command {
 		var loadBoardCommand = new LoadBoardCommand(model.getFields());
 		controller.getConsumerQueue().enqueue(loadBoardCommand);
 
-		var owner = controller.getModel().getOwner();
-		System.out.println("InCtrlInit command owner balance: ");
-		System.out.println("\tc: " + owner.getCoins());
-		System.out.println("\tp: " + owner.getPoints());
+		var ownerName = controller.getModel().getOwner().getUsername();
+		var ownerData = players.stream()
+				.filter((p) -> p.getUsername().equals(ownerName))
+				.findFirst()
+				.get();
 
-		var updatePoints = new UpdatePointsCommand(owner.getPoints(), owner.getPoints());
+		controller.getModel().getOwner().setCoins(ownerData.getCoins());
+
+		System.out.println("InCtrlInit command owner balance: ");
+		System.out.println("\tc: " + ownerData.getCoins());
+		System.out.println("\tp: " + ownerData.getPoints());
+
+		var updatePoints = new UpdatePointsCommand(ownerData.getPoints(), ownerData.getPoints());
 		controller.getConsumerQueue().enqueue(updatePoints);
 
-		var updateCoins = new UpdateCoinsCommand(owner.getCoins());
+		var updateCoins = new UpdateCoinsCommand(ownerData.getCoins());
 		controller.getConsumerQueue().enqueue(updateCoins);
 	}
 

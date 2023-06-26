@@ -17,7 +17,7 @@ import root.model.component.Unit;
 import root.model.component.UnitType;
 import root.model.event.Timer;
 
-public class UnitFactory {
+public class UnitBuilder {
 
 	private Map<String, MoveDesc> moves;
 	private Map<String, AttackDesc> attacks;
@@ -27,7 +27,7 @@ public class UnitFactory {
 	private PathFinder pathFinder;
 	private Timer timer;
 
-	public UnitFactory(List<UnitDesc> unitsDesc,
+	public UnitBuilder(List<UnitDesc> unitsDesc,
 			List<MoveDesc> movesDesc,
 			List<AttackDesc> attacksDesc,
 			PathFinder pathFinder,

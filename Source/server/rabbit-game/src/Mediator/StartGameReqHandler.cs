@@ -20,15 +20,7 @@ namespace RabbitGameServer.Mediator
 		{
 			Console.WriteLine($"Handling startGameRequest for room: {request.roomName}");
 
-			// check if game exists
-			// check if there is at least 2 players
-			// send response 
-			// send update that game is starting 
-
-			// at this point everyone should close room form and request initMessage
-
 			RoomResponseMsg response;
-
 
 			var game = pool.GetGame(request.roomName);
 

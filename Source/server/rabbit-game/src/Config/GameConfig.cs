@@ -23,6 +23,7 @@ namespace RabbitGameServer.Config
 		public int tickTime { get; set; }
 		public int requiredIncomeTicks { get; set; }
 		public int incomeAmount { get; set; }
+		public int defaultCoins {get;set;}
 		public int attackAward { get; set; }
 		public int defendAward { get; set; }
 		public int defeatCost { get; set; }

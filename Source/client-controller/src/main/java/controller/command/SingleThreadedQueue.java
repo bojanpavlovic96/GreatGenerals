@@ -1,9 +1,12 @@
-package root.command;
+package controller.command;
 
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 import root.ActiveComponent;
+import root.command.Command;
+import root.command.CommandDrivenComponent;
+import root.command.CommandQueue;
 
 public class SingleThreadedQueue implements CommandQueue, ActiveComponent {
 

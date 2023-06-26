@@ -130,6 +130,7 @@ public class StartPageController implements GameReadyEventProducer, ActiveCompon
 					} else {
 						System.out.println("Failed to register: "
 								+ response.getStatus().toString());
+						showStatusMessage(Language.MessageType.RegisterFailed);
 						return;
 					}
 				});

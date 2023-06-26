@@ -18,7 +18,7 @@ public class Color {
 
 	}
 
-	public Color(double red, double blue, double green) {
+	public Color(double red, double green, double blue) {
 		this.red = red;
 		this.green = green;
 		this.blue = blue;
@@ -26,7 +26,7 @@ public class Color {
 		this.opacity = 1;
 	}
 
-	public Color(double red, double blue, double green, double opacity) {
+	public Color(double red, double green, double blue, double opacity) {
 		this.red = red;
 		this.green = green;
 		this.blue = blue;

@@ -6,7 +6,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-import model.component.unit.UnitFactory;
+import model.component.unit.UnitBuilder;
 import model.path.AStar;
 import root.ActiveComponent;
 import root.Point2D;
@@ -37,7 +37,7 @@ public class GameModel implements Model, ActiveComponent {
 
 	private List<Unit> activeUnits;
 
-	private UnitFactory unitFactory;
+	private UnitBuilder unitBuilder;
 
 	private Timer timer;
 
@@ -64,7 +64,7 @@ public class GameModel implements Model, ActiveComponent {
 			this.players.put(player.getUsername(), player);
 		}
 
-		this.unitFactory = new UnitFactory(units,
+		this.unitBuilder = new UnitBuilder(units,
 				moves,
 				attacks,
 				new AStar(),
@@ -190,7 +190,7 @@ public class GameModel implements Model, ActiveComponent {
 
 	@Override
 	public root.model.component.Unit generateUnit(UnitType type, PlayerData owner) {
-		var unit = unitFactory.generateUnit(type, owner);
+		var unit = unitBuilder.generateUnit(type, owner);
 
 		if (activeUnits == null) {
 			activeUnits = new ArrayList<Unit>();
@@ -240,7 +240,7 @@ public class GameModel implements Model, ActiveComponent {
 
 	@Override
 	public List<UnitDesc> getUnitDescriptions() {
-		return this.unitFactory.getUnits();
+		return this.unitBuilder.getUnits();
 	}
 
 	@Override

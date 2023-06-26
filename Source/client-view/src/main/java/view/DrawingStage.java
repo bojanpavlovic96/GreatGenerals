@@ -29,7 +29,7 @@ import javafx.stage.Stage;
 import root.ActiveComponent;
 import root.Point2D;
 import root.command.CommandQueue;
-import root.command.FxQueue;
+import view.command.FxQueue;
 import root.model.component.Field;
 import root.view.View;
 import root.view.ViewConfig;
@@ -182,8 +182,8 @@ public class DrawingStage extends Stage implements View {
 		this.textUiRoot.getChildren().add(pointsCoinsRoot);
 
 		var coinsImage = new ImageView(ResourceManager.getInstance().getCoins());
-		coinsImage.setFitWidth(180);
-		coinsImage.setFitHeight(180);
+		coinsImage.setFitWidth(100);
+		coinsImage.setFitHeight(100);
 
 		this.coinsText = new Label();
 		this.coinsText.setFont(new Font("Chilanka", 30));

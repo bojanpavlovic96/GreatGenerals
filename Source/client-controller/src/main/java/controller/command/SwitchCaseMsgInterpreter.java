@@ -52,11 +52,14 @@ public class SwitchCaseMsgInterpreter implements MessageInterpreter {
 			// TODO Consider spliting message types to login, room and game  related messages. 
 
 			case InitializeMessage:
-				System.out.println("Initialize command case ... ");
-				if (message instanceof InitializeMsg) {
-					System.out.println("Message IS initMsg ... ");
-				} else {
-					System.out.println("Message is NOT init msg ... ");
+				// System.out.println("Initialize command case ... ");
+				// if (message instanceof InitializeMsg) {
+				// 	System.out.println("Message IS initMsg ... ");
+				// } else {
+				// 	System.out.println("Message is NOT init msg ... ");
+				// }
+				for(var p:((InitializeMsg)message).players){
+					System.out.println("name: " + p.getUsername() + " coins: " + p.getCoins());
 				}
 				return new CtrlInitializeCommand(
 						((InitializeMsg) message).players,

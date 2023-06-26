@@ -8,6 +8,7 @@ namespace RabbitGameServer.SharedModel
 
 		public int level { get; set; }
 		public int points { get; set; }
+		public int coins{get;set;}
 
 		// required for serialization 
 		public PlayerData()
