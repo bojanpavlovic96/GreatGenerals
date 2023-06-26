@@ -371,6 +371,7 @@ namespace RabbitGameServer.Game
 						RoomName,
 						config.attackAward,
 						getPlayer(attackIntention.playerName).points);
+					sendMessage(attackAwardMsg, winner);
 				}
 
 			}
@@ -656,7 +657,7 @@ namespace RabbitGameServer.Game
 					// if (i % 2 == 0 && j % 5 == 0)
 					if (rand % 3 == 0)
 					{
-						terrain = new Terrain(TerrainType.water, 1);
+						terrain = new Terrain(TerrainType.water, 3);
 					}
 					else
 					{

@@ -26,7 +26,8 @@ public class ViewTerrain {
 			double hexSide,
 			double borderWidth) {
 
-		Image image = ResourceManager.getInstance().getTerrain(this.terrainName, intensity);
+		// TODO intensity hardcoded 
+		Image image = ResourceManager.getInstance().getTerrain(this.terrainName, 1);
 
 		if (image == null) {
 			System.out.println("Terrain image is null... "

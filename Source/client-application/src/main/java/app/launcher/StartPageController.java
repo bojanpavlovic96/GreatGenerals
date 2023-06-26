@@ -32,6 +32,8 @@ public class StartPageController implements GameReadyEventProducer, ActiveCompon
 	private String roomName;
 	private List<PlayerDescription> players;
 
+	private boolean iAmMaster;
+
 	private LoginServerProxy loginServer;
 	private RoomServerProxy roomServer;
 	private ReplayServerProxy replayServer;
@@ -198,6 +200,7 @@ public class StartPageController implements GameReadyEventProducer, ActiveCompon
 		System.out.println("Handling room response ... ");
 		if (response.responseType == RoomResponseType.Success) {
 			System.out.println("Create room successful ... ");
+			iAmMaster = true;
 
 			initialPage.disableCreateRoom();
 			initialPage.disableJoinRoom();
@@ -246,7 +249,9 @@ public class StartPageController implements GameReadyEventProducer, ActiveCompon
 			players.add(newPlayer);
 
 			initialPage.addPlayer(newPlayer);
-			initialPage.enableGameStart();
+			if(iAmMaster){
+				initialPage.enableGameStart();
+			}
 
 		} else if (response.responseType == RoomResponseType.PlayerLeft) {
 			System.out.println("Player left update ... ");
@@ -367,6 +372,7 @@ public class StartPageController implements GameReadyEventProducer, ActiveCompon
 
 					if (response.responseType == RoomResponseType.Success) {
 						System.out.println("Successfully left the room ... ");
+						iAmMaster = false;
 						showInfoMessage(Language.MessageType.SuccessfulLeft);
 
 						roomServer.UnsubFromRoomUpdates();

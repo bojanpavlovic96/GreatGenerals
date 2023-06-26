@@ -46,7 +46,7 @@ public class BasicMove extends Move implements Runnable {
 				+ "->: "
 				+ this.path.get(1).getStoragePosition());
 
-		Field nextField = path.get(1);
+		Field nextField = path.get(0);
 
 		var delay = calculateDelay(nextField.getTerrain());
 		System.out.println("Calculated delay: " + delay);
